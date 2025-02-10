@@ -1,0 +1,24 @@
+<app-navbar></app-navbar>
+
+<nav class="bg-gray-800 p-4 shadow-md flex justify-center space-x-6">
+  <a routerLink="/organisation" 
+     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
+    Organisation Section
+  </a>
+  <a routerLink="/timesheet" 
+     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
+    Timesheet App
+  </a>
+  <a routerLink="/joining-pipeline" 
+     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
+    Joining Pipeline
+  </a>
+  <a routerLink="/resource-management" 
+     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
+    Resource Management
+  </a>
+</nav>
+
+<div class="p-6">
+  <router-outlet></router-outlet>
+</div>

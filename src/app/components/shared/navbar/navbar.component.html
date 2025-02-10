@@ -1,0 +1,42 @@
+<!-- NAVBAR -->
+<div class="flex flex-col sm:flex-row items-center sm:justify-between p-2 bg-white">
+  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7" />
+
+  <!-- Navbar Right Section -->
+  <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 mt-2 sm:mt-0">
+    <!-- User Dropdown -->
+    <div class="relative">
+      <button (click)="toggleDropdown()"
+        class="flex items-center text-gray-700 font-medium text-sm sm:text-base cursor-pointer px-4 py-2 rounded-lg transition-all hover:bg-gray-100">
+        <img src="user.png" alt="User Icon" class="h-6 w-6 mr-2" />
+        <span>Welcome, {{ loggedInHR }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showDropdown"
+        class="absolute right-0 mt-2 w-52 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 z-10">
+        <button class="flex items-center w-full text-base text-gray-700 hover:bg-gray-100 transition px-4 py-3"
+          (click)="showChangePasswordForm = !showChangePasswordForm">
+          <img src="change-password.png" alt="Change Password Icon" class="h-5 w-5 mr-2" />
+          Change Password
+        </button>
+        <button class="flex items-center w-full text-base text-gray-700 hover:bg-gray-100 transition px-4 py-3"
+          (click)="showUpdateEmailForm = !showUpdateEmailForm">
+          <img src="email.png" alt="Update Email Icon" class="h-5 w-5 mr-2" />
+          Update Email
+        </button>
+        <button class="flex items-center w-full text-base text-red-600 hover:bg-red-100 transition px-4 py-3"
+          (click)="logout()">
+          <img src="logout.png" alt="Logout Icon" class="h-5 w-5 mr-2" />
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
