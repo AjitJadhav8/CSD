@@ -1,11 +1,12 @@
 <app-navbar></app-navbar>
+<div class="container mx-auto mt-8 p-6 bg-gray-50 shadow-lg rounded-lg">
+  <h2 class="text-2xl font-bold text-gray-700 mb-4">Joining Pipeline</h2>
+  <ul class="space-y-3">
+    <li><a routerLink="view" class="block bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">View Joining Pipeline</a></li>
+    <li><a routerLink="create-designation" class="block bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Designation</a></li>
+    <li><a routerLink="add-selected-candidates" class="block bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Add Selected Candidates</a></li>
+    <li><a routerLink="delete" class="block bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Delete Joining Pipeline</a></li>
+  </ul>
+</div>
 
-
-<h2>Joining Pipeline</h2>
-<ul>
-  <li><a routerLink="view">View Joining Pipeline</a></li>
-  <li><a routerLink="create-designation">Create Designation</a></li>
-  <li><a routerLink="add-selected-candidates">Add Selected Candidates</a></li>
-  <li><a routerLink="delete">Delete Joining Pipeline</a></li>
-</ul>
 <router-outlet></router-outlet>

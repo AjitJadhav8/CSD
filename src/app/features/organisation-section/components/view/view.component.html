@@ -1,1 +1,36 @@
-<p>view works!</p>
+<div class="container mx-auto mt-8 p-6 bg-gray-50 shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">View Section</h2>
+  
+    <!-- Main View Buttons -->
+    <div class="flex space-x-4 mb-6">
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewEmployee'">View Employee</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewDepartment'">View Department</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewCustomer'">View Customer</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewCustomerDomain'">View Customer Domain</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewProject'">View Project</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewProjectRole'">View Project Role</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewProjectManager'">View Project Manager</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedViewOption = 'viewAdminRole'">View Admin Role</button>
+    </div>
+  
+    <!-- Placeholder Tables for Viewing Data -->
+    <div >
+      <p>Note: We will add the table here.</p>
+  
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr >
+ 
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

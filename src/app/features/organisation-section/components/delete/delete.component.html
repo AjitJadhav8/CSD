@@ -1,1 +1,42 @@
-<p>delete works!</p>
+<div class="container mx-auto mt-8 p-6 bg-gray-50 shadow-lg rounded-lg">
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">Delete Section</h2>
+
+    <!-- Main Buttons -->
+    <div class="flex space-x-4 mb-6">
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteCustomer'">Delete Customer</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteCustomerDomain'">Delete Customer Domain</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteProject'">Delete Project</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteProjectRole'">Delete Project Role</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteProjectManager'">Delete Project Manager</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteAdminRole'">Delete Admin Role</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteEmployee'">Delete Employee</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteDepartment'">Delete Department</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteTaskCategory'">Delete Task Category</button>
+      <button class="bg-red-200 hover:bg-red-300 text-red-900 py-2 px-4 rounded-md" (click)="selectedDeleteOption = 'deleteProjectDeliverables'">Delete Project Deliverables</button>
+    </div>
+  
+    <!-- Placeholder Tables for Soft Delete -->
+    <div *ngIf="selectedDeleteOption">
+      <h3></h3>
+      <p>Note: We will add the table here.</p>
+  
+      <table border="1" width="100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr >
+            <td></td>
+            <td>
+              <button>Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

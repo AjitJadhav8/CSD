@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './view.component.css'
 })
 export class ViewComponent {
+  selectedViewOption: string | null = null;
 
 }
