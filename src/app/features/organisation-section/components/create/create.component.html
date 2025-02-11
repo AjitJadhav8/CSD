@@ -1,1 +1,478 @@
-<p>create works!</p>
+<div >
+    <h2>Create Section</h2>
+
+    <!-- Main Buttons -->
+    <div >
+        <button (click)="selectedSection = 'customer'"
+        >Customer</button>
+        <button (click)="selectedSection = 'project'"
+            >Project</button>
+        <button (click)="selectedSection = 'employee'"
+        >Employee</button>
+    </div>
+
+    <!-- Customer Section -->
+    <div *ngIf="selectedSection === 'customer'">
+        <div >
+            <button (click)="selectedCustomerOption = 'createCustomer'"
+                >Create Customer</button>
+            <button (click)="selectedCustomerOption = 'createCustomerDomain'"
+                >Create Customer Domain</button>
+        </div>
+
+        <!-- Create Customer Form -->
+        <div *ngIf="selectedCustomerOption === 'createCustomer'" >
+            <div >
+                <button >Add New Customer</button>
+                <button >Save</button>
+                <button >View List</button>
+            </div>
+
+            <!-- Customer Form -->
+            <form>
+                <div >
+                    <div>
+                        <label >Customer Name</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >Company Website</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >Email Address</label>
+                        <input type="email"  />
+                    </div>
+                    <div>
+                        <label >State</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >Country</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >Customer Status</label>
+                        <select >
+                            <option value="">Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label >Customer Domain</label>
+                        <select >
+                            <option value="">Select Domain</option>
+                            <option value="IT">IT</option>
+                            <option value="Finance">Finance</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label >Phone Number</label>
+                        <input type="text" />
+                    </div>
+                    <div>
+                        <label >Customer Type</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >City</label>
+                        <input type="text"  />
+                    </div>
+                    <div>
+                        <label >Pincode</label>
+                        <input type="text"  />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Create Customer Domain -->
+        <div *ngIf="selectedCustomerOption === 'createCustomerDomain'">
+            <div >
+                <button >Add New Record</button>
+                <button >Save</button>
+                <button>View List</button>
+            </div>
+
+            <!-- Customer Domain Form -->
+            <form>
+                <div>
+                    <div>
+                        <label >Domain Name</label>
+                        <input type="text"  />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <!-- Project Section -->
+    <div *ngIf="selectedSection === 'project'">
+        <div class="flex space-x-4 mb-4">
+            <button (click)="selectedProjectOption = 'createTaskCategory'"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Task Category</button>
+            <button (click)="selectedProjectOption = 'createProjectDeliverable'"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Project
+                Deliverable</button>
+            <button (click)="selectedProjectOption = 'createProjectRole'"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Project Role</button>
+            <button (click)="selectedProjectOption = 'createProjectManager'"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Project Manager</button>
+            <button (click)="selectedProjectOption = 'createProject'"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md">Create Project</button>
+        </div>
+
+        <!-- Create Project Form -->
+        <div *ngIf="selectedProjectOption === 'createProject'" class="bg-white p-6 shadow-md rounded-lg">
+            <div class="flex space-x-4 mb-4">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">Add New Project</button>
+                <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md">Save</button>
+                <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md">View List</button>
+            </div>
+
+            <!-- Project Form -->
+            <form>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700">Customer Name</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Customer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Project Name</label>
+                        <input type="text" class="w-full p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Planned Start Date</label>
+                        <input type="date" class="w-full p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Actual Start Date</label>
+                        <input type="date" class="w-full p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Type of Project</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Type</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Type of Engagement</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Engagement</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Project Manager</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Manager</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Project Description</label>
+                        <textarea class="w-full p-2 border rounded-md"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Project Status</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Status</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Tentative End Date</label>
+                        <input type="date" class="w-full p-2 border rounded-md" />
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Create Project Manager -->
+        <div *ngIf="selectedProjectOption === 'createProjectManager'" class="bg-white p-6 shadow-md rounded-lg">
+            <div class="flex space-x-4 mb-4">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">Add Project
+                    Manager</button>
+                <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md">Save</button>
+                <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md">View List</button>
+            </div>
+
+            <form>
+                <label class="block text-gray-700">Project Manager Name</label>
+                <input type="text" class="w-full p-2 border rounded-md" />
+            </form>
+        </div>
+
+        <!-- Create Project Role -->
+        <div *ngIf="selectedProjectOption === 'createProjectRole'" class="bg-white p-6 shadow-md rounded-lg">
+            <div class="flex space-x-4 mb-4">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">New Project Role</button>
+                <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md">Save</button>
+                <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md">View List</button>
+            </div>
+
+            <form>
+                <label class="block text-gray-700">Project Role</label>
+                <input type="text" class="w-full p-2 border rounded-md" />
+            </form>
+        </div>
+
+        <!-- Create Project Deliverable -->
+        <div *ngIf="selectedProjectOption === 'createProjectDeliverable'" class="bg-white p-6 shadow-md rounded-lg">
+            <div class="flex space-x-4 mb-4">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">Add New Project
+                    Deliverable</button>
+                <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md">Save</button>
+                <button class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md">View List</button>
+            </div>
+
+            <form>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700">Select Customer</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Customer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Select Project</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Project</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Project Deliverable</label>
+                        <input type="text" class="w-full p-2 border rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Select Status</label>
+                        <select class="w-full p-2 border rounded-md">
+                            <option>Select Status</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+   <!-- Employee Section -->
+   <div *ngIf="selectedSection === 'employee'">
+    <div class="flex space-x-4 mb-4">
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createEmployee'">Create Employee</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createDepartment'">Create Department</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createDesignation'">Create Designation</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createPosition'">Create Position</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createSkills'">Create Skills</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'reportingManagerHistory'">Reporting Manager History</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedEmployeeOption = 'createPermission'">Create Permission</button>
+    </div>
+
+    <!-- Create Employee Form -->
+    <div *ngIf="selectedEmployeeOption === 'createEmployee'">
+      <div>
+        <button>Add New Employee</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <table>
+          <tr>
+            <td><label>Employee Code*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>First Name*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>Middle Name</label></td>
+            <td><input type="text" /></td>
+          </tr>
+          <tr>
+            <td><label>Last Name*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>Email ID*</label></td>
+            <td><input type="email" required /></td>
+          </tr>
+          <tr>
+            <td><label>Current Address</label></td>
+            <td><input type="text" /></td>
+          </tr>
+          <tr>
+            <td><label>Contact Number*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>Emergency Contact*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>Admin Role*</label></td>
+            <td>
+              <select required>
+                <option>Select Role</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Date of Birth*</label></td>
+            <td><input type="date" required /></td>
+          </tr>
+          <tr>
+            <td><label>Employee Designation*</label></td>
+            <td>
+              <select required>
+                <option>Select Designation</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Timesheet Filling*</label></td>
+            <td><input type="text" required /></td>
+          </tr>
+          <tr>
+            <td><label>Requirement*</label></td>
+            <td>
+              <select required>
+                <option>Select Requirement</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Department*</label></td>
+            <td>
+              <select required>
+                <option>Select Department</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Project Role*</label></td>
+            <td>
+              <select required>
+                <option>Select Project Role</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Blood Group*</label></td>
+            <td>
+              <select required>
+                <option>Select Blood Group</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Date of Joining*</label></td>
+            <td><input type="date" required /></td>
+          </tr>
+          <tr>
+            <td><label>Reporting Manager*</label></td>
+            <td>
+              <select required>
+                <option>Select Reporting Manager</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button type="submit">Save</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+
+    <!-- Create Department -->
+    <div *ngIf="selectedEmployeeOption === 'createDepartment'">
+      <div>
+        <button>Add New Record</button>
+        <button>Save</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <label>Department Name</label>
+        <input type="text" required />
+      </form>
+    </div>
+
+    <!-- Create Designation -->
+    <div *ngIf="selectedEmployeeOption === 'createDesignation'">
+      <div>
+        <button>Add New Record</button>
+        <button>Save</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <label>Designation Name</label>
+        <input type="text" required />
+      </form>
+    </div>
+
+    <!-- Create Position -->
+    <div *ngIf="selectedEmployeeOption === 'createPosition'">
+      <div>
+        <button>Add New Record</button>
+        <button>Save</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <label>Position Name</label>
+        <input type="text" required />
+      </form>
+    </div>
+
+    <!-- Create Skills -->
+    <div *ngIf="selectedEmployeeOption === 'createSkills'">
+      <div>
+        <button>Add New Record</button>
+        <button>Save</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <label>Skill Name</label>
+        <input type="text" required />
+      </form>
+    </div>
+
+    <!-- Create Permission -->
+    <div *ngIf="selectedEmployeeOption === 'createPermission'">
+      <div>
+        <button>Add New Record</button>
+        <button>Save</button>
+        <button>View List</button>
+      </div>
+
+      <form>
+        <label>Permission Name</label>
+        <input type="text" required />
+      </form>
+    </div>
+
+    <!-- Reporting Manager History -->
+    <div *ngIf="selectedEmployeeOption === 'reportingManagerHistory'">
+      <p>Reporting Manager History</p>
+    </div>
+  </div>
+
+
+
+
+
+</div>
