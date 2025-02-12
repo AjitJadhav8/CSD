@@ -5,19 +5,7 @@ import { OrganisationDashboardComponent } from './components/organisation-dashbo
 import { RouterModule, Routes } from '@angular/router';
 
 
-// import { CreateComponent } from './components/create/create.component';
-// import { ViewComponent } from './components/view/view.component';
-// import { DeleteComponent } from './components/delete/delete.component';
-// const routes: Routes = [
-//   { 
-//     path: '', component: OrganisationDashboardComponent, 
-//     children: [
-//       { path: 'create', component: CreateComponent },
-//       { path: 'view', component: ViewComponent },
-//       { path: 'delete', component: DeleteComponent },
-//     ]
-//   }
-// ];
+
 
 
 import { CustomerComponent } from './components/customer/customer.component';
@@ -29,6 +17,7 @@ const routes: Routes = [
   { 
     path: '', component: OrganisationDashboardComponent,
     children: [
+      { path: '', redirectTo: 'customer', pathMatch: 'full' }, // ✅ Default to Customer
       { path: 'customer', component: CustomerComponent },
       { path: 'employee', component: EmployeeComponent },
       { path: 'project', component: ProjectComponent },
@@ -36,11 +25,6 @@ const routes: Routes = [
     ]
   }
 ];
-
-
-
-
-
 
 
 
@@ -61,3 +45,20 @@ const routes: Routes = [
   ]
 })
 export class OrganisationSectionModule { }
+
+
+
+
+// import { CreateComponent } from './components/create/create.component';
+// import { ViewComponent } from './components/view/view.component';
+// import { DeleteComponent } from './components/delete/delete.component';
+// const routes: Routes = [
+//   { 
+//     path: '', component: OrganisationDashboardComponent, 
+//     children: [
+//       { path: 'create', component: CreateComponent },
+//       { path: 'view', component: ViewComponent },
+//       { path: 'delete', component: DeleteComponent },
+//     ]
+//   }
+// ];

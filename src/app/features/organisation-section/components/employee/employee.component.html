@@ -1,1 +1,325 @@
-<p>employee works!</p>
+<div class="p-4">
+    <!-- Section Selection Buttons -->
+    <div class="flex space-x-4 mb-4">
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'employee'">Employee</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'department'">Department</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'designation'">Designation</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'position'">Position</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'skills'">Skills</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'permission'">Permission</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'reportingManagerHistory'">Reporting Manager History</button>
+
+    </div>
+
+    <!-- Employee Section -->
+    <div *ngIf="selectedSection === 'employee'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showEmployeeForm = !showEmployeeForm">+ Add Employee</button>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">Employee Code</th>
+                    <th class="border p-2">Name</th>
+                    <th class="border p-2">Email</th>
+                    <th class="border p-2">Contact Number</th>
+                    <th class="border p-2">Admin Role</th>
+                    <th class="border p-2">Designation</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employee of employees" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ employee.code }}</td>
+                    <td class="border p-2">{{ employee.firstName }} {{ employee.lastName }}</td>
+                    <td class="border p-2">{{ employee.email }}</td>
+                    <td class="border p-2">{{ employee.contact }}</td>
+                    <td class="border p-2">{{ employee.adminRole }}</td>
+                    <td class="border p-2">{{ employee.designation }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteEmployee(employee.code)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="showEmployeeForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form>
+                <table class="w-full">
+                    <tr><td><label>Employee Code*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>First Name*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Middle Name</label></td><td><input type="text" class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Last Name*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Email ID*</label></td><td><input type="email" required class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Current Address</label></td><td><input type="text" class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Contact Number*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr><td><label>Emergency Contact*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr>
+                        <td><label>Admin Role*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Role</option></select></td>
+                    </tr>
+                    <tr><td><label>Date of Birth*</label></td><td><input type="date" required class="border p-2 w-full" /></td></tr>
+                    <tr>
+                        <td><label>Employee Designation*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Designation</option></select></td>
+                    </tr>
+                    <tr><td><label>Timesheet Filling*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
+                    <tr>
+                        <td><label>Requirement*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Requirement</option></select></td>
+                    </tr>
+                    <tr>
+                        <td><label>Department*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Department</option></select></td>
+                    </tr>
+                    <tr>
+                        <td><label>Project Role*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Project Role</option></select></td>
+                    </tr>
+                    <tr>
+                        <td><label>Blood Group*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Blood Group</option></select></td>
+                    </tr>
+                    <tr><td><label>Date of Joining*</label></td><td><input type="date" required class="border p-2 w-full" /></td></tr>
+                    <tr>
+                        <td><label>Reporting Manager*</label></td>
+                        <td><select required class="border p-2 w-full"><option>Select Reporting Manager</option></select></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center pt-4">
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <!-- Department Section -->
+    <div *ngIf="selectedSection === 'department'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showDepartmentForm = !showDepartmentForm">+ Add Department</button>
+
+           <!-- Add Department Form -->
+           <div *ngIf="showDepartmentForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form >
+                <label class="block mb-2 font-semibold">Department Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+           </div>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">Department ID</th>
+                    <th class="border p-2">Department Name</th>
+                    <th class="border p-2">Activity Date</th>
+                    <th class="border p-2">Created By</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let department of departments" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ department.id }}</td>
+                    <td class="border p-2">{{ department.name }}</td>
+                    <td class="border p-2">{{ department.activityDate }}</td>
+                    <td class="border p-2">{{ department.createdBy }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDepartment(department.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Designation Section -->
+    <div *ngIf="selectedSection === 'designation'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showDesignationForm = !showDesignationForm">+ Add Designation</button>
+
+        <div *ngIf="showDesignationForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form >
+                <label class="block mb-2 font-semibold">Designation Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+           </div>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">Designation ID</th>
+                    <th class="border p-2">Designation Name</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let designation of designations" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ designation.id }}</td>
+                    <td class="border p-2">{{ designation.name }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDesignation(designation.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Position Section -->
+    <div *ngIf="selectedSection === 'position'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showPositionForm = !showPositionForm">+ Add Position</button>
+
+        <div *ngIf="showPositionForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form >
+                <label class="block mb-2 font-semibold">Position Name*</label>
+                <input type="text"  required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
+
+        <table class="w-full border-collapse border border-gray-300 mt-4">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">Position ID</th>
+                    <th class="border p-2">Position Name</th>
+                    <th class="border p-2">Activity Date</th>
+                    <th class="border p-2">Created By</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let position of positions" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ position.id }}</td>
+                    <td class="border p-2">{{ position.name }}</td>
+                    <td class="border p-2">{{ position.activityDate }}</td>
+                    <td class="border p-2">{{ position.createdBy }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deletePosition(position.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Skills Section -->
+    <div *ngIf="selectedSection === 'skills'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showSkillsForm = !showSkillsForm">+ Add Skill</button>
+
+        <div *ngIf="showSkillsForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form >
+                <label class="block mb-2 font-semibold">Skill Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
+
+         <!-- Skills Table -->
+    <table class="w-full border-collapse border border-gray-300 mt-4">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border p-2">Skill ID</th>
+                <th class="border p-2">Skill Name</th>
+                <th class="border p-2">Activity Date</th>
+                <th class="border p-2">Created By</th>
+                <th class="border p-2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let skill of skills" class="hover:bg-gray-50">
+                <td class="border p-2">{{ skill.id }}</td>
+                <td class="border p-2">{{ skill.name }}</td>
+                <td class="border p-2">{{ skill.activityDate }}</td>
+                    <td class="border p-2">{{ skill.createdBy }}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteSkill(skill.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    </div>
+
+    <!-- Permission Section -->
+    <div *ngIf="selectedSection === 'permission'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showPermissionForm = !showPermissionForm">+ Add Permission</button>
+
+        <div *ngIf="showPermissionForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form >
+                <label class="block mb-2 font-semibold">Permission Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
+
+        <!-- Permissions Table -->
+    <table class="w-full border-collapse border border-gray-300 mt-4">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border p-2">Permission ID</th>
+                <th class="border p-2">Permission Name</th>
+                <th class="border p-2">Activity Date</th>
+                <th class="border p-2">Created By</th>
+                <th class="border p-2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let permission of permissions" class="hover:bg-gray-50">
+                <td class="border p-2">{{ permission.id }}</td>
+                <td class="border p-2">{{ permission.name }}</td>
+                <td class="border p-2">{{ permission.activityDate }}</td>
+                    <td class="border p-2">{{ permission.createdBy }}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deletePermission(permission.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    </div>
+
+    <!-- Reporting Manager History Section -->
+<div *ngIf="selectedSection === 'reportingManagerHistory'">
+    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showReportingManagerForm = !showReportingManagerForm">+ Add Reporting Manager</button>
+
+    <!-- Add Reporting Manager Form -->
+    <div *ngIf="showReportingManagerForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+        <form>
+            <label class="block mb-2 font-semibold">Employee Name*</label>
+            <input type="text" required class="border p-2 w-full rounded-md" />
+            
+            <label class="block mb-2 font-semibold mt-3">Reporting Manager*</label>
+            <input type="text" required class="border p-2 w-full rounded-md" />
+
+            <label class="block mb-2 font-semibold mt-3">Effective Date*</label>
+            <input type="date" required class="border p-2 w-full rounded-md" />
+
+            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+        </form>
+    </div>
+
+    <!-- Reporting Manager History Table -->
+    <table class="w-full border-collapse border border-gray-300 mt-4">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border p-2">Employee ID</th>
+                <th class="border p-2">Reporting Manager</th>
+                <th class="border p-2">Activity Date</th>
+                <th class="border p-2">Created By</th>
+                <th class="border p-2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let manager of reportingManagerHistory" class="hover:bg-gray-50">
+                <td class="border p-2">{{ manager.id }}</td>
+                <td class="border p-2">{{ manager.reportingManager }}</td>
+                <td class="border p-2">{{ manager.activityDate }}</td>
+                <td class="border p-2">{{ manager.createdBy }}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteReportingManager(manager.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+</div>
