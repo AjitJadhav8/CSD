@@ -18,12 +18,32 @@ export class EmployeeComponent {
   showPermissionForm: boolean = false;
   showPositionForm: boolean = false;
   showReportingManagerForm: boolean = false;
+  hasPassport: boolean = false;
 
-  reportingManagerHistory = [
-      { id: 1, reportingManager: 'Michael Scott',  activityDate: '2025-02-10', createdBy: 'Admin' },
-      { id: 2,  reportingManager: 'Dwight Schrute',  activityDate: '2025-02-11', createdBy: 'Admin' }
-  ];
-  
+
+  onPassportChange(event: Event) {
+      const target = event.target as HTMLInputElement;
+      this.hasPassport = target.value === 'yes';
+  }
+
+reportingManagerHistory = [
+    { 
+        id: 1, 
+        employeeName: 'Jim Halpert', 
+        reportingManager: 'Michael Scott',  
+        fromDate: '2025-02-01', 
+        tillDate: '2025-02-10', 
+        createdBy: 'Admin' 
+    },
+    { 
+        id: 2, 
+        employeeName: 'Pam Beesly', 
+        reportingManager: 'Dwight Schrute',  
+        fromDate: '2025-02-05', 
+        tillDate: '2025-02-11', 
+        createdBy: 'Admin' 
+    }
+];
 
   positions = [
     { id: 1, name: 'Manager',activityDate: '2025-02-10', createdBy: 'Admin' },
@@ -81,4 +101,45 @@ export class EmployeeComponent {
   deleteReportingManager(id: number) {
     this.reportingManagerHistory = this.reportingManagerHistory.filter(manager => manager.id !== id);
 }
+
+
+showDesignationModal: boolean = false;
+showPositionModal: boolean = false;
+showSkillModal: boolean = false;
+showPermissionModal: boolean = false;
+showReportingManagerModal: boolean = false;
+showEmployeeModal: boolean = false;
+showDepartmentModal: boolean = false;
+
+toggleModal(type: string) {
+    switch (type) {
+        case 'designation':
+            this.showDesignationModal = !this.showDesignationModal;
+            break;
+        case 'position':
+            this.showPositionModal = !this.showPositionModal;
+            break;
+        case 'skill':
+            this.showSkillModal = !this.showSkillModal;
+            break;
+        case 'permission':
+            this.showPermissionModal = !this.showPermissionModal;
+            break;
+        case 'reportingManager':
+            this.showReportingManagerModal = !this.showReportingManagerModal;
+            break;
+        case 'employee':
+            this.showEmployeeModal = !this.showEmployeeModal;
+            break;
+        case 'department':
+            this.showDepartmentModal = !this.showDepartmentModal;
+            break;
+    }
+}
+
+
+
+
+
+
 }

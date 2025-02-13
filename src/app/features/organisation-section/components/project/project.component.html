@@ -10,15 +10,16 @@
 
     <!-- Task Category Section -->
     <div *ngIf="selectedSection === 'taskCategory'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showTaskCategoryForm = !showTaskCategoryForm">+ Add Task Category</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('taskCategory')">+ Add Task Category</button>
 
-        <div *ngIf="showTaskCategoryForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
-                <label class="block mb-2 font-semibold">Task Category Name*</label>
-                <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-            </form>
-        </div>
+<div *ngIf="showTaskCategoryModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+    <form>
+        <label class="block mb-2 font-semibold">Task Category Name*</label>
+        <input type="text" required class="border p-2 w-full rounded-md" />
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+    </form>
+</div>
+
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -48,15 +49,16 @@
 
     <!-- Project Deliverable Section -->
     <div *ngIf="selectedSection === 'projectDeliverable'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showProjectDeliverableForm = !showProjectDeliverableForm">+ Add Project Deliverable</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectDeliverable')">+ Add Project Deliverable</button>
 
-        <div *ngIf="showProjectDeliverableForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
-                <label class="block mb-2 font-semibold">Deliverable Name*</label>
-                <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-            </form>
-        </div>
+<div *ngIf="showProjectDeliverableModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+    <form>
+        <label class="block mb-2 font-semibold">Deliverable Name*</label>
+        <input type="text" required class="border p-2 w-full rounded-md" />
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+    </form>
+</div>
+
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -84,14 +86,16 @@
 
     <!-- Project Role Section -->
 <div *ngIf="selectedSection === 'projectRole'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showProjectRoleForm = !showProjectRoleForm">+ Add Project Role</button>
-    <div *ngIf="showProjectRoleForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-        <form>
-            <label class="block mb-2 font-semibold">Project Role Name*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-        </form>
-    </div>
+    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectRole')">+ Add Project Role</button>
+
+<div *ngIf="showProjectRoleModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+    <form>
+        <label class="block mb-2 font-semibold">Project Role Name*</label>
+        <input type="text" required class="border p-2 w-full rounded-md" />
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+    </form>
+</div>
+
     <table class="w-full border-collapse border border-gray-300">
         <thead>
             <tr class="bg-gray-100">
@@ -113,14 +117,16 @@
 </div>
 <!-- Project Manager Section -->
 <div *ngIf="selectedSection === 'projectManager'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showProjectManagerForm = !showProjectManagerForm">+ Add Project Manager</button>
-    <div *ngIf="showProjectManagerForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
+    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectManager')">+ Add Project Manager</button>
+
+    <div *ngIf="showProjectManagerModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
         <form>
             <label class="block mb-2 font-semibold">Project Manager Name*</label>
             <input type="text" required class="border p-2 w-full rounded-md" />
             <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
         </form>
     </div>
+    
     <table class="w-full border-collapse border border-gray-300">
         <thead>
             <tr class="bg-gray-100">
@@ -142,14 +148,16 @@
 </div>
 <!-- Project Section -->
 <div *ngIf="selectedSection === 'project'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showProjectForm = !showProjectForm">+ Add Project</button>
-    <div *ngIf="showProjectForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-        <form>
-            <label class="block mb-2 font-semibold">Project Name*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-        </form>
-    </div>
+    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('project')">+ Add Project</button>
+
+<div *ngIf="showProjectModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+    <form>
+        <label class="block mb-2 font-semibold">Project Name*</label>
+        <input type="text" required class="border p-2 w-full rounded-md" />
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+    </form>
+</div>
+
     <table class="w-full border-collapse border border-gray-300">
         <thead>
             <tr class="bg-gray-100">

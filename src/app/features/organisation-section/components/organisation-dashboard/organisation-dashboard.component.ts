@@ -5,7 +5,7 @@ import { NavbarComponent } from "../../../../components/shared/navbar/navbar.com
 @Component({
   selector: 'app-organisation-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './organisation-dashboard.component.html',
   styleUrl: './organisation-dashboard.component.css'
 })

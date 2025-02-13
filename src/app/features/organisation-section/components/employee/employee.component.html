@@ -13,7 +13,7 @@
 
     <!-- Employee Section -->
     <div *ngIf="selectedSection === 'employee'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showEmployeeForm = !showEmployeeForm">+ Add Employee</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('employee')">+ Add Employee</button>
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -42,70 +42,96 @@
             </tbody>
         </table>
 
-        <div *ngIf="showEmployeeForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
-                <table class="w-full">
-                    <tr><td><label>Employee Code*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>First Name*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Middle Name</label></td><td><input type="text" class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Last Name*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Email ID*</label></td><td><input type="email" required class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Current Address</label></td><td><input type="text" class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Contact Number*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr><td><label>Emergency Contact*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr>
-                        <td><label>Admin Role*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Role</option></select></td>
-                    </tr>
-                    <tr><td><label>Date of Birth*</label></td><td><input type="date" required class="border p-2 w-full" /></td></tr>
-                    <tr>
-                        <td><label>Employee Designation*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Designation</option></select></td>
-                    </tr>
-                    <tr><td><label>Timesheet Filling*</label></td><td><input type="text" required class="border p-2 w-full" /></td></tr>
-                    <tr>
-                        <td><label>Requirement*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Requirement</option></select></td>
-                    </tr>
-                    <tr>
-                        <td><label>Department*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Department</option></select></td>
-                    </tr>
-                    <tr>
-                        <td><label>Project Role*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Project Role</option></select></td>
-                    </tr>
-                    <tr>
-                        <td><label>Blood Group*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Blood Group</option></select></td>
-                    </tr>
-                    <tr><td><label>Date of Joining*</label></td><td><input type="date" required class="border p-2 w-full" /></td></tr>
-                    <tr>
-                        <td><label>Reporting Manager*</label></td>
-                        <td><select required class="border p-2 w-full"><option>Select Reporting Manager</option></select></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="text-center pt-4">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
+        <!-- Employee Form Modal -->
+      <!-- Employee Form Modal -->
+      <div *ngIf="showEmployeeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"  (click)="toggleModal('employee')">
+        <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="text-xl font-semibold">Add New Employee</h3>
+                <button class="text-gray-500 hover:text-gray-700 text-2xl"  (click)="toggleModal('employee')">&times;</button>
+            </div>
+
+            <!-- Scrollable Form -->
+            <div class="mt-4 max-h-[70vh] overflow-y-auto p-2">
+                <form>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label>Employee Code*</label><input type="text" required class="border p-2 w-full" /></div>
+                        <div><label>First Name*</label><input type="text" required class="border p-2 w-full" /></div>
+                        <div><label>Middle Name</label><input type="text" class="border p-2 w-full" /></div>
+                        <div><label>Last Name*</label><input type="text" required class="border p-2 w-full" /></div>
+                        <div><label>Email ID*</label><input type="email" required class="border p-2 w-full" /></div>
+                        <!-- Passport Yes/No -->
+<div class="mt-4">
+    <label class="block font-semibold">Do you have a passport?</label>
+    <div class="flex space-x-4 mt-2">
+        <label class="flex items-center">
+            <input type="radio" name="passport" value="yes" (change)="onPassportChange($event)" />
+            <span class="ml-2">Yes</span>
+        </label>
+        <label class="flex items-center">
+            <input type="radio" name="passport" value="no" (change)="onPassportChange($event)" />
+            <span class="ml-2">No</span>
+        </label>
+    </div>
+</div>
+
+<!-- Validity of Passport (Shown Only If "Yes" is Selected) -->
+<div *ngIf="hasPassport" class="mt-4">
+    <label>Validity of Passport*</label>
+    <input type="date" required class="border p-2 w-full" />
+</div>
+                        <div><label>Current Address</label><input type="text" class="border p-2 w-full" /></div>
+                        <div><label>Contact Number*</label><input type="text" required class="border p-2 w-full" /></div>
+                        <div><label>Emergency Contact*</label><input type="text" required class="border p-2 w-full" /></div>
+                        <div><label>Admin Role*</label><select required class="border p-2 w-full"><option>Select Role</option></select></div>
+                        <div><label>Date of Birth*</label><input type="date" required class="border p-2 w-full" /></div>
+                        <div><label>Employee Designation*</label><select required class="border p-2 w-full"><option>Select Designation</option></select></div>
+                        <div><label>Timesheet Filling*</label><select required class="border p-2 w-full"><option value="">Select Option</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+                        <div><label>Requirement*</label><select required class="border p-2 w-full"><option>Select Requirement</option></select></div>
+                        <div><label>Department*</label><select required class="border p-2 w-full"><option>Select Department</option></select></div>
+                        <div><label>Project Role*</label><select required class="border p-2 w-full"><option>Select Project Role</option></select></div>
+                        <div><label>Blood Group*</label><select required class="border p-2 w-full"><option>Select Blood Group</option></select></div>
+                        <div><label>Date of Joining*</label><input type="date" required class="border p-2 w-full" /></div>
+                        <div><label>Reporting Manager*</label><select required class="border p-2 w-full"><option>Select Reporting Manager</option></select></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-4 flex justify-center">
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+            </div>
         </div>
+    </div>
     </div>
 
     <!-- Department Section -->
     <div *ngIf="selectedSection === 'department'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showDepartmentForm = !showDepartmentForm">+ Add Department</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('department')">+ Add Department</button>
 
            <!-- Add Department Form -->
-           <div *ngIf="showDepartmentForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form >
+          <!-- Department Form Modal -->
+<div *ngIf="showDepartmentModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('department')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Department</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('department')">&times;</button>
+        </div>
+
+        <!-- Form Content -->
+        <div class="mt-4">
+            <form>
                 <label class="block mb-2 font-semibold">Department Name*</label>
                 <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
             </form>
-           </div>
+        </div>
+    </div>
+</div>
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -133,15 +159,26 @@
 
     <!-- Designation Section -->
     <div *ngIf="selectedSection === 'designation'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showDesignationForm = !showDesignationForm">+ Add Designation</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('designation')">+ Add Designation</button>
 
-        <div *ngIf="showDesignationForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form >
+<!-- Designation Modal -->
+<div *ngIf="showDesignationModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('designation')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Designation</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('designation')">&times;</button>
+        </div>
+        <div class="mt-4">
+            <form>
                 <label class="block mb-2 font-semibold">Designation Name*</label>
                 <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
             </form>
-           </div>
+        </div>
+    </div>
+</div>
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -166,15 +203,27 @@
 
     <!-- Position Section -->
     <div *ngIf="selectedSection === 'position'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showPositionForm = !showPositionForm">+ Add Position</button>
+        <!-- Add Position Button -->
+<button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('position')">+ Add Position</button>
 
-        <div *ngIf="showPositionForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form >
+<!-- Position Modal -->
+<div *ngIf="showPositionModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('position')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Position</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('position')">&times;</button>
+        </div>
+        <div class="mt-4">
+            <form>
                 <label class="block mb-2 font-semibold">Position Name*</label>
-                <input type="text"  required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
             </form>
         </div>
+    </div>
+</div>
 
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
@@ -202,15 +251,45 @@
 
     <!-- Skills Section -->
     <div *ngIf="selectedSection === 'skills'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showSkillsForm = !showSkillsForm">+ Add Skill</button>
+        <!-- Add Skill Button -->
+<button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('skill')">+ Add Skill</button>
 
-        <div *ngIf="showSkillsForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form >
+<!-- Skill Modal -->
+<div *ngIf="showSkillModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('skill')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Skill</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('skill')">&times;</button>
+        </div>
+        <div class="mt-4">
+            <form>
+                <!-- Skill Name -->
                 <label class="block mb-2 font-semibold">Skill Name*</label>
                 <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            
+                <!-- Skill Category -->
+                <label class="block mb-2 font-semibold mt-4">Skill Category*</label>
+                <select required class="border p-2 w-full rounded-md">
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="technical">Technical</option>
+                    <option value="soft-skill">Soft Skill</option>
+                    <option value="management">Management</option>
+                    <option value="other">Other</option>
+                </select>
+            
+                <!-- Skill Description -->
+                <label class="block mb-2 font-semibold mt-4">Skill Description</label>
+                <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter skill details..."></textarea>
+            
+                <!-- Save Button -->
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
             </form>
+            
         </div>
+    </div>
+</div>
 
          <!-- Skills Table -->
     <table class="w-full border-collapse border border-gray-300 mt-4">
@@ -240,15 +319,27 @@
 
     <!-- Permission Section -->
     <div *ngIf="selectedSection === 'permission'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showPermissionForm = !showPermissionForm">+ Add Permission</button>
+        <!-- Add Permission Button -->
+<button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('permission')">+ Add Permission</button>
 
-        <div *ngIf="showPermissionForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form >
+<!-- Permission Modal -->
+<div *ngIf="showPermissionModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('permission')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Permission</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('permission')">&times;</button>
+        </div>
+        <div class="mt-4">
+            <form>
                 <label class="block mb-2 font-semibold">Permission Name*</label>
                 <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
             </form>
         </div>
+    </div>
+</div>
 
         <!-- Permissions Table -->
     <table class="w-full border-collapse border border-gray-300 mt-4">
@@ -278,40 +369,46 @@
 
     <!-- Reporting Manager History Section -->
 <div *ngIf="selectedSection === 'reportingManagerHistory'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="showReportingManagerForm = !showReportingManagerForm">+ Add Reporting Manager</button>
+    <!-- Add Reporting Manager Button -->
+<button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('reportingManager')">+ Add Reporting Manager</button>
 
-    <!-- Add Reporting Manager Form -->
-    <div *ngIf="showReportingManagerForm" class="p-4 border rounded-lg bg-gray-50 mt-4">
-        <form>
-            <label class="block mb-2 font-semibold">Employee Name*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-            
-            <label class="block mb-2 font-semibold mt-3">Reporting Manager*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-
-            <label class="block mb-2 font-semibold mt-3">Effective Date*</label>
-            <input type="date" required class="border p-2 w-full rounded-md" />
-
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-        </form>
+<!-- Reporting Manager Modal -->
+<div *ngIf="showReportingManagerModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" (click)="toggleModal('reportingManager')">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Reporting Manager</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('reportingManager')">&times;</button>
+        </div>
+        <div class="mt-4">
+            <form>
+                <label class="block mb-2 font-semibold">Reporting Manager*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
     <!-- Reporting Manager History Table -->
     <table class="w-full border-collapse border border-gray-300 mt-4">
         <thead>
             <tr class="bg-gray-100">
-                <th class="border p-2">Employee ID</th>
-                <th class="border p-2">Reporting Manager</th>
-                <th class="border p-2">Activity Date</th>
+                <th class="border p-2">Employee Name</th>
+                <th class="border p-2">Reporting Manager Name</th>
+                <th class="border p-2">From Date</th>
+                <th class="border p-2">till Date</th>
                 <th class="border p-2">Created By</th>
                 <th class="border p-2">Action</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let manager of reportingManagerHistory" class="hover:bg-gray-50">
-                <td class="border p-2">{{ manager.id }}</td>
+                <td class="border p-2">{{ manager.employeeName }}</td>
                 <td class="border p-2">{{ manager.reportingManager }}</td>
-                <td class="border p-2">{{ manager.activityDate }}</td>
+                <td class="border p-2">{{ manager.fromDate }}</td>
+                <td class="border p-2">{{ manager.tillDate }}</td>
                 <td class="border p-2">{{ manager.createdBy }}</td>
                 <td class="border p-2">
                     <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteReportingManager(manager.id)">Delete</button>

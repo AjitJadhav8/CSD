@@ -64,4 +64,31 @@ export class ProjectComponent {
   }
 
 
+  showTaskCategoryModal: boolean = false;
+  showProjectDeliverableModal: boolean = false;
+  showProjectRoleModal: boolean = false;
+  showProjectManagerModal: boolean = false;
+  showProjectModal: boolean = false;
+
+  toggleModal(type: string) {
+    switch (type) {
+      case 'taskCategory':
+        this.showTaskCategoryModal = !this.showTaskCategoryModal;
+        break;
+      case 'projectDeliverable':
+        this.showProjectDeliverableModal = !this.showProjectDeliverableModal;
+        break;
+      case 'projectRole':
+        this.showProjectRoleModal = !this.showProjectRoleModal;
+        break;
+      case 'projectManager':
+        this.showProjectManagerModal = !this.showProjectManagerModal;
+        break;
+      case 'project':
+        this.showProjectModal = !this.showProjectModal;
+        break;
+    }
+  }
+
+
 }
