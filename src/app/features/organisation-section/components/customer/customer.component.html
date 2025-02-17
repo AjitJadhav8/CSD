@@ -154,29 +154,30 @@
             </thead>
             <tbody>
                 <tr *ngFor="let customer of customers" class="hover:bg-gray-50">
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-
+                    <td class="border p-2">{{ customer.customer_name }}</td>
+                    <td class="border p-2">{{ customer.customer_company_website }}</td>
+                    <td class="border p-2">{{ customer.customer_email }}</td>
+                    <td class="border p-2">{{ customer.customer_phone }}</td>
+                    <td class="border p-2">{{ customer.customer_alternate_phone }}</td>
+                    <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+                    <td class="border p-2">{{ customer.sector || '-' }}</td>
+                    <td class="border p-2">{{ customer.industry || '-' }}</td>
+                    <td class="border p-2">{{ customer.domain || '-' }}</td>
+                    <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+                    <td class="border p-2">{{ customer.customer_city }}</td>
+                    <td class="border p-2">{{ customer.customer_state }}</td>
+                    <td class="border p-2">{{ customer.customer_pincode }}</td>
+                    <td class="border p-2">{{ customer.customer_country }}</td>
+                    <td class="border p-2">{{ customer.customer_description }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteCustomer(customer.id)">Delete</button>
+                        (click)="deleteCustomer(customer.customer_id)">Delete</button>
                     </td>
+                    
                 </tr>
             </tbody>
         </table>
+        
     </div>
 
 

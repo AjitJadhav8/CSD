@@ -19,8 +19,13 @@ export class DataService {
     return this.http.post<any>(`${this.apiUrl}/api/customer`, customer);
   }
 
-
-
+  getCustomers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/customers`);
+}
+ // Soft delete customer
+ softDeleteCustomer(customerId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/api/customer/${customerId}`);
+}
 
 
 

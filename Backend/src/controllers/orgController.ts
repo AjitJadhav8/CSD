@@ -96,7 +96,77 @@ class OrgController {
         }
     }
     
+    async getCustomers(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
+                SELECT 
+                    c.customer_id, 
+                    c.customer_name, 
+                    c.customer_company_website, 
+                    c.customer_email, 
+                    c.customer_phone, 
+                    c.customer_alternate_phone, 
+                    c.is_active, 
+                    cat.sector, 
+                    cat.industry, 
+                    cat.domain, 
+                    c.is_new, 
+                    c.customer_city, 
+                    c.customer_state, 
+                    c.customer_pincode, 
+                    c.customer_country, 
+                    c.customer_description
+                FROM master_customer c
+                LEFT JOIN master_category cat ON c.category_id = cat.category_id
+                WHERE c.is_deleted = 0
+                ORDER BY c.customer_name ASC
+            `;
     
+            db.query(query, (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching customers:', err);
+                    res.status(500).json({ error: 'Error fetching customers' });
+                    return;
+                }
+    
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // In orgController.ts
+async softDeleteCustomer(req: Request, res: Response): Promise<void> {
+    try {
+        const { customerId } = req.params;
+
+        // Query to update the is_deleted flag to 1 (soft delete)
+        const updateQuery = `
+            UPDATE master_customer 
+            SET is_deleted = 1 
+            WHERE customer_id = ?
+        `;
+
+        db.query(updateQuery, [customerId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error updating customer:', err);
+                return res.status(500).json({ error: 'Error deleting customer' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Customer not found' });
+            }
+
+            res.status(200).json({ message: 'Customer soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
       
 
 

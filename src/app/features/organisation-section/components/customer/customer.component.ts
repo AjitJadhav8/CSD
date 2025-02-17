@@ -19,11 +19,14 @@ export class CustomerComponent {
   selectedIndustry: string = '';
   selectedDomain: string = '';
   allCategories: any[] = [];  // To store all categories fetched from the backend.
+  customers: any[] = [];
 
   constructor(private dataService: DataService,private http: HttpClient) {}
 
   ngOnInit(): void {
     this.fetchMasterCategories();
+    this.loadCustomers();
+
   }
 
   fetchMasterCategories(): void {
@@ -106,7 +109,17 @@ export class CustomerComponent {
     });
 }
 
-
+loadCustomers(): void {
+  this.dataService.getCustomers().subscribe({
+      next: (data) => {
+          console.log('Fetched customers:', data);
+          this.customers = data;
+      },
+      error: (error) => {
+          console.error('Error fetching customers:', error);
+      }
+  });
+}
 
 
 
@@ -142,36 +155,7 @@ export class CustomerComponent {
   showCustomerForm: boolean = false;
   showDomainForm: boolean = false;
 
-  customers = [
-    { 
-      id: 1, 
-      name: 'ABC Corp', 
-      website: 'www.abc.com', 
-      email: 'contact@abc.com',
-      state: 'California',
-      country: 'USA',
-      status: 'Active',
-      domain: 'IT',
-      phone: '1234567890',
-      type: 'Enterprise',
-      city: 'Los Angeles',
-      pincode: '90001'
-    },
-    { 
-      id: 2, 
-      name: 'XYZ Ltd', 
-      website: 'www.xyz.com', 
-      email: 'info@xyz.com',
-      state: 'Texas',
-      country: 'USA',
-      status: 'Inactive',
-      domain: 'Finance',
-      phone: '9876543210',
-      type: 'Startup',
-      city: 'Houston',
-      pincode: '77001'
-    }
-  ];
+
 
 
   customerDomains = [
@@ -179,13 +163,33 @@ export class CustomerComponent {
     { id: 2, name: 'Finance' }
   ];
 
-  deleteCustomer(id: number) {
-    this.customers = this.customers.filter(c => c.id !== id);
+  deleteCustomer(customerId: number): void {
+    this.dataService.softDeleteCustomer(customerId).subscribe({
+      next: (response) => {
+        console.log('Customer soft deleted:', response);
+        // After soft delete, you may update the UI by filtering the deleted customer or simply removing it from the customers list.
+        this.customers = this.customers.filter(customer => customer.customer_id !== customerId);
+      },
+      error: (error) => {
+        console.error('Error deleting customer:', error);
+      }
+    });
   }
-
   deleteDomain(id: number) {
   }
 
+
+
+
+
+
+
+
+
+
+
+
+  
 
   selectedCustomerOption: string = '';
   // Dummy Data for Table
