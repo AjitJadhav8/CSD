@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.css'
 })
@@ -14,6 +15,10 @@ export class CustomerComponent {
   sectors: string[] = [];
   industries: string[] = [];
   domains: string[] = [];
+  selectedSector: string = '';
+  selectedIndustry: string = '';
+  selectedDomain: string = '';
+  allCategories: any[] = [];  // To store all categories fetched from the backend.
 
   constructor(private dataService: DataService,private http: HttpClient) {}
 
@@ -23,13 +28,10 @@ export class CustomerComponent {
 
   fetchMasterCategories(): void {
     this.dataService.getMasterCategories().subscribe(
-      
       (data) => {
-        console.log('Master categories fetched successfully:', data); // Log the fetched data
-
-        this.sectors = data.sectors;
-        this.industries = data.industries;
-        this.domains = data.domains;
+        console.log('Master categories fetched successfully:', data);
+        this.allCategories = data.categories || [];
+        this.sectors = [...new Set(this.allCategories.map(item => item.sector))];  // Extract unique sectors
       },
       (error) => {
         console.error('Error fetching master categories:', error);
@@ -37,8 +39,29 @@ export class CustomerComponent {
     );
   }
 
+  // Filter industries based on selected sector
+  filterIndustries(): void {
+    if (!this.selectedSector) {
+      this.industries = [];  // Reset industries if no sector is selected
+      return;
+    }
+    // Filter industries based on selected sector
+    this.industries = this.allCategories
+      .filter(item => item.sector === this.selectedSector)
+      .map(item => item.industry);
+  }
 
-
+  // Filter domains based on selected industry
+  filterDomains(): void {
+    if (!this.selectedIndustry) {
+      this.domains = [];  // Reset domains if no industry is selected
+      return;
+    }
+    // Filter domains based on selected industry
+    this.domains = this.allCategories
+      .filter(item => item.industry === this.selectedIndustry)
+      .map(item => item.domain);
+  }
 
 
 

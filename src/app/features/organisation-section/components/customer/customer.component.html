@@ -52,27 +52,32 @@
                                 <option>Inactive</option>
                             </select>
                         </div>
+
                         <div class="form-group">
-                            <label>Customer Sector</label>
-                            <select class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Sector</option>
-                                <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Customer Industry</label>
-                            <select class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Industry</option>
-                                <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Customer Domain</label>
-                            <select class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Domain</option>
-                                <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
-                            </select>
-                        </div>
+  <label>Customer Sector</label>
+  <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector" name="sector" (change)="filterIndustries()">
+    <option value="" disabled selected>Select Sector</option>
+    <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label>Customer Industry</label>
+  <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" name="industry" (change)="filterDomains()">
+    <option value="" disabled selected>Select Industry</option>
+    <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label>Customer Domain</label>
+  <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" name="domain">
+    <option value="" disabled selected>Select Domain</option>
+    <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
+  </select>
+</div>
+
+                          
 
                         <div class="form-group">
                             <label>Customer Type</label>
