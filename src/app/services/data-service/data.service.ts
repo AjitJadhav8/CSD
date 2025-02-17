@@ -15,7 +15,9 @@ export class DataService {
     return this.http.get<any>(`${this.apiUrl}/api/master/categories`);
   }
 
-  
+  createCustomer(customer: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/api/customer`, customer);
+  }
 
 
 

@@ -64,6 +64,47 @@ export class CustomerComponent {
   }
 
 
+  customer = {
+    customerName: '',
+    companyWebsite: '',
+    email: '',
+    phone: '',
+    alternatePhone: '',
+    status: '',
+    sector: '',
+    industry: '',
+    domain: '',
+    customerType: '',
+    city: '',
+    state: '',
+    pincode: '',
+    country: '',
+    description: ''
+  };
+  submitForm() {
+    const customerData = {
+        customerName: this.customer.customerName,
+        companyWebsite: this.customer.companyWebsite,
+        email: this.customer.email,
+        phone: this.customer.phone,
+        alternatePhone: this.customer.alternatePhone,
+        status: this.customer.status,
+        domain: this.selectedDomain, // Ensure domain is sent correctly
+        customerType: this.customer.customerType,
+        city: this.customer.city,
+        state: this.customer.state,
+        pincode: this.customer.pincode,
+        country: this.customer.country,
+        description: this.customer.description
+    };
+
+    console.log('Sending customer data:', customerData);
+
+    this.dataService.createCustomer(customerData).subscribe({
+        next: (response) => console.log('Customer added successfully', response),
+        error: (error) => console.error('Error adding customer:', error)
+    });
+}
 
 
 
