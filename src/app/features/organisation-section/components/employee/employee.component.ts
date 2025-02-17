@@ -19,12 +19,18 @@ export class EmployeeComponent {
   showPositionForm: boolean = false;
   showReportingManagerForm: boolean = false;
   hasPassport: boolean = false;
+  selectedEmployee: any;
 
 
   onPassportChange(event: Event) {
       const target = event.target as HTMLInputElement;
       this.hasPassport = target.value === 'yes';
   }
+
+  reportingManagers = [
+    { id: 1, name: 'Michael Scott' },
+    { id: 2, name: 'Dwight Schrute' }
+];
 
 reportingManagerHistory = [
     { 
@@ -51,9 +57,37 @@ reportingManagerHistory = [
     { id: 3, name: 'Team Lead', activityDate: '2025-02-10', createdBy: 'Admin' }
   ];
   employees = [
-    { code: 'E001', firstName: 'John', lastName: 'Doe', email: 'john@example.com', contact: '1234567890', adminRole: 'Yes', designation: 'Manager' },
-    { code: 'E002', firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', contact: '9876543210', adminRole: 'No', designation: 'Developer' }
-  ];
+    {
+        id: 1,
+        code: 'E001',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        contact: '1234567890',
+        emergencyContact: '0987654321',
+        dob: '1990-01-01',
+        bloodGroup: 'O+',
+        doj: '2020-06-15',
+        passport: 'Yes',
+        passportValidity: '2030-12-31',
+        reportingManager: 'Michael Scott'
+    },
+    {
+        id: 2,
+        code: 'E002',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'jane@example.com',
+        contact: '9876543210',
+        emergencyContact: '1234509876',
+        dob: '1995-05-20',
+        bloodGroup: 'A+',
+        doj: '2022-08-10',
+        passport: 'No',
+        passportValidity: null,
+        reportingManager: 'Pam Beesly'
+    }
+];
 
   departments = [
     { id: 1, name: 'HR', activityDate: '2025-02-10', createdBy: 'Admin' },
@@ -137,6 +171,16 @@ toggleModal(type: string) {
     }
 }
 
+showAssignDetailsModal: boolean = false;
+
+toggleAssignDetailsModal() {
+    this.showAssignDetailsModal = !this.showAssignDetailsModal;
+}
+
+assignDetails(employee: any) {
+    this.selectedEmployee = employee;
+    this.toggleAssignDetailsModal();
+}
 
 
 

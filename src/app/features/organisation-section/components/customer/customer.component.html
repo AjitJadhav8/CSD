@@ -38,6 +38,10 @@
                     <input type="text" class="border p-2 w-full rounded-md">
                 </div>
                 <div class="form-group">
+                    <label>Alternate Phone Number</label>
+                    <input type="text" class="border p-2 w-full rounded-md">
+                </div>
+                <div class="form-group">
                     <label>Customer Status</label>
                     <select class="border p-2 w-full rounded-md">
                         <option>Select Status</option>
@@ -46,11 +50,27 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label>Customer Sector</label>
+                    <select class="border p-2 w-full rounded-md">
+                        <option>Select Sector</option>
+                        <option>Manufacturing</option>
+                        <option>Manufacturing2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Customer Industry</label>
+                    <select class="border p-2 w-full rounded-md">
+                        <option>Select Industry</option>
+                        <option>Autombile</option>
+                        <option>Textile</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Customer Domain</label>
                     <select class="border p-2 w-full rounded-md">
                         <option>Select Domain</option>
-                        <option>IT</option>
-                        <option>Finance</option>
+                        <option>Fillament</option>
+                        <option>Thread</option>
                     </select>
                 </div>
                 
@@ -78,6 +98,10 @@
                 </div>
                 <div class="form-group">
                     <label>Country</label>
+                    <input type="text" class="border p-2 w-full rounded-md">
+                </div>
+                <div class="form-group">
+                    <label>Customer Description</label>
                     <input type="text" class="border p-2 w-full rounded-md">
                 </div>
                 
@@ -147,13 +171,33 @@
 
         <!-- Form Content -->
         <form class="mt-4">
-            <label class="block mb-2 font-semibold">Domain Name*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-
+            <!-- Sector Dropdown -->
+            <label class="block mb-2 font-semibold">Sector*</label>
+            <select required class="border p-2 w-full rounded-md">
+                <option value="" disabled selected>Select Sector</option>
+                <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+            </select>
+        
+            <!-- Industry Dropdown -->
+            <label class="block mt-4 mb-2 font-semibold">Industry*</label>
+            <select required class="border p-2 w-full rounded-md">
+                <option value="" disabled selected>Select Industry</option>
+                <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+            </select>
+        
+            <!-- Domain Dropdown -->
+            <label class="block mt-4 mb-2 font-semibold">Domain Name*</label>
+            <select required class="border p-2 w-full rounded-md">
+                <option value="" disabled selected>Select Domain</option>
+                <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
+            </select>
+        
+            <!-- Save Button -->
             <div class="mt-4 flex space-x-2">
                 <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
             </div>
         </form>
+        
     </div>
 </div>
 

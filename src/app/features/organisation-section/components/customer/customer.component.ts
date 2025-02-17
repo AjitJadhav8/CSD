@@ -60,6 +60,10 @@ export class CustomerComponent {
     { id: 1, name: 'IT' },
     { id: 2, name: 'Finance' }
   ];
+  sectors = ['IT', 'Finance', 'Healthcare', 'Manufacturing'];
+industries = ['Software', 'Banking', 'Pharmaceuticals', 'Automobile'];
+domains = ['Web Development', 'AI & ML', 'Cybersecurity', 'Cloud Computing'];
+
 
   deleteCustomer(id: number) {
     this.customers = this.customers.filter(c => c.id !== id);

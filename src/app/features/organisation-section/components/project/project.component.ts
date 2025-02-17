@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
   styleUrl: './project.component.css'
 })
 export class ProjectComponent {
-  selectedSection: string = 'taskCategory';
+  selectedSection: string = 'project';
   showTaskCategoryForm: boolean = false;
   showProjectDeliverableForm: boolean = false;
   showProjectRoleForm: boolean = false;
@@ -25,6 +25,10 @@ export class ProjectComponent {
     { id: 1, name: 'John Doe' },
     { id: 2, name: 'Jane Smith' }
   ];
+  customers = [
+    { id: 1, name: 'ABC Corp' },
+    { id: 2, name: 'XYZ Ltd' }
+];
 
   projects = [
     { id: 1, name: 'Project A' },

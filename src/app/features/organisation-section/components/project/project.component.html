@@ -1,24 +1,33 @@
 <div class="p-4">
     <!-- Section Selection Buttons -->
     <div class="flex space-x-4 mb-4">
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'taskCategory'">Task Category</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'projectDeliverable'">Project Deliverable</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'projectRole'">Project Role</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'projectManager'">Project Manager</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md" (click)="selectedSection = 'project'">Project</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+            (click)="selectedSection = 'project'">Project</button>
+            <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+            (click)="selectedSection = 'projectRole'">Project Role</button> -->
+        <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+            (click)="selectedSection = 'projectManager'">Project Manager</button> -->
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+            (click)="selectedSection = 'projectDeliverable'">Project Deliverable</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+            (click)="selectedSection = 'taskCategory'">Task Category</button>
+        
+        
+        
     </div>
 
     <!-- Task Category Section -->
     <div *ngIf="selectedSection === 'taskCategory'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('taskCategory')">+ Add Task Category</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('taskCategory')">+ Add Task
+            Category</button>
 
-<div *ngIf="showTaskCategoryModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-    <form>
-        <label class="block mb-2 font-semibold">Task Category Name*</label>
-        <input type="text" required class="border p-2 w-full rounded-md" />
-        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-    </form>
-</div>
+        <div *ngIf="showTaskCategoryModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form>
+                <label class="block mb-2 font-semibold">Task Category Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
 
 
         <table class="w-full border-collapse border border-gray-300">
@@ -38,7 +47,8 @@
                     <td class="border p-2">{{ task.activityDate }}</td>
                     <td class="border p-2">{{ task.createdBy }}</td>
                     <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteTaskCategory(task.id)">Delete</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteTaskCategory(task.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -49,15 +59,56 @@
 
     <!-- Project Deliverable Section -->
     <div *ngIf="selectedSection === 'projectDeliverable'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectDeliverable')">+ Add Project Deliverable</button>
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectDeliverable')">+ Add
+            Project Deliverable</button>
 
-<div *ngIf="showProjectDeliverableModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-    <form>
-        <label class="block mb-2 font-semibold">Deliverable Name*</label>
-        <input type="text" required class="border p-2 w-full rounded-md" />
-        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-    </form>
-</div>
+            <div *ngIf="showProjectDeliverableModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+                <form>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Select Customer -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Select Customer*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Customer</option>
+                                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+                            </select>
+                        </div>
+            
+                        <!-- Select Project -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Select Project*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Project</option>
+                                <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+                            </select>
+                        </div>
+            
+                        <!-- Deliverable Name -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Project Deliverable*</label>
+                            <input type="text" required class="border p-2 w-full rounded-md" placeholder="Enter deliverable name" />
+                        </div>
+            
+                        <!-- Select Status -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Select Status*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Status</option>
+                                <option value="initiated">Initiated</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="on-hold">On Hold</option>
+                            </select>
+                        </div>
+                    </div>
+            
+                    <!-- Save Button -->
+                    <div class="mt-4 flex justify-center">
+                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+            
 
 
         <table class="w-full border-collapse border border-gray-300">
@@ -77,7 +128,8 @@
                     <td class="border p-2">{{ deliverable.activityDate }}</td>
                     <td class="border p-2">{{ deliverable.createdBy }}</td>
                     <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteProjectDeliverable(deliverable.id)">Delete</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteProjectDeliverable(deliverable.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -85,100 +137,187 @@
     </div>
 
     <!-- Project Role Section -->
-<div *ngIf="selectedSection === 'projectRole'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectRole')">+ Add Project Role</button>
+    <!-- <div *ngIf="selectedSection === 'projectRole'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectRole')">+ Add
+            Project Role</button>
 
-<div *ngIf="showProjectRoleModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-    <form>
-        <label class="block mb-2 font-semibold">Project Role Name*</label>
-        <input type="text" required class="border p-2 w-full rounded-md" />
-        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-    </form>
-</div>
+        <div *ngIf="showProjectRoleModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form>
+                <label class="block mb-2 font-semibold">Project Role Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
 
-    <table class="w-full border-collapse border border-gray-300">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Project Role Name</th>
-                <th class="border p-2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let role of projectRoles">
-                <td class="border p-2">{{ role.id }}</td>
-                <td class="border p-2">{{ role.name }}</td>
-                <td class="border p-2">
-                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteProjectRole(role.id)">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<!-- Project Manager Section -->
-<div *ngIf="selectedSection === 'projectManager'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectManager')">+ Add Project Manager</button>
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Project Role Name</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let role of projectRoles">
+                    <td class="border p-2">{{ role.id }}</td>
+                    <td class="border p-2">{{ role.name }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteProjectRole(role.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
+    <!-- Project Manager Section -->
+    <!-- <div *ngIf="selectedSection === 'projectManager'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectManager')">+ Add
+            Project Manager</button>
 
-    <div *ngIf="showProjectManagerModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-        <form>
-            <label class="block mb-2 font-semibold">Project Manager Name*</label>
-            <input type="text" required class="border p-2 w-full rounded-md" />
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-        </form>
+        <div *ngIf="showProjectManagerModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form>
+                <label class="block mb-2 font-semibold">Project Manager Name*</label>
+                <input type="text" required class="border p-2 w-full rounded-md" />
+                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
+            </form>
+        </div>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Project Manager Name</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let manager of projectManagers">
+                    <td class="border p-2">{{ manager.id }}</td>
+                    <td class="border p-2">{{ manager.name }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteProjectManager(manager.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
+    <!-- Project Section -->
+    <div *ngIf="selectedSection === 'project'">
+        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('project')">+ Add
+            Project</button>
+
+            <div *ngIf="showProjectModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+                <form>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Customer Name -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Customer Name*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Customer</option>
+                                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+                            </select>
+                        </div>
+            
+                        <!-- Project Name -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Project Name*</label>
+                            <input type="text" required class="border p-2 w-full rounded-md" />
+                        </div>
+            
+                        <!-- Planned Start Date -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Planned Start Date*</label>
+                            <input type="date" required class="border p-2 w-full rounded-md" />
+                        </div>
+            
+                        <!-- Actual Start Date -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Actual Start Date</label>
+                            <input type="date" class="border p-2 w-full rounded-md" />
+                        </div>
+            
+                        <!-- Type of Project -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Type of Project*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Type</option>
+                                <option value="poc">PoC</option>
+                                <option value="project">Project</option>
+                            </select>
+                        </div>
+            
+                        <!-- Type of Engagement -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Type of Engagement*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Engagement Type</option>
+                                <option value="billed">Billed</option>
+                                <option value="not-billed">Not Billed</option>
+                            </select>
+                        </div>
+            
+                        <!-- Project Manager -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Project Manager*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Project Manager</option>
+                                <option *ngFor="let manager of projectManagers" [value]="manager.id">{{ manager.name }}</option>
+                            </select>
+                        </div>
+            
+                        <!-- Project Status -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Project Status*</label>
+                            <select required class="border p-2 w-full rounded-md">
+                                <option value="" disabled selected>Select Status</option>
+                                <option value="initiated">Initiated</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="on-hold">On Hold</option>
+                            </select>
+                        </div>
+            
+                        <!-- Tentative End Date -->
+                        <div>
+                            <label class="block mb-2 font-semibold">Tentative End Date</label>
+                            <input type="date" class="border p-2 w-full rounded-md" />
+                        </div>
+                    </div>
+            
+                    <!-- Project Description (Full Width) -->
+                    <div class="mt-4">
+                        <label class="block mb-2 font-semibold">Project Description</label>
+                        <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter project details..."></textarea>
+                    </div>
+            
+                    <!-- Save Button -->
+                    <div class="mt-4 flex justify-center">
+                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+            
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Project Name</th>
+                    <th class="border p-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let project of projects">
+                    <td class="border p-2">{{ project.id }}</td>
+                    <td class="border p-2">{{ project.name }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteProject(project.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    
-    <table class="w-full border-collapse border border-gray-300">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Project Manager Name</th>
-                <th class="border p-2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let manager of projectManagers">
-                <td class="border p-2">{{ manager.id }}</td>
-                <td class="border p-2">{{ manager.name }}</td>
-                <td class="border p-2">
-                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteProjectManager(manager.id)">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<!-- Project Section -->
-<div *ngIf="selectedSection === 'project'">
-    <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('project')">+ Add Project</button>
-
-<div *ngIf="showProjectModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-    <form>
-        <label class="block mb-2 font-semibold">Project Name*</label>
-        <input type="text" required class="border p-2 w-full rounded-md" />
-        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-    </form>
-</div>
-
-    <table class="w-full border-collapse border border-gray-300">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-2">ID</th>
-                <th class="border p-2">Project Name</th>
-                <th class="border p-2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let project of projects">
-                <td class="border p-2">{{ project.id }}</td>
-                <td class="border p-2">{{ project.name }}</td>
-                <td class="border p-2">
-                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteProject(project.id)">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-
-
 
 </div>
