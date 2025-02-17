@@ -2,11 +2,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import express from 'express';
 import https from 'https';
-import path from 'path';
 
 // Import routes and database connection
 import orgRoutes from './routes/orgRoutes';
-import db from './config/db';
 
 
 dotenv.config(); // Load environment variables

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-
+import { DataService } from '../../../../services/data-service/data.service';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-customer',
   standalone: true,
@@ -9,6 +10,59 @@ import { Component } from '@angular/core';
   styleUrl: './customer.component.css'
 })
 export class CustomerComponent {
+
+  sectors: string[] = [];
+  industries: string[] = [];
+  domains: string[] = [];
+
+  constructor(private dataService: DataService,private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.fetchMasterCategories();
+  }
+
+  fetchMasterCategories(): void {
+    this.dataService.getMasterCategories().subscribe(
+      
+      (data) => {
+        console.log('Master categories fetched successfully:', data); // Log the fetched data
+
+        this.sectors = data.sectors;
+        this.industries = data.industries;
+        this.domains = data.domains;
+      },
+      (error) => {
+        console.error('Error fetching master categories:', error);
+      }
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   showModal: boolean = false;
   
@@ -60,17 +114,12 @@ export class CustomerComponent {
     { id: 1, name: 'IT' },
     { id: 2, name: 'Finance' }
   ];
-  sectors = ['IT', 'Finance', 'Healthcare', 'Manufacturing'];
-industries = ['Software', 'Banking', 'Pharmaceuticals', 'Automobile'];
-domains = ['Web Development', 'AI & ML', 'Cybersecurity', 'Cloud Computing'];
-
 
   deleteCustomer(id: number) {
     this.customers = this.customers.filter(c => c.id !== id);
   }
 
   deleteDomain(id: number) {
-    this.customerDomains = this.customerDomains.filter(d => d.id !== id);
   }
 
 
