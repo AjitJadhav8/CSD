@@ -55,6 +55,18 @@ router.get('/positions', orgController.getAllPositions);
 router.get('/skills', orgController.getAllSkills);
 
 
+router.delete('/departments/:departmentId', orgController.softDeleteDepartment);
+
+router.delete('/positions/:positionId', orgController.softDeletePosition);
+
+router.delete('/skills/:skillId', orgController.softDeleteSkill);
+
+router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
+
+
+
+
+
 
 
 

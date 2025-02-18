@@ -378,11 +378,13 @@ async getAllEmployees(req: Request, res: Response): Promise<void> {
     try {
         const query = `
             SELECT 
-                user_code, user_first_name, user_middle_name, user_last_name, 
+                user_id,user_code, user_first_name, user_middle_name, user_last_name, 
                 user_email, user_contact, user_emergency_contact, role_id, department_id, 
                 is_passport, passport_validity, user_current_address, user_DOB, 
                 user_blood_group, user_DOJ 
             FROM master_user
+                WHERE is_deleted = 0
+
             ORDER BY user_id DESC 
         `;  // Explicitly mention each column name
 
@@ -403,10 +405,11 @@ async getAllEmployees(req: Request, res: Response): Promise<void> {
 async getAllDepartments(req: Request, res: Response): Promise<void> {
     try {
         const query = `
-            SELECT department_id, department_name
-            FROM master_department
-            ORDER BY department_id DESC  
-        `;
+    SELECT department_id, department_name
+    FROM master_department
+    WHERE is_deleted = 0
+    ORDER BY department_id DESC  
+`;  // Fetch all departments
         
         db.query(query, (err, results) => {
             if (err) {
@@ -424,10 +427,12 @@ async getAllDepartments(req: Request, res: Response): Promise<void> {
 async getAllPositions(req: Request, res: Response): Promise<void> {
     try {
         const query = `
-            SELECT position_id, position_name
-            FROM master_position
-            ORDER BY position_id DESC  
-        `;
+    SELECT position_id, position_name
+    FROM master_position
+    WHERE is_deleted = 0
+    ORDER BY position_id DESC  
+`;
+
         
         db.query(query, (err, results) => {
             if (err) {
@@ -445,10 +450,11 @@ async getAllPositions(req: Request, res: Response): Promise<void> {
 async getAllSkills(req: Request, res: Response): Promise<void> {
     try {
         const query = `
-            SELECT skill_id, skill_name, skill_category, skill_description
-            FROM master_skill
-            ORDER BY skill_id DESC  
-        `;
+    SELECT skill_id, skill_name, skill_category, skill_description
+    FROM master_skill
+    WHERE is_deleted = 0
+    ORDER BY skill_id DESC  
+`;  // Fetch all skills
         
         db.query(query, (err, results) => {
             if (err) {
@@ -466,6 +472,112 @@ async getAllSkills(req: Request, res: Response): Promise<void> {
 
 
 }
+
+async softDeleteDepartment(req: Request, res: Response): Promise<void> {
+    try {
+        const { departmentId } = req.params;
+
+        const updateQuery = `UPDATE master_department SET is_deleted = 1 WHERE department_id = ?`;
+
+        db.query(updateQuery, [departmentId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting department:', err);
+                return res.status(500).json({ error: 'Error deleting department' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Department not found' });
+            }
+
+            res.status(200).json({ message: 'Department soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Soft delete a position by ID
+async softDeletePosition(req: Request, res: Response): Promise<void> {
+    try {
+        const { positionId } = req.params;
+
+        const updateQuery = `UPDATE master_position SET is_deleted = 1 WHERE position_id = ?`;
+
+        db.query(updateQuery, [positionId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting position:', err);
+                return res.status(500).json({ error: 'Error deleting position' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Position not found' });
+            }
+
+            res.status(200).json({ message: 'Position soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Soft delete a skill by ID
+async softDeleteSkill(req: Request, res: Response): Promise<void> {
+    try {
+        const { skillId } = req.params;
+
+        const updateQuery = `UPDATE master_skill SET is_deleted = 1 WHERE skill_id = ?`;
+
+        db.query(updateQuery, [skillId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting skill:', err);
+                return res.status(500).json({ error: 'Error deleting skill' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Skill not found' });
+            }
+
+            res.status(200).json({ message: 'Skill soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// soft delete a employee by ID
+async softDeleteEmployee(req: Request, res: Response): Promise<void> {
+    try {
+        const { employeeId } = req.params;
+
+        const updateQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
+
+        db.query(updateQuery, [employeeId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting employee:', err);
+                return res.status(500).json({ error: 'Error deleting employee' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Employee not found' });
+            }
+
+            res.status(200).json({ message: 'Employee soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }}
+
+
+
+
+
+
+
+
 };
   
   

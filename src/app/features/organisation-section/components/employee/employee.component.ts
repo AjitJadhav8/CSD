@@ -46,6 +46,7 @@ export class EmployeeComponent {
 
   this.dataService.addDepartment(this.departmentName).subscribe(
     (response) => {
+      this.fetchDepartments();
       console.log('Department added:', response);
       alert('Department added successfully');
       this.departmentName = ''; // Reset input field
@@ -67,6 +68,7 @@ submitPosition(): void {
 
   this.dataService.addPosition(this.positionName).subscribe(
     (response) => {
+      this.fetchPositions();
       console.log('Position added:', response);
       alert('Position added successfully');
       this.positionName = ''; // Reset input field
@@ -97,6 +99,7 @@ submitSkill(): void {
 
   this.dataService.addSkill(skillData).subscribe(
     (response) => {
+      this.fetchSkills();
       console.log('Skill added:', response);
       this.skillName = ''; // Reset form fields
       this.skillCategory = '';
@@ -116,6 +119,7 @@ selectedDepartment: string = '';
 
 
 employee = {
+  user_id: null,  // Add user_id here
   user_code: '',
   user_first_name: '',
   user_middle_name: '',
@@ -134,7 +138,9 @@ employee = {
 };
 
 submitEmployee() {
-  this.dataService.addEmployee(this.employee).subscribe((response) => {
+  this.dataService.addEmployee(this.employee).subscribe((response) => 
+    {
+    this.fetchEmployees();
     console.log('Employee saved successfully!', response);
     alert('Employee saved successfully!');
   }, (error) => {
@@ -143,7 +149,6 @@ submitEmployee() {
 }
 
 employees: any[] = [];  // Store the employee data
-
  // Method to fetch employee data
  fetchEmployees(): void {
   this.dataService.getAllEmployees().subscribe(
@@ -204,7 +209,79 @@ departments: any[] = [];
 
 
 
+  // Delete department
+  deleteDepartment(departmentId: number): void {
+    const confirmDelete = window.confirm('Are you sure you want to delete this department?');
+  
+    if (confirmDelete) {
+      this.dataService.deleteDepartment(departmentId).subscribe(
+        () => {
+          this.fetchDepartments();
+          alert('Department deleted successfully');
+        },
+        (error) => {
+          console.error('Error deleting department:', error);
+        }
+      );
+    }
+  }
 
+  // Delete position
+  deletePosition(positionId: number): void {
+    const confirmDelete = window.confirm('Are you sure you want to delete this position?');
+  
+    if (confirmDelete) {
+      this.dataService.deletePosition(positionId).subscribe(
+        () => {
+          this.fetchPositions();
+          alert('Position deleted successfully');
+        },
+        (error) => {
+          console.error('Error deleting position:', error);
+        }
+      );
+    }
+  }
+
+  // Delete skill
+  deleteSkill(skillId: number): void {
+    const confirmDelete = window.confirm('Are you sure you want to delete this skill?');
+  
+    if (confirmDelete) {
+      this.dataService.deleteSkill(skillId).subscribe(
+        () => {
+          this.fetchSkills();
+          alert('Skill deleted successfully');
+        },
+        (error) => {
+          console.error('Error deleting skill:', error);
+        }
+      );
+    }
+  }
+
+  // Soft delete employee
+  deleteEmployee(employeeId: number): void {
+    if (employeeId === undefined) {
+      console.error('Employee ID is undefined!');
+      return;
+    }
+  
+    const confirmDelete = window.confirm('Are you sure you want to delete this employee?');
+    
+    if (confirmDelete) {
+      this.dataService.softDeleteEmployee(employeeId).subscribe(
+        () => {
+          this.fetchEmployees();
+          alert('Employee deleted successfully');
+        },
+        (error) => {
+          console.error('Error deleting employee:', error);
+        }
+      );
+    }
+  }
+  
 
 
 
@@ -258,25 +335,11 @@ reportingManagerHistory = [
 
 
 
-  // Delete Methods
-  deleteEmployee(code: string) {
-    this.employees = this.employees.filter(emp => emp.code !== code);
-  }
-
-  deleteDepartment(id: number) {
-    this.departments = this.departments.filter(dep => dep.id !== id);
-  }
 
 
 
-  deleteSkill(id: number) {
-    this.skills = this.skills.filter(skill => skill.id !== id);
-  }
 
 
-  deletePosition(id: number) {
-    this.positions = this.positions.filter(pos => pos.id !== id);
-  }
   deleteReportingManager(id: number) {
     this.reportingManagerHistory = this.reportingManagerHistory.filter(manager => manager.id !== id);
 }

@@ -60,7 +60,8 @@
       <td class="border p-2">{{ employee.user_DOJ | date:'dd-MMM-yyyy' }}</td>
                         <td class="border p-2">
                             <button class="bg-blue-500 text-white px-2 py-1 rounded" (click)="assignDetails(employee)">Assign Details</button>
-                            <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteEmployee(employee.code)">Delete</button>
+                            <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteEmployee(employee.user_id)">Delete</button> 
+
                         </td>
                     </tr>
                 </tbody>
@@ -251,8 +252,8 @@
                 <td class="border p-2">{{ i + 1 }}</td>
                 <td class="border p-2">{{ department.department_name }}</td>
                 <td class="border p-2">
-                  <button class="bg-red-500 text-white px-2 py-1 rounded"
-                          (click)="deleteDepartment(department.department_id)">Delete</button>
+                    <button class="bg-red-500 text-white px-2 py-1 rounded"
+                    (click)="deleteDepartment(department.department_id)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -305,7 +306,7 @@
                     <td class="border p-2">{{ position.position_name }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deletePosition(position.id)">Delete</button>
+                            (click)="deletePosition(position.position_id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -381,7 +382,7 @@
 
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteSkill(skill.id)">Delete</button>
+                            (click)="deleteSkill(skill.skill_id)">Delete</button>
                     </td>
                 </tr>
             </tbody>

@@ -82,6 +82,26 @@ export class DataService {
     return this.http.get(`${this.apiUrl}/api/skills`);
   }
 
+    // Delete department
+    deleteDepartment(departmentId: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/api/departments/${departmentId}`);
+    }
+
+    // Delete position
+    deletePosition(positionId: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/api/positions/${positionId}`);
+    }
+
+    // Delete skill
+    deleteSkill(skillId: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/api/skills/${skillId}`);
+    }
+
+    // Soft delete employee
+    softDeleteEmployee(employeeId: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/api/employee/${employeeId}`);
+    }
+
 
 
 
