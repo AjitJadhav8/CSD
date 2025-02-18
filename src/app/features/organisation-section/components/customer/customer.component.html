@@ -134,6 +134,7 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
+                    <th class="border p-2">S.No.</th>
                     <th class="border p-2">Customer Name</th>
                     <th class="border p-2">Company Website</th>
                     <th class="border p-2">Email Address</th>
@@ -153,7 +154,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let customer of customers" class="hover:bg-gray-50">
+                <tr *ngFor="let customer of customers; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+                    
                     <td class="border p-2">{{ customer.customer_name }}</td>
                     <td class="border p-2">{{ customer.customer_company_website }}</td>
                     <td class="border p-2">{{ customer.customer_email }}</td>
@@ -236,6 +239,8 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
               <tr class="bg-gray-100">
+                <th class="border p-2">S.No.</th>
+
                 <th class="border p-2">Sector</th>
                 <th class="border p-2">Industry</th>
                 <th class="border p-2">Domain</th>
@@ -243,14 +248,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let domain of customerDomains" class="hover:bg-gray-50">
-                <td class="border p-2">{{ domain.sector }}</td>
-                <td class="border p-2">{{ domain.industry }}</td>
-                <td class="border p-2">{{ domain.domain }}</td>
-                <td class="border p-2">
-                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDomain(domain.category_id)">
-                        Delete
-                      </button>
+              <tr *ngFor="let domain of customerDomains; let i = index" class="hover:bg-gray-50">
+                <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+
+                    <td class="border p-2">{{ domain.sector }}</td>
+                    <td class="border p-2">{{ domain.industry }}</td>
+                    <td class="border p-2">{{ domain.domain }}</td>
+                    <td class="border p-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDomain(domain.category_id)">
+                            Delete
+                        </button>
                 </td>
               </tr>
             </tbody>

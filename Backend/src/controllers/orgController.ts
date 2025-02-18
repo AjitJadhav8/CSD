@@ -119,7 +119,7 @@ class OrgController {
                 FROM master_customer c
                 LEFT JOIN master_category cat ON c.category_id = cat.category_id
                 WHERE c.is_deleted = 0
-                ORDER BY c.customer_name ASC
+                ORDER BY c.customer_id DESC
             `;
     
             db.query(query, (err: any, results: any) => {
@@ -170,7 +170,11 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
  // Fetch customer domains from master_category
  async getCustomerDomains(req: Request, res: Response): Promise<void> {
     try {
-        const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0';
+        const query = `
+            SELECT category_id, sector, industry, domain 
+            FROM master_category 
+            WHERE is_deleted = 0 
+            ORDER BY category_id DESC`; // Fetch all domains
         db.query(query, (err: any, results: any) => {
             if (err) {
                 console.error('Error fetching customer domains:', err);
