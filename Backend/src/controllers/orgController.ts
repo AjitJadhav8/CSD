@@ -214,9 +214,92 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
     }
 }
 
+// ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
+
+// Add a new department
+async addDepartment(req: Request, res: Response): Promise<void> {
+    try {
+        const { department_name } = req.body;
+
+        if (!department_name) {
+            res.status(400).json({ error: 'Department name is required' });
+            return;
+        }
+
+        const insertQuery = `
+            INSERT INTO master_department (department_name)
+            VALUES (?)`;
+
+        db.query(insertQuery, [department_name], (err: any, result: any) => {
+            if (err) {
+                console.error('Error adding department:', err);
+                res.status(500).json({ error: 'Error adding department' });
+                return;
+            }
+            res.status(201).json({ message: 'Department added successfully', department_id: result.insertId });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Add a new position
+async addPosition(req: Request, res: Response): Promise<void> {
+    try {
+        const { position_name } = req.body;
+
+        if (!position_name) {
+            res.status(400).json({ error: 'Position name is required' });
+            return;
+        }
+
+        const insertQuery = `
+            INSERT INTO master_position (position_name)
+            VALUES (?)`;
+
+        db.query(insertQuery, [position_name], (err: any, result: any) => {
+            if (err) {
+                console.error('Error adding position:', err);
+                res.status(500).json({ error: 'Error adding position' });
+                return;
+            }
+            res.status(201).json({ message: 'Position added successfully', position_id: result.insertId });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
+    // Add a new skill
+    async addSkill(req: Request, res: Response): Promise<void> {
+        try {
+            const { skill_name, skill_category, skill_description } = req.body;
 
+            if (!skill_name || !skill_category) {
+                res.status(400).json({ error: 'Skill Name and Category are required' });
+                return;
+            }
+
+            const insertQuery = `
+                INSERT INTO master_skill (skill_name, skill_category, skill_description)
+                VALUES (?, ?, ?)`;
+
+            db.query(insertQuery, [skill_name, skill_category, skill_description], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error adding skill:', err);
+                    res.status(500).json({ error: 'Error adding skill' });
+                    return;
+                }
+                res.status(201).json({ message: 'Skill added successfully', skill_id: result.insertId });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
 
 

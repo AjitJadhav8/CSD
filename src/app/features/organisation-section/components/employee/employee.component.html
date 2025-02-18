@@ -5,17 +5,14 @@
             (click)="selectedSection = 'employee'">Employee</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'department'">Department</button>
-        <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'designation'">Designation</button> -->
+
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'position'">Position</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'skills'">Skills</button>
-        <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'permission'">Permission</button> -->
+
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'reportingManagerHistory'">Reporting Manager History</button>
-
     </div>
 
     <!-- Employee Section -->
@@ -198,7 +195,6 @@
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('department')">+ Add
             Department</button>
 
-        <!-- Add Department Form -->
         <!-- Department Form Modal -->
         <div *ngIf="showDepartmentModal"
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
@@ -213,11 +209,12 @@
 
                 <!-- Form Content -->
                 <div class="mt-4">
-                    <form>
+                    <form (submit)="submitDepartment(); $event.preventDefault()">
                         <label class="block mb-2 font-semibold">Department Name*</label>
-                        <input type="text" required class="border p-2 w-full rounded-md" />
+                        <input type="text" [(ngModel)]="departmentName" name="departmentName" required 
+                        class="border p-2 w-full rounded-md" />
                         <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Department</button>
                         </div>
                     </form>
                 </div>
@@ -249,52 +246,6 @@
         </table>
     </div>
 
-    <!-- Designation Section -->
-    <!-- <div *ngIf="selectedSection === 'designation'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('designation')">+ Add
-            Designation</button>
-
-        <div *ngIf="showDesignationModal"
-            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-            (click)="toggleModal('designation')">
-            <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-xl font-semibold">Add Designation</h3>
-                    <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                        (click)="toggleModal('designation')">&times;</button>
-                </div>
-                <div class="mt-4">
-                    <form>
-                        <label class="block mb-2 font-semibold">Designation Name*</label>
-                        <input type="text" required class="border p-2 w-full rounded-md" />
-                        <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">Designation ID</th>
-                    <th class="border p-2">Designation Name</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let designation of designations" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ designation.id }}</td>
-                    <td class="border p-2">{{ designation.name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteDesignation(designation.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> -->
 
 
     <!-- Position Section -->
@@ -313,11 +264,11 @@
                         (click)="toggleModal('position')">&times;</button>
                 </div>
                 <div class="mt-4">
-                    <form>
+                    <form (submit)="submitPosition(); $event.preventDefault()">
                         <label class="block mb-2 font-semibold">Position Name*</label>
-                        <input type="text" required class="border p-2 w-full rounded-md" />
+                        <input type="text" [(ngModel)]="positionName" name="positionName" required class="border p-2 w-full rounded-md" />
                         <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Position</button>
                         </div>
                     </form>
                 </div>
@@ -365,14 +316,15 @@
                         (click)="toggleModal('skill')">&times;</button>
                 </div>
                 <div class="mt-4">
-                    <form>
+                    <form (submit)="submitSkill(); $event.preventDefault();">
                         <!-- Skill Name -->
                         <label class="block mb-2 font-semibold">Skill Name*</label>
-                        <input type="text" required class="border p-2 w-full rounded-md" />
-
+                        <input type="text" [(ngModel)]="skillName" name="skillName" required
+                        class="border p-2 w-full rounded-md" />
                         <!-- Skill Category -->
                         <label class="block mb-2 font-semibold mt-4">Skill Category*</label>
-                        <select required class="border p-2 w-full rounded-md">
+                        <select [(ngModel)]="skillCategory" name="skillCategory" required
+                        class="border p-2 w-full rounded-md">
                             <option value="" disabled selected>Select Category</option>
                             <option value="technical">Technical</option>
                             <option value="soft-skill">Soft Skill</option>
@@ -382,12 +334,13 @@
 
                         <!-- Skill Description -->
                         <label class="block mb-2 font-semibold mt-4">Skill Description</label>
-                        <textarea class="border p-2 w-full rounded-md" rows="3"
-                            placeholder="Enter skill details..."></textarea>
+                        <textarea [(ngModel)]="skillDescription" name="skillDescription"
+                        class="border p-2 w-full rounded-md" rows="3"
+                        placeholder="Enter skill details..."></textarea>
 
                         <!-- Save Button -->
                         <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Skill</button>
                         </div>
                     </form>
 
@@ -422,57 +375,6 @@
 
     </div>
 
-    <!-- Permission Section -->
-    <!-- <div *ngIf="selectedSection === 'permission'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('permission')">+ Add
-            Permission</button>
-
-        <div *ngIf="showPermissionModal"
-            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-            (click)="toggleModal('permission')">
-            <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-xl font-semibold">Add Permission</h3>
-                    <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                        (click)="toggleModal('permission')">&times;</button>
-                </div>
-                <div class="mt-4">
-                    <form>
-                        <label class="block mb-2 font-semibold">Permission Name*</label>
-                        <input type="text" required class="border p-2 w-full rounded-md" />
-                        <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <table class="w-full border-collapse border border-gray-300 mt-4">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">Permission ID</th>
-                    <th class="border p-2">Permission Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let permission of permissions" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ permission.id }}</td>
-                    <td class="border p-2">{{ permission.name }}</td>
-                    <td class="border p-2">{{ permission.activityDate }}</td>
-                    <td class="border p-2">{{ permission.createdBy }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deletePermission(permission.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div> -->
 
     <!-- Reporting Manager History Section -->
     <div *ngIf="selectedSection === 'reportingManagerHistory'">

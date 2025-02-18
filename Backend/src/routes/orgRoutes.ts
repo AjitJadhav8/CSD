@@ -22,5 +22,25 @@ router.get('/customer/domains', orgController.getCustomerDomains);
 router.delete('/customer/domains/:domainId', orgController.softDeleteDomain);
 
 
+// ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
+
+// Route to add a new department
+router.post('/department', orgController.addDepartment);
+
+// Route to add a new position
+router.post('/position', orgController.addPosition);
+
+
+// Route to add a new skill
+router.post('/skill', orgController.addSkill);
+
+
+
+
+
+
+
+
+
 
 export default router;

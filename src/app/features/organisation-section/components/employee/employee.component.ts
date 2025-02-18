@@ -1,22 +1,113 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { DataService } from '../../../../services/data-service/data.service';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-employee',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.css'
 })
 export class EmployeeComponent {
+    constructor(private dataService: DataService,private http: HttpClient) {}
+
+    ngOnInit(): void {
+  
+    }
+  
+    showDepartmentForm: boolean = false;
+    showDepartmentModal: boolean = false;
+  departmentName = '';
+
+ // Add Department
+ submitDepartment(): void {
+  if (!this.departmentName.trim()) {
+    alert('Department Name is required');
+    return;
+  }
+
+  this.dataService.addDepartment(this.departmentName).subscribe(
+    (response) => {
+      console.log('Department added:', response);
+      alert('Department added successfully');
+      this.departmentName = ''; // Reset input field
+    },
+    (error) => {
+      console.error('Error adding department:', error);
+    }
+  );
+}
+
+showPositionForm: boolean = false;
+showPositionModal: boolean = false;
+positionName = '';
+submitPosition(): void {
+  if (!this.positionName.trim()) {
+    alert('Position Name is required');
+    return;
+  }
+
+  this.dataService.addPosition(this.positionName).subscribe(
+    (response) => {
+      console.log('Position added:', response);
+      alert('Position added successfully');
+      this.positionName = ''; // Reset input field
+    },
+    (error) => {
+      console.error('Error adding position:', error);
+    }
+  );
+}
+
+showSkillsForm: boolean = false;
+showSkillModal: boolean = false;
+skillName = '';
+skillCategory = '';
+skillDescription = '';
+// Add Skill
+submitSkill(): void {
+  if (!this.skillName.trim() || !this.skillCategory) {
+    alert('Skill Name and Category are required');
+    return;
+  }
+
+  const skillData = {
+    skill_name: this.skillName,
+    skill_category: this.skillCategory,
+    skill_description: this.skillDescription || null,
+  };
+
+  this.dataService.addSkill(skillData).subscribe(
+    (response) => {
+      console.log('Skill added:', response);
+      this.skillName = ''; // Reset form fields
+      this.skillCategory = '';
+      this.skillDescription = '';
+      alert('Skill added successfully');
+    },
+    (error) => {
+      console.error('Error adding skill:', error);
+    }
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
   selectedSection: string = 'employee';
   
   showEmployeeForm: boolean = false;
-  showDepartmentForm: boolean = false;
-  showDesignationForm: boolean = false;
-  showSkillsForm: boolean = false;
-  showPermissionForm: boolean = false;
-  showPositionForm: boolean = false;
   showReportingManagerForm: boolean = false;
   hasPassport: boolean = false;
   selectedEmployee: any;
@@ -94,19 +185,11 @@ reportingManagerHistory = [
     { id: 2, name: 'IT', activityDate: '2025-02-11', createdBy: 'Admin' }
   ];
 
-  designations = [
-    { id: 1, name: 'Manager', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Developer', activityDate: '2025-02-10', createdBy: 'Admin' }
-  ];
+
 
   skills = [
     { id: 1, name: 'Angular', activityDate: '2025-02-10', createdBy: 'Admin' },
     { id: 2, name: 'Node.js', activityDate: '2025-02-10', createdBy: 'Admin' }
-  ];
-
-  permissions = [
-    { id: 1, name: 'Read', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Write', activityDate: '2025-02-10', createdBy: 'Admin' }
   ];
 
   // Delete Methods
@@ -118,17 +201,13 @@ reportingManagerHistory = [
     this.departments = this.departments.filter(dep => dep.id !== id);
   }
 
-  deleteDesignation(id: number) {
-    this.designations = this.designations.filter(des => des.id !== id);
-  }
+
 
   deleteSkill(id: number) {
     this.skills = this.skills.filter(skill => skill.id !== id);
   }
 
-  deletePermission(id: number) {
-    this.permissions = this.permissions.filter(permission => permission.id !== id);
-  }
+
   deletePosition(id: number) {
     this.positions = this.positions.filter(pos => pos.id !== id);
   }
@@ -137,28 +216,19 @@ reportingManagerHistory = [
 }
 
 
-showDesignationModal: boolean = false;
-showPositionModal: boolean = false;
-showSkillModal: boolean = false;
-showPermissionModal: boolean = false;
 showReportingManagerModal: boolean = false;
 showEmployeeModal: boolean = false;
-showDepartmentModal: boolean = false;
 
 toggleModal(type: string) {
     switch (type) {
-        case 'designation':
-            this.showDesignationModal = !this.showDesignationModal;
-            break;
+
         case 'position':
             this.showPositionModal = !this.showPositionModal;
             break;
         case 'skill':
             this.showSkillModal = !this.showSkillModal;
             break;
-        case 'permission':
-            this.showPermissionModal = !this.showPermissionModal;
-            break;
+
         case 'reportingManager':
             this.showReportingManagerModal = !this.showReportingManagerModal;
             break;

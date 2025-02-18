@@ -37,5 +37,19 @@ export class DataService {
       return this.http.delete(`${this.apiUrl}/api/customer/domains/${domainId}`);
     }
 
+      // Add a new department
+  addDepartment(departmentName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/department`, { department_name: departmentName });
+  }
+
+  // Add a new position
+  addPosition(positionName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/position`, { position_name: positionName });
+  }
+
+    // Add a new skill
+    addSkill(skillData: any): Observable<any> {
+      return this.http.post(`${this.apiUrl}/api/skill`, skillData);
+    }
 
 }
