@@ -26,7 +26,7 @@ export class CustomerComponent {
   ngOnInit(): void {
     this.fetchMasterCategories();
     this.loadCustomers();
-
+    this.fetchCustomerDomains();
   }
 
   fetchMasterCategories(): void {
@@ -122,11 +122,37 @@ loadCustomers(): void {
 }
 
 
+customerDomains: any[] = []; // Array to hold customer domain data
+  // Fetch customer domains from the backend
+  fetchCustomerDomains(): void {
+    this.dataService.getCustomerDomains().subscribe(
+      (data: any[]) => {
+        this.customerDomains = data; // Store data in the component property
+      },
+      (error) => {
+        console.error('Error fetching customer domains', error);
+      }
+    );
+  }
 
 
 
+// Soft delete a domain and refresh the list
+deleteDomain(domainId: number): void {
+  console.log('Deleting domain with ID:', domainId); // Debugging
 
-
+  if (confirm('Are you sure you want to delete this domain?')) {
+    this.dataService.deleteDomain(domainId).subscribe(
+      () => {
+        console.log('Domain deleted successfully');
+        this.fetchCustomerDomains(); // Refresh list after deletion
+      },
+      (error) => {
+        console.error('Error deleting domain:', error);
+      }
+    );
+  }
+}
 
 
 
@@ -158,10 +184,6 @@ loadCustomers(): void {
 
 
 
-  customerDomains = [
-    { id: 1, name: 'IT' },
-    { id: 2, name: 'Finance' }
-  ];
 
   deleteCustomer(customerId: number): void {
     this.dataService.softDeleteCustomer(customerId).subscribe({
@@ -174,8 +196,6 @@ loadCustomers(): void {
         console.error('Error deleting customer:', error);
       }
     });
-  }
-  deleteDomain(id: number) {
   }
 
 

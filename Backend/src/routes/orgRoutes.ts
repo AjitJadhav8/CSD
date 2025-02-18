@@ -15,4 +15,12 @@ router.get('/customers', orgController.getCustomers);
 router.delete('/customer/:customerId', orgController.softDeleteCustomer);
 
 
+// Fetch customer domains
+router.get('/customer/domains', orgController.getCustomerDomains);
+
+// Soft delete a domain
+router.delete('/customer/domains/:domainId', orgController.softDeleteDomain);
+
+
+
 export default router;

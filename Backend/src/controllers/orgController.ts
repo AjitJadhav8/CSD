@@ -167,7 +167,48 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
     }
 }
 
+ // Fetch customer domains from master_category
+ async getCustomerDomains(req: Request, res: Response): Promise<void> {
+    try {
+        const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0';
+        db.query(query, (err: any, results: any) => {
+            if (err) {
+                console.error('Error fetching customer domains:', err);
+                res.status(500).json({ error: 'Error fetching customer domains' });
+                return;
+            }
+            res.status(200).json(results); // Send the retrieved data
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
       
+  // Soft delete a customer domain (set is_deleted = 1)
+  async softDeleteDomain(req: Request, res: Response): Promise<void> {
+    try {
+        const { domainId } = req.params;
+
+        const updateQuery = `UPDATE master_category SET is_deleted = 1 WHERE category_id = ?`;
+
+        db.query(updateQuery, [domainId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting domain:', err);
+                return res.status(500).json({ error: 'Error deleting domain' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Domain not found' });
+            }
+
+            res.status(200).json({ message: 'Domain soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 

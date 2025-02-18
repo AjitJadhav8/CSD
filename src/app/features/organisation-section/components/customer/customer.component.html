@@ -235,21 +235,27 @@
         <!-- Domain Table -->
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">Domain Name</th>
-                    <th class="border p-2">Action</th>
-                </tr>
+              <tr class="bg-gray-100">
+                <th class="border p-2">Sector</th>
+                <th class="border p-2">Industry</th>
+                <th class="border p-2">Domain</th>
+                <th class="border p-2">Action</th>
+              </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let domain of customerDomains" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ domain.name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteDomain(domain.id)">Delete</button>
-                    </td>
-                </tr>
+              <tr *ngFor="let domain of customerDomains" class="hover:bg-gray-50">
+                <td class="border p-2">{{ domain.sector }}</td>
+                <td class="border p-2">{{ domain.industry }}</td>
+                <td class="border p-2">{{ domain.domain }}</td>
+                <td class="border p-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDomain(domain.category_id)">
+                        Delete
+                      </button>
+                </td>
+              </tr>
             </tbody>
-        </table>
+          </table>
+          
     </div>
 
 
