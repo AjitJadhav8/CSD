@@ -34,9 +34,25 @@ router.post('/position', orgController.addPosition);
 // Route to add a new skill
 router.post('/skill', orgController.addSkill);
 
+// Route to fetch roles and departments
+router.get('/roles-and-departments', orgController.getRolesAndDepartments);
 
 
+// Route to add a new employee
+router.post('/employee', orgController.addEmployee);
 
+
+// Route to get all employees
+router.get('/employees', orgController.getAllEmployees);
+
+// Route to fetch all departments
+router.get('/departments', orgController.getAllDepartments);
+
+// Route to fetch all positions
+router.get('/positions', orgController.getAllPositions);
+
+// Route to fetch all skills
+router.get('/skills', orgController.getAllSkills);
 
 
 

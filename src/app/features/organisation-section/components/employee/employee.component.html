@@ -23,33 +23,41 @@
             <table class="w-full border-collapse border border-gray-300">
                 <thead>
                     <tr class="bg-gray-100">
+                        <th class="border p-2">S.No.</th>
                         <th class="border p-2">Employee Code</th>
                         <th class="border p-2">Name</th>
                         <th class="border p-2">Email</th>
                         <th class="border p-2">Contact Number</th>
                         <th class="border p-2">Emergency Contact</th>
+                        <th class="border p-2">Role</th>
+                        <th class="border p-2">Department</th>
+                        <th class="border p-2">Passport</th>
+                        <th class="border p-2">Passport Validity</th>
+                        <th class="border p-2">Current Address</th>
                         <th class="border p-2">Date of Birth</th>
                         <th class="border p-2">Blood Group</th>
                         <th class="border p-2">Date of Joining</th>
-                        <th class="border p-2">Passport</th>
-                        <th class="border p-2">Passport Validity</th>
-                        <th class="border p-2">Reporting Manager</th>
+                        
                         <th class="border p-2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let employee of employees" class="hover:bg-gray-50">
-                        <td class="border p-2">{{ employee.code }}</td>
-                        <td class="border p-2">{{ employee.firstName }} {{ employee.lastName }}</td>
-                        <td class="border p-2">{{ employee.email }}</td>
-                        <td class="border p-2">{{ employee.contact }}</td>
-                        <td class="border p-2">{{ employee.emergencyContact }}</td>
-                        <td class="border p-2">{{ employee.dob }}</td>
-                        <td class="border p-2">{{ employee.bloodGroup }}</td>
-                        <td class="border p-2">{{ employee.doj }}</td>
-                        <td class="border p-2">{{ employee.passport }}</td>
-                        <td class="border p-2">{{ employee.passportValidity || '-' }}</td>
-                        <td class="border p-2">{{ employee.reportingManager }}</td>
+                    <tr *ngFor="let employee of employees; let i = index" class="hover:bg-gray-50">
+                        <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+
+                        <td class="border p-2">{{ employee.user_code }}</td>
+      <td class="border p-2">{{ employee.user_first_name }} {{ employee.user_last_name }}</td>
+      <td class="border p-2">{{ employee.user_email }}</td>
+      <td class="border p-2">{{ employee.user_contact }}</td>
+      <td class="border p-2">{{ employee.user_emergency_contact }}</td>
+      <td class="border p-2">{{ employee.role_id }}</td>
+      <td class="border p-2">{{ employee.department_id }}</td>
+      <td class="border p-2">{{ employee.is_passport ? 'Yes' : 'No' }}</td>
+      <td class="border p-2">{{ employee.passport_validity|| 'NA' }}</td>
+      <td class="border p-2">{{ employee.user_current_address }}</td>
+      <td class="border p-2">{{ employee.user_DOB | date:'dd-MMM-yyyy' }}</td>
+      <td class="border p-2">{{ employee.user_blood_group }}</td>
+      <td class="border p-2">{{ employee.user_DOJ | date:'dd-MMM-yyyy' }}</td>
                         <td class="border p-2">
                             <button class="bg-blue-500 text-white px-2 py-1 rounded" (click)="assignDetails(employee)">Assign Details</button>
                             <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteEmployee(employee.code)">Delete</button>
@@ -73,26 +81,43 @@
 
                 <!-- Scrollable Form -->
                 <div class="mt-4 max-h-[70vh] overflow-y-auto p-2">
-                    <form>
+                    <form (ngSubmit)="submitEmployee(); $event.preventDefault()">
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label>Employee Code*</label><input type="text" required class="border p-2 w-full" />
-                            </div>
-                            <div><label>First Name*</label><input type="text" required class="border p-2 w-full" />
-                            </div>
-                            <div><label>Middle Name</label><input type="text" class="border p-2 w-full" /></div>
-                            <div><label>Last Name*</label><input type="text" required class="border p-2 w-full" /></div>
-                            <div><label>Email ID*</label><input type="email" required class="border p-2 w-full" /></div>
+                            <div><label>Employee Code*</label><input type="text" [(ngModel)]="employee.user_code" name="user_code" required class="border p-2 w-full" /></div>
+
+                            <div><label>First Name*</label><input type="text" [(ngModel)]="employee.user_first_name" name="user_first_name" required class="border p-2 w-full" /></div>
+                            <div><label>Middle Name</label><input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name" class="border p-2 w-full" /></div>
+                            <div><label>Last Name*</label><input type="text" [(ngModel)]="employee.user_last_name" name="user_last_name" required class="border p-2 w-full" /></div>
+                            <div><label>Email ID*</label><input type="email" [(ngModel)]="employee.user_email" name="user_email" required class="border p-2 w-full" /></div>
+                            <div><label>Contact Number*</label><input type="text" [(ngModel)]="employee.user_contact" name="user_contact" required class="border p-2 w-full" /></div>
+                            <div><label>Emergency Contact*</label><input type="text" [(ngModel)]="employee.user_emergency_contact" name="user_emergency_contact" required class="border p-2 w-full" /></div>
+                            
+                                    <div>
+                                        <label>Role*</label>
+                                        <select [(ngModel)]="employee.role_id" name="role" required class="border p-2 w-full">
+                                            <option value="" disabled selected>Select Role</option>
+                                          <option *ngFor="let role of roles" [value]="role.role_id">{{ role.role_name }}</option>
+                                        </select>
+                                      </div>
+                                      
+                                      <div><label>Department*</label>
+                                        <select [(ngModel)]="employee.department_id" name="department" required class="border p-2 w-full">
+                                            <option value="" disabled selected>Select Department</option>
+                                            <option *ngFor="let department of departments" [value]="department.department_id">{{ department.department_name }}</option>
+                                        </select>
+                                    </div>
+                                      
                             <!-- Passport Yes/No -->
-                            <div class="mt-4">
+                            <div>
                                 <label class="block font-semibold">Do you have a passport?</label>
                                 <div class="flex space-x-4 mt-2">
                                     <label class="flex items-center">
-                                        <input type="radio" name="passport" value="yes"
+                                        <input type="radio" name="passport" [(ngModel)]="employee.is_passport" value="1"
                                             (change)="onPassportChange($event)" />
                                         <span class="ml-2">Yes</span>
                                     </label>
                                     <label class="flex items-center">
-                                        <input type="radio" name="passport" value="no"
+                                        <input type="radio" [(ngModel)]="employee.is_passport" name="passport" value="0"
                                             (change)="onPassportChange($event)" />
                                         <span class="ml-2">No</span>
                                     </label>
@@ -100,34 +125,33 @@
                             </div>
 
                             <!-- Validity of Passport (Shown Only If "Yes" is Selected) -->
-                            <div *ngIf="hasPassport" class="mt-4">
+                            <div *ngIf="hasPassport" >
                                 <label>Validity of Passport*</label>
-                                <input type="date" required class="border p-2 w-full" />
+                                <input type="date" [(ngModel)]="employee.passport_validity" name="passport_validity" required class="border p-2 w-full" />
                             </div>
-                            <div><label>Current Address</label><input type="text" class="border p-2 w-full" /></div>
-                            <div><label>Contact Number*</label><input type="text" required class="border p-2 w-full" />
-                            </div>
-                            <div><label>Emergency Contact*</label><input type="text" required
-                                    class="border p-2 w-full" /></div>
-                            
-                            <div><label>Date of Birth*</label><input type="date" required class="border p-2 w-full" />
-                            </div>
-                    
-                            
-                            <div><label>Blood Group*</label><select required class="border p-2 w-full">
-                                    <option>Select Blood Group</option>
-                                </select></div>
-                            <div><label>Date of Joining*</label><input type="date" required class="border p-2 w-full" />
-                            </div>
+                            <div><label>Current Address</label><input type="text" [(ngModel)]="employee.user_current_address" name="user_current_address" class="border p-2 w-full" /></div>
+        <div><label>Date of Birth*</label><input type="date" [(ngModel)]="employee.user_DOB" name="user_DOB" required class="border p-2 w-full" /></div>
+        <div><label>Blood Group*</label><select [(ngModel)]="employee.user_blood_group" name="user_blood_group" required class="border p-2 w-full">
+            <option value="">Select Blood Group</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="RH+">RH+</option>
+            <option value="RH-">RH-</option>
+        </select></div>
+        <div><label>Date of Joining*</label><input type="date" [(ngModel)]="employee.user_DOJ" name="user_DOJ" required class="border p-2 w-full" /></div>
                             
                         </div>
+                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-4">Save Employee</button>
+
                     </form>
                 </div>
 
-                <!-- Submit Button -->
-                <div class="mt-4 flex justify-center">
-                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
-                </div>
             </div>
         </div>
 
@@ -142,21 +166,14 @@
         <div class="mt-4">
             <form>
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label>Role*</label><select required class="border p-2 w-full">
-                        <option>Select Role</option>
-                    </select></div>
+                    
                     <div><label>Reporting Manager*</label><select required class="border p-2 w-full">
                         <option>Select Reporting Manager</option>
                     </select></div>
                     <div><label>Employee Position*</label><select required class="border p-2 w-full">
                         <option>Select Position</option>
                     </select></div>
-                    <div>
-                        <label>Department*</label>
-                        <select required class="border p-2 w-full">
-                            <option>Select Department</option>
-                        </select>
-                    </div>
+                   
                     <div><label>Timesheet Filling Required ?*</label><select required class="border p-2 w-full">
                         <option value="">Select Option</option>
                         <option value="yes">Yes</option>
@@ -223,27 +240,24 @@
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">Department ID</th>
-                    <th class="border p-2">Department Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
-                    <th class="border p-2">Action</th>
-                </tr>
+              <tr class="bg-gray-100">
+                <th class="border p-2">S.No.</th>
+                <th class="border p-2">Department Name</th>
+                <th class="border p-2">Action</th>
+              </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let department of departments" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ department.id }}</td>
-                    <td class="border p-2">{{ department.name }}</td>
-                    <td class="border p-2">{{ department.activityDate }}</td>
-                    <td class="border p-2">{{ department.createdBy }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteDepartment(department.id)">Delete</button>
-                    </td>
-                </tr>
+              <tr *ngFor="let department of departments; let i = index" class="hover:bg-gray-50">
+                <td class="border p-2">{{ i + 1 }}</td>
+                <td class="border p-2">{{ department.department_name }}</td>
+                <td class="border p-2">
+                  <button class="bg-red-500 text-white px-2 py-1 rounded"
+                          (click)="deleteDepartment(department.department_id)">Delete</button>
+                </td>
+              </tr>
             </tbody>
-        </table>
+          </table>
+          
     </div>
 
 
@@ -278,19 +292,17 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">Position ID</th>
+                    <th class="border p-2">S.No.</th>
+
                     <th class="border p-2">Position Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
+
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let position of positions" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ position.id }}</td>
-                    <td class="border p-2">{{ position.name }}</td>
-                    <td class="border p-2">{{ position.activityDate }}</td>
-                    <td class="border p-2">{{ position.createdBy }}</td>
+                <tr *ngFor="let position of positions; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ position.position_name }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
                             (click)="deletePosition(position.id)">Delete</button>
@@ -352,19 +364,21 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">Skill ID</th>
+                    <th class="border p-2">S.No.</th>
+
                     <th class="border p-2">Skill Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
+                    <th class="border p-2">Category</th>
+                    <th class="border p-2">Skill Category</th>
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let skill of skills" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ skill.id }}</td>
-                    <td class="border p-2">{{ skill.name }}</td>
-                    <td class="border p-2">{{ skill.activityDate }}</td>
-                    <td class="border p-2">{{ skill.createdBy }}</td>
+                <tr *ngFor="let skill of skills; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ skill.skill_name }}</td>
+                    <td class="border p-2">{{ skill.skill_category }}</td>
+                    <td class="border p-2">{{ skill.skill_description }}</td>
+
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
                             (click)="deleteSkill(skill.id)">Delete</button>
@@ -443,6 +457,8 @@
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
+                    <th class="border p-2">S.No.</th>
+
                     <th class="border p-2">Employee Name</th>
                     <th class="border p-2">Reporting Manager Name</th>
                     <th class="border p-2">From Date</th>
@@ -452,7 +468,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let manager of reportingManagerHistory" class="hover:bg-gray-50">
+                <tr *ngFor="let manager of reportingManagerHistory; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
                     <td class="border p-2">{{ manager.employeeName }}</td>
                     <td class="border p-2">{{ manager.reportingManager }}</td>
                     <td class="border p-2">{{ manager.fromDate }}</td>

@@ -15,7 +15,22 @@ export class EmployeeComponent {
     constructor(private dataService: DataService,private http: HttpClient) {}
 
     ngOnInit(): void {
-  
+
+      this.fetchEmployees();
+      this.fetchDepartments();
+      this.fetchPositions();
+      this.fetchSkills();
+
+      this.dataService.getRolesAndDepartments().subscribe(
+        (response) => {
+          this.roles = response.roles;
+          this.departments = response.departments;
+        },
+        (error) => {
+          console.error('Error fetching roles and departments', error);
+        }
+      );
+    
     }
   
     showDepartmentForm: boolean = false;
@@ -94,6 +109,101 @@ submitSkill(): void {
   );
 }
 
+roles: any[] = [];
+selectedRole: string = '';
+selectedDepartment: string = '';
+
+
+
+employee = {
+  user_code: '',
+  user_first_name: '',
+  user_middle_name: '',
+  user_last_name: '',
+  user_email: '',
+  user_contact: '',
+  user_emergency_contact: '',
+  role_id: null,
+  department_id: null,
+  is_passport: null,
+  passport_validity: null,
+  user_current_address: '',
+  user_DOB: null,
+  user_blood_group: '',
+  user_DOJ: null
+};
+
+submitEmployee() {
+  this.dataService.addEmployee(this.employee).subscribe((response) => {
+    console.log('Employee saved successfully!', response);
+    alert('Employee saved successfully!');
+  }, (error) => {
+    console.error('Error saving employee:', error);
+  });
+}
+
+employees: any[] = [];  // Store the employee data
+
+ // Method to fetch employee data
+ fetchEmployees(): void {
+  this.dataService.getAllEmployees().subscribe(
+    (data) => {
+      this.employees = data;
+    },
+    (error) => {
+      console.error('Error fetching employees:', error);
+    }
+  );
+}
+
+
+departments: any[] = [];
+  // Fetch departments data from the backend
+  fetchDepartments(): void {
+    this.dataService.getAllDepartments().subscribe(
+      (response) => {
+        console.log('Departments Response:', response); // Log the response
+
+        this.departments = response;  // Assuming the response contains the departments data
+      },
+      (error) => {
+        console.error('Error fetching departments:', error);
+      }
+    );
+  }
+
+  positions:any[] = [];
+
+  fetchPositions(): void {
+    this.dataService.getAllPositions().subscribe(
+      (response) => {
+        console.log('Positions Response:', response); // Log the response
+
+        this.positions = response;  // Assuming the response contains the positions data
+      },
+      (error) => {
+        console.error('Error fetching positions:', error);
+      }
+    );
+  }
+
+  skills:any[] = [];
+  fetchSkills(): void {
+    this.dataService.getAllSkills().subscribe(
+      (response) => {
+        console.log('Skills Response:', response); // Log the response
+
+        this.skills = response;  // Assuming the response contains the skills data
+      },
+      (error) => {
+        console.error('Error fetching skills:', error);
+      }
+    );
+  }
+
+
+
+
 
 
 
@@ -115,7 +225,7 @@ submitSkill(): void {
 
   onPassportChange(event: Event) {
       const target = event.target as HTMLInputElement;
-      this.hasPassport = target.value === 'yes';
+      this.hasPassport = target.value === '1';
   }
 
   reportingManagers = [
@@ -142,55 +252,11 @@ reportingManagerHistory = [
     }
 ];
 
-  positions = [
-    { id: 1, name: 'Manager',activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Developer',activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 3, name: 'Team Lead', activityDate: '2025-02-10', createdBy: 'Admin' }
-  ];
-  employees = [
-    {
-        id: 1,
-        code: 'E001',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        contact: '1234567890',
-        emergencyContact: '0987654321',
-        dob: '1990-01-01',
-        bloodGroup: 'O+',
-        doj: '2020-06-15',
-        passport: 'Yes',
-        passportValidity: '2030-12-31',
-        reportingManager: 'Michael Scott'
-    },
-    {
-        id: 2,
-        code: 'E002',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane@example.com',
-        contact: '9876543210',
-        emergencyContact: '1234509876',
-        dob: '1995-05-20',
-        bloodGroup: 'A+',
-        doj: '2022-08-10',
-        passport: 'No',
-        passportValidity: null,
-        reportingManager: 'Pam Beesly'
-    }
-];
-
-  departments = [
-    { id: 1, name: 'HR', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'IT', activityDate: '2025-02-11', createdBy: 'Admin' }
-  ];
 
 
 
-  skills = [
-    { id: 1, name: 'Angular', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Node.js', activityDate: '2025-02-10', createdBy: 'Admin' }
-  ];
+
+
 
   // Delete Methods
   deleteEmployee(code: string) {

@@ -301,10 +301,172 @@ async addPosition(req: Request, res: Response): Promise<void> {
         }
     }
 
+      // Get Roles and Departments
+      async getRolesAndDepartments(req: Request, res: Response): Promise<void> {
+        try {
+            const rolesQuery = 'SELECT role_id, role_name FROM master_role WHERE is_deleted = 0';
+            const departmentsQuery = 'SELECT department_id, department_name FROM master_department WHERE is_deleted = 0';
+
+            // Fetch both roles and departments in parallel
+            const [roles, departments] = await Promise.all([
+                new Promise((resolve, reject) => {
+                    db.query(rolesQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(departmentsQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                })
+            ]);
+
+            // Return roles and departments in the response
+            res.status(200).json({ roles, departments });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+      // Method to add a new employee
+      async addEmployee(req: Request, res: Response): Promise<void> {
+        try {
+            const { 
+                user_code, user_first_name, user_middle_name, user_last_name, 
+                user_email, user_contact, user_emergency_contact, role_id, department_id, 
+                is_passport, passport_validity, user_current_address, user_DOB, 
+                user_blood_group, user_DOJ 
+            } = req.body;
+
+            // SQL query to insert the new employee into the database
+            const query = `
+                INSERT INTO master_user (
+                    user_code, user_first_name, user_middle_name, user_last_name, 
+                    user_email, user_contact, user_emergency_contact, role_id, department_id, 
+                    is_passport, passport_validity, user_current_address, user_DOB, 
+                    user_blood_group, user_DOJ
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            
+            const values = [
+                user_code, user_first_name, user_middle_name, user_last_name, 
+                user_email, user_contact, user_emergency_contact, role_id, department_id, 
+                is_passport, passport_validity, user_current_address, user_DOB, 
+                user_blood_group, user_DOJ
+            ];
+
+            // Insert the data into the database
+            db.query(query, values, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error saving employee:', err);
+                    return res.status(500).json({ error: 'Error saving employee' });
+                }
+                res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+// Method to get all employees with explicit column names
+async getAllEmployees(req: Request, res: Response): Promise<void> {
+    try {
+        const query = `
+            SELECT 
+                user_code, user_first_name, user_middle_name, user_last_name, 
+                user_email, user_contact, user_emergency_contact, role_id, department_id, 
+                is_passport, passport_validity, user_current_address, user_DOB, 
+                user_blood_group, user_DOJ 
+            FROM master_user
+            ORDER BY user_id DESC 
+        `;  // Explicitly mention each column name
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching employees:', err);
+                return res.status(500).json({ error: 'Error fetching employees' });
+            }
+            res.status(200).json(results);  // Return the result as JSON
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Method to get all departments from master_department table
+async getAllDepartments(req: Request, res: Response): Promise<void> {
+    try {
+        const query = `
+            SELECT department_id, department_name
+            FROM master_department
+            ORDER BY department_id DESC  
+        `;
+        
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching departments:', err);
+                return res.status(500).json({ error: 'Error fetching departments' });
+            }
+            res.status(200).json(results);  // Return the result as JSON
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async getAllPositions(req: Request, res: Response): Promise<void> {
+    try {
+        const query = `
+            SELECT position_id, position_name
+            FROM master_position
+            ORDER BY position_id DESC  
+        `;
+        
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching positions:', err);
+                return res.status(500).json({ error: 'Error fetching positions' });
+            }
+            res.status(200).json(results);  // Return the result as JSON
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async getAllSkills(req: Request, res: Response): Promise<void> {
+    try {
+        const query = `
+            SELECT skill_id, skill_name, skill_category, skill_description
+            FROM master_skill
+            ORDER BY skill_id DESC  
+        `;
+        
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching skills:', err);
+                return res.status(500).json({ error: 'Error fetching skills' });
+            }
+            res.status(200).json(results);  // Return the result as JSON
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 
 
 
-  }
+
+}
+};
   
   
 

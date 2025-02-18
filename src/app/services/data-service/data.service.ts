@@ -52,4 +52,37 @@ export class DataService {
       return this.http.post(`${this.apiUrl}/api/skill`, skillData);
     }
 
+      // Fetch Roles and Departments from the backend
+  getRolesAndDepartments(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/roles-and-departments`);
+  }
+
+  // Add a new employee
+ addEmployee(employee: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/employee`, employee);  // Sends data as "employee" to backend
+  }
+
+    // Method to fetch all employees
+    getAllEmployees(): Observable<any> {
+      return this.http.get(`${this.apiUrl}/api/employees`);
+    }
+
+      // Method to fetch all departments
+  getAllDepartments(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/departments`);
+  }
+
+  // Method to fetch all positions
+  getAllPositions(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/positions`);
+  }
+
+  // Method to fetch all skills
+  getAllSkills(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/skills`);
+  }
+
+
+
+
 }
