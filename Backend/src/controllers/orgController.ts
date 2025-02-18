@@ -306,9 +306,14 @@ async addPosition(req: Request, res: Response): Promise<void> {
         try {
             const rolesQuery = 'SELECT role_id, role_name FROM master_role WHERE is_deleted = 0';
             const departmentsQuery = 'SELECT department_id, department_name FROM master_department WHERE is_deleted = 0';
-
-            // Fetch both roles and departments in parallel
-            const [roles, departments] = await Promise.all([
+            const usersQuery = `
+                SELECT 
+                    user_id, user_code, user_first_name, user_middle_name, user_last_name
+                FROM master_user WHERE is_deleted = 0
+            `;
+    
+            // Fetch roles, departments, and users in parallel
+            const [roles, departments, users] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -320,16 +325,23 @@ async addPosition(req: Request, res: Response): Promise<void> {
                         if (err) reject(err);
                         resolve(results);
                     });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(usersQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
                 })
             ]);
-
-            // Return roles and departments in the response
-            res.status(200).json({ roles, departments });
+    
+            // Return roles, departments, and user info in the response
+            res.status(200).json({ roles, departments, users });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+    
 
       // Method to add a new employee
       async addEmployee(req: Request, res: Response): Promise<void> {
@@ -583,6 +595,97 @@ async softDeleteEmployee(req: Request, res: Response): Promise<void> {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }}
+
+    
+
+    async addReportingManagerHistory(req: Request, res: Response): Promise<void> {
+        const { employee_id, reporting_manager_id, from_date, till_date } = req.body;
+    
+        const query = `
+          INSERT INTO trans_reporting_manager_history 
+          (employee_id, reporting_manager_id, from_date, till_date)
+          VALUES (?, ?, ?, ?)`;
+    
+        const values = [employee_id, reporting_manager_id, from_date, till_date];
+    
+        try {
+          db.query(query, values, (err, results) => {
+            if (err) {
+              console.error('Error inserting reporting manager history:', err);
+              return res.status(500).json({ error: 'Error inserting reporting manager history' });
+            }
+            res.status(201).json({ message: 'Reporting Manager history added successfully' });
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
+      
+      async getReportingManagerHistory(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
+                SELECT 
+                    trm.reporting_manager_history_id, 
+                    trm.employee_id, 
+                    trm.reporting_manager_id, 
+                    trm.from_date, 
+                    trm.till_date, 
+                    trm.is_deleted, 
+                    emp.user_first_name AS employee_first_name, 
+                    emp.user_last_name AS employee_last_name, 
+                    manager.user_first_name AS manager_first_name, 
+                    manager.user_last_name AS manager_last_name 
+                FROM trans_reporting_manager_history trm
+                LEFT JOIN master_user emp ON trm.employee_id = emp.user_id
+                LEFT JOIN master_user manager ON trm.reporting_manager_id = manager.user_id
+                WHERE trm.is_deleted = 0
+                ORDER BY trm.reporting_manager_history_id DESC
+            `;
+    
+            db.query(query, (err, results) => {
+                if (err) {
+                    console.error('Error fetching reporting manager history:', err);
+                    return res.status(500).json({ error: 'Error fetching reporting manager history' });
+                }
+                console.log('Fetched reporting manager history:', results);  // Add this log
+                res.status(200).json(results);  // Return the result as JSON
+            });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    
+    // Soft delete a reporting manager history entry
+async softDeleteReportingManager(req: Request, res: Response): Promise<void> {
+    try {
+        const { managerId } = req.params;
+
+        const updateQuery = `UPDATE trans_reporting_manager_history SET is_deleted = 1 WHERE reporting_manager_history_id = ?`;
+
+        db.query(updateQuery, [managerId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting reporting manager history:', err);
+                return res.status(500).json({ error: 'Error deleting reporting manager history' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Reporting manager history entry not found' });
+            }
+
+            res.status(200).json({ message: 'Reporting manager history entry soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+    
+
+      
 
 
 

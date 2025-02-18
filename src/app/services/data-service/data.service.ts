@@ -102,6 +102,20 @@ export class DataService {
       return this.http.delete(`${this.apiUrl}/api/employee/${employeeId}`);
     }
 
+    //add a new reporting manager
+     // Method to add reporting manager history
+  addReportingManagerHistory(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/reporting-manager-history`, payload);
+  }
+
+  getReportingManagerHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reporting-manager-history`);
+}
+// Soft delete a reporting manager history entry
+deleteReportingManager(managerId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/api/reporting-manager-history/${managerId}`);
+}
+
 
 
 

@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './employee.component.css'
 })
 export class EmployeeComponent {
+  users: any;
     constructor(private dataService: DataService,private http: HttpClient) {}
 
     ngOnInit(): void {
@@ -20,11 +21,15 @@ export class EmployeeComponent {
       this.fetchDepartments();
       this.fetchPositions();
       this.fetchSkills();
+      this.fetchReportingManagerHistory();
+
 
       this.dataService.getRolesAndDepartments().subscribe(
         (response) => {
+          console.log('Roles and Departments:', response);
           this.roles = response.roles;
           this.departments = response.departments;
+          this.users = response.users;  // Store user data
         },
         (error) => {
           console.error('Error fetching roles and departments', error);
@@ -117,8 +122,12 @@ selectedRole: string = '';
 selectedDepartment: string = '';
 
 
+selectedManager: any;  // This will store the selected manager's ID
 
 employee = {
+  selectedUserId: null,   // For selected employee
+  selectedReportingManagerId: null, // For selected reporting manager
+
   user_id: null,  // Add user_id here
   user_code: '',
   user_first_name: '',
@@ -283,9 +292,58 @@ departments: any[] = [];
   }
   
 
+  fromDate: string = '';   // For from date
+  tillDate: string = '';   // For till date
+  onSubmitReportingManager() {
+    const payload = {
+      employee_id: this.employee.selectedUserId,
+      reporting_manager_id: this.employee.selectedReportingManagerId,
+      from_date: this.fromDate,
+      till_date: this.tillDate,
+    };
 
+    this.dataService.addReportingManagerHistory(payload).subscribe(
+      (response) => {
+        console.log('Reporting Manager history added successfully');
+        this.toggleModal('reportingManager'); // Close the modal on success
+      },
+      (error) => {
+        console.error('Error adding reporting manager history', error);
+      }
+    );
+  }
 
+  reportingManagerHistory: any[] = [];  // Use any[] to allow any shape of object
 
+  fetchReportingManagerHistory(): void {
+    this.dataService.getReportingManagerHistory().subscribe(
+        (response) => {
+          console.log('Reporting Manager History:', response);  // Log the response to check
+
+          this.reportingManagerHistory = response;  // Directly assign the response as it is an array
+        },
+        (error) => {
+            console.error('Error fetching reporting manager history', error);
+        }
+    );
+}
+
+// Soft delete Reporting Manager history
+deleteReportingManager(managerId: number): void {
+  const confirmDelete = window.confirm('Are you sure you want to delete this reporting manager history entry?');
+
+  if (confirmDelete) {
+    this.dataService.deleteReportingManager(managerId).subscribe(
+      () => {
+        this.fetchReportingManagerHistory(); // Refresh the list after deletion
+        alert('Reporting Manager History entry deleted successfully');
+      },
+      (error) => {
+        console.error('Error deleting reporting manager history:', error);
+      }
+    );
+  }
+}
 
 
 
@@ -310,24 +368,6 @@ departments: any[] = [];
     { id: 2, name: 'Dwight Schrute' }
 ];
 
-reportingManagerHistory = [
-    { 
-        id: 1, 
-        employeeName: 'Jim Halpert', 
-        reportingManager: 'Michael Scott',  
-        fromDate: '2025-02-01', 
-        tillDate: '2025-02-10', 
-        createdBy: 'Admin' 
-    },
-    { 
-        id: 2, 
-        employeeName: 'Pam Beesly', 
-        reportingManager: 'Dwight Schrute',  
-        fromDate: '2025-02-05', 
-        tillDate: '2025-02-11', 
-        createdBy: 'Admin' 
-    }
-];
 
 
 
@@ -340,9 +380,8 @@ reportingManagerHistory = [
 
 
 
-  deleteReportingManager(id: number) {
-    this.reportingManagerHistory = this.reportingManagerHistory.filter(manager => manager.id !== id);
-}
+
+
 
 
 showReportingManagerModal: boolean = false;

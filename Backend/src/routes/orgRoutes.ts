@@ -63,6 +63,14 @@ router.delete('/skills/:skillId', orgController.softDeleteSkill);
 
 router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
 
+//route to add a new reporting manager
+
+// Route to handle adding reporting manager history
+router.post('/reporting-manager-history', orgController.addReportingManagerHistory);
+
+router.get('/reporting-manager-history', orgController.getReportingManagerHistory);
+
+router.delete('/reporting-manager-history/:managerId', orgController.softDeleteReportingManager);
 
 
 
