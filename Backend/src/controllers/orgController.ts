@@ -377,16 +377,29 @@ async addPosition(req: Request, res: Response): Promise<void> {
 async getAllEmployees(req: Request, res: Response): Promise<void> {
     try {
         const query = `
-            SELECT 
-                user_id,user_code, user_first_name, user_middle_name, user_last_name, 
-                user_email, user_contact, user_emergency_contact, role_id, department_id, 
-                is_passport, passport_validity, user_current_address, user_DOB, 
-                user_blood_group, user_DOJ 
-            FROM master_user
-                WHERE is_deleted = 0
-
-            ORDER BY user_id DESC 
-        `;  // Explicitly mention each column name
+        SELECT 
+            u.user_id,
+            u.user_code,
+            u.user_first_name,
+            u.user_middle_name,
+            u.user_last_name, 
+            u.user_email, 
+            u.user_contact, 
+            u.user_emergency_contact, 
+            r.role_name, 
+            d.department_name,
+            u.is_passport, 
+            u.passport_validity, 
+            u.user_current_address, 
+            u.user_DOB, 
+            u.user_blood_group, 
+            u.user_DOJ 
+        FROM master_user u
+        LEFT JOIN master_role r ON u.role_id = r.role_id
+        LEFT JOIN master_department d ON u.department_id = d.department_id
+        WHERE u.is_deleted = 0
+        ORDER BY u.user_id DESC 
+    `; // Explicitly mention each column name
 
         db.query(query, (err, results) => {
             if (err) {
