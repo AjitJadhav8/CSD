@@ -10,6 +10,11 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
+  addCategory(category: { sector: string; industry: string; domain: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/category`, category);
+  }
+  
+
 
   getMasterCategories(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/api/master/categories`);

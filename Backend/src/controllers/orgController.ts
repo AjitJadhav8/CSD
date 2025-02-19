@@ -192,6 +192,64 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
     }
 }
 
+
+async addCategory(req: Request, res: Response): Promise<void> {
+    try {
+        const { sector, industry, domain } = req.body;
+
+        if (!sector || !industry || !domain) {
+            res.status(400).json({ error: 'Sector, Industry, and Domain are required' });
+            return;
+        }
+
+        // Check if category already exists
+        const checkQuery = `
+            SELECT category_id FROM master_category 
+            WHERE sector = ? AND industry = ? AND domain = ?
+            LIMIT 1
+        `;
+
+        db.query(checkQuery, [sector, industry, domain], (err: any, results: any) => {
+            if (err) {
+                console.error('Error checking existing category:', err);
+                res.status(500).json({ error: 'Database error while checking category' });
+                return;
+            }
+
+            if (results.length > 0) {
+                console.log(`Category already exists: ${results[0].category_id}`);
+                res.status(400).json({ error: 'Category already exists' });
+                return;
+            }
+
+            // Insert new category
+            const insertQuery = `
+                INSERT INTO master_category (sector, industry, domain)
+                VALUES (?, ?, ?)
+            `;
+
+            db.query(insertQuery, [sector, industry, domain], (insertErr: any, result: any) => {
+                if (insertErr) {
+                    console.error('Database error:', insertErr);
+                    res.status(500).json({ error: 'Error adding category' });
+                    return;
+                }
+
+                res.status(201).json({ 
+                    message: 'Category added successfully', 
+                    categoryId: result.insertId 
+                });
+            });
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
 // ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
 
 // Add a new department

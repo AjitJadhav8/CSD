@@ -90,9 +90,8 @@ export class CustomerComponent {
     });
   }
 
-  // ------------------ Customer Domain ------------------------
+  // ------------------ Customer Category ------------------------
 
-  customerDomains: any[] = []; // Array to hold customer domain data
   sectors: string[] = [];
   industries: string[] = [];
   domains: string[] = [];
@@ -123,6 +122,8 @@ export class CustomerComponent {
         () => {
           console.log('category deleted successfully');
           this.fetchMasterCategories(); // Refresh list after deletion
+          this.filterIndustries(); // Reset industry & domain list
+
         },
         (error) => {
           console.error('Error deleting category:', error);
@@ -133,25 +134,106 @@ export class CustomerComponent {
 
   filterIndustries(): void {
     if (!this.selectedSector) {
-      this.industries = [];  // Reset industries if no sector is selected
+      this.industries = [];
+      this.selectedIndustry = ''; // Reset industry
+      this.domains = [];
+      this.selectedDomain = ''; // Reset domain
       return;
     }
-    // Filter industries based on selected sector
-    this.industries = this.allCategories
-      .filter(item => item.sector === this.selectedSector)
-      .map(item => item.industry);
+  
+    this.industries = [...new Set(
+      this.allCategories
+        .filter(item => item.sector === this.selectedSector)
+        .map(item => item.industry)
+    )];
+  
+    this.selectedIndustry = ''; // Reset selected industry
+    this.domains = []; 
+    this.selectedDomain = ''; // Reset domain
   }
-
+  
   filterDomains(): void {
     if (!this.selectedIndustry) {
-      this.domains = [];  // Reset domains if no industry is selected
+      this.domains = [];
+      this.selectedDomain = ''; // Reset domain
       return;
     }
-    // Filter domains based on selected industry
-    this.domains = this.allCategories
-      .filter(item => item.industry === this.selectedIndustry)
-      .map(item => item.domain);
+  
+    this.domains = [...new Set(
+      this.allCategories
+        .filter(item => item.industry === this.selectedIndustry)
+        .map(item => item.domain)
+    )];
+  
+    this.selectedDomain = ''; // Reset domain
   }
+  
+
+  newSector: string = '';
+newIndustry: string = '';
+newDomain: string = '';
+
+enableIndustryField(): void {
+    if (this.newSector) {
+        this.selectedSector = ''; // Reset dropdown selection if new sector is added
+    }
+}
+enableDomainField(): void {
+  if (this.newIndustry) {
+      this.selectedIndustry = ''; // Reset dropdown selection if new industry is added
+  }
+}
+
+saveCategory(): void {
+  const category = {
+      sector: this.newSector ? this.newSector : this.selectedSector,
+      industry: this.newIndustry ? this.newIndustry : this.selectedIndustry,
+      domain: this.newDomain ? this.newDomain : this.selectedDomain
+  };
+
+  if (!category.sector || !category.industry || !category.domain) {
+      alert('Please fill all required fields.');
+      return;
+  }
+
+  this.dataService.addCategory(category).subscribe(
+      () => {
+          console.log('Category added successfully');
+          this.fetchMasterCategories(); // Refresh categories list
+          this.resetCategoryForm();
+
+      },
+      (error) => {
+          console.error('Error adding category:', error);
+      }
+  );
+}
+resetCategoryForm(): void {
+  this.selectedSector = '';
+  this.selectedIndustry = '';
+  this.selectedDomain = '';
+  this.newSector = '';
+  this.newIndustry = '';
+  this.newDomain = '';
+}
+updateSelection(type: 'sector' | 'industry' | 'domain', isDropdown: boolean) {
+  const keyNew = `new${this.capitalize(type)}` as keyof this;
+  const keySelected = `selected${this.capitalize(type)}` as keyof this;
+
+  if (isDropdown) {
+      (this as any)[keyNew] = ''; // Clear textbox when dropdown is selected
+  } else {
+      (this as any)[keySelected] = ''; // Clear dropdown when textbox is used
+  }
+}
+
+capitalize(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+
+
+
 
   // ------------------ Other ------------------------
 

@@ -193,29 +193,51 @@
                 </div>
 
                 <!-- Form Content -->
-                <form class="mt-4">
-                    <!-- Sector Dropdown -->
+                <form class="mt-4" (submit)="saveCategory()">
+                    <!-- Sector Dropdown + Textbox -->
                     <label class="block mb-2 font-semibold">Sector*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector" name="sector"
-                        (change)="filterIndustries()">
-                        <option value="" disabled selected>Select Sector</option>
-                        <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-                    </select>
+                    <div class="flex space-x-2">
+                        <select class="border p-2 w-2/3 rounded-md" [(ngModel)]="selectedSector" name="sector"
+                            (change)="filterIndustries()">
+                            <option value="" disabled selected>Select Sector</option>
+                            <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+                        </select>
+                        <input type="text" class="border p-2 w-1/3 rounded-md" [(ngModel)]="newSector" name="newSector"
+                            placeholder="Or add new sector" (input)="enableIndustryField()">
+                    </div>
 
-                    <!-- Industry Dropdown -->
+                    <!-- Industry Dropdown + Textbox -->
                     <label class="block mt-4 mb-2 font-semibold">Industry*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" name="industry"
-                        (change)="filterDomains()">
-                        <option value="" disabled selected>Select Industry</option>
-                        <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
-                    </select>
+                    <div class="flex space-x-2">
+                        <!-- Industry -->
+                        <select class="border p-2 w-2/3 rounded-md" [(ngModel)]="selectedIndustry" name="industry"
+                            (change)="updateSelection('industry', true)"
+                            [disabled]="newIndustry || (!selectedSector && !newSector)">
+                            <option value="" disabled selected>Select Industry</option>
+                            <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+                        </select>
+                        <input type="text" class="border p-2 w-1/3 rounded-md" [(ngModel)]="newIndustry"
+                            name="newIndustry" placeholder="Or add new industry"
+                            (input)="updateSelection('industry', false)"
+                            [disabled]="selectedIndustry || (!selectedSector && !newSector)">
 
-                    <!-- Domain Dropdown -->
+                    </div>
+
+                    <!-- Domain Dropdown + Textbox -->
                     <label class="block mt-4 mb-2 font-semibold">Domain Name*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" name="domain">
-                        <option value="" disabled selected>Select Domain</option>
-                        <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
-                    </select>
+                    <div class="flex space-x-2">
+                        <!-- Domain -->
+                        <select class="border p-2 w-2/3 rounded-md" [(ngModel)]="selectedDomain" name="domain"
+                            (change)="updateSelection('domain', true)"
+                            [disabled]="newDomain || (!selectedIndustry && !newIndustry)">
+                            <option value="" disabled selected>Select Domain</option>
+                            <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
+                        </select>
+                        <input type="text" class="border p-2 w-1/3 rounded-md" [(ngModel)]="newDomain" name="newDomain"
+                            placeholder="Or add new domain" (input)="updateSelection('domain', false)"
+                            [disabled]="selectedDomain || (!selectedIndustry && !newIndustry)">
+
+                    </div>
 
                     <!-- Save Button -->
                     <div class="mt-4 flex space-x-2">
@@ -231,7 +253,6 @@
             <thead>
                 <tr class="bg-gray-100">
                     <th class="border p-2">S.No.</th>
-
                     <th class="border p-2">Sector</th>
                     <th class="border p-2">Industry</th>
                     <th class="border p-2">Domain</th>
@@ -239,22 +260,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let domain of customerDomains; let i = index" class="hover:bg-gray-50">
+                <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
                     <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-
-                    <td class="border p-2">{{ domain.sector }}</td>
-                    <td class="border p-2">{{ domain.industry }}</td>
-                    <td class="border p-2">{{ domain.domain }}</td>
+                    <td class="border p-2">{{ category.sector }}</td>
+                    <td class="border p-2">{{ category.industry }}</td>
+                    <td class="border p-2">{{ category.domain }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteCategory(domain.category_id)">
+                            (click)="deleteCategory(category.category_id)">
                             Delete
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-
     </div>
-
 </div>

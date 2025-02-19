@@ -14,6 +14,8 @@ router.get('/customers', orgController.getCustomers);
 router.delete('/customer/:customerId', orgController.softDeleteCustomer);
 
 
+router.post('/category', orgController.addCategory);
+
 
 router.get('/master/categories', orgController.getMasterCategories);
 
