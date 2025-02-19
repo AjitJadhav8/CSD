@@ -4,7 +4,7 @@ import db from '../config/db'; // Import MySQL database connection
 class OrgController {
     async getMasterCategories(req: Request, res: Response): Promise<void> {
       try {
-        const query = 'SELECT sector, industry, domain FROM master_category WHERE is_deleted = 0';
+        const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0';
         
         db.query(query, (err: any, results: { sector: string, industry: string, domain: string }[]) => {
           if (err) {
@@ -166,29 +166,7 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-
- // Fetch customer domains from master_category
- async getCustomerDomains(req: Request, res: Response): Promise<void> {
-    try {
-        const query = `
-            SELECT category_id, sector, industry, domain 
-            FROM master_category 
-            WHERE is_deleted = 0 
-            ORDER BY category_id DESC`; // Fetch all domains
-        db.query(query, (err: any, results: any) => {
-            if (err) {
-                console.error('Error fetching customer domains:', err);
-                res.status(500).json({ error: 'Error fetching customer domains' });
-                return;
-            }
-            res.status(200).json(results); // Send the retrieved data
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-      
+    
   // Soft delete a customer domain (set is_deleted = 1)
   async softDeleteDomain(req: Request, res: Response): Promise<void> {
     try {

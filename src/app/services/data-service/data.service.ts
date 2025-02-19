@@ -27,10 +27,6 @@ export class DataService {
   return this.http.delete(`${this.apiUrl}/api/customer/${customerId}`);
 }
 
-  // Fetch customer domains from the backend
-  getCustomerDomains(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/api/customer/domains`);
-  }
 
     // Soft delete a domain by ID
     deleteDomain(domainId: number): Observable<any> {

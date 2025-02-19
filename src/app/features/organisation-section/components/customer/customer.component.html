@@ -4,7 +4,7 @@
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'customer'">Customer</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'customerDomain'">Customer Domain</button>
+            (click)="selectedSection = 'customerDomain'">Customer Categories</button>
     </div>
 
     <!-- Customer Section -->
@@ -12,7 +12,6 @@
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal()">+ Add Customer</button>
 
         <!-- Add Customer Form -->
-        <!-- Modal -->
         <div *ngIf="showModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
             (click)="toggleModal()">
             <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 relative" (click)="$event.stopPropagation()">
@@ -22,7 +21,7 @@
                     <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal()">&times;</button>
                 </div>
 
-                <form class="mt-4" (ngSubmit)="submitForm()">
+                <form class="mt-4" (ngSubmit)="submitCustomer()">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-group">
                             <label>Customer Name*</label>
@@ -84,8 +83,6 @@
                                 <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
                             </select>
                         </div>
-
-
                         <div class="form-group">
                             <label>Customer Type</label>
                             <select class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerType"
@@ -121,12 +118,10 @@
                                 name="description">
                         </div>
                     </div>
-
                     <div class="mt-4 flex space-x-2">
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add New Customer</button>
                     </div>
                 </form>
-
             </div>
         </div>
         <!-- Customer Table -->
@@ -156,7 +151,6 @@
             <tbody>
                 <tr *ngFor="let customer of customers; let i = index" class="hover:bg-gray-50">
                     <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-                    
                     <td class="border p-2">{{ customer.customer_name }}</td>
                     <td class="border p-2">{{ customer.customer_company_website }}</td>
                     <td class="border p-2">{{ customer.customer_email }}</td>
@@ -174,20 +168,17 @@
                     <td class="border p-2">{{ customer.customer_description }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                        (click)="deleteCustomer(customer.customer_id)">Delete</button>
+                            (click)="deleteCustomer(customer.customer_id)">Delete</button>
                     </td>
-                    
                 </tr>
             </tbody>
         </table>
-        
     </div>
-
 
     <!-- Customer Domain Section -->
     <div *ngIf="selectedSection === 'customerDomain'">
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleDomainModal()">+ Add
-            Domain</button>
+            Categories</button>
 
         <!-- Add Domain Form -->
         <!-- Modal -->
@@ -238,32 +229,32 @@
         <!-- Domain Table -->
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
-              <tr class="bg-gray-100">
-                <th class="border p-2">S.No.</th>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">S.No.</th>
 
-                <th class="border p-2">Sector</th>
-                <th class="border p-2">Industry</th>
-                <th class="border p-2">Domain</th>
-                <th class="border p-2">Action</th>
-              </tr>
+                    <th class="border p-2">Sector</th>
+                    <th class="border p-2">Industry</th>
+                    <th class="border p-2">Domain</th>
+                    <th class="border p-2">Action</th>
+                </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let domain of customerDomains; let i = index" class="hover:bg-gray-50">
-                <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+                <tr *ngFor="let domain of customerDomains; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
 
                     <td class="border p-2">{{ domain.sector }}</td>
                     <td class="border p-2">{{ domain.industry }}</td>
                     <td class="border p-2">{{ domain.domain }}</td>
                     <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteDomain(domain.category_id)">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteCategory(domain.category_id)">
                             Delete
                         </button>
-                </td>
-              </tr>
+                    </td>
+                </tr>
             </tbody>
-          </table>
-          
-    </div>
+        </table>
 
+    </div>
 
 </div>
