@@ -167,24 +167,24 @@ async softDeleteCustomer(req: Request, res: Response): Promise<void> {
     }
 }
     
-  // Soft delete a customer domain (set is_deleted = 1)
-  async softDeleteDomain(req: Request, res: Response): Promise<void> {
+  // Soft delete a customer category (set is_deleted = 1)
+  async softDeleteCategory(req: Request, res: Response): Promise<void> {
     try {
-        const { domainId } = req.params;
+        const { categoryId } = req.params;
 
         const updateQuery = `UPDATE master_category SET is_deleted = 1 WHERE category_id = ?`;
 
-        db.query(updateQuery, [domainId], (err: any, result: any) => {
+        db.query(updateQuery, [categoryId], (err: any, result: any) => {
             if (err) {
-                console.error('Error deleting domain:', err);
-                return res.status(500).json({ error: 'Error deleting domain' });
+                console.error('Error deleting category:', err);
+                return res.status(500).json({ error: 'Error deleting category' });
             }
 
             if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Domain not found' });
+                return res.status(404).json({ error: 'category not found' });
             }
 
-            res.status(200).json({ message: 'Domain soft deleted successfully' });
+            res.status(200).json({ message: 'category soft deleted successfully' });
         });
     } catch (error) {
         console.error('Error:', error);

@@ -115,17 +115,17 @@ export class CustomerComponent {
     );
   }
 
-  deleteCategory(domainId: number): void {
-    console.log('Deleting domain with ID:', domainId); // Debugging
+  deleteCategory(categoryId: number): void {
+    console.log('Deleting category with ID:', categoryId); // Debugging
 
-    if (confirm('Are you sure you want to delete this domain?')) {
-      this.dataService.deleteDomain(domainId).subscribe(
+    if (confirm('Are you sure you want to delete this category?')) {
+      this.dataService.deleteCategory(categoryId).subscribe(
         () => {
-          console.log('Domain deleted successfully');
+          console.log('category deleted successfully');
           this.fetchMasterCategories(); // Refresh list after deletion
         },
         (error) => {
-          console.error('Error deleting domain:', error);
+          console.error('Error deleting category:', error);
         }
       );
     }
@@ -157,9 +157,9 @@ export class CustomerComponent {
 
   selectedSection: string = 'customer';
   showModal: boolean = false;
-  showDomainModal: boolean = false;
-  toggleDomainModal() {
-    this.showDomainModal = !this.showDomainModal;
+  showCategoryModal: boolean = false;
+  toggleCategoryModal() {
+    this.showCategoryModal = !this.showCategoryModal;
   }
   toggleModal() {
     this.showModal = !this.showModal;

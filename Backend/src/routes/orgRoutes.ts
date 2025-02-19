@@ -4,7 +4,6 @@ import express from 'express';
 const router = express.Router();
 
 
-router.get('/master/categories', orgController.getMasterCategories);
 
 // Route for creating a new customer
 router.post('/customer', orgController.createCustomer);
@@ -15,8 +14,11 @@ router.get('/customers', orgController.getCustomers);
 router.delete('/customer/:customerId', orgController.softDeleteCustomer);
 
 
-// Soft delete a domain
-router.delete('/customer/domains/:domainId', orgController.softDeleteDomain);
+
+router.get('/master/categories', orgController.getMasterCategories);
+
+// Soft delete a category
+router.delete('/customer/category/:categoryId', orgController.softDeleteCategory);
 
 
 // ----------------------------------------------EMPLOYEE SECTION----------------------------------------------

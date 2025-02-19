@@ -28,9 +28,9 @@ export class DataService {
 }
 
 
-    // Soft delete a domain by ID
-    deleteDomain(domainId: number): Observable<any> {
-      return this.http.delete(`${this.apiUrl}/api/customer/domains/${domainId}`);
+    // Soft delete a category by ID
+    deleteCategory(categoryId: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/api/customer/category/${categoryId}`);
     }
 
       // Add a new department
