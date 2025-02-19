@@ -19,6 +19,8 @@ export class ProjectComponent {
 
 
   ngOnInit(): void {
+    this.fetchTaskCategories();
+
 
     this.fetchProjects();
 this.fetchProjectDeliverables();
@@ -202,12 +204,53 @@ deleteProjectDeliverable(deliverableId: number): void {
 }
 
 
+taskCategories: any[] = [];
+taskCategoryForm = { task_category_name: '' };
+  // Submit Task Category
+  submitTaskCategory(): void {
+    this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
+      (response) => {
+        alert('Task category added successfully!');
+        this.taskCategoryForm.task_category_name = '';
+        this.fetchTaskCategories();
+      },
+      (error) => {
+        alert('Error adding task category!');
+        console.error('Error adding task category:', error);
+      }
+    );
+  }
 
 
+ // Fetch Task Categories
+ fetchTaskCategories(): void {
+  this.dataService.getAllTaskCategories().subscribe(
+    (response) => {
+      this.taskCategories = response;
+    },
+    (error) => {
+      console.error('Error fetching task categories:', error);
+    }
+  );
+}
 
+ // Delete Task Category
+ deleteTaskCategory(taskCatId: number): void {
+  const confirmDelete = window.confirm('Are you sure you want to delete this task category?');
 
-
-
+  if (confirmDelete) {
+    this.dataService.deleteTaskCategory(taskCatId).subscribe(
+      (response) => {
+        alert('Task category deleted successfully!');
+        this.fetchTaskCategories();
+      },
+      (error) => {
+        alert('Error deleting task category!');
+        console.error('Error deleting task category:', error);
+      }
+    );
+  }
+ }
 
 
 
@@ -239,16 +282,9 @@ optionProject: any[] = [];
 
 
 
-  taskCategories = [
-    { id: 1, name: 'Development', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Testing', activityDate: '2025-02-11', createdBy: 'Admin' }
-  ];
 
 
 
-  deleteTaskCategory(id: number) {
-    this.taskCategories = this.taskCategories.filter(task => task.id !== id);
-  }
 
 
   deleteProjectRole(id: number) {

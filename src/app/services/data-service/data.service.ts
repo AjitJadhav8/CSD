@@ -145,5 +145,21 @@ deleteProjectDeliverable(deliverableId: number): Observable<any> {
 }
 
 
+ // Add Task Category
+ addTaskCategory(taskCategory: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/task-category`, taskCategory);
+}
+
+
+ // Get all Task Categories
+ getAllTaskCategories(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/task-categories`);
+}
+
+// Soft delete Task Category
+deleteTaskCategory(taskCatId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/api/task-categories/${taskCatId}`);
+}
+
 
 }

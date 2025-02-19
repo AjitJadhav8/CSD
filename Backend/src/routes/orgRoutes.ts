@@ -89,8 +89,14 @@ router.get('/project-deliverables', orgController.getProjectDeliverables);
 
 router.delete('/project-deliverables/:deliverableId', orgController.softDeleteProjectDeliverable);
 
+// Add a new task category
+router.post('/task-category', orgController.addTaskCategory);
 
 
+// Get all task categories
+router.get('/task-categories', orgController.getTaskCategories);
 
+// Soft delete task category
+router.delete('/task-categories/:taskCatId', orgController.softDeleteTaskCategory);
 
 export default router;

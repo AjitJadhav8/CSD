@@ -19,31 +19,28 @@
             Category</button>
 
         <div *ngIf="showTaskCategoryModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
+            <form (submit)="submitTaskCategory()">
                 <label class="block mb-2 font-semibold">Task Category Name*</label>
-                <input type="text" required class="border p-2 w-full rounded-md" />
+                <input type="text" [(ngModel)]="taskCategoryForm.task_category_name" name="taskCategoryName" required class="border p-2 w-full rounded-md" />
                 <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
             </form>
         </div>
 
 
-        <table class="w-full border-collapse border border-gray-300">
+        <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">sr NO</th>
+                    <th class="border p-2">Sr No</th>
                     <th class="border p-2">Task Category Name</th>
-
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let task of taskCategories" class="hover:bg-gray-50">
-                    <td class="border p-2"></td>
-                    <td class="border p-2"></td>
-
+                <tr *ngFor="let task of taskCategories; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ task.task_category_name }}</td>
                     <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteTaskCategory(task.id)">Delete</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteTaskCategory(task.task_cat_id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
