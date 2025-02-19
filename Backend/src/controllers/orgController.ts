@@ -312,8 +312,39 @@ async addPosition(req: Request, res: Response): Promise<void> {
                 FROM master_user WHERE is_deleted = 0
             `;
     
+            const customersQuery = `
+            SELECT 
+                customer_id, customer_name, category_id
+            FROM master_customer WHERE is_deleted = 0
+            `;
+    
+            const typeOfEngagementQuery = `
+            SELECT 
+                type_of_engagement_id, type_of_engagement_name
+            FROM master_type_of_engagement WHERE is_deleted = 0
+            `;
+    
+            const typeOfProjectQuery = `
+            SELECT 
+                type_of_project_id, project_type_name
+            FROM master_type_of_project WHERE is_deleted = 0
+            `;
+    
+            const projectStatusQuery = `
+            SELECT 
+                project_status_id, status_name
+            FROM master_project_status WHERE is_deleted = 0
+            `;
+    
+            const projectQuery = `
+            SELECT 
+                project_id, project_name, customer_id, project_manager_id, type_of_project_id, type_of_engagement_id, project_status_id, planned_start_date, actual_start_date, 
+                tentative_end_date, project_description
+            FROM master_project WHERE is_deleted = 0
+            `;
+    
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -331,16 +362,47 @@ async addPosition(req: Request, res: Response): Promise<void> {
                         if (err) reject(err);
                         resolve(results);
                     });
-                })
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(customersQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(typeOfEngagementQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(typeOfProjectQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(projectStatusQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(projectQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
             ]);
     
             // Return roles, departments, and user info in the response
-            res.status(200).json({ roles, departments, users });
+            res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+    
     
 
       // Method to add a new employee
@@ -683,10 +745,194 @@ async softDeleteReportingManager(req: Request, res: Response): Promise<void> {
     }
 }
 
-    
+// Add a new project
+async addProject(req: Request, res: Response): Promise<void> {
+    try {
+        const { 
+            customer_id, project_name, planned_start_date, actual_start_date, 
+            type_of_project_id, type_of_engagement_id, project_manager_id, 
+            project_status_id, tentative_end_date, project_description 
+        } = req.body;
 
-      
+        const query = `
+            INSERT INTO master_project 
+            (
+                customer_id, project_name, planned_start_date, actual_start_date, 
+                type_of_project_id, type_of_engagement_id, project_manager_id, 
+                project_status_id, tentative_end_date, project_description
+            ) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
 
+        const values = [
+            customer_id, project_name, planned_start_date, actual_start_date, 
+            type_of_project_id, type_of_engagement_id, project_manager_id, 
+            project_status_id, tentative_end_date, project_description
+        ];
+
+        db.query(query, values, (err: any, result: any) => {
+            if (err) {
+                console.error('Error adding project:', err);
+                return res.status(500).json({ error: 'Error adding project' });
+            }
+            res.status(201).json({ message: 'Project added successfully', projectId: result.insertId });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+// Fetch all projects
+async getAllProjects(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
+        SELECT 
+          p.project_id,
+          p.project_name,
+          c.customer_name,
+          CONCAT(u.user_first_name, ' ', u.user_last_name) AS project_manager,
+          tp.project_type_name AS type_of_project,
+          te.type_of_engagement_name AS type_of_engagement,
+          ps.status_name AS project_status,
+          p.planned_start_date,
+          p.actual_start_date,
+          p.tentative_end_date,
+          p.project_description
+        FROM master_project p
+        LEFT JOIN master_customer c ON p.customer_id = c.customer_id
+        LEFT JOIN master_user u ON p.project_manager_id = u.user_id
+        LEFT JOIN master_type_of_project tp ON p.type_of_project_id = tp.type_of_project_id
+        LEFT JOIN master_type_of_engagement te ON p.type_of_engagement_id = te.type_of_engagement_id
+        LEFT JOIN master_project_status ps ON p.project_status_id = ps.project_status_id
+        WHERE p.is_deleted = 0
+        ORDER BY p.project_id DESC
+      `;
+
+      db.query(query, (err, results) => {
+        if (err) {
+          console.error('Error fetching projects:', err);
+          return res.status(500).json({ error: 'Error fetching projects' });
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  // Soft delete a project by ID
+async softDeleteProject(req: Request, res: Response): Promise<void> {
+    try {
+        const { projectId } = req.params;
+
+        const updateQuery = `UPDATE master_project SET is_deleted = 1 WHERE project_id = ?`;
+
+        db.query(updateQuery, [projectId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting project:', err);
+                return res.status(500).json({ error: 'Error deleting project' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Project not found' });
+            }
+
+            res.status(200).json({ message: 'Project soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Add a new project deliverable
+async addProjectDeliverable(req: Request, res: Response): Promise<void> {
+    try {
+      const { customer_id, project_id, project_deliverable } = req.body;
+
+      if (!customer_id || !project_id || !project_deliverable) {
+        res.status(400).json({ error: 'All fields are required' });
+        return;
+      }
+
+      const query = `
+        INSERT INTO master_project_deliverables 
+        (customer_id, project_id, project_deliverable, is_deleted) 
+        VALUES (?, ?, ?, 0)
+      `;
+
+      const values = [customer_id, project_id, project_deliverable];
+
+      db.query(query, values, (err: any, result: any) => {
+        if (err) {
+          console.error('Error adding project deliverable:', err);
+          res.status(500).json({ error: 'Error adding project deliverable' });
+          return;
+        }
+        res.status(201).json({ message: 'Project deliverable added successfully', deliverableId: result.insertId });
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+// Fetch project deliverables along with project and customer names
+async getProjectDeliverables(req: Request, res: Response): Promise<void> {
+    try {
+        const query = `
+            SELECT 
+                mpd.pd_id AS project_deliverable_id, 
+                mpd.project_deliverable_name,
+                mc.customer_name,
+                mp.project_name
+            FROM master_project_deliverables mpd
+            JOIN master_project mp ON mpd.project_id = mp.project_id
+            JOIN master_customer mc ON mp.customer_id = mc.customer_id
+            WHERE mpd.is_deleted = 0
+            ORDER BY mpd.pd_id DESC
+        `;
+
+        db.query(query, (err: any, results: any) => {
+            if (err) {
+                console.error('Error fetching project deliverables:', err);
+                res.status(500).json({ error: 'Error fetching project deliverables' });
+                return;
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async softDeleteProjectDeliverable(req: Request, res: Response): Promise<void> {
+    try {
+        const { deliverableId } = req.params;
+
+        const updateQuery = `UPDATE master_project_deliverables SET is_deleted = 1 WHERE pd_id = ?`;
+
+        db.query(updateQuery, [deliverableId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting project deliverable:', err);
+                return res.status(500).json({ error: 'Error deleting project deliverable' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Project deliverable not found' });
+            }
+
+            res.status(200).json({ message: 'Project deliverable soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+  
 
 
 

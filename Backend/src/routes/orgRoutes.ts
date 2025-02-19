@@ -72,8 +72,22 @@ router.get('/reporting-manager-history', orgController.getReportingManagerHistor
 
 router.delete('/reporting-manager-history/:managerId', orgController.softDeleteReportingManager);
 
+// route to add a new project
+router.post('/project', orgController.addProject);
 
+// Route to fetch all projects
+router.get('/projects', orgController.getAllProjects);
 
+// soft delete a project
+router.delete('/project/:projectId', orgController.softDeleteProject);
+
+// Route to add a new project deliverable
+router.post('/project-deliverable', orgController.addProjectDeliverable);
+
+// Route to fetch all project deliverables
+router.get('/project-deliverables', orgController.getProjectDeliverables);
+
+router.delete('/project-deliverables/:deliverableId', orgController.softDeleteProjectDeliverable);
 
 
 

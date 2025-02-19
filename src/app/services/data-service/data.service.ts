@@ -116,6 +116,33 @@ deleteReportingManager(managerId: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/api/reporting-manager-history/${managerId}`);
 }
 
+// Add a new project
+addProject(project: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/project`, project);
+}
+
+getAllProjects(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/projects`);
+}
+
+// Soft delete project
+deleteProject(projectId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/api/project/${projectId}`);
+}
+
+// add a project deliverable
+addProjectDeliverable(projectDeliverable: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
+}
+
+// Get project deliverables
+getAllProjectDeliverables(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/project-deliverables`);
+}
+
+deleteProjectDeliverable(deliverableId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/api/project-deliverables/${deliverableId}`);
+}
 
 
 

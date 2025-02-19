@@ -127,7 +127,6 @@ selectedManager: any;  // This will store the selected manager's ID
 employee = {
   selectedUserId: null,   // For selected employee
   selectedReportingManagerId: null, // For selected reporting manager
-
   user_id: null,  // Add user_id here
   user_code: '',
   user_first_name: '',

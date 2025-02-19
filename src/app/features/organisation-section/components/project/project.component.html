@@ -3,17 +3,14 @@
     <div class="flex space-x-4 mb-4">
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'project'">Project</button>
-            <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'projectRole'">Project Role</button> -->
-        <!-- <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'projectManager'">Project Manager</button> -->
-            <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
+
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'projectDeliverable'">Project Deliverable</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'taskCategory'">Task Category</button>
-        
-        
-        
+
+
+
     </div>
 
     <!-- Task Category Section -->
@@ -33,19 +30,17 @@
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">ID</th>
+                    <th class="border p-2">sr NO</th>
                     <th class="border p-2">Task Category Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
+
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let task of taskCategories" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ task.id }}</td>
-                    <td class="border p-2">{{ task.name }}</td>
-                    <td class="border p-2">{{ task.activityDate }}</td>
-                    <td class="border p-2">{{ task.createdBy }}</td>
+                    <td class="border p-2"></td>
+                    <td class="border p-2"></td>
+
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
                             (click)="deleteTaskCategory(task.id)">Delete</button>
@@ -62,233 +57,165 @@
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectDeliverable')">+ Add
             Project Deliverable</button>
 
-            <div *ngIf="showProjectDeliverableModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-                <form>
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Select Customer -->
-                        <div>
-                            <label class="block mb-2 font-semibold">Select Customer*</label>
-                            <select required class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Customer</option>
-                                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
-                            </select>
-                        </div>
-            
-                        <!-- Select Project -->
-                        <div>
-                            <label class="block mb-2 font-semibold">Select Project*</label>
-                            <select required class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Project</option>
-                                <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
-                            </select>
-                        </div>
-            
-                        <!-- Deliverable Name -->
-                        <div>
-                            <label class="block mb-2 font-semibold">Project Deliverable*</label>
-                            <input type="text" required class="border p-2 w-full rounded-md" placeholder="Enter deliverable name" />
-                        </div>
-            
-                        <!-- Select Status -->
-                        <div>
-                            <label class="block mb-2 font-semibold">Select Status*</label>
-                            <select required class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Status</option>
-                                <option value="initiated">Initiated</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                                <option value="on-hold">On Hold</option>
-                            </select>
-                        </div>
+        <div *ngIf="showProjectDeliverableModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
+            <form (ngSubmit)="submitProjectDeliverable()">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Select Customer -->
+                    <div>
+                        <label class="block mb-2 font-semibold">Customer Name*</label>
+                        <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectDeliverableForm.customer_id" name="customer">
+                            <option value="" disabled selected>Select Customer</option>
+                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </option>
+                        </select>
                     </div>
-            
-                    <!-- Save Button -->
-                    <div class="mt-4 flex justify-center">
-                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+        
+                    <!-- Select Project -->
+                    <div>
+                        <label class="block mb-2 font-semibold">Select Project*</label>
+                        <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectDeliverableForm.project_id" name="project">
+                            <option value="" disabled selected>Select Project</option>
+                            <option *ngFor="let project of optionProject" [value]="project.project_id">{{ project.project_name }}</option>
+                        </select>
                     </div>
-                </form>
-            </div>
-            
+        
+                    <!-- Deliverable Name -->
+                    <div>
+                        <label class="block mb-2 font-semibold">Project Deliverable*</label>
+                        <input type="text" required class="border p-2 w-full rounded-md"
+                            placeholder="Enter deliverable name" [(ngModel)]="projectDeliverableForm.project_deliverable" name="deliverable" />
+                    </div>
+                </div>
+        
+                <!-- Save Button -->
+                <div class="mt-4 flex justify-center">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                </div>
+            </form>
+        </div>
+
 
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Sr No</th>
                     <th class="border p-2">Deliverable Name</th>
-                    <th class="border p-2">Activity Date</th>
-                    <th class="border p-2">Created By</th>
+                    <th class="border p-2">Customer Name</th>
+                    <th class="border p-2">Project Name</th>
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let deliverable of projectDeliverables" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ deliverable.id }}</td>
-                    <td class="border p-2">{{ deliverable.name }}</td>
-                    <td class="border p-2">{{ deliverable.activityDate }}</td>
-                    <td class="border p-2">{{ deliverable.createdBy }}</td>
+                <tr *ngFor="let deliverable of projectDeliverables; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ deliverable.project_deliverable_name }}</td>
+                    <td class="border p-2">{{ deliverable.customer_name }}</td>
+                    <td class="border p-2">{{ deliverable.project_name }}</td>
                     <td class="border p-2">
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteProjectDeliverable(deliverable.id)">Delete</button>
+                            (click)="deleteProjectDeliverable(deliverable.pd_id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Project Role Section -->
-    <!-- <div *ngIf="selectedSection === 'projectRole'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectRole')">+ Add
-            Project Role</button>
 
-        <div *ngIf="showProjectRoleModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
-                <label class="block mb-2 font-semibold">Project Role Name*</label>
-                <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-            </form>
-        </div>
-
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Project Role Name</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let role of projectRoles">
-                    <td class="border p-2">{{ role.id }}</td>
-                    <td class="border p-2">{{ role.name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteProjectRole(role.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> -->
-    <!-- Project Manager Section -->
-    <!-- <div *ngIf="selectedSection === 'projectManager'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectManager')">+ Add
-            Project Manager</button>
-
-        <div *ngIf="showProjectManagerModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-            <form>
-                <label class="block mb-2 font-semibold">Project Manager Name*</label>
-                <input type="text" required class="border p-2 w-full rounded-md" />
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-            </form>
-        </div>
-
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Project Manager Name</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let manager of projectManagers">
-                    <td class="border p-2">{{ manager.id }}</td>
-                    <td class="border p-2">{{ manager.name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteProjectManager(manager.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div> -->
-    <!-- Project Section -->
     <div *ngIf="selectedSection === 'project'">
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('project')">+ Add
             Project</button>
 
+        <div *ngIf="showProjectModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
             <div *ngIf="showProjectModal" class="p-4 border rounded-lg bg-gray-50 mt-4">
-                <form>
+                <form (ngSubmit)="submitProject()">
                     <div class="grid grid-cols-2 gap-4">
                         <!-- Customer Name -->
                         <div>
                             <label class="block mb-2 font-semibold">Customer Name*</label>
-                            <select required class="border p-2 w-full rounded-md">
+                            <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.customer_id" name="customer">
                                 <option value="" disabled selected>Select Customer</option>
-                                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+                                <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                    {{ customer.customer_name }}
+                                </option>
                             </select>
                         </div>
             
                         <!-- Project Name -->
                         <div>
                             <label class="block mb-2 font-semibold">Project Name*</label>
-                            <input type="text" required class="border p-2 w-full rounded-md" />
+                            <input type="text" required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.project_name" name="project_name" />
                         </div>
             
                         <!-- Planned Start Date -->
                         <div>
                             <label class="block mb-2 font-semibold">Planned Start Date*</label>
-                            <input type="date" required class="border p-2 w-full rounded-md" />
+                            <input type="date" required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.planned_start_date" name="planned_start_date" />
                         </div>
             
                         <!-- Actual Start Date -->
                         <div>
                             <label class="block mb-2 font-semibold">Actual Start Date</label>
-                            <input type="date" class="border p-2 w-full rounded-md" />
+                            <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.actual_start_date" name="actual_start_date" />
                         </div>
             
                         <!-- Type of Project -->
                         <div>
                             <label class="block mb-2 font-semibold">Type of Project*</label>
-                            <select required class="border p-2 w-full rounded-md">
+                            <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.type_of_project_id" name="type_of_project">
                                 <option value="" disabled selected>Select Type</option>
-                                <option value="poc">PoC</option>
-                                <option value="project">Project</option>
+                                <option *ngFor="let project of optionTypeOfProject" [value]="project.type_of_project_id">
+                                    {{ project.project_type_name }}
+                                </option>
                             </select>
                         </div>
             
                         <!-- Type of Engagement -->
                         <div>
                             <label class="block mb-2 font-semibold">Type of Engagement*</label>
-                            <select required class="border p-2 w-full rounded-md">
-                                <option value="" disabled selected>Select Engagement Type</option>
-                                <option value="billed">Billed</option>
-                                <option value="not-billed">Not Billed</option>
+                            <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.type_of_engagement_id" name="type_of_engagement">
+                                <option value="" disabled selected>Select Type of Engagement</option>
+                                <option *ngFor="let engagement of optionTypeOfEngagement" [value]="engagement.type_of_engagement_id">
+                                    {{ engagement.type_of_engagement_name }}
+                                </option>
                             </select>
                         </div>
             
                         <!-- Project Manager -->
                         <div>
                             <label class="block mb-2 font-semibold">Project Manager*</label>
-                            <select required class="border p-2 w-full rounded-md">
+                            <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.project_manager_id" name="project_manager">
                                 <option value="" disabled selected>Select Project Manager</option>
-                                <option *ngFor="let manager of projectManagers" [value]="manager.id">{{ manager.name }}</option>
+                                <option *ngFor="let user of optionUsers" [value]="user.user_id">
+                                    {{ user.user_first_name }} {{ user.user_last_name }}
+                                </option>
                             </select>
                         </div>
             
                         <!-- Project Status -->
                         <div>
                             <label class="block mb-2 font-semibold">Project Status*</label>
-                            <select required class="border p-2 w-full rounded-md">
+                            <select required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.project_status_id" name="project_status">
                                 <option value="" disabled selected>Select Status</option>
-                                <option value="initiated">Initiated</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                                <option value="on-hold">On Hold</option>
+                                <option *ngFor="let status of optionProjectStatus" [value]="status.project_status_id">
+                                    {{ status.status_name }}
+                                </option>
                             </select>
                         </div>
             
                         <!-- Tentative End Date -->
                         <div>
                             <label class="block mb-2 font-semibold">Tentative End Date</label>
-                            <input type="date" class="border p-2 w-full rounded-md" />
+                            <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.tentative_end_date" name="tentative_end_date" />
                         </div>
                     </div>
             
-                    <!-- Project Description (Full Width) -->
+                    <!-- Project Description -->
                     <div class="mt-4">
                         <label class="block mb-2 font-semibold">Project Description</label>
-                        <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter project details..."></textarea>
+                        <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter project details..."
+                            [(ngModel)]="projectForm.project_description" name="project_description"></textarea>
                     </div>
             
                     <!-- Save Button -->
@@ -298,26 +225,46 @@
                 </form>
             </div>
             
+        </div>
+
 
         <table class="w-full border-collapse border border-gray-300">
             <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">ID</th>
-                    <th class="border p-2">Project Name</th>
-                    <th class="border p-2">Action</th>
-                </tr>
+              <tr class="bg-gray-100">
+                <th class="border p-2">Sr No</th>
+                <th class="border p-2">Project Name</th>
+                <th class="border p-2">Customer Name</th>
+                <th class="border p-2">Project Manager</th>
+                <th class="border p-2">Type of Project</th>
+                <th class="border p-2">Type of Engagement</th>
+                <th class="border p-2">Project Status</th>
+                <th class="border p-2">Planned Start Date</th>
+                <th class="border p-2">Actual Start Date</th>
+                <th class="border p-2">Tentative End Date</th>
+                <th class="border p-2">Project Description</th>
+                <th class="border p-2">Action</th>
+              </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let project of projects">
-                    <td class="border p-2">{{ project.id }}</td>
-                    <td class="border p-2">{{ project.name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteProject(project.id)">Delete</button>
-                    </td>
-                </tr>
+              <tr *ngFor="let project of projects; let i = index" class="hover:bg-gray-50">
+                <td class="border p-2">{{ i + 1 }}</td>
+                <td class="border p-2">{{ project.project_name }}</td>
+                <td class="border p-2">{{ project.customer_name }}</td>
+                <td class="border p-2">{{ project.project_manager }}</td>
+                <td class="border p-2">{{ project.type_of_project }}</td>
+                <td class="border p-2">{{ project.type_of_engagement }}</td>
+                <td class="border p-2">{{ project.project_status }}</td>
+                <td class="border p-2">{{ project.planned_start_date |date:'dd-MMM-yyyy'}}</td>
+                <td class="border p-2">{{ project.actual_start_date | date:'dd-MMM-yyyy' }}</td>
+                <td class="border p-2">{{ project.tentative_end_date | date:'dd-MMM-yyyy' }}</td>
+                <td class="border p-2">{{ project.project_description }}</td>
+                <td class="border p-2">
+                  <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteProject(project.project_id)">Delete</button>
+                </td>
+              </tr>
             </tbody>
-        </table>
+          </table>
+          
     </div>
 
 </div>

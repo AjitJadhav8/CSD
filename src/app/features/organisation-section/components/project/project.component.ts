@@ -1,14 +1,231 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { DataService } from '../../../../services/data-service/data.service';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css'
 })
 export class ProjectComponent {
+
+
+    constructor(private dataService: DataService,private http: HttpClient) {}
+  
+
+
+  ngOnInit(): void {
+
+    this.fetchProjects();
+this.fetchProjectDeliverables();
+
+    this.dataService.getRolesAndDepartments().subscribe(
+      (response) => {
+        console.log('Roles, Departments, Users, and Customers:', response);
+        // this.optionRoles = response.roles;
+        // this.optionDepartments = response.departments;
+        this.optionUsers = response.users; 
+        this.optionCustomers = response.customers;  // Store customer data
+        this.optionTypeOfEngagement = response.typeOfEngagement;
+    this.optionTypeOfProject = response.typeOfProject;
+    this.optionProjectStatus = response.projectStatus;
+    this.optionProject = response.projects;
+
+      },
+      (error) => {
+        console.error('Error fetching data', error);
+      }
+    );
+    
+  }
+
+    // Define form object
+    projectForm: any = {
+      customer_id: '',
+      project_name: '',
+      planned_start_date: '',
+      actual_start_date: '',
+      type_of_project_id: '',
+      type_of_engagement_id: '',
+      project_manager_id: '',
+      project_status_id: '',
+      tentative_end_date: '',
+      project_description: '',
+    };
+  
+   
+//   // Function to handle the form submission
+submitProject() {
+  this.dataService.addProject(this.projectForm).subscribe(
+    (response) => {
+      console.log('Project added successfully:', response);
+      alert('Project added successfully!');
+    },
+    (error) => {
+      console.error('Error adding project', error);
+      alert('Error adding project!');
+    }
+  );
+}
+
+// submit project deliverable
+projectDeliverableForm: any = {
+  project_id: '',
+  project_deliverable_name: '',
+  planned_start_date: '',
+  actual_start_date: '',
+  tentative_end_date: '',
+  deliverable_description: '',
+};
+
+submitProjectDeliverable() {
+  this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
+    (response) => {
+      console.log('Project deliverable added successfully:', response);
+      alert('Project deliverable added successfully!');
+    },
+    (error) => {
+      console.error('Error adding project deliverable', error);
+      alert('Error adding project deliverable!');
+    }
+  );
+}
+
+
+project = {
+  project_id: null, // Primary key
+  project_name: '',
+  customer_id: null, // Foreign key reference
+  customer_name: '',
+  project_manager_id: null, // Foreign key reference
+  project_manager: '',
+  type_of_project_id: null, // Foreign key reference
+  type_of_project: '',
+  type_of_engagement_id: null, // Foreign key reference
+  type_of_engagement: '',
+  project_status_id: null, // Foreign key reference
+  project_status: '',
+  planned_start_date: '', // Format as 'YYYY-MM-DD' if needed
+  actual_start_date: '', // Format as 'YYYY-MM-DD' if needed
+  tentative_end_date: '', // Format as 'YYYY-MM-DD' if needed
+  project_description: '',
+  is_deleted: null, // For soft delete
+  created_at: '', // Optional: Track creation date
+  updated_at: '' // Optional: Track last update date
+};
+
+projects: any[] = [];  // Store the project data
+
+fetchProjects(): void {
+  this.dataService.getAllProjects().subscribe(
+    (response) => {
+      console.log('Projects Response:', response);
+      this.projects = response;
+    },
+    (error) => {
+      console.error('Error fetching projects:', error);
+    }
+  );
+}
+
+projectDeliverables: any[] = [];  // Store project deliverables data
+projectDeliverable = {
+  pd_id: null, // Primary key
+  project_id: null, // Foreign key reference
+  project_name: '',
+  project_deliverable_name: '',
+  planned_start_date: '', // Format as 'YYYY-MM-DD' if needed
+  actual_start_date: '', // Format as 'YYYY-MM-DD' if needed
+  tentative_end_date: '', // Format as 'YYYY-MM-DD' if needed
+  deliverable_description: '',
+  is_deleted: null, // For soft delete
+  created_at: '', // Optional: Track creation date
+  updated_at: '' // Optional: Track last update date
+}
+
+// Function to fetch project deliverables
+fetchProjectDeliverables(): void {
+  this.dataService.getAllProjectDeliverables().subscribe(
+    (response) => {
+      console.log('Project Deliverables Response:', response);
+      this.projectDeliverables = response;
+    },
+    (error) => {
+      console.error('Error fetching project deliverables:', error);
+    }
+  );
+}
+
+
+
+
+
+// Function to delete a project
+deleteProject(projectId: number): void {
+  const confirmDelete = window.confirm('Are you sure you want to delete this project?');
+
+  if (confirmDelete) {
+    this.dataService.deleteProject(projectId).subscribe(
+      (response) => {
+        console.log('Project deleted successfully:', response);
+        alert('Project deleted successfully!');
+        this.fetchProjects();
+      },
+      (error) => {
+        console.error('Error deleting project:', error);
+        alert('Error deleting project!');
+      }
+    );
+  }
+}
+
+
+deleteProjectDeliverable(deliverableId: number): void {
+  const confirmDelete = window.confirm('Are you sure you want to delete this project deliverable?');
+
+  if (confirmDelete) {
+    this.dataService.deleteProjectDeliverable(deliverableId).subscribe(
+      (response) => {
+        console.log('Project deliverable deleted successfully:', response);
+        this.fetchProjectDeliverables(); // Refresh the list after deletion
+      },
+      (error) => {
+        console.error('Error deleting project deliverable:', error);
+        alert('Error deleting project deliverable!');
+      }
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  selectedCustomer: number | null = null;  // Stores selected customer ID
+  selectedProjectManager: number | null = null;  // Stores selected Project Manager ID
+
+optionProject: any[] = [];
+  optionTypeOfEngagement: any[] = [];
+  optionTypeOfProject: any[] = [];
+  optionProjectStatus: any[] = [];
+  
+  optionUsers: any[] = [];
+  // optionDepartments:any;
+  // optionRoles:any;
+  optionCustomers: any[] = [];
+
+
   selectedSection: string = 'project';
   showTaskCategoryForm: boolean = false;
   showProjectDeliverableForm: boolean = false;
@@ -16,24 +233,9 @@ export class ProjectComponent {
   showProjectManagerForm: boolean = false;
   showProjectForm: boolean = false;
 
-  projectRoles = [
-    { id: 1, name: 'Developer' },
-    { id: 2, name: 'Tester' }
-  ];
 
-  projectManagers = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' }
-  ];
-  customers = [
-    { id: 1, name: 'ABC Corp' },
-    { id: 2, name: 'XYZ Ltd' }
-];
 
-  projects = [
-    { id: 1, name: 'Project A' },
-    { id: 2, name: 'Project B' }
-  ];
+
 
 
 
@@ -42,30 +244,19 @@ export class ProjectComponent {
     { id: 2, name: 'Testing', activityDate: '2025-02-11', createdBy: 'Admin' }
   ];
 
-  projectDeliverables = [
-    { id: 1, name: 'Final Report', activityDate: '2025-02-10', createdBy: 'Admin' },
-    { id: 2, name: 'Prototype', activityDate: '2025-02-11', createdBy: 'Admin' }
-  ];
+
 
   deleteTaskCategory(id: number) {
     this.taskCategories = this.taskCategories.filter(task => task.id !== id);
   }
 
-  deleteProjectDeliverable(id: number) {
-    this.projectDeliverables = this.projectDeliverables.filter(deliverable => deliverable.id !== id);
-  }
 
   deleteProjectRole(id: number) {
-    this.projectRoles = this.projectRoles.filter(role => role.id !== id);
   }
 
   deleteProjectManager(id: number) {
-    this.projectManagers = this.projectManagers.filter(manager => manager.id !== id);
   }
 
-  deleteProject(id: number) {
-    this.projects = this.projects.filter(project => project.id !== id);
-  }
 
 
   showTaskCategoryModal: boolean = false;
