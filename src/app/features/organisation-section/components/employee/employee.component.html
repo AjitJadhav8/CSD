@@ -5,12 +5,10 @@
             (click)="selectedSection = 'employee'">Employee</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'department'">Department</button>
-
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'position'">Position</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'skills'">Skills</button>
-
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
             (click)="selectedSection = 'reportingManagerHistory'">Reporting Manager History</button>
     </div>
@@ -19,7 +17,6 @@
     <div *ngIf="selectedSection === 'employee'">
         <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('employee')">+ Add
             Employee</button>
-
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
@@ -37,14 +34,12 @@
                     <th class="border p-2">Date of Birth</th>
                     <th class="border p-2">Blood Group</th>
                     <th class="border p-2">Date of Joining</th>
-
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let employee of employees; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-
+                    <td class="border p-2">{{ i + 1 }}</td> 
                     <td class="border p-2">{{ employee.user_code }}</td>
                     <td class="border p-2">{{ employee.user_first_name }} {{ employee.user_last_name }}</td>
                     <td class="border p-2">{{ employee.user_email }}</td>
@@ -63,14 +58,11 @@
                             (click)="assignDetails(employee)">Assign Details</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
                             (click)="deleteEmployee(employee.user_id)">Delete</button>
-
                     </td>
                 </tr>
             </tbody>
         </table>
 
-
-        <!-- Employee Form Modal -->
         <!-- Employee Form Modal -->
         <div *ngIf="showEmployeeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
             (click)="toggleModal('employee')">
@@ -102,12 +94,11 @@
                             <div><label>Emergency Contact*</label><input type="text"
                                     [(ngModel)]="employee.user_emergency_contact" name="user_emergency_contact" required
                                     class="border p-2 w-full" /></div>
-
                             <div>
                                 <label>Role*</label>
                                 <select [(ngModel)]="employee.role_id" name="role" required class="border p-2 w-full">
                                     <option value="" disabled selected>Select Role</option>
-                                    <option *ngFor="let role of roles" [value]="role.role_id">{{ role.role_name }}
+                                    <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
                                     </option>
                                 </select>
                             </div>
@@ -116,7 +107,8 @@
                                 <select [(ngModel)]="employee.department_id" name="department" required
                                     class="border p-2 w-full">
                                     <option value="" disabled selected>Select Department</option>
-                                    <option *ngFor="let department of departments" [value]="department.department_id">{{
+                                    <option *ngFor="let department of optionDepartments"
+                                        [value]="department.department_id">{{
                                         department.department_name }}</option>
                                 </select>
                             </div>
@@ -165,7 +157,6 @@
                                 </select></div>
                             <div><label>Date of Joining*</label><input type="date" [(ngModel)]="employee.user_DOJ"
                                     name="user_DOJ" required class="border p-2 w-full" /></div>
-
                         </div>
                         <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-4">Save
                             Employee</button>
@@ -271,7 +262,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let department of departments; let i = index" class="hover:bg-gray-50">
+                <tr *ngFor="let department of optionDepartments; let i = index" class="hover:bg-gray-50">
                     <td class="border p-2">{{ i + 1 }}</td>
                     <td class="border p-2">{{ department.department_name }}</td>
                     <td class="border p-2">
@@ -281,10 +272,7 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
-
-
 
     <!-- Position Section -->
     <div *ngIf="selectedSection === 'position'">
@@ -441,7 +429,7 @@
                                 <select [(ngModel)]="employee.selectedUserId" name="user" required
                                     class="border p-2 w-full rounded-md">
                                     <option value="" disabled selected>Select Employee</option>
-                                    <option *ngFor="let user of users" [value]="user.user_id">
+                                    <option *ngFor="let user of optionUsers" [value]="user.user_id">
                                         {{ user.user_first_name }} {{ user.user_last_name }}
                                     </option>
                                 </select>
@@ -453,7 +441,7 @@
                                 <select [(ngModel)]="employee.selectedReportingManagerId" name="reporting_manager"
                                     required class="border p-2 w-full rounded-md">
                                     <option value="" disabled selected>Select Reporting Manager</option>
-                                    <option *ngFor="let user of users" [value]="user.user_id">
+                                    <option *ngFor="let user of optionUsers" [value]="user.user_id">
                                         {{ user.user_first_name }} {{ user.user_last_name }}
                                     </option>
                                 </select>
@@ -513,5 +501,4 @@
             </tbody>
         </table>
     </div>
-
 </div>
