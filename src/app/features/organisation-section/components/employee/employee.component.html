@@ -48,7 +48,7 @@
                     <td class="border p-2">{{ employee.role_name }}</td>
                     <td class="border p-2">{{ employee.department_name }}</td>
                     <td class="border p-2">{{ employee.is_passport ? 'Yes' : 'No' }}</td>
-                    <td class="border p-2">{{ employee.passport_validity|| 'NA' }}</td>
+                    <td class="border p-2">{{ employee.passport_validity| date:'dd-MMM-yyyy' }}</td>
                     <td class="border p-2">{{ employee.user_current_address }}</td>
                     <td class="border p-2">{{ employee.user_DOB | date:'dd-MMM-yyyy' }}</td>
                     <td class="border p-2">{{ employee.user_blood_group }}</td>
@@ -623,7 +623,6 @@
             <thead>
                 <tr class="bg-gray-100">
                     <th class="border p-2">S.No.</th>
-
                     <th class="border p-2">Skill Name</th>
                     <th class="border p-2">Category</th>
                     <th class="border p-2">Skill Category</th>

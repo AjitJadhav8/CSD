@@ -248,7 +248,7 @@ class OrgController {
         try {
             const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0 ORDER BY category_id DESC';
 
-            db.query(query, (err: any, results: { category_id: number,sector: string, industry: string, domain: string }[]) => {
+            db.query(query, (err: any, results: { category_id: number, sector: string, industry: string, domain: string }[]) => {
                 if (err) {
                     console.error('Database error:', err);
                     res.status(500).json({ error: 'Error fetching categories' });
@@ -354,7 +354,7 @@ class OrgController {
 
     // ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
 
-        // ---- Department --------
+    // ---- Department --------
 
     async addDepartment(req: Request, res: Response): Promise<void> {
         try {
@@ -429,7 +429,7 @@ class OrgController {
         }
     }
 
-        // ---- Position --------
+    // ---- Position --------
 
     async addPosition(req: Request, res: Response): Promise<void> {
         try {
@@ -503,7 +503,7 @@ class OrgController {
         }
     }
 
-        // ---- Employee --------
+    // ---- Employee --------
 
     async addEmployee(req: Request, res: Response): Promise<void> {
         try {
@@ -610,7 +610,7 @@ class OrgController {
         }
     }
 
-        // ---- Skill --------
+    // ---- Skill --------
 
     async addSkill(req: Request, res: Response): Promise<void> {
         try {
@@ -689,7 +689,7 @@ class OrgController {
         }
     }
 
-        // ---- Reporting Manager History --------
+    // ---- Reporting Manager History --------
 
     async addReportingManagerHistory(req: Request, res: Response): Promise<void> {
         const { employee_id, reporting_manager_id, from_date, till_date } = req.body;
@@ -775,7 +775,7 @@ class OrgController {
         }
     }
 
-        // ---- project --------
+    // ---- project --------
 
     async addProject(req: Request, res: Response): Promise<void> {
         try {
@@ -876,7 +876,7 @@ class OrgController {
         }
     }
 
-        // ---- Project Deliverable --------
+    // ---- Project Deliverable --------
 
     async addProjectDeliverable(req: Request, res: Response): Promise<void> {
         try {
@@ -962,7 +962,7 @@ class OrgController {
         }
     }
 
-        // ---- Task Category --------
+    // ---- Task Category --------
 
     async addTaskCategory(req: Request, res: Response): Promise<void> {
         try {

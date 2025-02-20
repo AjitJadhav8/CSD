@@ -15,23 +15,12 @@ import Swal from 'sweetalert2';
 })
 export class CustomerComponent {
 
-
-
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.fetchMasterCategories();
     this.fetchCustomers();
-    
   }
-
-
-
-
-
-
-
-
 
 
   // ------------------ Customer ------------------------
@@ -54,6 +43,7 @@ export class CustomerComponent {
     country: '',
     description: ''
   };
+
   submitCustomer(form: NgForm) {
     if (form.invalid) {
       Swal.fire({
@@ -233,7 +223,6 @@ export class CustomerComponent {
     });
   }
 
-
   saveCategory(): void {
     const category = {
       sector: this.newSector ? this.newSector : this.selectedSector,
@@ -277,7 +266,6 @@ export class CustomerComponent {
       }
     );
   }
-
 
   filterIndustries(): void {
     if (!this.selectedSector) {

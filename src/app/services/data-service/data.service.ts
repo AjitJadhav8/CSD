@@ -85,7 +85,7 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/skills/${skillId}`);
   }
 
- 
+
 
   // ------------------ Employee ------------------------
 
