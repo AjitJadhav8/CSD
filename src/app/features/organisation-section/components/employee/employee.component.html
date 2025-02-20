@@ -39,7 +39,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let employee of employees; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td> 
+                    <td class="border p-2">{{ i + 1 }}</td>
                     <td class="border p-2">{{ employee.user_code }}</td>
                     <td class="border p-2">{{ employee.user_first_name }} {{ employee.user_last_name }}</td>
                     <td class="border p-2">{{ employee.user_email }}</td>
@@ -76,34 +76,145 @@
 
                 <!-- Scrollable Form -->
                 <div class="mt-4 max-h-[70vh] overflow-y-auto p-2">
-                    <form (ngSubmit)="submitEmployee(); $event.preventDefault()">
+                    <form #employeeForm="ngForm" (ngSubmit)="submitEmployee(employeeForm); $event.preventDefault()">
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label>Employee Code*</label><input type="text" [(ngModel)]="employee.user_code"
-                                    name="user_code" required class="border p-2 w-full" /></div>
+                            <!-- <div><label>Employee Code*</label><input type="text" [(ngModel)]="employee.user_code"
+                                    name="user_code" required class="border p-2 w-full" /></div> -->
 
-                            <div><label>First Name*</label><input type="text" [(ngModel)]="employee.user_first_name"
-                                    name="user_first_name" required class="border p-2 w-full" /></div>
-                            <div><label>Middle Name</label><input type="text" [(ngModel)]="employee.user_middle_name"
-                                    name="user_middle_name" class="border p-2 w-full" /></div>
-                            <div><label>Last Name*</label><input type="text" [(ngModel)]="employee.user_last_name"
-                                    name="user_last_name" required class="border p-2 w-full" /></div>
-                            <div><label>Email ID*</label><input type="email" [(ngModel)]="employee.user_email"
-                                    name="user_email" required class="border p-2 w-full" /></div>
-                            <div><label>Contact Number*</label><input type="text" [(ngModel)]="employee.user_contact"
-                                    name="user_contact" required class="border p-2 w-full" /></div>
-                            <div><label>Emergency Contact*</label><input type="text"
+                            <!-- Employee Code -->
+                            <div class="form-group">
+                                <label>Employee Code*</label>
+                                <input type="text" [(ngModel)]="employee.user_code" #userCode="ngModel" name="user_code"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userCode.invalid && userCode.touched) || (employeeForm.submitted && userCode.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userCode.invalid && userCode.touched) || (employeeForm.submitted && userCode.invalid)">
+                                    Employee Code is required
+                                </span>
+                            </div>
+
+
+
+                            <!-- <div><label>First Name*</label><input type="text" [(ngModel)]="employee.user_first_name"
+                                    name="user_first_name" required class="border p-2 w-full" /></div> -->
+
+                            <!-- First Name -->
+                            <div class="form-group">
+                                <label>First Name*</label>
+                                <input type="text" [(ngModel)]="employee.user_first_name" #userFirstName="ngModel"
+                                    name="user_first_name" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userFirstName.invalid && userFirstName.touched) || (employeeForm.submitted && userFirstName.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userFirstName.invalid && userFirstName.touched) || (employeeForm.submitted && userFirstName.invalid)">
+                                    First Name is required
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Middle Name</label><input type="text" [(ngModel)]="employee.user_middle_name"
+                                    name="user_middle_name" class="border p-2 w-full" /></div> -->
+
+                            <!-- Middle Name -->
+                            <div class="form-group">
+                                <label>Middle Name</label>
+                                <input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name"
+                                    class="border p-2 w-full rounded-md">
+                            </div>
+                            <!-- <div><label>Last Name*</label><input type="text" [(ngModel)]="employee.user_last_name"
+                                    name="user_last_name" required class="border p-2 w-full" /></div> -->
+
+                            <!-- Last Name -->
+                            <div class="form-group">
+                                <label>Last Name*</label>
+                                <input type="text" [(ngModel)]="employee.user_last_name" #userLastName="ngModel"
+                                    name="user_last_name" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userLastName.invalid && userLastName.touched) || (employeeForm.submitted && userLastName.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userLastName.invalid && userLastName.touched) || (employeeForm.submitted && userLastName.invalid)">
+                                    Last Name is required
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Email ID*</label><input type="email" [(ngModel)]="employee.user_email"
+                                    name="user_email" required class="border p-2 w-full" /></div> -->
+
+                            <!-- Email ID -->
+                            <div class="form-group">
+                                <label>Email ID*</label>
+                                <input type="email" [(ngModel)]="employee.user_email" #userEmail="ngModel"
+                                    name="user_email" required
+                                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                    class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userEmail.invalid && userEmail.touched) || (employeeForm.submitted && userEmail.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userEmail.invalid && userEmail.touched) || (employeeForm.submitted && userEmail.invalid)">
+                                    Valid Email is required
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Contact Number*</label><input type="text" [(ngModel)]="employee.user_contact"
+                                    name="user_contact" required class="border p-2 w-full" /></div> -->
+
+                            <!-- Contact Number -->
+                            <div class="form-group">
+                                <label>Contact Number*</label>
+                                <input type="text" [(ngModel)]="employee.user_contact" #userContact="ngModel"
+                                    name="user_contact" required pattern="^[0-9]{10}$"
+                                    class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userContact.invalid && userContact.touched) || (employeeForm.submitted && userContact.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userContact.invalid && userContact.touched) || (employeeForm.submitted && userContact.invalid)">
+                                    Enter a valid 10-digit phone number
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Emergency Contact*</label><input type="text"
                                     [(ngModel)]="employee.user_emergency_contact" name="user_emergency_contact" required
-                                    class="border p-2 w-full" /></div>
-                            <div>
+                                    class="border p-2 w-full" /></div> -->
+
+                            <!-- Emergency Contact -->
+                            <div class="form-group">
+                                <label>Emergency Contact*</label>
+                                <input type="text" [(ngModel)]="employee.user_emergency_contact"
+                                    #userEmergencyContact="ngModel" name="user_emergency_contact" required
+                                    pattern="^[0-9]{10}$" class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userEmergencyContact.invalid && userEmergencyContact.touched) || (employeeForm.submitted && userEmergencyContact.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userEmergencyContact.invalid && userEmergencyContact.touched) || (employeeForm.submitted && userEmergencyContact.invalid)">
+                                    Enter a valid 10-digit emergency contact number
+                                </span>
+                            </div>
+
+
+                            <!-- <div>
                                 <label>Role*</label>
                                 <select [(ngModel)]="employee.role_id" name="role" required class="border p-2 w-full">
                                     <option value="" disabled selected>Select Role</option>
                                     <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
                                     </option>
                                 </select>
+                            </div> -->
+
+                            <!-- Role -->
+                            <div class="form-group">
+                                <label>Role*</label>
+                                <select [(ngModel)]="employee.role_id" #role="ngModel" name="role" required
+                                    class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (role.invalid && role.touched) || (employeeForm.submitted && role.invalid)}">
+                                    <option value="" disabled selected>Select Role</option>
+                                    <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(role.invalid && role.touched) || (employeeForm.submitted && role.invalid)">
+                                    Role is required
+                                </span>
                             </div>
 
-                            <div><label>Department*</label>
+                            <!-- <div><label>Department*</label>
                                 <select [(ngModel)]="employee.department_id" name="department" required
                                     class="border p-2 w-full">
                                     <option value="" disabled selected>Select Department</option>
@@ -111,10 +222,44 @@
                                         [value]="department.department_id">{{
                                         department.department_name }}</option>
                                 </select>
+                            </div> -->
+
+                            <!-- Department -->
+                            <div class="form-group">
+                                <label>Department*</label>
+                                <select [(ngModel)]="employee.department_id" #department="ngModel" name="department"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (department.invalid && department.touched) || (employeeForm.submitted && department.invalid)}">
+                                    <option value="" disabled selected>Select Department</option>
+                                    <option *ngFor="let department of optionDepartments"
+                                        [value]="department.department_id">
+                                        {{ department.department_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(department.invalid && department.touched) || (employeeForm.submitted && department.invalid)">
+                                    Department is required
+                                </span>
                             </div>
 
                             <!-- Passport Yes/No -->
-                            <div>
+                            <!-- <div>
+                                <label class="block font-semibold">Do you have a passport?</label>
+                                <div class="flex space-x-4 mt-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="passport" [(ngModel)]="employee.is_passport" value="1"
+                                            (change)="onPassportChange($event)" />
+                                        <span class="ml-2">Yes</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" [(ngModel)]="employee.is_passport" name="passport" value="0"
+                                            (change)="onPassportChange($event)" />
+                                        <span class="ml-2">No</span>
+                                    </label>
+                                </div>
+                            </div> -->
+                            <!-- Passport Yes/No -->
+                            <div class="form-group">
                                 <label class="block font-semibold">Do you have a passport?</label>
                                 <div class="flex space-x-4 mt-2">
                                     <label class="flex items-center">
@@ -131,17 +276,53 @@
                             </div>
 
                             <!-- Validity of Passport (Shown Only If "Yes" is Selected) -->
-                            <div *ngIf="hasPassport">
+                            <!-- <div *ngIf="hasPassport">
                                 <label>Validity of Passport*</label>
                                 <input type="date" [(ngModel)]="employee.passport_validity" name="passport_validity"
                                     required class="border p-2 w-full" />
+                            </div> -->
+                            <!-- Validity of Passport (Shown Only If "Yes" is Selected) -->
+                            <div class="form-group" *ngIf="hasPassport">
+                                <label>Validity of Passport*</label>
+                                <input type="date" [(ngModel)]="employee.passport_validity" #passportValidity="ngModel"
+                                    name="passport_validity" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (passportValidity.invalid && passportValidity.touched) || (employeeForm.submitted && passportValidity.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(passportValidity.invalid && passportValidity.touched) || (employeeForm.submitted && passportValidity.invalid)">
+                                    Passport validity is required
+                                </span>
                             </div>
-                            <div><label>Current Address</label><input type="text"
+
+                            <!-- <div><label>Current Address</label><input type="text"
                                     [(ngModel)]="employee.user_current_address" name="user_current_address"
-                                    class="border p-2 w-full" /></div>
-                            <div><label>Date of Birth*</label><input type="date" [(ngModel)]="employee.user_DOB"
-                                    name="user_DOB" required class="border p-2 w-full" /></div>
-                            <div><label>Blood Group*</label><select [(ngModel)]="employee.user_blood_group"
+                                    class="border p-2 w-full" /></div> -->
+
+                            <!-- Current Address -->
+                            <div class="form-group">
+                                <label>Current Address</label>
+                                <input type="text" [(ngModel)]="employee.user_current_address"
+                                    name="user_current_address" class="border p-2 w-full rounded-md">
+                            </div>
+
+
+
+                            <!-- <div><label>Date of Birth*</label><input type="date" [(ngModel)]="employee.user_DOB"
+                                    name="user_DOB" required class="border p-2 w-full" /></div> -->
+
+                            <!-- Date of Birth -->
+                            <div class="form-group">
+                                <label>Date of Birth*</label>
+                                <input type="date" [(ngModel)]="employee.user_DOB" #userDOB="ngModel" name="user_DOB"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userDOB.invalid && userDOB.touched) || (employeeForm.submitted && userDOB.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userDOB.invalid && userDOB.touched) || (employeeForm.submitted && userDOB.invalid)">
+                                    Date of Birth is required
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Blood Group*</label><select [(ngModel)]="employee.user_blood_group"
                                     name="user_blood_group" required class="border p-2 w-full">
                                     <option value="">Select Blood Group</option>
                                     <option value="A+">A+</option>
@@ -154,9 +335,47 @@
                                     <option value="O-">O-</option>
                                     <option value="RH+">RH+</option>
                                     <option value="RH-">RH-</option>
-                                </select></div>
-                            <div><label>Date of Joining*</label><input type="date" [(ngModel)]="employee.user_DOJ"
-                                    name="user_DOJ" required class="border p-2 w-full" /></div>
+                                </select></div> -->
+
+                            <!-- Blood Group -->
+                            <div class="form-group">
+                                <label>Blood Group*</label>
+                                <select [(ngModel)]="employee.user_blood_group" #userBloodGroup="ngModel"
+                                    name="user_blood_group" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userBloodGroup.invalid && userBloodGroup.touched) || (employeeForm.submitted && userBloodGroup.invalid)}">
+                                    <option value="">Select Blood Group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="RH+">RH+</option>
+                                    <option value="RH-">RH-</option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userBloodGroup.invalid && userBloodGroup.touched) || (employeeForm.submitted && userBloodGroup.invalid)">
+                                    Blood Group is required
+                                </span>
+                            </div>
+
+
+                            <!-- <div><label>Date of Joining*</label><input type="date" [(ngModel)]="employee.user_DOJ"
+                                    name="user_DOJ" required class="border p-2 w-full" /></div> -->
+                            <!-- Date of Joining -->
+                            <div class="form-group">
+                                <label>Date of Joining*</label>
+                                <input type="date" [(ngModel)]="employee.user_DOJ" #userDOJ="ngModel" name="user_DOJ"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (userDOJ.invalid && userDOJ.touched) || (employeeForm.submitted && userDOJ.invalid)}">
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(userDOJ.invalid && userDOJ.touched) || (employeeForm.submitted && userDOJ.invalid)">
+                                    Date of Joining is required
+                                </span>
+                            </div>
+
                         </div>
                         <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-4">Save
                             Employee</button>
@@ -240,10 +459,18 @@
 
                 <!-- Form Content -->
                 <div class="mt-4">
-                    <form (submit)="submitDepartment(); $event.preventDefault()">
+                    <form #departmentForm="ngForm" (submit)="submitDepartment(departmentForm); $event.preventDefault()">
                         <label class="block mb-2 font-semibold">Department Name*</label>
-                        <input type="text" [(ngModel)]="departmentName" name="departmentName" required
-                            class="border p-2 w-full rounded-md" />
+                        <input type="text" [(ngModel)]="departmentName" #departmentNameField="ngModel"
+                            name="departmentName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (departmentNameField.invalid && departmentNameField.touched) || (departmentForm.submitted && departmentNameField.invalid)}" />
+
+                        <!-- Validation Error Message -->
+                        <span class="text-red-500 text-sm"
+                            *ngIf="departmentNameField.invalid && (departmentNameField.touched || departmentForm.submitted)">
+                            Department Name is required.
+                        </span>
+
                         <div class="mt-4 flex justify-center">
                             <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add
                                 Department</button>
@@ -290,10 +517,18 @@
                         (click)="toggleModal('position')">&times;</button>
                 </div>
                 <div class="mt-4">
-                    <form (submit)="submitPosition(); $event.preventDefault()">
+                    <form #positionForm="ngForm" (submit)="submitPosition(positionForm); $event.preventDefault()">
                         <label class="block mb-2 font-semibold">Position Name*</label>
-                        <input type="text" [(ngModel)]="positionName" name="positionName" required
-                            class="border p-2 w-full rounded-md" />
+                        <input type="text" [(ngModel)]="positionName" #positionNameField="ngModel" name="positionName"
+                            required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (positionNameField.invalid && positionNameField.touched) || (positionForm.submitted && positionNameField.invalid)}" />
+
+                        <!-- Validation Error Message -->
+                        <span class="text-red-500 text-sm"
+                            *ngIf="positionNameField.invalid && (positionNameField.touched || positionForm.submitted)">
+                            Position Name is required.
+                        </span>
+
                         <div class="mt-4 flex justify-center">
                             <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add
                                 Position</button>
@@ -307,9 +542,7 @@
             <thead>
                 <tr class="bg-gray-100">
                     <th class="border p-2">S.No.</th>
-
                     <th class="border p-2">Position Name</th>
-
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
@@ -342,21 +575,32 @@
                         (click)="toggleModal('skill')">&times;</button>
                 </div>
                 <div class="mt-4">
-                    <form (submit)="submitSkill(); $event.preventDefault();">
+                    <form #skillForm="ngForm" (submit)="submitSkill(skillForm); $event.preventDefault();">
                         <!-- Skill Name -->
                         <label class="block mb-2 font-semibold">Skill Name*</label>
-                        <input type="text" [(ngModel)]="skillName" name="skillName" required
-                            class="border p-2 w-full rounded-md" />
+                        <input type="text" [(ngModel)]="skillName" #skillNameField="ngModel" name="skillName" required
+                            class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (skillNameField.invalid && skillNameField.touched) || (skillForm.submitted && skillNameField.invalid)}" />
+                        <span class="text-red-500 text-sm"
+                            *ngIf="skillNameField.invalid && (skillNameField.touched || skillForm.submitted)">
+                            Skill Name is required.
+                        </span>
+
                         <!-- Skill Category -->
                         <label class="block mb-2 font-semibold mt-4">Skill Category*</label>
-                        <select [(ngModel)]="skillCategory" name="skillCategory" required
-                            class="border p-2 w-full rounded-md">
+                        <select [(ngModel)]="skillCategory" #skillCategoryField="ngModel" name="skillCategory" required
+                            class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (skillCategoryField.invalid && skillCategoryField.touched) || (skillForm.submitted && skillCategoryField.invalid)}">
                             <option value="" disabled selected>Select Category</option>
                             <option value="technical">Technical</option>
                             <option value="soft-skill">Soft Skill</option>
                             <option value="management">Management</option>
                             <option value="other">Other</option>
                         </select>
+                        <span class="text-red-500 text-sm"
+                            *ngIf="skillCategoryField.invalid && (skillCategoryField.touched || skillForm.submitted)">
+                            Skill Category is required.
+                        </span>
 
                         <!-- Skill Description -->
                         <label class="block mb-2 font-semibold mt-4">Skill Description</label>
@@ -421,46 +665,70 @@
                         (click)="toggleModal('reportingManager')">&times;</button>
                 </div>
                 <div class="mt-4">
-                    <form (ngSubmit)="onSubmitReportingManager()">
+                    <form #reportingManagerForm="ngForm"
+                        (ngSubmit)="onSubmitReportingManager(reportingManagerForm); $event.preventDefault();">
                         <div class="grid grid-cols-2 gap-4">
+                            <!-- Employee Name Dropdown -->
                             <!-- Employee Name Dropdown -->
                             <div>
                                 <label class="block mb-2 font-semibold">Employee Name*</label>
-                                <select [(ngModel)]="employee.selectedUserId" name="user" required
-                                    class="border p-2 w-full rounded-md">
+                                <select [(ngModel)]="employee.selectedUserId" #employeeField="ngModel" name="user"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)}">
                                     <option value="" disabled selected>Select Employee</option>
                                     <option *ngFor="let user of optionUsers" [value]="user.user_id">
                                         {{ user.user_first_name }} {{ user.user_last_name }}
                                     </option>
                                 </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="employeeField.invalid && (employeeField.touched || reportingManagerForm.submitted)">
+                                    Employee Name is required.
+                                </span>
                             </div>
 
                             <!-- Reporting Manager Dropdown -->
+                            <!-- Reporting Manager Dropdown -->
                             <div>
                                 <label class="block mb-2 font-semibold">Reporting Manager*</label>
-                                <select [(ngModel)]="employee.selectedReportingManagerId" name="reporting_manager"
-                                    required class="border p-2 w-full rounded-md">
+                                <select [(ngModel)]="employee.selectedReportingManagerId" #managerField="ngModel"
+                                    name="reporting_manager" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)}">
                                     <option value="" disabled selected>Select Reporting Manager</option>
                                     <option *ngFor="let user of optionUsers" [value]="user.user_id">
                                         {{ user.user_first_name }} {{ user.user_last_name }}
                                     </option>
                                 </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="managerField.invalid && (managerField.touched || reportingManagerForm.submitted)">
+                                    Reporting Manager is required.
+                                </span>
                             </div>
 
 
 
                             <!-- From Date -->
+                            <!-- From Date -->
                             <div>
                                 <label class="block mb-2 font-semibold">From Date*</label>
-                                <input type="date" [(ngModel)]="fromDate" name="fromDate" required
-                                    class="border p-2 w-full rounded-md" />
+                                <input type="date" [(ngModel)]="fromDate" #fromDateField="ngModel" name="fromDate"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (fromDateField.invalid && fromDateField.touched) || (reportingManagerForm.submitted && fromDateField.invalid)}" />
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="fromDateField.invalid && (fromDateField.touched || reportingManagerForm.submitted)">
+                                    From Date is required.
+                                </span>
                             </div>
 
                             <!-- Till Date -->
                             <div>
                                 <label class="block mb-2 font-semibold">Till Date*</label>
-                                <input type="date" [(ngModel)]="tillDate" name="tillDate" required
-                                    class="border p-2 w-full rounded-md" />
+                                <input type="date" [(ngModel)]="tillDate" #tillDateField="ngModel" name="tillDate"
+                                    required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (tillDateField.invalid && tillDateField.touched) || (reportingManagerForm.submitted && tillDateField.invalid)}" />
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="tillDateField.invalid && (tillDateField.touched || reportingManagerForm.submitted)">
+                                    Till Date is required.
+                                </span>
                             </div>
                         </div>
 

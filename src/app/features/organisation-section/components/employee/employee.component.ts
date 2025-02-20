@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -59,40 +59,45 @@ export class EmployeeComponent {
     );
   }
 
-    // Add Department
-    submitDepartment(): void {
-      if (!this.departmentName.trim()) {
+  // Add Department
+  submitDepartment(departmentForm: NgForm): void {
+    if (departmentForm.invalid) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Department Name is required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    this.dataService.addDepartment(this.departmentName).subscribe(
+      (response) => {
+        this.fetchDepartments();
+        console.log('Department added:', response);
+
+        // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
-          icon: 'warning',
-          title: 'Department Name is required!',
+          icon: 'success',
+          title: 'Department added successfully!',
           showConfirmButton: false,
           timer: 3000
         });
-        return;
+
+        this.departmentName = ''; // Reset input field
+        departmentForm.resetForm(); // Reset form validation
+      },
+      (error) => {
+        console.error('Error adding department:', error);
       }
-  
-      this.dataService.addDepartment(this.departmentName).subscribe(
-        (response) => {
-          this.fetchDepartments();
-          console.log('Department added:', response);
- // Success Toast Notification
- Swal.fire({
-  toast: true,
-  position: 'top-end',
-  icon: 'success',
-  title: 'Department added successfully!',
-  showConfirmButton: false,
-  timer: 3000
-});
-          this.departmentName = ''; // Reset input field
-        },
-        (error) => {
-          console.error('Error adding department:', error);
-        }
-      );
-    }
+    );
+  }
+
+
 
   // Delete department
   deleteDepartment(departmentId: number): void {
@@ -110,7 +115,7 @@ export class EmployeeComponent {
           () => {
             console.log('Department deleted successfully');
             this.fetchDepartments();
-  
+
             // Success Toast Notification
             Swal.fire({
               toast: true,
@@ -128,7 +133,7 @@ export class EmployeeComponent {
       }
     });
   }
-  
+
 
   // ------------------ Position ------------------------
 
@@ -149,8 +154,8 @@ export class EmployeeComponent {
     );
   }
 
-  submitPosition(): void {
-    if (!this.positionName.trim()) {
+  submitPosition(positionForm: NgForm): void {
+    if (positionForm.invalid) {
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -166,22 +171,26 @@ export class EmployeeComponent {
       (response) => {
         this.fetchPositions();
         console.log('Position added:', response);
- // Success Toast Notification
- Swal.fire({
-  toast: true,
-  position: 'top-end',
-  icon: 'success',
-  title: 'Position added successfully!',
-  showConfirmButton: false,
-  timer: 3000
-});
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Position added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
         this.positionName = ''; // Reset input field
+        positionForm.resetForm(); // Reset form validation
       },
       (error) => {
         console.error('Error adding position:', error);
       }
     );
   }
+
 
   deletePosition(positionId: number): void {
     Swal.fire({
@@ -198,7 +207,7 @@ export class EmployeeComponent {
           () => {
             console.log('Position deleted successfully');
             this.fetchPositions();
-  
+
             // Success Toast Notification
             Swal.fire({
               toast: true,
@@ -216,7 +225,7 @@ export class EmployeeComponent {
       }
     });
   }
-  
+
 
   // ------------------ Skill ------------------------
 
@@ -239,8 +248,8 @@ export class EmployeeComponent {
     );
   }
 
-  submitSkill(): void {
-    if (!this.skillName.trim() || !this.skillCategory) {
+  submitSkill(skillForm: NgForm): void {
+    if (skillForm.invalid) {
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -253,34 +262,37 @@ export class EmployeeComponent {
     }
 
     const skillData = {
-      skill_name: this.skillName,
+      skill_name: this.skillName.trim(),
       skill_category: this.skillCategory,
-      skill_description: this.skillDescription || null,
+      skill_description: this.skillDescription?.trim() || null,
     };
 
     this.dataService.addSkill(skillData).subscribe(
       (response) => {
         console.log('Skill added:', response);
         this.fetchSkills();
-         // Success Toast Notification
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: 'Skill added successfully!',
-        showConfirmButton: false,
-        timer: 3000
-      });
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Skill added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
         this.skillName = ''; // Reset form fields
         this.skillCategory = '';
         this.skillDescription = '';
-        alert('Skill added successfully');
+        skillForm.resetForm(); // Reset validation states
       },
       (error) => {
         console.error('Error adding skill:', error);
       }
     );
   }
+
 
   deleteSkill(skillId: number): void {
     Swal.fire({
@@ -297,7 +309,7 @@ export class EmployeeComponent {
           () => {
             console.log('Skill deleted successfully');
             this.fetchSkills();
-  
+
             // Success Toast Notification
             Swal.fire({
               toast: true,
@@ -315,7 +327,7 @@ export class EmployeeComponent {
       }
     });
   }
-  
+
 
   // ------------------ Employee ------------------------
 
@@ -353,7 +365,20 @@ export class EmployeeComponent {
     );
   }
 
-  submitEmployee(): void {
+  submitEmployee(employeeForm: NgForm): void {
+    if (employeeForm.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return; // Stop execution if form is invalid
+    }
+
     this.dataService.addEmployee(this.employee).subscribe(
       (response) => {
         console.log('Employee saved successfully!', response);
@@ -367,21 +392,22 @@ export class EmployeeComponent {
           showConfirmButton: false,
           timer: 3000
         });
-  
+        employeeForm.resetForm();
+
       },
       (error) => {
         console.error('Error saving employee:', error);
       }
     );
   }
-  
+
 
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
       console.error('Employee ID is undefined!');
       return;
     }
-  
+
     Swal.fire({
       title: 'Are you sure?',
       text: 'This employee will be deleted!',
@@ -396,7 +422,7 @@ export class EmployeeComponent {
           () => {
             console.log('Employee deleted successfully');
             this.fetchEmployees();
-  
+
             // Success Toast Notification
             Swal.fire({
               toast: true,
@@ -406,7 +432,7 @@ export class EmployeeComponent {
               showConfirmButton: false,
               timer: 3000
             });
-  
+
           },
           (error) => {
             console.error('Error deleting employee:', error);
@@ -415,7 +441,7 @@ export class EmployeeComponent {
       }
     });
   }
-  
+
 
   // ------------------ Reporting Manager  ------------------------
 
@@ -436,20 +462,32 @@ export class EmployeeComponent {
     );
   }
 
-  onSubmitReportingManager(): void {
+  onSubmitReportingManager(reportingManagerForm: NgForm): void {
+    if (reportingManagerForm.invalid) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'All required fields must be filled!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
     const payload = {
       employee_id: this.employee.selectedUserId,
       reporting_manager_id: this.employee.selectedReportingManagerId,
       from_date: this.fromDate,
       till_date: this.tillDate,
     };
-  
+
     this.dataService.addReportingManagerHistory(payload).subscribe(
       (response) => {
         console.log('Reporting Manager history added successfully');
-        this.fetchReportingManagerHistory(); // Refresh the list after deletion
-        this.toggleModal('reportingManager'); // Close the modal on success
-  
+        this.fetchReportingManagerHistory(); // Refresh the list after submission
+        this.toggleModal('reportingManager'); // Close modal
+
         // Success Toast Notification
         Swal.fire({
           toast: true,
@@ -459,14 +497,16 @@ export class EmployeeComponent {
           showConfirmButton: false,
           timer: 3000
         });
-  
+
+        reportingManagerForm.resetForm(); // Reset form fields & validation
       },
       (error) => {
         console.error('Error adding reporting manager history', error);
       }
     );
   }
-  
+
+
 
   deleteReportingManager(managerId: number): void {
     Swal.fire({
@@ -482,7 +522,7 @@ export class EmployeeComponent {
         this.dataService.deleteReportingManager(managerId).subscribe(
           () => {
             this.fetchReportingManagerHistory(); // Refresh the list after deletion
-            
+
             // Success Toast Notification
             Swal.fire({
               toast: true,
@@ -492,7 +532,7 @@ export class EmployeeComponent {
               showConfirmButton: false,
               timer: 3000
             });
-  
+
           },
           (error) => {
             console.error('Error deleting reporting manager history:', error);
@@ -501,7 +541,7 @@ export class EmployeeComponent {
       }
     });
   }
-  
+
 
 
   // ------------------ Other  ------------------------
