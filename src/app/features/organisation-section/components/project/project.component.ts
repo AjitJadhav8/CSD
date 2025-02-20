@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-project',
@@ -19,7 +21,7 @@ export class ProjectComponent {
     this.fetchTaskCategories();
     this.fetchProjects();
     this.fetchProjectDeliverables();
-    this.dataService.getRolesAndDepartments().subscribe(
+    this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles, Departments, Users, and Customers:', response);
         // this.optionRoles = response.roles;
@@ -87,20 +89,6 @@ export class ProjectComponent {
     project_description: '',
   };
 
-  // Function to handle the form submission
-  submitProject() {
-    this.dataService.addProject(this.projectForm).subscribe(
-      (response) => {
-        console.log('Project added successfully:', response);
-        alert('Project added successfully!');
-      },
-      (error) => {
-        console.error('Error adding project', error);
-        alert('Error adding project!');
-      }
-    );
-  }
-
   fetchProjects(): void {
     this.dataService.getAllProjects().subscribe(
       (response) => {
@@ -113,24 +101,85 @@ export class ProjectComponent {
     );
   }
 
-  // Function to delete a project
-  deleteProject(projectId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this project?');
-
-    if (confirmDelete) {
-      this.dataService.deleteProject(projectId).subscribe(
-        (response) => {
-          console.log('Project deleted successfully:', response);
-          alert('Project deleted successfully!');
-          this.fetchProjects();
-        },
-        (error) => {
-          console.error('Error deleting project:', error);
-          alert('Error deleting project!');
-        }
-      );
-    }
+  submitProject(): void {
+    this.dataService.addProject(this.projectForm).subscribe(
+      (response) => {
+        console.log('Project added successfully:', response);
+        this.fetchProjects();
+        
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end', // Change to 'bottom-end' if needed
+          icon: 'success',
+          title: 'Project added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+  
+      },
+      (error) => {
+        console.error('Error adding project', error);
+        
+        // Error Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding project!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    );
   }
+  
+
+  deleteProject(projectId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This project will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteProject(projectId).subscribe(
+          (response) => {
+            console.log('Project deleted successfully:', response);
+            this.fetchProjects(); // Refresh the list
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Project deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+  
+          },
+          (error) => {
+            console.error('Error deleting project:', error);
+  
+            // Error Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error deleting project!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        );
+      }
+    });
+  }
+  
 
 
 // ------------------Project Deliverable------------------------
@@ -158,49 +207,96 @@ export class ProjectComponent {
     updated_at: '' // Optional: Track last update date
   }
 
-  // submit project deliverable
-  submitProjectDeliverable() {
-    this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
+  fetchProjectDeliverables(): void {
+    this.dataService.getAllProjectDeliverables().subscribe(
       (response) => {
-        console.log('Project deliverable added successfully:', response);
-        alert('Project deliverable added successfully!');
+        console.log('Project Deliverables Response:', response);
+        this.projectDeliverables = response;
       },
       (error) => {
-        console.error('Error adding project deliverable', error);
-        alert('Error adding project deliverable!');
+        console.error('Error fetching project deliverables:', error);
       }
     );
-  }
+}
 
-    // Function to fetch project deliverables
-  fetchProjectDeliverables(): void {
-      this.dataService.getAllProjectDeliverables().subscribe(
-        (response) => {
-          console.log('Project Deliverables Response:', response);
-          this.projectDeliverables = response;
-        },
-        (error) => {
-          console.error('Error fetching project deliverables:', error);
-        }
-      );
-  }
+submitProjectDeliverable(): void {
+  this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
+    (response) => {
+      console.log('Project deliverable added successfully:', response);
+      this.fetchProjectDeliverables(); // Refresh the list
+      // Success Toast Notification
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Project deliverable added successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+    },
+    (error) => {
+      console.error('Error adding project deliverable', error);
+
+      // Error Toast Notification
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error adding project deliverable!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }
+  );
+}
+ 
   
-  deleteProjectDeliverable(deliverableId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this project deliverable?');
-
-    if (confirmDelete) {
+deleteProjectDeliverable(deliverableId: number): void {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This project deliverable will be deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
       this.dataService.deleteProjectDeliverable(deliverableId).subscribe(
         (response) => {
           console.log('Project deliverable deleted successfully:', response);
-          this.fetchProjectDeliverables(); // Refresh the list after deletion
+          this.fetchProjectDeliverables(); // Refresh the list
+
+          // Success Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Project deliverable deleted successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+
         },
         (error) => {
           console.error('Error deleting project deliverable:', error);
-          alert('Error deleting project deliverable!');
+
+          // Error Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error deleting project deliverable!',
+            showConfirmButton: false,
+            timer: 3000
+          });
         }
       );
     }
-  }
+  });
+}
+
 
 
 // ------------------Project Deliverable------------------------
@@ -208,22 +304,6 @@ export class ProjectComponent {
   taskCategories: any[] = [];
   taskCategoryForm = { task_category_name: '' };
  
-  // Submit Task Category
-  submitTaskCategory(): void {
-    this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
-      (response) => {
-        alert('Task category added successfully!');
-        this.taskCategoryForm.task_category_name = '';
-        this.fetchTaskCategories();
-      },
-      (error) => {
-        alert('Error adding task category!');
-        console.error('Error adding task category:', error);
-      }
-    );
-  }
-  
-  // Fetch Task Categories
   fetchTaskCategories(): void {
     this.dataService.getAllTaskCategories().subscribe(
       (response) => {
@@ -235,23 +315,87 @@ export class ProjectComponent {
     );
   }
 
-  // Delete Task Category
-  deleteTaskCategory(taskCatId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this task category?');
-
-    if (confirmDelete) {
-      this.dataService.deleteTaskCategory(taskCatId).subscribe(
-        (response) => {
-          alert('Task category deleted successfully!');
-          this.fetchTaskCategories();
-        },
-        (error) => {
-          alert('Error deleting task category!');
-          console.error('Error deleting task category:', error);
-        }
-      );
-    }
+  submitTaskCategory(): void {
+    this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
+      (response) => {
+        console.log('Task category added successfully:', response);
+        
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Task category added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+  
+        // Reset form field
+        this.taskCategoryForm.task_category_name = '';
+        this.fetchTaskCategories();
+      },
+      (error) => {
+        console.error('Error adding task category:', error);
+  
+        // Error Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding task category!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    );
   }
+  
+
+  deleteTaskCategory(taskCatId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This task category will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteTaskCategory(taskCatId).subscribe(
+          (response) => {
+            console.log('Task category deleted successfully:', response);
+            this.fetchTaskCategories(); // Refresh the list
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Task category deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+  
+          },
+          (error) => {
+            console.error('Error deleting task category:', error);
+  
+            // Error Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error deleting task category!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        );
+      }
+    });
+  }
+  
 
 // ------------------Toggle Section ------------------------
 

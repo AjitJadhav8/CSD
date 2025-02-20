@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-employee',
@@ -20,7 +21,7 @@ export class EmployeeComponent {
     this.fetchPositions();
     this.fetchSkills();
     this.fetchReportingManagerHistory();
-    this.dataService.getRolesAndDepartments().subscribe(
+    this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles and Departments:', response);
         this.optioRoles = response.roles;
@@ -43,25 +44,6 @@ export class EmployeeComponent {
   showDepartmentModal: boolean = false;
   departmentName = '';
 
-  // Add Department
-  submitDepartment(): void {
-    if (!this.departmentName.trim()) {
-      alert('Department Name is required');
-      return;
-    }
-
-    this.dataService.addDepartment(this.departmentName).subscribe(
-      (response) => {
-        this.fetchDepartments();
-        console.log('Department added:', response);
-        alert('Department added successfully');
-        this.departmentName = ''; // Reset input field
-      },
-      (error) => {
-        console.error('Error adding department:', error);
-      }
-    );
-  }
 
   // Fetch departments data from the backend
   fetchDepartments(): void {
@@ -77,46 +59,82 @@ export class EmployeeComponent {
     );
   }
 
-  // Delete department
-  deleteDepartment(departmentId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this department?');
-    if (confirmDelete) {
-      this.dataService.deleteDepartment(departmentId).subscribe(
-        () => {
+    // Add Department
+    submitDepartment(): void {
+      if (!this.departmentName.trim()) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Department Name is required!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        return;
+      }
+  
+      this.dataService.addDepartment(this.departmentName).subscribe(
+        (response) => {
           this.fetchDepartments();
-          alert('Department deleted successfully');
+          console.log('Department added:', response);
+ // Success Toast Notification
+ Swal.fire({
+  toast: true,
+  position: 'top-end',
+  icon: 'success',
+  title: 'Department added successfully!',
+  showConfirmButton: false,
+  timer: 3000
+});
+          this.departmentName = ''; // Reset input field
         },
         (error) => {
-          console.error('Error deleting department:', error);
+          console.error('Error adding department:', error);
         }
       );
     }
+
+  // Delete department
+  deleteDepartment(departmentId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This department will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteDepartment(departmentId).subscribe(
+          () => {
+            console.log('Department deleted successfully');
+            this.fetchDepartments();
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Department deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          (error) => {
+            console.error('Error deleting department:', error);
+          }
+        );
+      }
+    });
   }
+  
 
   // ------------------ Position ------------------------
 
   showPositionModal: boolean = false;
   positionName = '';
   positions: any[] = [];
-
-  submitPosition(): void {
-    if (!this.positionName.trim()) {
-      alert('Position Name is required');
-      return;
-    }
-
-    this.dataService.addPosition(this.positionName).subscribe(
-      (response) => {
-        this.fetchPositions();
-        console.log('Position added:', response);
-        alert('Position added successfully');
-        this.positionName = ''; // Reset input field
-      },
-      (error) => {
-        console.error('Error adding position:', error);
-      }
-    );
-  }
 
   fetchPositions(): void {
     this.dataService.getAllPositions().subscribe(
@@ -131,21 +149,74 @@ export class EmployeeComponent {
     );
   }
 
-  deletePosition(positionId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this position?');
-
-    if (confirmDelete) {
-      this.dataService.deletePosition(positionId).subscribe(
-        () => {
-          this.fetchPositions();
-          alert('Position deleted successfully');
-        },
-        (error) => {
-          console.error('Error deleting position:', error);
-        }
-      );
+  submitPosition(): void {
+    if (!this.positionName.trim()) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Position Name is required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
     }
+
+    this.dataService.addPosition(this.positionName).subscribe(
+      (response) => {
+        this.fetchPositions();
+        console.log('Position added:', response);
+ // Success Toast Notification
+ Swal.fire({
+  toast: true,
+  position: 'top-end',
+  icon: 'success',
+  title: 'Position added successfully!',
+  showConfirmButton: false,
+  timer: 3000
+});
+        this.positionName = ''; // Reset input field
+      },
+      (error) => {
+        console.error('Error adding position:', error);
+      }
+    );
   }
+
+  deletePosition(positionId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This position will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deletePosition(positionId).subscribe(
+          () => {
+            console.log('Position deleted successfully');
+            this.fetchPositions();
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Position deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          (error) => {
+            console.error('Error deleting position:', error);
+          }
+        );
+      }
+    });
+  }
+  
 
   // ------------------ Skill ------------------------
 
@@ -154,33 +225,6 @@ export class EmployeeComponent {
   skillCategory = '';
   skillDescription = '';
   skills: any[] = [];
-
-  submitSkill(): void {
-    if (!this.skillName.trim() || !this.skillCategory) {
-      alert('Skill Name and Category are required');
-      return;
-    }
-
-    const skillData = {
-      skill_name: this.skillName,
-      skill_category: this.skillCategory,
-      skill_description: this.skillDescription || null,
-    };
-
-    this.dataService.addSkill(skillData).subscribe(
-      (response) => {
-        this.fetchSkills();
-        console.log('Skill added:', response);
-        this.skillName = ''; // Reset form fields
-        this.skillCategory = '';
-        this.skillDescription = '';
-        alert('Skill added successfully');
-      },
-      (error) => {
-        console.error('Error adding skill:', error);
-      }
-    );
-  }
 
   fetchSkills(): void {
     this.dataService.getAllSkills().subscribe(
@@ -195,21 +239,83 @@ export class EmployeeComponent {
     );
   }
 
-  deleteSkill(skillId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this skill?');
-
-    if (confirmDelete) {
-      this.dataService.deleteSkill(skillId).subscribe(
-        () => {
-          this.fetchSkills();
-          alert('Skill deleted successfully');
-        },
-        (error) => {
-          console.error('Error deleting skill:', error);
-        }
-      );
+  submitSkill(): void {
+    if (!this.skillName.trim() || !this.skillCategory) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Skill Name and Category are required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
     }
+
+    const skillData = {
+      skill_name: this.skillName,
+      skill_category: this.skillCategory,
+      skill_description: this.skillDescription || null,
+    };
+
+    this.dataService.addSkill(skillData).subscribe(
+      (response) => {
+        console.log('Skill added:', response);
+        this.fetchSkills();
+         // Success Toast Notification
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Skill added successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+        this.skillName = ''; // Reset form fields
+        this.skillCategory = '';
+        this.skillDescription = '';
+        alert('Skill added successfully');
+      },
+      (error) => {
+        console.error('Error adding skill:', error);
+      }
+    );
   }
+
+  deleteSkill(skillId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This skill will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteSkill(skillId).subscribe(
+          () => {
+            console.log('Skill deleted successfully');
+            this.fetchSkills();
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Skill deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          (error) => {
+            console.error('Error deleting skill:', error);
+          }
+        );
+      }
+    });
+  }
+  
 
   // ------------------ Employee ------------------------
 
@@ -236,16 +342,6 @@ export class EmployeeComponent {
   };
   employees: any[] = [];
 
-  submitEmployee() {
-    this.dataService.addEmployee(this.employee).subscribe((response) => {
-      this.fetchEmployees();
-      console.log('Employee saved successfully!', response);
-      alert('Employee saved successfully!');
-    }, (error) => {
-      console.error('Error saving employee:', error);
-    });
-  }
-
   fetchEmployees(): void {
     this.dataService.getAllEmployees().subscribe(
       (data) => {
@@ -257,26 +353,69 @@ export class EmployeeComponent {
     );
   }
 
+  submitEmployee(): void {
+    this.dataService.addEmployee(this.employee).subscribe(
+      (response) => {
+        console.log('Employee saved successfully!', response);
+        this.fetchEmployees();
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Employee saved successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+  
+      },
+      (error) => {
+        console.error('Error saving employee:', error);
+      }
+    );
+  }
+  
+
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
       console.error('Employee ID is undefined!');
       return;
     }
-
-    const confirmDelete = window.confirm('Are you sure you want to delete this employee?');
-
-    if (confirmDelete) {
-      this.dataService.softDeleteEmployee(employeeId).subscribe(
-        () => {
-          this.fetchEmployees();
-          alert('Employee deleted successfully');
-        },
-        (error) => {
-          console.error('Error deleting employee:', error);
-        }
-      );
-    }
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This employee will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.softDeleteEmployee(employeeId).subscribe(
+          () => {
+            console.log('Employee deleted successfully');
+            this.fetchEmployees();
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Employee deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+  
+          },
+          (error) => {
+            console.error('Error deleting employee:', error);
+          }
+        );
+      }
+    });
   }
+  
 
   // ------------------ Reporting Manager  ------------------------
 
@@ -284,25 +423,6 @@ export class EmployeeComponent {
   fromDate: string = '';
   tillDate: string = '';
   reportingManagerHistory: any[] = [];
-
-  onSubmitReportingManager() {
-    const payload = {
-      employee_id: this.employee.selectedUserId,
-      reporting_manager_id: this.employee.selectedReportingManagerId,
-      from_date: this.fromDate,
-      till_date: this.tillDate,
-    };
-
-    this.dataService.addReportingManagerHistory(payload).subscribe(
-      (response) => {
-        console.log('Reporting Manager history added successfully');
-        this.toggleModal('reportingManager'); // Close the modal on success
-      },
-      (error) => {
-        console.error('Error adding reporting manager history', error);
-      }
-    );
-  }
 
   fetchReportingManagerHistory(): void {
     this.dataService.getReportingManagerHistory().subscribe(
@@ -316,21 +436,72 @@ export class EmployeeComponent {
     );
   }
 
-  deleteReportingManager(managerId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this reporting manager history entry?');
-
-    if (confirmDelete) {
-      this.dataService.deleteReportingManager(managerId).subscribe(
-        () => {
-          this.fetchReportingManagerHistory(); // Refresh the list after deletion
-          alert('Reporting Manager History entry deleted successfully');
-        },
-        (error) => {
-          console.error('Error deleting reporting manager history:', error);
-        }
-      );
-    }
+  onSubmitReportingManager(): void {
+    const payload = {
+      employee_id: this.employee.selectedUserId,
+      reporting_manager_id: this.employee.selectedReportingManagerId,
+      from_date: this.fromDate,
+      till_date: this.tillDate,
+    };
+  
+    this.dataService.addReportingManagerHistory(payload).subscribe(
+      (response) => {
+        console.log('Reporting Manager history added successfully');
+        this.fetchReportingManagerHistory(); // Refresh the list after deletion
+        this.toggleModal('reportingManager'); // Close the modal on success
+  
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Reporting Manager assigned successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+  
+      },
+      (error) => {
+        console.error('Error adding reporting manager history', error);
+      }
+    );
   }
+  
+
+  deleteReportingManager(managerId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This reporting manager history entry will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteReportingManager(managerId).subscribe(
+          () => {
+            this.fetchReportingManagerHistory(); // Refresh the list after deletion
+            
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Reporting Manager History entry deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+  
+          },
+          (error) => {
+            console.error('Error deleting reporting manager history:', error);
+          }
+        );
+      }
+    });
+  }
+  
 
 
   // ------------------ Other  ------------------------
