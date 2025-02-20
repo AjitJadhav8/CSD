@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 
@@ -22,7 +22,17 @@ export class CustomerComponent {
   ngOnInit(): void {
     this.fetchMasterCategories();
     this.fetchCustomers();
+    
   }
+
+
+
+
+
+
+
+
+
 
   // ------------------ Customer ------------------------
 
@@ -44,7 +54,19 @@ export class CustomerComponent {
     country: '',
     description: ''
   };
-  submitCustomer() {
+  submitCustomer(form: NgForm) {
+    if (form.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return; // Stop execution if form is invalid
+    }
     const customerData = {
       customerName: this.customer.customerName,
       companyWebsite: this.customer.companyWebsite,

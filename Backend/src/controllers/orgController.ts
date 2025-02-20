@@ -246,9 +246,9 @@ class OrgController {
 
     async getMasterCategories(req: Request, res: Response): Promise<void> {
         try {
-            const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0';
+            const query = 'SELECT category_id, sector, industry, domain FROM master_category WHERE is_deleted = 0 ORDER BY category_id DESC';
 
-            db.query(query, (err: any, results: { sector: string, industry: string, domain: string }[]) => {
+            db.query(query, (err: any, results: { category_id: number,sector: string, industry: string, domain: string }[]) => {
                 if (err) {
                     console.error('Database error:', err);
                     res.status(500).json({ error: 'Error fetching categories' });
@@ -257,6 +257,7 @@ class OrgController {
 
                 // Group categories into a single array of objects
                 const categories = results.map(row => ({
+                    category_id: row.category_id, // Ensure this is included
                     sector: row.sector,
                     industry: row.industry,
                     domain: row.domain
