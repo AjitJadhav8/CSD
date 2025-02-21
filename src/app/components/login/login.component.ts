@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,23 +13,29 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
 
-  username: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  email = '';
+  password = '';
 
-  constructor(private router: Router) {}
+  constructor(private authService:AuthService, private router:Router ) {}
 
-  login() {
-    // Hardcoded credentials
-    const hardcodedUsername = '123';
-    const hardcodedPassword = '123';
+  onSubmit(): void {
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (response) => {
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user_id', response.user.user_id);
+      localStorage.setItem('first_name', response.user.first_name);
+      localStorage.setItem('last_name', response.user.last_name);
+      localStorage.setItem('role_id', response.user.role_id);
+      localStorage.setItem('email', response.user.email);
+      // console.log('Login successful', response);
 
-    if (this.username === hardcodedUsername && this.password === hardcodedPassword) {
-      localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigate(['/dashboard']); // Redirect to dashboard or home
-    } else {
-      this.errorMessage = 'Invalid credentials!';
-    }
+        this.router.navigate(['/app-center']);
+
+      },
+      error: (error) => {
+        console.error('Login failed', error);
+      }
+    });
   }
 
 

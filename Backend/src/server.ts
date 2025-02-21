@@ -5,6 +5,7 @@ import https from 'https';
 
 // Import routes and database connection
 import orgRoutes from './routes/orgRoutes';
+import authRoutes from './routes/authRoutes'; // Import auth routes
 
 
 dotenv.config(); // Load environment variables
@@ -17,6 +18,8 @@ app.use(cors());
 
 // Use the routes
 app.use('/api', orgRoutes);
+app.use('/api/auth', authRoutes);
+
 
 // Keep-alive agent for HTTPS
 https.globalAgent = new https.Agent({ keepAlive: true });
