@@ -15,5 +15,4 @@ export const routes: Routes = [
     { path: 'joining-pipeline', loadChildren: () => import('./features/joining-pipeline/joining-pipeline.module').then(m => m.JoiningPipelineModule), canActivate: [authGuard] },
     { path: 'resource-management', loadChildren: () => import('./features/resource-management/resource-management.module').then(m => m.ResourceManagementModule), canActivate: [authGuard] },
     { path: '**', redirectTo: 'app-center' }
-
 ];

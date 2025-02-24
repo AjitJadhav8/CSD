@@ -32,6 +32,8 @@ export class LoginComponent {
 
          // Success Notification
          Swal.fire({
+          toast: true,
+          position: 'top-end',
           icon: 'success',
           title: 'Login Successful!',
           text: `Welcome back, ${response.user.first_name}!`,
