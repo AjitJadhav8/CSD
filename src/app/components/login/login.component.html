@@ -2,12 +2,13 @@
   <!-- Login Form -->
   <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
     <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
-    <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <form (ngSubmit)="onSubmit()" autocomplete="on" class="space-y-4">
       <input
         type="email"
         placeholder="Email"
         [(ngModel)]="email"
         name="email"
+        autocomplete="username"
         required
         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
       />
@@ -16,9 +17,22 @@
         placeholder="Password"
         [(ngModel)]="password"
         name="password"
+        autocomplete="current-password"
         required
         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
       />
+
+      <!-- Remember Me Checkbox -->
+      <div class="flex items-center">
+        <input
+          type="checkbox"
+          [(ngModel)]="rememberMe"
+          name="rememberMe"
+          class="mr-2"
+        />
+        <label for="rememberMe" class="text-gray-600">Remember Me</label>
+      </div>
+
       <button
         type="submit"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition duration-300 shadow-md"
@@ -26,20 +40,20 @@
         Login
       </button>
     </form>
- <!-- Forgot Password Button with Loading Bars -->
-<div class="relative">
-  <button
-    (click)="forgotPassword()"
-    class="mt-4 w-full text-blue-600 hover:text-blue-800 font-medium"
-  >
-    <span *ngIf="!isSending">Forgot Password?</span>
-  </button>
 
-  <!-- Loading Bar Animation -->
-  <div *ngIf="isSending" class="absolute mt-4 top-0 left-0 w-full h-1 bg-gray-200 overflow-hidden rounded">
-    <div class="h-full bg-blue-600 animate-loading-bar"></div>
-  </div>
-</div>
+    <!-- Forgot Password Button with Loading Bars -->
+    <div class="relative">
+      <button
+        (click)="forgotPassword()"
+        class="mt-4 w-full text-blue-600 hover:text-blue-800 font-medium"
+      >
+        <span *ngIf="!isSending">Forgot Password?</span>
+      </button>
 
+      <!-- Loading Bar Animation -->
+      <div *ngIf="isSending" class="absolute mt-4 top-0 left-0 w-full h-1 bg-gray-200 overflow-hidden rounded">
+        <div class="h-full bg-blue-600 animate-loading-bar"></div>
+      </div>
+    </div>
   </div>
 </div>

@@ -16,47 +16,59 @@ export class LoginComponent {
 
   email = '';
   password = '';
+  rememberMe = false; // Track Remember Me state
 
-  constructor(private authService:AuthService, private router:Router ) {}
+  constructor(private authService:AuthService, private router:Router ) {
+    this.loadRememberedEmail(); // Load remembered email on component initialization
 
-  onSubmit(): void {
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (response) => {
+  }
+
+  // Load email from localStorage if "Remember Me" was previously checked
+loadRememberedEmail(): void {
+  const rememberedEmail = localStorage.getItem('rememberedEmail');
+  if (rememberedEmail) {
+    this.email = rememberedEmail;
+    this.rememberMe = true;
+  }
+}
+onSubmit(): void {
+  if (this.rememberMe) {
+    localStorage.setItem('rememberedEmail', this.email); // Save email if checkbox is checked
+  } else {
+    localStorage.removeItem('rememberedEmail'); // Remove stored email if unchecked
+  }
+
+  this.authService.login({ email: this.email, password: this.password }).subscribe({
+    next: (response) => {
       localStorage.setItem('token', response.token);
       localStorage.setItem('user_id', response.user.user_id);
       localStorage.setItem('first_name', response.user.first_name);
       localStorage.setItem('last_name', response.user.last_name);
       localStorage.setItem('role_id', response.user.role_id);
       localStorage.setItem('email', response.user.email);
-      // console.log('Login successful', response);
 
-         // Success Notification
-         Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Login Successful!',
-          text: `Welcome back, ${response.user.first_name}!`,
-          showConfirmButton: false,
-          timer: 2000,
-        });
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Login Successful!',
+        text: `Welcome back, ${response.user.first_name}!`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
 
-
-        this.router.navigate(['/app-center']);
-
-      },
-      error: (error) => {
-        console.error('Login failed', error);
-         // Error Notification
-         Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: 'Invalid email or password. Please try again!',
-        });
-      }
-    });
-  }
-
+      this.router.navigate(['/app-center']);
+    },
+    error: (error) => {
+      console.error('Login failed', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: 'Invalid email or password. Please try again!',
+      });
+    }
+  });
+}
   isSending = false; // Track loading state
 
   forgotPassword(): void {
@@ -95,9 +107,5 @@ export class LoginComponent {
     });
   }
   
-  
-  
-
-
 
 }
