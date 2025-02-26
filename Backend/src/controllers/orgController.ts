@@ -44,8 +44,20 @@ class OrgController {
             FROM master_project WHERE is_deleted = 0
             `;
 
+            const projectDeliverablesQuery = `
+        SELECT 
+            pd_id, customer_id, project_id, project_deliverable_name 
+        FROM master_project_deliverables WHERE is_deleted = 0
+        `;
+
+        const taskCategoryQuery = `
+        SELECT 
+            task_cat_id, task_category_name 
+        FROM master_task_category WHERE is_deleted = 0
+        `;
+
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -94,10 +106,23 @@ class OrgController {
                         resolve(results);
                     });
                 }),
+                new Promise((resolve, reject) => {
+                    db.query(projectDeliverablesQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
+                new Promise((resolve, reject) => {
+                    db.query(taskCategoryQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
             ]);
 
             // Return roles, departments, and user info in the response
-            res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects });
+            res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
+                taskCategories });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });

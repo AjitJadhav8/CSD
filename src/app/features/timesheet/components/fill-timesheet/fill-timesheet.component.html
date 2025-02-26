@@ -1,1 +1,94 @@
-<p>fill-timesheet works!</p>
+<div class="container mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
+  
+    <!-- 🔹 Section 1: Header with Date & Copy Last Entry -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold">Filling Timesheet for</h2>
+      <span class="text-lg text-gray-700">{{ currentDate | date:'dd-MMMM-yyyy, EEEE' }}</span>
+      <button (click)="copyLastEntry()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300">
+        Copy Last Entry
+      </button>
+    </div>
+  
+    <!-- 🔹 Section 2: First Row (Dropdowns) -->
+    <div class="grid grid-cols-4 gap-4 mb-4">
+      <div>
+        <label for="customer" class="block text-gray-700 font-medium">Select Customer</label>
+        <select id="customer" class="w-full p-2 border rounded-md" [(ngModel)]="selectedCustomer" name="customer" (change)="onCustomerChange()">
+          <option value="" disabled selected>Select Customer</option>
+          <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+            {{ customer.customer_name }}
+          </option>
+        </select>
+      </div>
+      
+      <div>
+        <label for="project" class="block text-gray-700 font-medium">Select Project</label>
+        <select id="project" class="w-full p-2 border rounded-md" [(ngModel)]="selectedProject" name="project" (change)="onProjectChange()" [disabled]="!selectedCustomer">
+          <option value="" disabled selected>Select Project</option>
+          <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+            {{ project.project_name }}
+          </option>
+        </select>
+      </div>
+      
+      <div>
+        <label for="deliverable" class="block text-gray-700 font-medium">Project Deliverable</label>
+        <select id="deliverable" class="w-full p-2 border rounded-md" [(ngModel)]="selectedDeliverable" name="deliverable" [disabled]="!selectedProject">
+          <option value="" disabled selected>Select Deliverable</option>
+          <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
+            {{ deliverable.project_deliverable_name }}
+          </option>
+        </select>
+      </div>
+      
+  
+      <div>
+        <label for="taskCategory" class="block text-gray-700 font-medium">Task Category</label>
+        <select id="taskCategory" class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskCategory" name="taskCategory">
+          <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">{{ category.task_category_name }}</option>
+        </select>
+      </div>
+    </div>
+  
+    <!-- 🔹 Section 3: Second Row (Task Description, Hours, Minutes, Task Status) -->
+    <div class="grid grid-cols-5 gap-4 items-end">
+      <div class="col-span-2">
+        <label for="taskDescription" class="block text-gray-700 font-medium">Task Description</label>
+        <textarea id="taskDescription" class="w-full p-2 border rounded-md" [(ngModel)]="taskDescription" name="taskDescription" rows="3"></textarea>
+      </div>
+  
+      <div class="w-24">
+        <label for="hours" class="block text-gray-700 font-medium">Hours</label>
+        <select id="hours" class="w-full p-2 border rounded-md" [(ngModel)]="selectedHours" name="hours">
+          <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
+        </select>
+      </div>
+  
+      <div class="w-24">
+        <label for="minutes" class="block text-gray-700 font-medium">Minutes</label>
+        <select id="minutes" class="w-full p-2 border rounded-md" [(ngModel)]="selectedMinutes" name="minutes">
+          <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
+        </select>
+      </div>
+  
+      <div>
+        <label for="taskStatus" class="block text-gray-700 font-medium">Task Status</label>
+        <select id="taskStatus" class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskStatus" name="taskStatus">
+          <option *ngFor="let status of taskStatusList" [value]="status.value">
+            {{ status.label }}
+          </option>
+        </select>
+      </div>
+      
+    </div>
+  
+    <!-- 🔹 Section 4: Remaining Hours & Submit Button -->
+    <div class="flex justify-between items-center mt-6">
+      <p class="text-gray-600">Remaining Hours: <span class="font-semibold">{{ remainingHours }} hrs</span></p>
+      <button type="submit" (click)="onSubmit()" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+        Submit
+      </button>
+    </div>
+  
+  </div>
+  

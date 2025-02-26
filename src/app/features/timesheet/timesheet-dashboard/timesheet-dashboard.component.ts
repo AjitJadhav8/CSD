@@ -4,7 +4,7 @@ import { NavbarComponent } from '../../../components/shared/navbar/navbar.compon
 @Component({
   selector: 'app-timesheet-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NavbarComponent],
+  imports: [RouterOutlet, NavbarComponent],
   templateUrl: './timesheet-dashboard.component.html',
   styleUrl: './timesheet-dashboard.component.css'
 })

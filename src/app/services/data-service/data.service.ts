@@ -157,6 +157,7 @@ export class DataService {
   deleteTaskCategory(taskCatId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/task-categories/${taskCatId}`);
   }
+// ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------
 
 
 }
