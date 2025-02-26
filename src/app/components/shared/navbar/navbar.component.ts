@@ -12,12 +12,13 @@ import Swal from 'sweetalert2';
 export class NavbarComponent {
 
   @Input() showOrganisationLinks: boolean = false;
+  @Input() showTimesheetLinks: boolean = false;
 
 
   showDropdown = false;
   showChangePasswordForm = false;
   showUpdateEmailForm = false;
-  loggedInHR = 'HR Manager'; // Replace with actual user data
+  loggedInUser = 'HR Manager'; // Replace with actual user data
 
   constructor(private router: Router) {}
 

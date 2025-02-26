@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { TimesheetDashboardComponent } from './components/timesheet-dashboard/timesheet-dashboard.component';
+import { TimesheetDashboardComponent } from './timesheet-dashboard/timesheet-dashboard.component';
 import { TimesheetSummaryReportComponent } from './components/timesheet-summary-report/timesheet-summary-report.component';
 import { FillBackdatedTimesheetComponent } from './components/fill-backdated-timesheet/fill-backdated-timesheet.component';
 import { ViewMyProjectsComponent } from './components/view-my-projects/view-my-projects.component';
@@ -18,6 +18,7 @@ const routes: Routes = [
   { 
     path: '', component: TimesheetDashboardComponent, 
     children: [
+      { path: '', redirectTo: 'summary-report', pathMatch: 'full' }, // ✅ Default to Summary Report
       { path: 'summary-report', component: TimesheetSummaryReportComponent },
       { path: 'fill-backdated-timesheet', component: FillBackdatedTimesheetComponent },
       { path: 'view-my-projects', component: ViewMyProjectsComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
     ]
   }
 ];
+
 
 
 @NgModule({
