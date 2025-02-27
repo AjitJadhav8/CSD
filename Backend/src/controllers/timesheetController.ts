@@ -5,19 +5,19 @@ import db from '../config/db'; // Import MySQL database connection
 class TimesheetController {
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
-            const { user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;
+            const { timesheet_date, user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;
     
             // Validate required fields
-            if (!user_id || !pd_id || !task_cat_id || hours === undefined || minutes === undefined || task_status === undefined) {
+            if (!timesheet_date || !user_id || !pd_id || !task_cat_id || hours === undefined || minutes === undefined || task_status === undefined) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
     
             const query = `
-                INSERT INTO trans_timesheet (user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id, is_deleted, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+                INSERT INTO trans_timesheet (timesheet_date,user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id, is_deleted, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
     
-            db.query(query, [user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id]);
+            db.query(query, [timesheet_date, user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id]);
     
             res.status(201).json({ message: 'Timesheet entry submitted successfully' });
         } catch (error) {
@@ -50,7 +50,7 @@ class TimesheetController {
                 t.hours, 
                 t.minutes, 
                 t.task_status, 
-                t.created_at
+                t.timesheet_date  -- Replaced created_at with timesheet_date
             FROM trans_timesheet t
             LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
             LEFT JOIN master_project p ON m.project_id = p.project_id

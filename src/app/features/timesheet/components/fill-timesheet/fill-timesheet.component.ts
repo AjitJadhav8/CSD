@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-fill-timesheet',
@@ -14,6 +15,7 @@ import { TimesheetService } from '../../../../services/timesheet-service/timeshe
 })
 export class FillTimesheetComponent {
   userId: number | null = null; // Store user_id
+  selectedDate: string = new Date().toISOString().split('T')[0]; // Default to today
  
 
 
@@ -80,11 +82,21 @@ export class FillTimesheetComponent {
   submitTimesheet() {
     if (!this.userId || !this.selectedDeliverable || !this.selectedTaskCategory || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
         console.error('Missing required fields');
+          // Show warning if required fields are missing
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'warning',
+      title: 'All fields are required!',
+      showConfirmButton: false,
+      timer: 3000
+    });
         return;
     }
 
     const timesheetData = {
-        user_id: this.userId,
+      timesheet_date: this.selectedDate, // Directly sending selected date
+      user_id: this.userId,
         pd_id: this.selectedDeliverable,
         task_description: this.taskDescription,
         hours: this.selectedHours,
@@ -96,15 +108,81 @@ export class FillTimesheetComponent {
     this.timesheetService.submitTimesheet(timesheetData).subscribe({
         next: (response) => {
             console.log('Timesheet Submitted:', response);
-            this.clearForm();
+            this.clearTimesheetForm();
+              // Success Toast Notification
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Timesheet submitted successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
             setTimeout(() => this.fetchTimesheets(), 100);
         },
-        error: (error) => console.error('Error submitting timesheet:', error)
-    });
+        error: (error) => {
+          console.error('Error submitting timesheet:', error);
+    
+          // Error Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Failed to submit timesheet!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      });
 }
 
-  
-  clearForm() {
+    
+deleteTimesheet(timesheet_id: number) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This timesheet entry will be deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.timesheetService.deleteTimesheet(timesheet_id).subscribe({
+        next: () => {
+          console.log('Timesheet Deleted');
+
+          this.fetchTimesheets(); // Fetch updated timesheets
+
+          // Success Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Timesheet deleted successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error deleting timesheet:', error);
+
+          // Error Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Failed to delete timesheet!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      });
+    }
+  });
+}
+
+  clearTimesheetForm() {
     this.selectedCustomer = '';
     this.selectedProject = null;
     this.selectedDeliverable = null;
@@ -113,17 +191,6 @@ export class FillTimesheetComponent {
     this.selectedTaskCategory = null;
     this.taskDescription = '';
   }
-    
-  deleteTimesheet(timesheet_id:number){
-    this.timesheetService.deleteTimesheet(timesheet_id).subscribe({
-      next: (response) => {
-        console.log('Timesheet Deleted:', response);
-        this.fetchTimesheets(); // Fetch updated timesheets
-      },
-      error: (error) => console.error('Error deleting timesheet:', error)
-    });
-  }
-
 
 
   optionCustomers: any[] = [];

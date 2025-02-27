@@ -12,6 +12,17 @@
   <div class="bg-gray-50 p-4 rounded-md shadow-md mb-6">
       <!-- First Row (Dropdowns) -->
       <div class="grid grid-cols-4 gap-4 mb-4">
+
+        <div class="mb-6">
+          <div class="flex justify-between items-center">
+            <label class="block text-gray-700 font-medium">Filling Timesheet for</label>
+
+              <input type="date" class="w-full p-2 border rounded-md" [(ngModel)]="selectedDate" required>
+          </div>
+      </div>
+
+
+
           <div>
               <label class="block text-gray-700 font-medium">Select Customer</label>
               <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedCustomer" (change)="onCustomerChange()">
@@ -109,8 +120,9 @@
                   <th class="border p-2">Hours</th>
                   <th class="border p-2">Minutes</th>
                   <th class="border p-2">Task Status</th>
-                  <th class="border p-2">Created At</th>
-                  <th class="border p-2">Action</th>
+                  <th class="border p-2">Date</th>
+
+                 <th class="border p-2">Action</th>
               </tr>
           </thead>
           <tbody>
@@ -124,7 +136,7 @@
                   <td class="border p-2">{{ timesheet.hours }}</td>
                   <td class="border p-2">{{ timesheet.minutes }}</td>
                   <td class="border p-2">{{ timesheet.task_status }}</td>
-                  <td class="border p-2">{{ timesheet.created_at | date:'dd-MMM-yyyy' }}</td>
+                  <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                   <td class="border p-2">
                       <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                           (click)="deleteTimesheet(timesheet.timesheet_id)">
