@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
+import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
 
 @Component({
   selector: 'app-fill-timesheet',
@@ -12,9 +13,19 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './fill-timesheet.component.css'
 })
 export class FillTimesheetComponent {
+  userId: number | null = null; // Store user_id
 
-  constructor(private dataService: DataService, private http: HttpClient) { }
+  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
+
+     // Fetch user ID from localStorage
+     const storedUserId = localStorage.getItem('user_id'); // Fetch directly
+     if (storedUserId) {
+      this.userId = Number(storedUserId); // Convert to number
+    } else {
+      console.error('User ID not found in local storage.');
+    }
+    console.log(this.userId);
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -104,8 +115,14 @@ export class FillTimesheetComponent {
 
   selectedTaskStatus = 0; // Default selection
 
-  onSubmit() {
-    console.log('Timesheet Submitted', {
+  submitTimesheet() {
+    if (!this.userId) {
+      console.error('User ID not found. Cannot submit timesheet.');
+      return;
+    }
+
+    const timesheetData = {
+      user_id: this.userId, // Use the stored user_id
       customer: this.selectedCustomer,
       project: this.selectedProject,
       deliverable: this.selectedDeliverable,
@@ -114,8 +131,12 @@ export class FillTimesheetComponent {
       hours: this.selectedHours,
       minutes: this.selectedMinutes,
       status: this.selectedTaskStatus
-    });
+    };
+
+    console.log('Timesheet Submitted:', timesheetData);
   }
+
+  
 
 
   copyLastEntry() {

@@ -6,6 +6,7 @@ import https from 'https';
 // Import routes and database connection
 import orgRoutes from './routes/orgRoutes';
 import authRoutes from './routes/authRoutes'; // Import auth routes
+import timesheetRoutes from './routes/timesheetRoutes';
 
 
 dotenv.config(); // Load environment variables
@@ -19,6 +20,7 @@ app.use(cors());
 // Use the routes
 app.use('/api', orgRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/timesheet', timesheetRoutes);
 
 
 // Keep-alive agent for HTTPS
