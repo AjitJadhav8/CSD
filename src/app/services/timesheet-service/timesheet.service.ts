@@ -21,6 +21,11 @@ export class TimesheetService {
   getUserTimesheets(userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/timesheet/timesheets/${userId}`);
   }
+
+  // Delete timesheet
+  deleteTimesheet(timesheetId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/timesheet/timesheet/${timesheetId}`);
+  }
   
   
 }

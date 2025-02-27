@@ -14,33 +14,24 @@ import { TimesheetService } from '../../../../services/timesheet-service/timeshe
 })
 export class FillTimesheetComponent {
   userId: number | null = null; // Store user_id
-  optionCustomers: any[] = [];
-  optionProjects: any[] = [];
-  filterOptionProjects: any[] = [];  // Stores filtered projects based on selected customer
-  optionProjectDeliverables: any[] = [];
-  filterOptionProjectDeliverables: any[] = [];
-  optionTaskCategories: any[] = [];
-  selectedCustomer: number | string = '';
-  selectedProject: number | null = null;
-  selectedDeliverable: number | null = null;
-  selectedHours: number | null = null;
-  selectedMinutes: number | null = null;
-  selectedTaskCategory: any;
-  taskDescription: string = '';
-  remainingHours: any;
+ 
+
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
-    this.fetchTimesheets();
 
     // Fetch user ID from localStorage
-    const storedUserId = localStorage.getItem('user_id'); // Fetch directly
+    const storedUserId = localStorage.getItem('user_id'); // Fetch user_id from local storage
+    console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
       this.userId = Number(storedUserId); // Convert to number
+      console.log('User ID successfully set:', this.userId);
     } else {
-      console.error('User ID not found in local storage.');
+      console.error('User ID not found in local storage. Ensure login process stores it.');
     }
-    console.log(this.userId);
+
+    this.fetchTimesheets();
+
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -58,27 +49,27 @@ export class FillTimesheetComponent {
   }
 
 
+    
+  selectedCustomer: number | string = '';
+  selectedProject: number | null = null;
+  selectedDeliverable: number | null = null;
+  selectedHours: number | null = null;
+  selectedMinutes: number | null = null;
+  selectedTaskCategory: any;
+  taskDescription: string = '';
+  remainingHours: any;
   timesheetData: any;
 
   fetchTimesheets(): void {
-    const storedUserId = localStorage.getItem('user_id'); // Fetch user ID from local storage
-  
-    if (!storedUserId) {
+    if (!this.userId) {
       console.error('User ID not found');
       return;
     }
   
-    const userId = Number(storedUserId); // Convert to number
-  
-    if (isNaN(userId)) {
-      console.error('Invalid user ID:', storedUserId);
-      return;
-    }
-  
-    this.timesheetService.getUserTimesheets(userId).subscribe(
+    this.timesheetService.getUserTimesheets(this.userId).subscribe(
       (response) => {
-        console.log('User Timesheets:', response);
-        this.timesheetData = response; // Store fetched data
+        console.log('User Timesheets Updated:', response);
+        this.timesheetData = response; // Update the table data
       },
       (error) => {
         console.error('Error fetching timesheets:', error);
@@ -86,32 +77,61 @@ export class FillTimesheetComponent {
     );
   }
   
-  
   submitTimesheet() {
-    if (!this.userId || !this.selectedDeliverable || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
-      console.error('Missing required fields');
-      return;
+    if (!this.userId || !this.selectedDeliverable || !this.selectedTaskCategory || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
+        console.error('Missing required fields');
+        return;
     }
 
     const timesheetData = {
-      user_id: this.userId,
-      pd_id: this.selectedDeliverable,
-      task_description: this.taskDescription,
-      hours: this.selectedHours,
-      minutes: this.selectedMinutes,
-      task_status: this.selectedTaskStatus
+        user_id: this.userId,
+        pd_id: this.selectedDeliverable,
+        task_description: this.taskDescription,
+        hours: this.selectedHours,
+        minutes: this.selectedMinutes,
+        task_status: this.selectedTaskStatus,
+        task_cat_id: this.selectedTaskCategory // New field added
     };
 
     this.timesheetService.submitTimesheet(timesheetData).subscribe({
-      next: (response) => console.log('Timesheet Submitted:', response),
-      error: (error) => console.error('Error submitting timesheet:', error)
+        next: (response) => {
+            console.log('Timesheet Submitted:', response);
+            this.clearForm();
+            setTimeout(() => this.fetchTimesheets(), 100);
+        },
+        error: (error) => console.error('Error submitting timesheet:', error)
+    });
+}
+
+  
+  clearForm() {
+    this.selectedCustomer = '';
+    this.selectedProject = null;
+    this.selectedDeliverable = null;
+    this.selectedHours = null;
+    this.selectedMinutes = null;
+    this.selectedTaskCategory = null;
+    this.taskDescription = '';
+  }
+    
+  deleteTimesheet(timesheet_id:number){
+    this.timesheetService.deleteTimesheet(timesheet_id).subscribe({
+      next: (response) => {
+        console.log('Timesheet Deleted:', response);
+        this.fetchTimesheets(); // Fetch updated timesheets
+      },
+      error: (error) => console.error('Error deleting timesheet:', error)
     });
   }
 
-  deleteTimesheet(timesheet_id:number){
-    
-  }
 
+
+  optionCustomers: any[] = [];
+  optionProjects: any[] = [];
+  filterOptionProjects: any[] = [];  // Stores filtered projects based on selected customer
+  optionProjectDeliverables: any[] = [];
+  filterOptionProjectDeliverables: any[] = [];
+  optionTaskCategories: any[] = [];
 
   onCustomerChange() {
     console.log('Selected Customer:', this.selectedCustomer);
@@ -146,8 +166,6 @@ export class FillTimesheetComponent {
     console.log('Filtered Deliverables:', this.filterOptionProjectDeliverables);
   }
 
-
-
   currentDate: Date = new Date();
   hoursList = Array.from({ length: 24 }, (_, i) => i);
   minutesList = [0, 15, 30, 45];
@@ -158,9 +176,9 @@ export class FillTimesheetComponent {
 
   selectedTaskStatus = 0; // Default selection
 
-  
-  copyLastEntry() {
-    console.log('Last entry copied');
-  }
 
+  
+  
+  
+  
 }

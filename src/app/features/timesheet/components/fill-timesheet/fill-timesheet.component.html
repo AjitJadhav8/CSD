@@ -5,9 +5,6 @@
       <div class="flex justify-between items-center">
           <h2 class="text-2xl font-semibold">Filling Timesheet for</h2>
           <span class="text-lg text-gray-700">{{ currentDate | date:'dd-MMMM-yyyy, EEEE' }}</span>
-          <button (click)="copyLastEntry()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300">
-              Copy Last Entry
-          </button>
       </div>
   </div>
 
@@ -46,13 +43,15 @@
           </div>
 
           <div>
-              <label class="block text-gray-700 font-medium">Task Category</label>
-              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskCategory">
-                  <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
-                      {{ category.task_category_name }}
-                  </option>
-              </select>
-          </div>
+            <label class="block text-gray-700 font-medium">Task Category</label>
+            <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskCategory">
+                <option value="" disabled selected>Select Task Category</option>
+                <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
+                    {{ category.task_category_name }}
+                </option>
+            </select>
+        </div>        
+        
       </div>
 
       <!-- Second Row (Task Description, Hours, Minutes, Task Status) -->
@@ -104,6 +103,9 @@
                   <th class="border p-2">Project Deliverable</th>
                   <th class="border p-2">Project Name</th>
                   <th class="border p-2">Customer Name</th>
+                  <th class="border p-2">Task Category</th>
+                  <th class="border p-2">Task Description</th>
+
                   <th class="border p-2">Hours</th>
                   <th class="border p-2">Minutes</th>
                   <th class="border p-2">Task Status</th>
@@ -117,10 +119,12 @@
                   <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
                   <td class="border p-2">{{ timesheet.project_name }}</td>
                   <td class="border p-2">{{ timesheet.customer_name }}</td>
+                  <td class="border p-2">{{ timesheet.task_category_name }}</td>
+                  <td class="border p-2">{{ timesheet.task_description }}</td>
                   <td class="border p-2">{{ timesheet.hours }}</td>
                   <td class="border p-2">{{ timesheet.minutes }}</td>
                   <td class="border p-2">{{ timesheet.task_status }}</td>
-                  <td class="border p-2">{{ timesheet.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+                  <td class="border p-2">{{ timesheet.created_at | date:'dd-MMM-yyyy' }}</td>
                   <td class="border p-2">
                       <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                           (click)="deleteTimesheet(timesheet.timesheet_id)">
