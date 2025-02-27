@@ -97,8 +97,6 @@ export class EmployeeComponent {
     );
   }
 
-
-
   // Delete department
   deleteDepartment(departmentId: number): void {
     Swal.fire({

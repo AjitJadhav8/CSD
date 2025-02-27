@@ -1,94 +1,135 @@
-<div class="container mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
-  
-    <!-- 🔹 Section 1: Header with Date & Copy Last Entry -->
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-semibold">Filling Timesheet for</h2>
-      <span class="text-lg text-gray-700">{{ currentDate | date:'dd-MMMM-yyyy, EEEE' }}</span>
-      <button (click)="copyLastEntry()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300">
-        Copy Last Entry
-      </button>
-    </div>
-  
-    <!-- 🔹 Section 2: First Row (Dropdowns) -->
-    <div class="grid grid-cols-4 gap-4 mb-4">
-      <div>
-        <label for="customer" class="block text-gray-700 font-medium">Select Customer</label>
-        <select id="customer" class="w-full p-2 border rounded-md" [(ngModel)]="selectedCustomer" name="customer" (change)="onCustomerChange()">
-          <option value="" disabled selected>Select Customer</option>
-          <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-            {{ customer.customer_name }}
-          </option>
-        </select>
+<div class="p-4">
+
+  <!-- 🔹 Timesheet Header -->
+  <div class="mb-6">
+      <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold">Filling Timesheet for</h2>
+          <span class="text-lg text-gray-700">{{ currentDate | date:'dd-MMMM-yyyy, EEEE' }}</span>
+          <button (click)="copyLastEntry()" class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300">
+              Copy Last Entry
+          </button>
       </div>
-      
-      <div>
-        <label for="project" class="block text-gray-700 font-medium">Select Project</label>
-        <select id="project" class="w-full p-2 border rounded-md" [(ngModel)]="selectedProject" name="project" (change)="onProjectChange()" [disabled]="!selectedCustomer">
-          <option value="" disabled selected>Select Project</option>
-          <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
-            {{ project.project_name }}
-          </option>
-        </select>
-      </div>
-      
-      <div>
-        <label for="deliverable" class="block text-gray-700 font-medium">Project Deliverable</label>
-        <select id="deliverable" class="w-full p-2 border rounded-md" [(ngModel)]="selectedDeliverable" name="deliverable" [disabled]="!selectedProject">
-          <option value="" disabled selected>Select Deliverable</option>
-          <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
-            {{ deliverable.project_deliverable_name }}
-          </option>
-        </select>
-      </div>
-      
-  
-      <div>
-        <label for="taskCategory" class="block text-gray-700 font-medium">Task Category</label>
-        <select id="taskCategory" class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskCategory" name="taskCategory">
-          <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">{{ category.task_category_name }}</option>
-        </select>
-      </div>
-    </div>
-  
-    <!-- 🔹 Section 3: Second Row (Task Description, Hours, Minutes, Task Status) -->
-    <div class="grid grid-cols-5 gap-4 items-end">
-      <div class="col-span-2">
-        <label for="taskDescription" class="block text-gray-700 font-medium">Task Description</label>
-        <textarea id="taskDescription" class="w-full p-2 border rounded-md" [(ngModel)]="taskDescription" name="taskDescription" rows="3"></textarea>
-      </div>
-  
-      <div class="w-24">
-        <label for="hours" class="block text-gray-700 font-medium">Hours</label>
-        <select id="hours" class="w-full p-2 border rounded-md" [(ngModel)]="selectedHours" name="hours">
-          <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
-        </select>
-      </div>
-  
-      <div class="w-24">
-        <label for="minutes" class="block text-gray-700 font-medium">Minutes</label>
-        <select id="minutes" class="w-full p-2 border rounded-md" [(ngModel)]="selectedMinutes" name="minutes">
-          <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
-        </select>
-      </div>
-  
-      <div>
-        <label for="taskStatus" class="block text-gray-700 font-medium">Task Status</label>
-        <select id="taskStatus" class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskStatus" name="taskStatus">
-          <option *ngFor="let status of taskStatusList" [value]="status.value">
-            {{ status.label }}
-          </option>
-        </select>
-      </div>
-      
-    </div>
-  
-    <!-- 🔹 Section 4: Remaining Hours & Submit Button -->
-    <div class="flex justify-between items-center mt-6">
-      <p class="text-gray-600">Remaining Hours: <span class="font-semibold">{{ remainingHours }} hrs</span></p>
-      <button type="submit" (click)="submitTimesheet()" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-        Submit
-      </button>
-    </div>
-  
   </div>
-  
+
+  <!-- 🔹 Input Fields Section -->
+  <div class="bg-gray-50 p-4 rounded-md shadow-md mb-6">
+      <!-- First Row (Dropdowns) -->
+      <div class="grid grid-cols-4 gap-4 mb-4">
+          <div>
+              <label class="block text-gray-700 font-medium">Select Customer</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedCustomer" (change)="onCustomerChange()">
+                  <option value="" disabled selected>Select Customer</option>
+                  <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                      {{ customer.customer_name }}
+                  </option>
+              </select>
+          </div>
+
+          <div>
+              <label class="block text-gray-700 font-medium">Select Project</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedProject" [disabled]="!selectedCustomer" (change)="onProjectChange()">
+                  <option value="" disabled selected>Select Project</option>
+                  <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+                      {{ project.project_name }}
+                  </option>
+              </select>
+          </div>
+
+          <div>
+              <label class="block text-gray-700 font-medium">Project Deliverable</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedDeliverable" [disabled]="!selectedProject">
+                  <option value="" disabled selected>Select Deliverable</option>
+                  <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
+                      {{ deliverable.project_deliverable_name }}
+                  </option>
+              </select>
+          </div>
+
+          <div>
+              <label class="block text-gray-700 font-medium">Task Category</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskCategory">
+                  <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
+                      {{ category.task_category_name }}
+                  </option>
+              </select>
+          </div>
+      </div>
+
+      <!-- Second Row (Task Description, Hours, Minutes, Task Status) -->
+      <div class="grid grid-cols-5 gap-4 items-end">
+          <div class="col-span-2">
+              <label class="block text-gray-700 font-medium">Task Description</label>
+              <textarea class="w-full p-2 border rounded-md" [(ngModel)]="taskDescription" rows="3"></textarea>
+          </div>
+
+          <div class="w-24">
+              <label class="block text-gray-700 font-medium">Hours</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedHours">
+                  <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
+              </select>
+          </div>
+
+          <div class="w-24">
+              <label class="block text-gray-700 font-medium">Minutes</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedMinutes">
+                  <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
+              </select>
+          </div>
+
+          <div>
+              <label class="block text-gray-700 font-medium">Task Status</label>
+              <select class="w-full p-2 border rounded-md" [(ngModel)]="selectedTaskStatus">
+                  <option *ngFor="let status of taskStatusList" [value]="status.value">
+                      {{ status.label }}
+                  </option>
+              </select>
+          </div>
+      </div>
+
+      <!-- Submit Button & Remaining Hours -->
+      <div class="flex justify-between items-center mt-6">
+          <p class="text-gray-600">Remaining Hours: <span class="font-semibold">{{ remainingHours }} hrs</span></p>
+          <button type="submit" (click)="submitTimesheet()" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+              Submit
+          </button>
+      </div>
+  </div>
+
+  <!-- 🔹 Timesheet Table Section -->
+  <div>
+      <table class="w-full border-collapse border border-gray-300">
+          <thead>
+              <tr class="bg-gray-100">
+                  <th class="border p-2">S.No.</th>
+                  <th class="border p-2">Project Deliverable</th>
+                  <th class="border p-2">Project Name</th>
+                  <th class="border p-2">Customer Name</th>
+                  <th class="border p-2">Hours</th>
+                  <th class="border p-2">Minutes</th>
+                  <th class="border p-2">Task Status</th>
+                  <th class="border p-2">Created At</th>
+                  <th class="border p-2">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let timesheet of timesheetData; let i = index" class="hover:bg-gray-50">
+                  <td class="border p-2">{{ i + 1 }}</td>
+                  <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
+                  <td class="border p-2">{{ timesheet.project_name }}</td>
+                  <td class="border p-2">{{ timesheet.customer_name }}</td>
+                  <td class="border p-2">{{ timesheet.hours }}</td>
+                  <td class="border p-2">{{ timesheet.minutes }}</td>
+                  <td class="border p-2">{{ timesheet.task_status }}</td>
+                  <td class="border p-2">{{ timesheet.created_at | date:'yyyy-MM-dd HH:mm' }}</td>
+                  <td class="border p-2">
+                      <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                          (click)="deleteTimesheet(timesheet.timesheet_id)">
+                          Delete
+                      </button>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+</div>
