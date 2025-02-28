@@ -50,7 +50,6 @@ class AuthController {
 
 
 
-
   // FORGOT PASSWORD FUNCTIONALITY
   async forgotPassword(req: Request, res: Response): Promise<void> {
     const { email } = req.body;

@@ -1,12 +1,12 @@
 import TimesheetController from '../controllers/timesheetController';
 import express from 'express';
 const router = express.Router();
+import { protect } from '../middlewares/authMiddleware';
 
 
-router.post('/submit', TimesheetController.submitTimesheet);
-router.get('/timesheets/:userId', TimesheetController.getUserTimesheets);
-
-router.delete('/timesheet/:timesheetId', TimesheetController.softDeleteTimesheet);
+router.post('/submit', protect, TimesheetController.submitTimesheet);
+router.get('/timesheets/:userId', protect, TimesheetController.getUserTimesheets);
+router.delete('/timesheet/:timesheetId', protect, TimesheetController.softDeleteTimesheet);
 
 
 export default router;
