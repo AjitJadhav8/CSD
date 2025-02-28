@@ -5,8 +5,9 @@ import db from '../config/db'; // Import MySQL database connection
 class TimesheetController {
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
-            const { timesheet_date, user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;
-    
+            const { timesheet_date, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;
+            const user_id = (req as any).user?.user_id; // Use "as any" to access req.user
+
             // Validate required fields
             if (!timesheet_date || !user_id || !pd_id || !task_cat_id || hours === undefined || minutes === undefined || task_status === undefined) {
                 res.status(400).json({ error: 'Missing required fields' });
@@ -30,7 +31,7 @@ class TimesheetController {
    // fethch timesheet
    async getUserTimesheets(req: Request, res: Response): Promise<void> {
     try {
-        const userId = req.params.userId;
+        const userId = (req as any).user?.user_id; // Use "as any" to access req.user
 
         if (!userId) {
             res.status(400).json({ error: 'User ID is required' });
@@ -74,29 +75,46 @@ class TimesheetController {
 
 
    // Soft delete a timesheet entry
-   async softDeleteTimesheet(req: Request, res: Response): Promise<void> {
+   async softDeleteTimesheet(req: Request, res: Response): Promise<Response> {
     try {
-      const { timesheetId } = req.params;
+        const userId = (req as any).user?.user_id; // Get user_id from JWT token
+        const { timesheetId } = req.params;
 
-      const updateQuery = `UPDATE trans_timesheet SET is_deleted = 1 WHERE timesheet_id = ?`;
-
-      db.query(updateQuery, [timesheetId], (err: any, result: any) => {
-        if (err) {
-          console.error('Error deleting timesheet entry:', err);
-          return res.status(500).json({ error: 'Error deleting timesheet entry' });
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
         }
 
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ error: 'Timesheet entry not found' });
+        if (!timesheetId) {
+            return res.status(400).json({ error: 'Timesheet ID is required' });
         }
 
-        res.status(200).json({ message: 'Timesheet entry soft deleted successfully' });
-      });
+        const updateQuery = `
+            UPDATE trans_timesheet 
+            SET is_deleted = 1 
+            WHERE timesheet_id = ? AND user_id = ?`;
+
+        return new Promise((resolve, reject) => {
+            db.query(updateQuery, [timesheetId, userId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error deleting timesheet entry:', err);
+                    reject(res.status(500).json({ error: 'Error deleting timesheet entry' }));
+                }
+
+                if (result.affectedRows === 0) {
+                    resolve(res.status(404).json({ error: 'Timesheet entry not found or does not belong to the user' }));
+                }
+
+                resolve(res.status(200).json({ message: 'Timesheet entry soft deleted successfully' }));
+            });
+        });
     } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
+}
+
+
+
 }
 
 export default new TimesheetController();
