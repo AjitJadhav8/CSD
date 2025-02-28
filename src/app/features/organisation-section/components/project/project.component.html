@@ -83,7 +83,7 @@
                         <div>
                             <label class="block mb-2 font-semibold">Customer Name*</label>
                             <select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel"
-                                name="customer" required class="border p-2 w-full rounded-md"
+                                name="customer" required class="border p-2 w-full rounded-md" (change)="filterProjects()"
                                 [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}">
                                 <option value="" disabled selected>Select Customer</option>
                                 <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
@@ -102,7 +102,7 @@
                                     name="project" required class="border p-2 w-full rounded-md"
                                     [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}">
                                     <option value="" disabled selected>Select Project</option>
-                                    <option *ngFor="let project of optionProject" [value]="project.project_id">{{
+                                    <option *ngFor="let project of filteredProjects" [value]="project.project_id">{{
                                         project.project_name }}</option>
                                 </select>
                                 <span class="text-red-500 text-sm"

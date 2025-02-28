@@ -16,6 +16,26 @@ import Swal from 'sweetalert2';
 export class ProjectComponent {
 
   constructor(private dataService: DataService, private http: HttpClient) { }
+  filteredProjects: any[] = []; // Store filtered projects
+
+  // Function to filter projects based on selected customer
+// Method to filter projects based on selected customer
+filterProjects(): void {
+  const selectedCustomerId = Number(this.projectDeliverableForm.customer_id);
+  
+
+  if (selectedCustomerId) {
+    this.filteredProjects = this.optionProject.filter(
+      project => Number(project.customer_id) === selectedCustomerId
+    );
+  } else {
+    this.filteredProjects = []; // No customer selected, show empty
+  }
+
+  console.log("Filtered Projects:", this.filteredProjects);
+}
+
+
 
   ngOnInit(): void {
     this.fetchTaskCategories();
@@ -32,6 +52,9 @@ export class ProjectComponent {
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
+
+        this.filteredProjects = []; // Initially empty
+
 
       },
       (error) => {
