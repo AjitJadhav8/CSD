@@ -1,1 +1,41 @@
-<p>export-my-timesheet works!</p>
+<div class="p-4">
+<div>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border p-2">S.No.</th>
+                <th class="border p-2">Project Deliverable</th>
+                <th class="border p-2">Project Name</th>
+                <th class="border p-2">Customer Name</th>
+                <th class="border p-2">Task Category</th>
+                <th class="border p-2">Task Description</th>
+
+                <th class="border p-2">Hours</th>
+                <th class="border p-2">Minutes</th>
+                <th class="border p-2">Task Status</th>
+                <th class="border p-2">Date</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let timesheet of fullTimesheetData; let i = index" class="hover:bg-gray-50">
+                <td class="border p-2">{{ i + 1 }}</td>
+                <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
+                <td class="border p-2">{{ timesheet.project_name }}</td>
+                <td class="border p-2">{{ timesheet.customer_name }}</td>
+                <td class="border p-2">{{ timesheet.task_category_name }}</td>
+                <td class="border p-2">{{ timesheet.task_description }}</td>
+                <td class="border p-2">{{ timesheet.hours }}</td>
+                <td class="border p-2">{{ timesheet.minutes }}</td>
+                <td class="border p-2">
+                  {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
+                </td>
+                                  <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                <td class="border p-2">
+      
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>

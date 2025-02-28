@@ -31,6 +31,7 @@
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.17.2",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.19.76",
     "@types/nodemailer": "^6.4.17",
+    "@types/xlsx": "^0.0.35",
     "autoprefixer": "^10.4.20",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",

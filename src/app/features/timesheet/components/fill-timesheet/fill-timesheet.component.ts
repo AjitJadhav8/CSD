@@ -78,6 +78,11 @@ export class FillTimesheetComponent {
       }
     );
   }
+  getTaskStatusLabel(status: number): string {
+    const statusObj = this.taskStatusList.find(s => s.value === status);
+    return statusObj ? statusObj.label : 'Unknown';
+  }
+  
   
   submitTimesheet() {
     if (!this.userId || !this.selectedDeliverable || !this.selectedTaskCategory || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {

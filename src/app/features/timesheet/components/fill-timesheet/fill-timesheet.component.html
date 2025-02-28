@@ -135,8 +135,10 @@
                   <td class="border p-2">{{ timesheet.task_description }}</td>
                   <td class="border p-2">{{ timesheet.hours }}</td>
                   <td class="border p-2">{{ timesheet.minutes }}</td>
-                  <td class="border p-2">{{ timesheet.task_status }}</td>
-                  <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                  <td class="border p-2">
+                    {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
+                  </td>
+                                    <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                   <td class="border p-2">
                       <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                           (click)="deleteTimesheet(timesheet.timesheet_id)">

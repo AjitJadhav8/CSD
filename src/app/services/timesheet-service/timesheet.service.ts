@@ -37,6 +37,14 @@ export class TimesheetService {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.apiUrl}/api/timesheet/timesheet/${timesheetId}`, { headers });
   }
+
+  // --------------------------------------------------Expoert-------------------
+
+  // Fetch full timesheet data
+  getUserFullTimesheet(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/timesheet/full-timesheet/${userId}`, { headers });
+  }
   
   
 }

@@ -39,7 +39,7 @@ class TimesheetController {
         }
 
         const query = `
-            SELECT 
+                 SELECT 
                 t.timesheet_id, 
                 t.user_id, 
                 t.pd_id, 
@@ -51,13 +51,14 @@ class TimesheetController {
                 t.hours, 
                 t.minutes, 
                 t.task_status, 
-                t.timesheet_date  -- Replaced created_at with timesheet_date
+                t.timesheet_date
             FROM trans_timesheet t
             LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
             LEFT JOIN master_project p ON m.project_id = p.project_id
             LEFT JOIN master_customer c ON p.customer_id = c.customer_id
             LEFT JOIN master_task_category tc ON t.task_cat_id = tc.task_cat_id
-            WHERE t.is_deleted = 0 AND t.user_id = ?
+            WHERE t.is_deleted = 0 AND t.user_id = ? 
+                AND DATE(t.timesheet_date) = CURDATE()  -- Filter for today's date
             ORDER BY t.timesheet_id DESC`;
 
         db.query(query, [userId], (err, results) => {
@@ -112,6 +113,55 @@ class TimesheetController {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+// ------------------------------------------Export-----------------------------------
+
+// Fetch full timesheet data
+async getUserFullTimesheet(req: Request, res: Response): Promise<void> {
+    try {
+        const userId = (req as any).user?.user_id; // Use "as any" to access req.user
+
+        if (!userId) {
+            res.status(400).json({ error: 'User ID is required' });
+            return;
+        }
+
+        const query = `
+             SELECT 
+                t.timesheet_id, 
+                t.user_id, 
+                t.pd_id, 
+                t.task_description,
+                m.project_deliverable_name, 
+                p.project_name, 
+                c.customer_name, 
+                tc.task_category_name, 
+                t.hours, 
+                t.minutes, 
+                t.task_status, 
+                t.timesheet_date
+            FROM trans_timesheet t
+            LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
+            LEFT JOIN master_project p ON m.project_id = p.project_id
+            LEFT JOIN master_customer c ON p.customer_id = c.customer_id
+            LEFT JOIN master_task_category tc ON t.task_cat_id = tc.task_cat_id
+            WHERE t.is_deleted = 0 
+                AND t.user_id = ? 
+            ORDER BY t.timesheet_id DESC`;
+          
+            db.query(query, [userId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching full timesheet:', err);
+                    return res.status(500).json({ error: 'Error fetching full timesheet' });
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
 
 
 
