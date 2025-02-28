@@ -905,20 +905,20 @@ class OrgController {
 
     async addProjectDeliverable(req: Request, res: Response): Promise<void> {
         try {
-            const { customer_id, project_id, project_deliverable } = req.body;
+            const { customer_id, project_id, project_deliverable_name } = req.body;
 
-            if (!customer_id || !project_id || !project_deliverable) {
+            if (!customer_id || !project_id || !project_deliverable_name) {
                 res.status(400).json({ error: 'All fields are required' });
                 return;
             }
 
             const query = `
         INSERT INTO master_project_deliverables 
-        (customer_id, project_id, project_deliverable, is_deleted) 
+        (customer_id, project_id, project_deliverable_name, is_deleted) 
         VALUES (?, ?, ?, 0)
       `;
 
-            const values = [customer_id, project_id, project_deliverable];
+            const values = [customer_id, project_id, project_deliverable_name];
 
             db.query(query, values, (err: any, result: any) => {
                 if (err) {

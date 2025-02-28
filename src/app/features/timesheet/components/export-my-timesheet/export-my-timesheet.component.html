@@ -1,41 +1,98 @@
 <div class="p-4">
-<div>
-    <table class="w-full border-collapse border border-gray-300">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="border p-2">S.No.</th>
-                <th class="border p-2">Project Deliverable</th>
-                <th class="border p-2">Project Name</th>
-                <th class="border p-2">Customer Name</th>
-                <th class="border p-2">Task Category</th>
-                <th class="border p-2">Task Description</th>
 
-                <th class="border p-2">Hours</th>
-                <th class="border p-2">Minutes</th>
-                <th class="border p-2">Task Status</th>
-                <th class="border p-2">Date</th>
+    <div class="flex space-x-4 mb-4">
+        <label>From:</label>
+        <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()" class="border p-2 rounded">
 
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let timesheet of fullTimesheetData; let i = index" class="hover:bg-gray-50">
-                <td class="border p-2">{{ i + 1 }}</td>
-                <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
-                <td class="border p-2">{{ timesheet.project_name }}</td>
-                <td class="border p-2">{{ timesheet.customer_name }}</td>
-                <td class="border p-2">{{ timesheet.task_category_name }}</td>
-                <td class="border p-2">{{ timesheet.task_description }}</td>
-                <td class="border p-2">{{ timesheet.hours }}</td>
-                <td class="border p-2">{{ timesheet.minutes }}</td>
-                <td class="border p-2">
-                  {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
-                </td>
-                                  <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                <td class="border p-2">
-      
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <label>To:</label>
+        <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()" class="border p-2 rounded">
+
+        <button (click)="exportToExcel()" class="bg-blue-500 text-white px-4 py-2 rounded">
+            Export to Excel
+        </button>
+    </div>
+
+
+
+    <div>
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">S.No.</th>
+                    <th class="border p-2">Project Deliverable</th>
+                    <th class="border p-2">Project Name</th>
+                    <th class="border p-2">Customer Name</th>
+                    <th class="border p-2">Task Category</th>
+                    <th class="border p-2">Task Description</th>
+                    <th class="border p-2">Hours</th>
+                    <th class="border p-2">Minutes</th>
+                    <th class="border p-2">Task Status</th>
+                    <th class="border p-2">Date</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let timesheet of displayedTimesheetData; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
+                    <td class="border p-2">{{ timesheet.project_name }}</td>
+                    <td class="border p-2">{{ timesheet.customer_name }}</td>
+                    <td class="border p-2">{{ timesheet.task_category_name }}</td>
+                    <td class="border p-2">{{ timesheet.task_description }}</td>
+                    <td class="border p-2">{{ timesheet.hours }}</td>
+                    <td class="border p-2">{{ timesheet.minutes }}</td>
+                    <td class="border p-2">
+                        {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
+                    </td>
+                    <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+
+                </tr>
+            </tbody>
+        </table>
+        <!-- Pagination Controls -->
+        <!-- Pagination Controls -->
+<div class="flex items-center justify-center mt-4 space-x-1">
+    <!-- Previous button -->
+    <button (click)="changePage(currentPage - 1)" 
+        [disabled]="currentPage === 1" 
+        class="px-3 py-1 border rounded-md">
+        Previous
+    </button>
+
+    <!-- First Page button (if current page > 3) -->
+    <button *ngIf="currentPage > 3" (click)="changePage(1)" 
+        class="px-3 py-1 border rounded-md">
+        1
+    </button>
+
+    <!-- Ellipsis if there are more pages before -->
+    <span *ngIf="currentPage > 4" class="px-2">...</span>
+
+    <!-- Page Numbers -->
+    <button *ngFor="let page of getVisiblePageNumbers()" 
+        (click)="changePage(page)" 
+        [class.bg-blue-500]="currentPage === page" 
+        class="px-3 py-1 border rounded-md">
+        {{ page }}
+    </button>
+
+    <!-- Ellipsis if there are more pages after -->
+    <span *ngIf="currentPage < totalPages() - 3" class="px-2">...</span>
+
+    <!-- Last Page button (if not in range) -->
+    <button *ngIf="currentPage < totalPages() - 2" 
+        (click)="changePage(totalPages())" 
+        class="px-3 py-1 border rounded-md">
+        {{ totalPages() }}
+    </button>
+
+    <!-- Next button -->
+    <button (click)="changePage(currentPage + 1)" 
+        [disabled]="currentPage === totalPages()" 
+        class="px-3 py-1 border rounded-md">
+        Next
+    </button>
 </div>
+
+    </div>
 </div>
