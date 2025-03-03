@@ -5,7 +5,7 @@ import { NavbarComponent } from "../../../components/shared/navbar/navbar.compon
 @Component({
   selector: 'app-resource-management-dashboard',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, NavbarComponent],
+  imports: [ RouterOutlet, NavbarComponent],
   templateUrl: './resource-management-dashboard.component.html',
   styleUrl: './resource-management-dashboard.component.css'
 })
