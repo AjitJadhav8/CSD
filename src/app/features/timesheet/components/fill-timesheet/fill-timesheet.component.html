@@ -1,113 +1,137 @@
-<div class="p-4 space-y-6">
+<div class="p-4">
 
     <!-- 🔹 Timesheet Header -->
-    <div class="mb-6">
+    <!-- <div class="mb-6">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold">Filling Timesheet for</h2>
             <span class="text-lg text-gray-700">{{ currentDate | date:'dd-MMMM-yyyy, EEEE' }}</span>
         </div>
-    </div>
-
+    </div> -->
+<!-- Button to open the modal -->
+<button (click)="toggleModal('timesheet')" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+    Open Timesheet Modal
+  </button>
     <!-- 🔹 Input Fields Section -->
-    <div class="bg-white p-6 rounded-xl shadow-md space-y-6">
-        <!-- First Row (Date, Customer, Project, Deliverable) -->
-        <div class="grid grid-cols-4 gap-4">
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Filling Timesheet for</label>
-                <input type="date" class="p-2 border rounded-lg" [(ngModel)]="selectedDate" [min]="minDate" [max]="maxDate" required>
-            </div>
-
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Select Customer</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedCustomer" (change)="onCustomerChange()">
-                    <option value="" disabled selected>Select Customer</option>
-                    <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                        {{ customer.customer_name }}
-                    </option>
-                </select>
-            </div>
-
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Select Project</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedProject" [disabled]="!selectedCustomer"
-                    (change)="onProjectChange()">
-                    <option value="" disabled selected>Select Project</option>
-                    <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
-                        {{ project.project_name }}
-                    </option>
-                </select>
-            </div>
-
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Project Deliverable</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedDeliverable" [disabled]="!selectedProject">
-                    <option value="" disabled selected>Select Deliverable</option>
-                    <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
-                        {{ deliverable.project_deliverable_name }}
-                    </option>
-                </select>
-            </div>
+    <!-- Timesheet Form Modal -->
+    <div *ngIf="showTimesheetModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
+    (click)="toggleModal('timesheet')">
+    <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-xl font-semibold">Add Timesheet Entry</h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl" (click)="toggleModal('timesheet')">&times;</button>
         </div>
 
-        <!-- Second Row (Task Category & Task Description) -->
-        <div class="grid grid-cols-3 gap-4">
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Task Category</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedTaskCategory">
-                    <option value="" disabled selected>Select Task Category</option>
-                    <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
-                        {{ category.task_category_name }}
-                    </option>
-                </select>
-            </div>
+        <!-- Scrollable Form -->
+        <div class=" max-h-[70vh] overflow-y-auto p-2">
+            <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(); $event.preventDefault()">
+                <div class="bg-white p-6 rounded-xl grid grid-cols-2 gap-6">
+                    <!-- First Row (Full Width) -->
+                    <div class="col-span-2 flex flex-col  items-center">
+                        <label class="text-gray-700 font-medium">Filling Timesheet for</label>
+                        <input type="date" class="p-2 border rounded-lg w-1/2 text-center" [(ngModel)]="selectedDate" [min]="minDate"
+                            [max]="maxDate" name="selectedDate" required>
+                    </div>
 
-            <div class="col-span-2 flex flex-col">
-                <label class="text-gray-700 font-medium">Task Description</label>
-                <textarea class="p-2 border rounded-lg" [(ngModel)]="taskDescription" rows="3"></textarea>
-            </div>
-        </div>
+                    <!-- Second Row (Customer & Project) -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Select Customer</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedCustomer" name="selectedCustomer"
+                            (change)="onCustomerChange()" required>
+                            <option value="" disabled selected>Select Customer</option>
+                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </option>
+                        </select>
+                    </div>
 
-        <!-- Third Row (Hours, Minutes, Task Status) -->
-        <div class="grid grid-cols-3 gap-4">
-            <div class="flex flex-col w-28">
-                <label class="text-gray-700 font-medium">Hours</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedHours">
-                    <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
-                </select>
-            </div>
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Select Project</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedProject" name="selectedProject"
+                            [disabled]="!selectedCustomer" (change)="onProjectChange()" required>
+                            <option value="" disabled selected>Select Project</option>
+                            <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+                                {{ project.project_name }}
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="flex flex-col w-28">
-                <label class="text-gray-700 font-medium">Minutes</label>
-                <select class="p-2 border rounded-lg" [(ngModel)]="selectedMinutes">
-                    <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
-                </select>
-            </div>
+                    <!-- Third Row (Deliverable & Task Category) -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Project Deliverable</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedDeliverable" name="selectedDeliverable"
+                            [disabled]="!selectedProject" required>
+                            <option value="" disabled selected>Select Deliverable</option>
+                            <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
+                                {{ deliverable.project_deliverable_name }}
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="flex flex-col">
-                <label class="text-gray-700 font-medium">Task Status</label>
-                <div class="flex space-x-2">
-                    <button class="px-4 py-2 rounded-lg text-white transition"
-                        [class.bg-green-600]="selectedTaskStatus === 1" [class.bg-gray-300]="selectedTaskStatus !== 1"
-                        (click)="selectedTaskStatus = 1">
-                        ✅ Completed
-                    </button>
-                    <button class="px-4 py-2 rounded-lg text-white transition"
-                        [class.bg-yellow-600]="selectedTaskStatus === 0" [class.bg-gray-300]="selectedTaskStatus !== 0"
-                        (click)="selectedTaskStatus = 0">
-                        ⚠ In Progress
-                    </button>
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Task Category</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedTaskCategory" name="selectedTaskCategory"
+                            required>
+                            <option value="" disabled selected>Select Task Category</option>
+                            <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
+                                {{ category.task_category_name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Fourth Row (Full Width - Task Description) -->
+                    <div class="col-span-2 flex flex-col">
+                        <label class="text-gray-700 font-medium">Task Description</label>
+                        <textarea class="p-2 border rounded-lg" [(ngModel)]="taskDescription" name="taskDescription"
+                            rows="3" required></textarea>
+                    </div>
+
+                    <!-- Fifth Row (Hours & Minutes) -->
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Hours</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedHours" name="selectedHours" required>
+                            <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-gray-700 font-medium">Minutes</label>
+                        <select class="p-2 border rounded-lg" [(ngModel)]="selectedMinutes" name="selectedMinutes"
+                            required>
+                            <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Sixth Row (Full Width - Task Status) -->
+                    <div class="col-span-2 flex flex-col items-center">
+                        <label class="text-gray-700 font-medium mb-2">Task Status</label>
+                        <div class="flex space-x-2">
+                            <button type="button" class="px-6 py-2 rounded-lg text-white transition"
+                                [class.bg-green-600]="selectedTaskStatus === 1"
+                                [class.bg-gray-300]="selectedTaskStatus !== 1" (click)="selectedTaskStatus = 1">
+                                ✅ Completed
+                            </button>
+                            <button type="button" class="px-6 py-2 rounded-lg text-white transition"
+                                [class.bg-yellow-600]="selectedTaskStatus === 0"
+                                [class.bg-gray-300]="selectedTaskStatus !== 0" (click)="selectedTaskStatus = 0">
+                                ⚠ In Progress
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button (Full Width) -->
+                    <div class="col-span-2 flex justify-center mt-6">
+                        <button type="submit"
+                        class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 shadow-md">
+                        Submit
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Submit Button & Remaining Hours -->
-        <div class="flex justify-between items-center mt-6">
-            <button type="submit" (click)="submitTimesheet()"
-                class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 shadow-md">
-                Submit
-            </button>
+            </form>
         </div>
     </div>
+</div>
+
 
     <!-- 🔹 Timesheet Table Section -->
     <div>

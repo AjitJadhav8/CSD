@@ -18,7 +18,15 @@ export class FillTimesheetComponent {
   selectedDate: string = new Date().toISOString().split('T')[0]; // Default to today
   maxDate: string = new Date().toISOString().split('T')[0]; // Today's date
   minDate: string = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]; // 7 days before today
+  // Add this property to control the visibility of the modal
+  showTimesheetModal: boolean = false;
 
+  // Add this method to toggle the modal
+  toggleModal(modalType: string) {
+    if (modalType === 'timesheet') {
+      this.showTimesheetModal = !this.showTimesheetModal;
+    }
+  }
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
@@ -121,6 +129,8 @@ export class FillTimesheetComponent {
           showConfirmButton: false,
           timer: 3000
         });
+        this.showTimesheetModal = false;
+
         setTimeout(() => this.fetchTimesheets(), 100);
       },
       error: (error) => {
@@ -236,7 +246,7 @@ export class FillTimesheetComponent {
     console.log('Filtered Deliverables:', this.filterOptionProjectDeliverables);
   }
 
-  currentDate: Date = new Date();
+  // currentDate: Date = new Date();
   hoursList = Array.from({ length: 24 }, (_, i) => i);
   minutesList = [0, 15, 30, 45];
   taskStatusList = [
@@ -244,6 +254,6 @@ export class FillTimesheetComponent {
     { value: 1, label: 'Completed' }
   ];
 
-  selectedTaskStatus = 0; // Default selection
+  selectedTaskStatus: number | null = null; // No default selection
 
 }

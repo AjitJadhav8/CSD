@@ -78,8 +78,6 @@
                 <div class="mt-4 max-h-[70vh] overflow-y-auto p-2">
                     <form #employeeForm="ngForm" (ngSubmit)="submitEmployee(employeeForm); $event.preventDefault()">
                         <div class="grid grid-cols-2 gap-4">
-                            <!-- <div><label>Employee Code*</label><input type="text" [(ngModel)]="employee.user_code"
-                                    name="user_code" required class="border p-2 w-full" /></div> -->
 
                             <!-- Employee Code -->
                             <div class="form-group">
@@ -93,11 +91,6 @@
                                 </span>
                             </div>
 
-
-
-                            <!-- <div><label>First Name*</label><input type="text" [(ngModel)]="employee.user_first_name"
-                                    name="user_first_name" required class="border p-2 w-full" /></div> -->
-
                             <!-- First Name -->
                             <div class="form-group">
                                 <label>First Name*</label>
@@ -110,18 +103,12 @@
                                 </span>
                             </div>
 
-
-                            <!-- <div><label>Middle Name</label><input type="text" [(ngModel)]="employee.user_middle_name"
-                                    name="user_middle_name" class="border p-2 w-full" /></div> -->
-
                             <!-- Middle Name -->
                             <div class="form-group">
                                 <label>Middle Name</label>
                                 <input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name"
                                     class="border p-2 w-full rounded-md">
                             </div>
-                            <!-- <div><label>Last Name*</label><input type="text" [(ngModel)]="employee.user_last_name"
-                                    name="user_last_name" required class="border p-2 w-full" /></div> -->
 
                             <!-- Last Name -->
                             <div class="form-group">
@@ -134,10 +121,6 @@
                                     Last Name is required
                                 </span>
                             </div>
-
-
-                            <!-- <div><label>Email ID*</label><input type="email" [(ngModel)]="employee.user_email"
-                                    name="user_email" required class="border p-2 w-full" /></div> -->
 
                             <!-- Email ID -->
                             <div class="form-group">
@@ -153,10 +136,6 @@
                                 </span>
                             </div>
 
-
-                            <!-- <div><label>Contact Number*</label><input type="text" [(ngModel)]="employee.user_contact"
-                                    name="user_contact" required class="border p-2 w-full" /></div> -->
-
                             <!-- Contact Number -->
                             <div class="form-group">
                                 <label>Contact Number*</label>
@@ -170,11 +149,6 @@
                                 </span>
                             </div>
 
-
-                            <!-- <div><label>Emergency Contact*</label><input type="text"
-                                    [(ngModel)]="employee.user_emergency_contact" name="user_emergency_contact" required
-                                    class="border p-2 w-full" /></div> -->
-
                             <!-- Emergency Contact -->
                             <div class="form-group">
                                 <label>Emergency Contact*</label>
@@ -187,16 +161,6 @@
                                     Enter a valid 10-digit emergency contact number
                                 </span>
                             </div>
-
-
-                            <!-- <div>
-                                <label>Role*</label>
-                                <select [(ngModel)]="employee.role_id" name="role" required class="border p-2 w-full">
-                                    <option value="" disabled selected>Select Role</option>
-                                    <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
-                                    </option>
-                                </select>
-                            </div> -->
 
                             <!-- Role -->
                             <div class="form-group">
