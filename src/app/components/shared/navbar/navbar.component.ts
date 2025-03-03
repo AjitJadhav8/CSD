@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -18,9 +18,17 @@ export class NavbarComponent {
   showDropdown = false;
   showChangePasswordForm = false;
   showUpdateEmailForm = false;
-  loggedInUser = 'HR Manager'; // Replace with actual user data
+  loggedInUserName = ''; // Replace with actual user data
 
-  constructor(private router: Router) {}
+  setLoggedInUser() {
+    const firstName = localStorage.getItem('first_name') || '';
+    const lastName = localStorage.getItem('last_name') || '';
+    this.loggedInUserName = firstName && lastName ? `${firstName} ${lastName}` : 'User';
+  }
+
+  constructor(private router: Router) {
+    this.setLoggedInUser();
+  }
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
@@ -34,14 +42,14 @@ export class NavbarComponent {
     localStorage.removeItem('last_name');
     localStorage.removeItem('role_id');
     localStorage.removeItem('email');
-  
+
     // Optionally, keep the remembered email if the user chose "Remember Me"
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     localStorage.clear(); // Clears all data
     if (rememberedEmail) {
       localStorage.setItem('rememberedEmail', rememberedEmail); // Restore remembered email
     }
-  
+
     // Redirect to login page and show logout confirmation
     this.router.navigate(['/login']).then(() => {
       Swal.fire({
@@ -55,5 +63,5 @@ export class NavbarComponent {
       });
     });
   }
-  
+
 }

@@ -12,8 +12,6 @@
         </button>
     </div>
 
-
-
     <div>
         <table class="w-full border-collapse border border-gray-300">
             <thead>
@@ -51,48 +49,42 @@
         </table>
         <!-- Pagination Controls -->
         <!-- Pagination Controls -->
-<div class="flex items-center justify-center mt-4 space-x-1">
-    <!-- Previous button -->
-    <button (click)="changePage(currentPage - 1)" 
-        [disabled]="currentPage === 1" 
-        class="px-3 py-1 border rounded-md">
-        Previous
-    </button>
+        <div class="flex items-center justify-center mt-4 space-x-1">
+            <!-- Previous button -->
+            <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                class="px-3 py-1 border rounded-md">
+                Previous
+            </button>
 
-    <!-- First Page button (if current page > 3) -->
-    <button *ngIf="currentPage > 3" (click)="changePage(1)" 
-        class="px-3 py-1 border rounded-md">
-        1
-    </button>
+            <!-- First Page button (if current page > 3) -->
+            <button *ngIf="currentPage > 3" (click)="changePage(1)" class="px-3 py-1 border rounded-md">
+                1
+            </button>
 
-    <!-- Ellipsis if there are more pages before -->
-    <span *ngIf="currentPage > 4" class="px-2">...</span>
+            <!-- Ellipsis if there are more pages before -->
+            <span *ngIf="currentPage > 4" class="px-2">...</span>
 
-    <!-- Page Numbers -->
-    <button *ngFor="let page of getVisiblePageNumbers()" 
-        (click)="changePage(page)" 
-        [class.bg-blue-500]="currentPage === page" 
-        class="px-3 py-1 border rounded-md">
-        {{ page }}
-    </button>
+            <!-- Page Numbers -->
+            <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+                [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+                {{ page }}
+            </button>
 
-    <!-- Ellipsis if there are more pages after -->
-    <span *ngIf="currentPage < totalPages() - 3" class="px-2">...</span>
+            <!-- Ellipsis if there are more pages after -->
+            <span *ngIf="currentPage < totalPages() - 3" class="px-2">...</span>
 
-    <!-- Last Page button (if not in range) -->
-    <button *ngIf="currentPage < totalPages() - 2" 
-        (click)="changePage(totalPages())" 
-        class="px-3 py-1 border rounded-md">
-        {{ totalPages() }}
-    </button>
+            <!-- Last Page button (if not in range) -->
+            <button *ngIf="currentPage < totalPages() - 2" (click)="changePage(totalPages())"
+                class="px-3 py-1 border rounded-md">
+                {{ totalPages() }}
+            </button>
 
-    <!-- Next button -->
-    <button (click)="changePage(currentPage + 1)" 
-        [disabled]="currentPage === totalPages()" 
-        class="px-3 py-1 border rounded-md">
-        Next
-    </button>
-</div>
+            <!-- Next button -->
+            <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages()"
+                class="px-3 py-1 border rounded-md">
+                Next
+            </button>
+        </div>
 
     </div>
 </div>
