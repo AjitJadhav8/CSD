@@ -16,6 +16,9 @@ import Swal from 'sweetalert2';
 export class FillTimesheetComponent {
   userId: number | null = null; // Store user_id
   selectedDate: string = new Date().toISOString().split('T')[0]; // Default to today
+  maxDate: string = new Date().toISOString().split('T')[0]; // Today's date
+  minDate: string = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]; // 7 days before today
+
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {

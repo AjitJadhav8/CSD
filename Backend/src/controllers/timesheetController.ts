@@ -58,7 +58,7 @@ class TimesheetController {
             LEFT JOIN master_customer c ON p.customer_id = c.customer_id
             LEFT JOIN master_task_category tc ON t.task_cat_id = tc.task_cat_id
             WHERE t.is_deleted = 0 AND t.user_id = ? 
-                AND DATE(t.timesheet_date) = CURDATE()  -- Filter for today's date
+                AND DATE(t.created_at) = CURDATE()  -- Filter for records submitted today
             ORDER BY t.timesheet_id DESC`;
 
             db.query(query, [userId], (err, results) => {
