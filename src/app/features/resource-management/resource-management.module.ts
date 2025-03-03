@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ResourceManagementDashboardComponent } from './components/resource-management-dashboard/resource-management-dashboard.component';
+import { ResourceManagementDashboardComponent } from './resource-management-dashboard/resource-management-dashboard.component';
 import { AllocationReportComponent } from './components/allocation-report/allocation-report.component';
 import { AssignProjectTeamComponent } from './components/assign-project-team/assign-project-team.component';
 import { AllTeamsTimesheetComponent } from './components/all-teams-timesheet/all-teams-timesheet.component';

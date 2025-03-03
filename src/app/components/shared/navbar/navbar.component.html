@@ -35,6 +35,22 @@
       class="text-gray-700 hover:text-blue-600">Manager's Hub</a>
   </div>
 
+  <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
+<div *ngIf="showResourceManagementLinks" class="hidden sm:flex space-x-6">
+  <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">Allocation Report</a>
+  <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">Assign Project Team</a>
+  <a [routerLink]="['/resource-management', 'all-teams-timesheet']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">All Teams Timesheet</a>
+  <a [routerLink]="['/resource-management', 'all-projects-team']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">All Projects Team</a>
+  <a [routerLink]="['/resource-management', 'view-resource-demand']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">View Resource Demand</a>
+  <a [routerLink]="['/resource-management', 'view-update-employee-skills']" routerLinkActive="font-bold text-blue-600"
+    class="text-gray-700 hover:text-blue-600">View/Update Employee Skills</a>
+</div>
+
 
 
   <!-- Navbar Right Section -->

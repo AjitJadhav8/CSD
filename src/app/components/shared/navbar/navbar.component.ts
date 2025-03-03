@@ -13,6 +13,8 @@ export class NavbarComponent {
 
   @Input() showOrganisationLinks: boolean = false;
   @Input() showTimesheetLinks: boolean = false;
+  @Input() showResourceManagementLinks: boolean = false; // New Input
+
 
 
   showDropdown = false;
