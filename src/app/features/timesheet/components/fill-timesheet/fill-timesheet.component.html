@@ -22,7 +22,8 @@
                     <div class="col-span-2 flex flex-col items-center">
                         <label class="text-gray-700 font-medium">Filling Timesheet for</label>
                         <input type="date" class="p-2 border rounded-lg w-1/2 text-center" [(ngModel)]="selectedDate" [min]="minDate"
-                            [max]="maxDate" name="selectedDate" #selectedDateInput="ngModel" required>
+                            [max]="maxDate" name="selectedDate" #selectedDateInput="ngModel" required
+                            [ngClass]="{'border-red-500': (selectedDateInput.invalid && selectedDateInput.touched) || (timesheetForm.submitted && selectedDateInput.invalid)}">
                         <span class="text-red-500 text-sm"
                             *ngIf="(selectedDateInput.invalid && selectedDateInput.touched) || (timesheetForm.submitted && selectedDateInput.invalid)">
                             Date is required
@@ -33,7 +34,8 @@
                     <div class="flex flex-col">
                         <label class="text-gray-700 font-medium">Select Customer</label>
                         <select class="p-2 border rounded-lg" [(ngModel)]="selectedCustomer" name="selectedCustomer"
-                            #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required>
+                            #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required
+                            [ngClass]="{'border-red-500': (selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)}">
                             <option value="" disabled selected>Select Customer</option>
                             <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
                                 {{ customer.customer_name }}
@@ -48,7 +50,8 @@
                     <div class="flex flex-col">
                         <label class="text-gray-700 font-medium">Select Project</label>
                         <select class="p-2 border rounded-lg" [(ngModel)]="selectedProject" name="selectedProject"
-                            #selectedProjectInput="ngModel" [disabled]="!selectedCustomer" (change)="onProjectChange()" required>
+                            #selectedProjectInput="ngModel" [disabled]="!selectedCustomer" (change)="onProjectChange()" required
+                            [ngClass]="{'border-red-500': (selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)}">
                             <option value="" disabled selected>Select Project</option>
                             <option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
                                 {{ project.project_name }}
@@ -64,7 +67,8 @@
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium">Project Deliverable</label>
                 <select class="p-2 border rounded-lg" [(ngModel)]="selectedDeliverable" name="selectedDeliverable"
-                    #selectedDeliverableInput="ngModel" [disabled]="!selectedProject" required>
+                    #selectedDeliverableInput="ngModel" [disabled]="!selectedProject" required
+                    [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
                     <option value="" disabled selected>Select Deliverable</option>
                     <option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
                         {{ deliverable.project_deliverable_name }}
@@ -79,7 +83,8 @@
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium">Task Category</label>
                 <select class="p-2 border rounded-lg" [(ngModel)]="selectedTaskCategory" name="selectedTaskCategory"
-                    #selectedTaskCategoryInput="ngModel" required>
+                    #selectedTaskCategoryInput="ngModel" required
+                    [ngClass]="{'border-red-500': (selectedTaskCategoryInput.invalid && selectedTaskCategoryInput.touched) || (timesheetForm.submitted && selectedTaskCategoryInput.invalid)}">
                     <option value="" disabled selected>Select Task Category</option>
                     <option *ngFor="let category of optionTaskCategories" [value]="category.task_cat_id">
                         {{ category.task_category_name }}
@@ -95,7 +100,8 @@
             <div class="col-span-2 flex flex-col">
                 <label class="text-gray-700 font-medium">Task Description</label>
                 <textarea class="p-2 border rounded-lg" [(ngModel)]="taskDescription" name="taskDescription"
-                    #taskDescriptionInput="ngModel" rows="3" required></textarea>
+                    #taskDescriptionInput="ngModel" rows="3" required
+                    [ngClass]="{'border-red-500': (taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)}"></textarea>
                 <span class="text-red-500 text-sm"
                     *ngIf="(taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)">
                     Task Description is required
@@ -106,7 +112,8 @@
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium">Hours</label>
                 <select class="p-2 border rounded-lg" [(ngModel)]="selectedHours" name="selectedHours"
-                    #selectedHoursInput="ngModel" required>
+                    #selectedHoursInput="ngModel" required
+                    [ngClass]="{'border-red-500': (selectedHoursInput.invalid && selectedHoursInput.touched) || (timesheetForm.submitted && selectedHoursInput.invalid)}">
                     <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
                 </select>
                 <span class="text-red-500 text-sm"
@@ -118,7 +125,8 @@
             <div class="flex flex-col">
                 <label class="text-gray-700 font-medium">Minutes</label>
                 <select class="p-2 border rounded-lg" [(ngModel)]="selectedMinutes" name="selectedMinutes"
-                    #selectedMinutesInput="ngModel" required>
+                    #selectedMinutesInput="ngModel" required
+                    [ngClass]="{'border-red-500': (selectedMinutesInput.invalid && selectedMinutesInput.touched) || (timesheetForm.submitted && selectedMinutesInput.invalid)}">
                     <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
                 </select>
                 <span class="text-red-500 text-sm"
