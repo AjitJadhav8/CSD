@@ -15,4 +15,11 @@ export class RmgService {
     const token = localStorage.getItem('token'); // Retrieve token from storage
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
+
+  submitAssignProjectTeam(assignmentData: any): Observable<any> {
+    const headers = this.getAuthHeaders(); // Get headers with token
+    return this.http.post(`${this.apiUrl}/api/rmg/assign`, assignmentData, { headers });
+  }
+
+
 }

@@ -56,8 +56,14 @@ class OrgController {
         FROM master_task_category WHERE is_deleted = 0
         `;
 
+        const positionQuery = `
+        SELECT 
+            position_id, position_name, is_deleted, created_at, updated_at
+        FROM master_position WHERE is_deleted = 0
+    `;
+
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, positions] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -118,11 +124,18 @@ class OrgController {
                         resolve(results);
                     });
                 }),
+                new Promise((resolve, reject) => {
+                    db.query(positionQuery, (err: any, results: any) => {
+                        if (err) reject(err) ;
+                         resolve(results);
+                    });
+                }),
+
             ]);
 
             // Return roles, departments, and user info in the response
             res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
-                taskCategories });
+                taskCategories,positions });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
