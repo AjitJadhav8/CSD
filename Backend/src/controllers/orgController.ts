@@ -536,8 +536,10 @@ class OrgController {
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact, user_emergency_contact, role_id, department_id,
                 is_passport, passport_validity, user_current_address, user_DOB,
-                user_blood_group, user_DOJ
+                user_blood_group, user_DOJ, user_password
             } = req.body;
+
+            const password = user_password ? user_password : '123';
 
             // SQL query to insert the new employee into the database
             const query = `
@@ -545,16 +547,16 @@ class OrgController {
                     user_code, user_first_name, user_middle_name, user_last_name, 
                     user_email, user_contact, user_emergency_contact, role_id, department_id, 
                     is_passport, passport_validity, user_current_address, user_DOB, 
-                    user_blood_group, user_DOJ
+                    user_blood_group, user_DOJ, user_password
                 ) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact, user_emergency_contact, role_id, department_id,
                 is_passport, passport_validity, user_current_address, user_DOB,
-                user_blood_group, user_DOJ
+                user_blood_group, user_DOJ, password
             ];
 
             // Insert the data into the database
