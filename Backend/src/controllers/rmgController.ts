@@ -49,6 +49,80 @@ class RmgController {
         }
     }
 
+     // Fetch all assigned project teams
+     async getAllProjectTeams(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `SELECT 
+                tpt.project_team_id,
+                mc.customer_id, mc.customer_name,
+                mp.project_id, mp.project_name,
+                mu1.user_id AS employee_id, CONCAT(mu1.user_first_name, ' ', mu1.user_last_name) AS employee_name,
+                mpj.position_id AS project_role_id, mpj.position_name AS project_role,
+                mu2.user_id AS project_manager_id, CONCAT(mu2.user_first_name, ' ', mu2.user_last_name) AS project_manager_name,
+                tpt.start_date,
+                tpt.end_date,
+                tpt.allocation_status,
+                tpt.allocation_percentage
+            FROM trans_project_team tpt
+            LEFT JOIN master_customer mc ON tpt.customer_id = mc.customer_id
+            LEFT JOIN master_project mp ON tpt.project_id = mp.project_id
+            LEFT JOIN master_user mu1 ON tpt.employee_id = mu1.user_id
+            LEFT JOIN master_position mpj ON tpt.project_role_id = mpj.position_id
+            LEFT JOIN master_user mu2 ON tpt.project_manager_id = mu2.user_id
+            WHERE tpt.is_deleted = 0`;
+
+            db.query(query, (error, results) => {
+                if (error) {
+                    console.error('Database Error:', error);
+                    res.status(500).json({ error: 'Database Error', details: error.message });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+
+        } catch (error) {
+            console.error('Error fetching project teams:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    
+    // Delete project team assignment
+    async softDeleteProjectTeam(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
+    
+            // Check if project team exists
+            const checkQuery = `SELECT * FROM trans_project_team WHERE project_team_id = ? AND is_deleted = 0`;
+            db.query(checkQuery, [id], (err, results) => {
+                if (err) {
+                    console.error('Database Error:', err);
+                    res.status(500).json({ error: 'Database Error', details: err.message });
+                    return;
+                }
+    
+    
+                // Perform soft delete by updating is_deleted = 1
+                const deleteQuery = `UPDATE trans_project_team SET is_deleted = 1, updated_at = NOW() WHERE project_team_id = ?`;
+    
+                db.query(deleteQuery, [id], (error) => {
+                    if (error) {
+                        console.error('Error deleting project team:', error);
+                        res.status(500).json({ error: 'Failed to delete project team', details: error.message });
+                        return;
+                    }
+    
+                    res.status(200).json({ message: 'Project team deleted successfully' });
+                });
+            });
+    
+        } catch (error) {
+            console.error('Internal Server Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    
+
 }
 
 export default new RmgController();

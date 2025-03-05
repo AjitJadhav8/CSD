@@ -31,6 +31,8 @@ export class AssignProjectTeamComponent {
   selectedCustomerId: number | null = null;
 
   ngOnInit(): void {
+    this.fetchAssignedProjectTeams();
+
     const storedUserId = localStorage.getItem('user_id');
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
@@ -151,5 +153,66 @@ export class AssignProjectTeamComponent {
       }
     });
   }
+
+  assignedProjectTeams: any[] = []; // <-- Declare this property
+
+   // ✅ Fetch Assigned Project Teams
+   fetchAssignedProjectTeams(): void {
+    this.rmgService.getAllProjectTeams().subscribe(
+      (response) => {
+        this.assignedProjectTeams = response;
+      },
+      (error) => {
+        console.error('Error fetching project teams:', error);
+      }
+    );
+  }
+
+// delete project team
+deleteAssignProjectTeam(projectTeamId: number): void {
+  console.log('Deleting Project Team:', projectTeamId);
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will not be able to recover this project team assignment!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'No, keep it'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.rmgService.deleteProjectTeam(projectTeamId).subscribe({
+        next: (response) => {
+          console.log('Project Team Deleted:', response);
+
+          // Success Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Project team deleted successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+
+          setTimeout(() => this.fetchAssignedProjectTeams(), 100);
+        },
+        error: (error) => {
+          console.error('Error deleting project team:', error);
+
+          // Error Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Failed to delete project team!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      });
+    }
+  });
+}
 
 }

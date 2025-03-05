@@ -21,5 +21,18 @@ export class RmgService {
     return this.http.post(`${this.apiUrl}/api/rmg/assign`, assignmentData, { headers });
   }
 
+    // Fetch all project team assignments
+    getAllProjectTeams(): Observable<any> {
+      const headers = this.getAuthHeaders(); // Get headers with token
+      return this.http.get(`${this.apiUrl}/api/rmg/assignments`, { headers });
+    }
+
+    // delete project team assignment
+    deleteProjectTeam(id: number): Observable<any> {
+      const headers = this.getAuthHeaders(); // Get headers with token
+      return this.http.delete(`${this.apiUrl}/api/rmg/assignments/${id}`, { headers });
+    }
+    
+
 
 }

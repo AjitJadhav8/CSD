@@ -91,3 +91,41 @@
         Submit
     </button>
 </div>
+
+<table class="w-full border-collapse border border-gray-300 mt-4">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border p-2">Sr No</th>
+            <th class="border p-2">Customer Name</th>
+            <th class="border p-2">Project Name</th>
+            <th class="border p-2">Employee Name</th>
+            <th class="border p-2">Project Role</th>
+            <th class="border p-2">Project Manager</th>
+            <th class="border p-2">Start Date</th>
+            <th class="border p-2">End Date</th>
+            <th class="border p-2">Allocation Status</th>
+            <th class="border p-2">Allocation %</th>
+            <th class="border p-2">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let team of assignedProjectTeams; let i = index" class="hover:bg-gray-50">
+            <td class="border p-2">{{ i + 1 }}</td>
+            <td class="border p-2">{{ team.customer_name }}</td>
+            <td class="border p-2">{{ team.project_name }}</td>
+            <td class="border p-2">{{ team.employee_name }}</td>
+            <td class="border p-2">{{ team.project_role }}</td>
+            <td class="border p-2">{{ team.project_manager_name }}</td>
+            <td class="border p-2">{{ team.start_date | date:'dd-MMM-yyyy' }}</td>
+            <td class="border p-2">{{ team.end_date  | date:'dd-MMM-yyyy' }}</td>
+            <td class="border p-2">{{ team.allocation_status }}</td>
+            <td class="border p-2">{{ team.allocation_percentage }}%</td>
+            <td class="border p-2">
+                <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteAssignProjectTeam(team.project_team_id)" >
+                    Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

@@ -5,6 +5,9 @@ import { protect } from '../middlewares/authMiddleware';
 
 
 router.post('/assign', protect, rmgController.assignProjectTeam);
+router.get('/assignments', protect, rmgController.getAllProjectTeams);
+router.delete('/assignments/:id', protect, rmgController.softDeleteProjectTeam);
+
 
 
 export default router;
