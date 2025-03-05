@@ -93,66 +93,71 @@ export class AssignProjectTeamComponent {
   //submit assign project team
   submitAssignProjectTeam() {
     if (!this.selectedCustomerId || !this.selectedProjectId || !this.selectedEmployeeId || !this.selectedProjectRoleId ||
-      !this.selectedProjectManagerId || !this.startDate || !this.selectedAllocationStatus ||
-      this.selectedAllocationPercentage === undefined) {
-
-      console.error('Missing required fields');
-
-      // Show warning if required fields are missing
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'All fields are required!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
+        !this.selectedProjectManagerId || !this.startDate || !this.selectedAllocationStatus ||
+        this.selectedAllocationPercentage === undefined) {
+        
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'All fields are required!',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return;
     }
 
     const assignmentData = {
-      customer_id: this.selectedCustomerId,
-      project_id: this.selectedProjectId,
-      employee_id: this.selectedEmployeeId,
-      project_role_id: this.selectedProjectRoleId,
-      project_manager_id: this.selectedProjectManagerId,
-      start_date: this.startDate,
-      end_date: this.tentativeEndDate || null, // Optional field
-      allocation_status: this.selectedAllocationStatus,
-      allocation_percentage: Number(this.selectedAllocationPercentage) // Convert to number
+        customer_id: this.selectedCustomerId,
+        project_id: this.selectedProjectId,
+        employee_id: this.selectedEmployeeId,
+        project_role_id: this.selectedProjectRoleId,
+        project_manager_id: this.selectedProjectManagerId,
+        start_date: this.startDate,
+        end_date: this.tentativeEndDate || null,
+        allocation_status: this.selectedAllocationStatus,
+        allocation_percentage: Number(this.selectedAllocationPercentage)
     };
 
     this.rmgService.submitAssignProjectTeam(assignmentData).subscribe({
-      next: (response) => {
-        console.log('Project Team Assigned:', response);
+        next: (response) => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Project team assigned successfully!',
+                showConfirmButton: false,
+                timer: 3000
+            });
 
-        // Success Toast Notification
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Project team assigned successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-
-        // setTimeout(() => this.fetchProjectAssignments(), 100);
-      },
-      error: (error) => {
-        console.error('Error assigning project team:', error);
-
-        // Error Toast Notification
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Failed to assign project team!',
-          showConfirmButton: false,
-          timer: 3000
-        });
+            this.fetchAssignedProjectTeams(); // Refresh the list
+        },
+        error: (error) => {
+          // console.error('Error assigning project team:', error);
+      
+          if (error.status === 400 && error.error.error.includes('Only')) {
+              Swal.fire({
+                  toast: true,
+                  position: 'top-end',
+                  icon: 'error',
+                  title: error.error.error, // Shows "Only X% allocation is remaining"
+                  showConfirmButton: false,
+                  timer: 3000
+              });
+          } else {
+              Swal.fire({
+                  toast: true,
+                  position: 'top-end',
+                  icon: 'error',
+                  title: 'Failed to assign project team!',
+                  showConfirmButton: false,
+                  timer: 3000
+              });
+          }
       }
-    });
-  }
+  });
+}      
+
 
   assignedProjectTeams: any[] = []; // <-- Declare this property
 
