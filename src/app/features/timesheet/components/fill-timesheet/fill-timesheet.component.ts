@@ -30,16 +30,28 @@ export class FillTimesheetComponent {
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
-
     // Fetch user ID from localStorage
     const storedUserId = localStorage.getItem('user_id'); // Fetch user_id from local storage
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
       this.userId = Number(storedUserId); // Convert to number
       console.log('User ID successfully set:', this.userId);
+      this.timesheetService.getAssignedCustomersAndProjects(this.userId).subscribe(
+        (response) => {
+          console.log('Fetched Assigned Data:', response);
+          this.optionCustomers = response.customers;
+          this.optionProjects = response.projects;
+        
+        },
+        (error) => {
+          console.error('Error fetching assigned customers and projects:', error);
+        }
+      );
     } else {
       console.error('User ID not found in local storage. Ensure login process stores it.');
     }
+
+    
 
     this.fetchTimesheets();
 
@@ -47,9 +59,6 @@ export class FillTimesheetComponent {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Fetched Data:', response);
-
-        this.optionCustomers = response.customers;
-        this.optionProjects = response.projects;
         this.optionProjectDeliverables = response.projectDeliverables; // Keep all deliverables intact
         this.optionTaskCategories = response.taskCategories;
       },

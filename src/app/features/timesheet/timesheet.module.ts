@@ -18,7 +18,7 @@ const routes: Routes = [
   { 
     path: '', component: TimesheetDashboardComponent, 
     children: [
-      { path: '', redirectTo: 'summary-report', pathMatch: 'full' }, // ✅ Default to Summary Report
+      { path: '', redirectTo: 'fill-timesheet', pathMatch: 'full' }, // ✅ Default to Summary Report
       { path: 'summary-report', component: TimesheetSummaryReportComponent },
       { path: 'fill-backdated-timesheet', component: FillBackdatedTimesheetComponent },
       { path: 'view-my-projects', component: ViewMyProjectsComponent },

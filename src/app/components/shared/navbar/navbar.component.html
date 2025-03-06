@@ -19,14 +19,15 @@
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
   <div *ngIf="showTimesheetLinks" class="hidden sm:flex space-x-6">
+    <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="font-bold text-blue-600"
+      class="text-gray-700 hover:text-blue-600">Fill Timesheet</a>
     <!-- <a [routerLink]="['/timesheet', 'summary-report']" routerLinkActive="font-bold text-blue-600"
       class="text-gray-700 hover:text-blue-600">Timesheet Summary Report</a> -->
     <!-- <a [routerLink]="['/timesheet', 'fill-backdated-timesheet']" routerLinkActive="font-bold text-blue-600"
     class="text-gray-700 hover:text-blue-600">Fill Backdated Timesheet</a>
   <a [routerLink]="['/timesheet', 'view-my-projects']" routerLinkActive="font-bold text-blue-600"
     class="text-gray-700 hover:text-blue-600">View My Projects</a> -->
-    <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Fill Timesheet</a>
+    
     <!-- <a [routerLink]="['/timesheet', 'view-timesheet']" routerLinkActive="font-bold text-blue-600"
     class="text-gray-700 hover:text-blue-600">View Timesheet</a> -->
     <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="font-bold text-blue-600"

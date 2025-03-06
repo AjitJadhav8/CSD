@@ -3,6 +3,8 @@ import express from 'express';
 const router = express.Router();
 import { protect } from '../middlewares/authMiddleware';
 
+router.get('/assigned-customers-projects/:employee_id', protect, TimesheetController.getAssignedCustomersAndProjects);
+
 
 router.post('/submit', protect, TimesheetController.submitTimesheet);
 router.get('/timesheets/:userId', protect, TimesheetController.getUserTimesheets);
@@ -10,6 +12,7 @@ router.delete('/timesheet/:timesheetId', protect, TimesheetController.softDelete
 
 // ------------------------------------------Export------------------------------------
 router.get('/full-timesheet/:userId', protect, TimesheetController.getUserFullTimesheet);
+
 
 
 export default router;

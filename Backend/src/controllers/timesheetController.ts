@@ -3,6 +3,51 @@ import db from '../config/db'; // Import MySQL database connection
 
 
 class TimesheetController {
+
+    async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
+        try {
+            const { employee_id } = req.params; // Assuming you pass the employee_id as a parameter
+    
+            const assignedQuery = `
+                SELECT 
+  tpt.customer_id, 
+  tpt.project_id, 
+  mc.customer_name, 
+  mp.project_name,
+  mp.customer_id -- Ensure this is included
+FROM trans_project_team tpt
+JOIN master_customer mc ON tpt.customer_id = mc.customer_id
+JOIN master_project mp ON tpt.project_id = mp.project_id
+WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
+            `;
+    
+            db.query(assignedQuery, [employee_id], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching assigned customers and projects:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+    
+                const assignedData = results.reduce((acc: any, row: any) => {
+                    if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
+                        acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
+                    }
+                    if (!acc.projects.some((p: any) => p.project_id === row.project_id)) {
+                        acc.projects.push({ project_id: row.project_id, project_name: row.project_name, customer_id: row.customer_id });
+                    }
+                    return acc;
+                }, { customers: [], projects: [] });
+    
+                res.status(200).json(assignedData);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+
+
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
             const { timesheet_date, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;

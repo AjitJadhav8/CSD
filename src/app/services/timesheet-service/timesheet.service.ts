@@ -20,6 +20,20 @@ export class TimesheetService {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
+
+
+    // New method to fetch assigned customers and projects
+    getAssignedCustomersAndProjects(employeeId: number): Observable<any> {
+      const headers = this.getAuthHeaders(); // Get headers with token
+      return this.http.get(`${this.apiUrl}/api/timesheet/assigned-customers-projects/${employeeId}`, { headers });
+    }
+
+
+
+
+
+
+
   submitTimesheet(timesheetData: any): Observable<any> {
     const headers = this.getAuthHeaders(); // Get headers with token
     return this.http.post(`${this.apiUrl}/api/timesheet/submit`, timesheetData, { headers });
