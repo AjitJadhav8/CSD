@@ -5,10 +5,10 @@ class RmgController {
 
     async assignProjectTeam(req: Request, res: Response): Promise<void> {
         try {
-            const { customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage } = req.body;
+            const { customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, billed_status, billing_percentage } = req.body;
     
             // Validate required fields
-            if (!customer_id || !project_id || !employee_id || !project_role_id || !project_manager_id || !start_date || !allocation_status || allocation_percentage === undefined) {
+            if (!customer_id || !project_id || !employee_id || !project_role_id || !project_manager_id || !start_date || !allocation_status || allocation_percentage === undefined || billed_status === undefined || billing_percentage === undefined) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
@@ -61,10 +61,10 @@ class RmgController {
                     // Insert the new assignment
                     const insertQuery = `
                         INSERT INTO trans_project_team 
-                        (customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, is_deleted, created_at, updated_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+                        (customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, billed_status, billing_percentage, is_deleted, created_at, updated_at)
+                        VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
     
-                    db.query(insertQuery, [customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage],
+                    db.query(insertQuery, [customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, billed_status, billing_percentage],
                         (error, result) => {
                             if (error) {
                                 console.error('Database Error:', error);
@@ -121,7 +121,9 @@ class RmgController {
                 tpt.start_date,
                 tpt.end_date,
                 tpt.allocation_status,
-                tpt.allocation_percentage
+                tpt.allocation_percentage,
+                tpt.billed_status,
+                tpt.billing_percentage
             FROM trans_project_team tpt
             LEFT JOIN master_customer mc ON tpt.customer_id = mc.customer_id
             LEFT JOIN master_project mp ON tpt.project_id = mp.project_id

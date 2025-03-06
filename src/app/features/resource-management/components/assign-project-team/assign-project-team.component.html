@@ -67,13 +67,18 @@
 
     <div>
         <label class="block mb-2 font-semibold">Allocation Status*</label>
-        <select [(ngModel)]="selectedAllocationStatus" name="allocationStatus" class="border p-2 w-full rounded-md">
-            <option value="" disabled selected>Select Allocation Status</option>
-            <option *ngFor="let status of allocationStatuses" [value]="status">
-                {{ status }}
-            </option>
-        </select>
+        <div class="flex gap-4">
+            <label>
+                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="1" name="allocationStatus">
+                Employee
+            </label>
+            <label>
+                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="0" name="allocationStatus">
+                Shadow
+            </label>
+        </div>
     </div>
+    
 
     <div>
         <label class="block mb-2 font-semibold">Allocation Percentage*</label>
@@ -85,6 +90,31 @@
             </option>
         </select>
     </div>
+    <!-- Billed Status -->
+<div>
+    <label class="block mb-2 font-semibold">Billed Status*</label>
+    <div class="flex gap-4">
+        <label>
+            <input type="radio" [(ngModel)]="selectedBilledStatus" [value]="1" name="billedStatus">
+            Billed
+        </label>
+        <label>
+            <input type="radio" [(ngModel)]="selectedBilledStatus" [value]="0" name="billedStatus">
+            Not Billed
+        </label>
+    </div>
+</div>
+
+<!-- Billing Percentage -->
+<div>
+    <label class="block mb-2 font-semibold">Billing Percentage*</label>
+    <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage" class="border p-2 w-full rounded-md">
+        <option value="" disabled selected>Select Billing Percentage</option>
+        <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
+    </select>
+</div>
+
+
 </div>
 
 <!-- Submit Button -->
@@ -107,6 +137,8 @@
             <th class="border p-2">End Date</th>
             <th class="border p-2">Allocation Status</th>
             <th class="border p-2">Allocation %</th>
+            <th class="border p-2">Billed Status</th>
+            <th class="border p-2">Billing Percentag</th>
             <th class="border p-2">Action</th>
         </tr>
     </thead>
@@ -120,8 +152,12 @@
             <td class="border p-2">{{ team.project_manager_name }}</td>
             <td class="border p-2">{{ team.start_date | date:'dd-MMM-yyyy' }}</td>
             <td class="border p-2">{{ team.end_date  | date:'dd-MMM-yyyy' }}</td>
-            <td class="border p-2">{{ team.allocation_status }}</td>
-            <td class="border p-2">{{ team.allocation_percentage }}%</td>
+            <td class="border p-2">
+                {{ team.allocation_status === 1 ? 'Employee' : 'Shadow' }}
+            </td>
+                        <td class="border p-2">{{ team.allocation_percentage }}%</td>
+            <td class="border p-2">{{ team.billed_status ? 'Billed' : 'Not Billed' }}</td>
+            <td class="border p-2">{{ team.billing_percentage }}%</td>
             <td class="border p-2">
                 <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteAssignProjectTeam(team.project_team_id)" >
                     Delete

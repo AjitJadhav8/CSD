@@ -24,8 +24,11 @@ export class AssignProjectTeamComponent {
   optionEmployees: any[] = [];
   optionProjectRoles: any[] = [];
   optionProjectManagers: any[] = [];
-  allocationStatuses: string[] = ["Shadow", "Employee"];
   allocationPercentages = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  selectedBilledStatus: number | null = null;
+  selectedBillingPercentage: number | null = null;
+percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in steps of 10
+
 
 
 
@@ -103,7 +106,7 @@ export class AssignProjectTeamComponent {
   selectedEmployeeId: number | null = null;
   selectedProjectRoleId: number | null = null;
   selectedProjectManagerId: number | null = null;
-  selectedAllocationStatus: string | null = null;
+  selectedAllocationStatus: number | null = null;
   selectedAllocationPercentage: number | null = null;
   startDate: string | null = null;
   tentativeEndDate: string | null = null;
@@ -113,7 +116,7 @@ export class AssignProjectTeamComponent {
   submitAssignProjectTeam() {
     if (!this.selectedCustomerId || !this.selectedProjectId || !this.selectedEmployeeId || !this.selectedProjectRoleId ||
         !this.selectedProjectManagerId || !this.startDate || !this.selectedAllocationStatus ||
-        this.selectedAllocationPercentage === undefined) {
+        this.selectedAllocationPercentage === undefined || this.selectedBilledStatus === undefined || this.selectedBillingPercentage === null) {
         
         Swal.fire({
             toast: true,
@@ -135,7 +138,9 @@ export class AssignProjectTeamComponent {
         start_date: this.startDate,
         end_date: this.tentativeEndDate || null,
         allocation_status: this.selectedAllocationStatus,
-        allocation_percentage: Number(this.selectedAllocationPercentage)
+        allocation_percentage: Number(this.selectedAllocationPercentage),
+        billed_status: this.selectedBilledStatus,
+        billing_percentage: Number(this.selectedBillingPercentage)
     };
 
     this.rmgService.submitAssignProjectTeam(assignmentData).subscribe({
@@ -150,6 +155,8 @@ export class AssignProjectTeamComponent {
             });
 
             this.fetchAssignedProjectTeams(); // Refresh the list
+            this.clearAssignForm();
+
         },
         error: (error) => {
             if (error.status === 400) {
@@ -195,6 +202,20 @@ export class AssignProjectTeamComponent {
     });
 }
 
+// Clear Form Fields
+clearAssignForm() {
+  this.selectedCustomerId = null;
+  this.selectedProjectId = null;
+  this.selectedEmployeeId = null;
+  this.selectedProjectRoleId = null;
+  this.selectedProjectManagerId = null;
+  this.startDate = null;
+  this.tentativeEndDate = null;
+  this.selectedAllocationStatus = null;
+  this.selectedAllocationPercentage = null;
+  this.selectedBilledStatus = null;
+  this.selectedBillingPercentage = null;
+}
 
   assignedProjectTeams: any[] = []; // <-- Declare this property
 
