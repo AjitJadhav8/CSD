@@ -133,30 +133,48 @@ export class AssignProjectTeamComponent {
             this.fetchAssignedProjectTeams(); // Refresh the list
         },
         error: (error) => {
-          // console.error('Error assigning project team:', error);
-      
-          if (error.status === 400 && error.error.error.includes('Only')) {
-              Swal.fire({
-                  toast: true,
-                  position: 'top-end',
-                  icon: 'error',
-                  title: error.error.error, // Shows "Only X% allocation is remaining"
-                  showConfirmButton: false,
-                  timer: 3000
-              });
-          } else {
-              Swal.fire({
-                  toast: true,
-                  position: 'top-end',
-                  icon: 'error',
-                  title: 'Failed to assign project team!',
-                  showConfirmButton: false,
-                  timer: 3000
-              });
-          }
-      }
-  });
-}      
+            if (error.status === 400) {
+                if (error.error.error.includes('Employee is already assigned to this project')) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Employee is already assigned to this project!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else if (error.error.error.includes('Only')) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: error.error.error, // Shows "Only X% allocation is remaining"
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to assign project team!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            } else {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Failed to assign project team!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        }
+    });
+}
 
 
   assignedProjectTeams: any[] = []; // <-- Declare this property
@@ -166,6 +184,7 @@ export class AssignProjectTeamComponent {
     this.rmgService.getAllProjectTeams().subscribe(
       (response) => {
         this.assignedProjectTeams = response;
+        console.log('Fetched Project Teams:', this.assignedProjectTeams);
       },
       (error) => {
         console.error('Error fetching project teams:', error);

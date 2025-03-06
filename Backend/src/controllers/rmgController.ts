@@ -25,39 +25,61 @@ class RmgController {
                 return;
             }
     
-            // Check current allocation by explicitly binding `this`
-             // Check current allocation
-        const currentAllocation = await this.getEmployeeAllocation(employee_id);
-        console.log(`Current allocation for employee ${employee_id}:`, currentAllocation);
-        console.log(`Requested allocation:`, allocation_percentage);
-
-        // Check if the new allocation exceeds 100%
-        if (currentAllocation + allocation_percentage > 100) {
-            const remainingAllocation = Math.max(0, 100 - currentAllocation);
-            res.status(400).json({ 
-                error: `Employee allocation exceeds 100%. Only ${remainingAllocation}% allocation is remaining.` 
-            });
-            return;
-        }
-
+            // Check if the employee is already assigned to the same project
+            const checkAssignmentQuery = `
+                SELECT COUNT(*) AS assignment_count
+                FROM trans_project_team
+                WHERE employee_id = ? AND project_id = ? AND is_deleted = 0`;
     
-            const query = `
-                INSERT INTO trans_project_team 
-                (customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, is_deleted, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+            db.query(checkAssignmentQuery, [employee_id, project_id], (error, results: any) => {
+                if (error) {
+                    console.error('Database Error:', error);
+                    res.status(500).json({ error: 'Database Error', details: error.message });
+                    return;
+                }
     
-            // Execute the query using a callback function
-            db.query(query, [customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage],
-                (error, result) => {
-                    if (error) {
-                        console.error('Database Error:', error);
-                        res.status(500).json({ error: 'Database Error', details: error.message });
+                const assignmentCount = results[0]?.assignment_count || 0;
+                if (assignmentCount > 0) {
+                    res.status(400).json({ error: 'Employee is already assigned to this project' });
+                    return;
+                }
+    
+                // Check current allocation
+                this.getEmployeeAllocation(employee_id).then(currentAllocation => {
+                    console.log(`Current allocation for employee ${employee_id}:`, currentAllocation);
+                    console.log(`Requested allocation:`, allocation_percentage);
+    
+                    // Check if the new allocation exceeds 100%
+                    if (currentAllocation + allocation_percentage > 100) {
+                        const remainingAllocation = Math.max(0, 100 - currentAllocation);
+                        res.status(400).json({ 
+                            error: `Employee allocation exceeds 100%. Only ${remainingAllocation}% allocation is remaining.` 
+                        });
                         return;
                     }
     
-                    console.log('Project Team Insert Result:', result);
-                    res.status(201).json({ message: 'Project team assigned successfully' });
+                    // Insert the new assignment
+                    const insertQuery = `
+                        INSERT INTO trans_project_team 
+                        (customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, is_deleted, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+    
+                    db.query(insertQuery, [customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage],
+                        (error, result) => {
+                            if (error) {
+                                console.error('Database Error:', error);
+                                res.status(500).json({ error: 'Database Error', details: error.message });
+                                return;
+                            }
+    
+                            console.log('Project Team Insert Result:', result);
+                            res.status(201).json({ message: 'Project team assigned successfully' });
+                        });
+                }).catch(err => {
+                    console.error('Error getting employee allocation:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
                 });
+            });
     
         } catch (error) {
             console.error('Error assigning project team:', error);
@@ -106,7 +128,8 @@ class RmgController {
             LEFT JOIN master_user mu1 ON tpt.employee_id = mu1.user_id
             LEFT JOIN master_position mpj ON tpt.project_role_id = mpj.position_id
             LEFT JOIN master_user mu2 ON tpt.project_manager_id = mu2.user_id
-            WHERE tpt.is_deleted = 0`;
+            WHERE tpt.is_deleted = 0
+             ORDER BY tpt.project_team_id DESC`;
 
             db.query(query, (error, results) => {
                 if (error) {
