@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
   styleUrl: './assign-project-team.component.css'
 })
 export class AssignProjectTeamComponent {
+  selectedProjectManagerName: string | undefined;
   constructor(private dataService: DataService, private http: HttpClient, private rmgService: RmgService) { }
 
   userId: number | null = null;
@@ -61,6 +62,24 @@ export class AssignProjectTeamComponent {
       }
     );
   }
+  onProjectChange(event: Event) {
+    const projectId = (event.target as HTMLSelectElement).value;
+    if (projectId) {
+      const selectedProject = this.optionProjects.find(project => project.project_id === +projectId);
+      if (selectedProject) {
+        this.selectedProjectManagerId = selectedProject.project_manager_id;
+  
+        // Find the manager's name using the project_manager_id
+        const selectedManager = this.optionProjectManagers.find(manager => manager.user_id === this.selectedProjectManagerId);
+        this.selectedProjectManagerName = selectedManager ? `${selectedManager.user_first_name} ${selectedManager.user_last_name}` : 'Not Assigned';
+      }
+    } else {
+      this.selectedProjectManagerId = null;
+      this.selectedProjectManagerName = 'Not Assigned';
+    }
+  }
+  
+
 
   // Method to filter projects based on selected customer
   // Method to filter projects based on selected customer
@@ -238,5 +257,7 @@ deleteAssignProjectTeam(projectTeamId: number): void {
     }
   });
 }
+
+
 
 }

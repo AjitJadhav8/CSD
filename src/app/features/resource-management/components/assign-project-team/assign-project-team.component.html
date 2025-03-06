@@ -14,13 +14,23 @@
     <div>
         <label class="block mb-2 font-semibold">Project Name*</label>
         <select [(ngModel)]="selectedProjectId" [disabled]="filteredProjects.length === 0"
-            class="border p-2 w-full rounded-md">
+            class="border p-2 w-full rounded-md" (change)="onProjectChange($event)">
             <option value="" disabled selected>Select Project</option>
             <option *ngFor="let project of filteredProjects" [value]="project.project_id">
                 {{ project.project_name }}
             </option>
         </select>
     </div>
+
+
+    <div>
+        <label class="block mb-2 font-semibold">Project Manager*</label>
+        <input type="text" 
+               class="border p-2 w-full rounded-md bg-gray-100" 
+               [value]="selectedProjectManagerName || 'Not Assigned'" 
+               readonly />
+    </div>
+    
 
     <div>
         <label class="block mb-2 font-semibold">Employee Name*</label>
@@ -42,15 +52,7 @@
         </select>
     </div>
 
-    <div>
-        <label class="block mb-2 font-semibold">Project Manager*</label>
-        <select [(ngModel)]="selectedProjectManagerId" name="projectManager" class="border p-2 w-full rounded-md">
-            <option value="" disabled selected>Select Project Manager</option>
-            <option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
-                {{ manager.user_first_name }} {{ manager.user_last_name }}
-            </option>
-        </select>
-    </div>
+   
 
     <!-- Row 2 -->
     <div>

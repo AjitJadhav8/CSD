@@ -39,10 +39,15 @@ class OrgController {
 
             const projectQuery = `
             SELECT 
-                project_id, project_name, customer_id, project_manager_id, type_of_project_id, type_of_engagement_id, project_status_id, planned_start_date, actual_start_date, 
-                tentative_end_date, project_description
-            FROM master_project WHERE is_deleted = 0
-            `;
+                p.project_id, p.project_name, p.customer_id, p.project_manager_id, p.type_of_project_id, 
+                p.type_of_engagement_id, p.project_status_id, p.planned_start_date, p.actual_start_date, 
+                p.tentative_end_date, p.project_description,
+                u.user_first_name AS project_manager_first_name, u.user_last_name AS project_manager_last_name
+            FROM master_project p
+            LEFT JOIN master_user u ON p.project_manager_id = u.user_id
+            WHERE p.is_deleted = 0
+        `;
+        
 
             const projectDeliverablesQuery = `
         SELECT 
