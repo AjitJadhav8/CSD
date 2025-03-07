@@ -1,18 +1,20 @@
 <div class="p-4">
 
-    <div class="flex space-x-4 mb-4">
-        <label>From:</label>
-        <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()" class="border p-2 rounded">
-
-        <label>To:</label>
-        <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()" class="border p-2 rounded">
-
-        <button (click)="exportToExcel()" class="bg-blue-500 text-white px-4 py-2 rounded">
-            Export to Excel
-        </button>
-    </div>
+    
 
     <div>
+        <!-- Filter -->
+        <div class="flex space-x-4 mb-4">
+            <label>From:</label>
+            <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()" class="border p-2 rounded">
+    
+            <label>To:</label>
+            <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()" class="border p-2 rounded">
+    
+            <button (click)="exportToExcel()" class="bg-blue-500 text-white px-4 py-2 rounded">
+                Export to Excel
+            </button>
+        </div>
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
@@ -47,7 +49,7 @@
                 </tr>
             </tbody>
         </table>
-        <!-- Pagination Controls -->
+       
         <!-- Pagination Controls -->
         <div class="flex items-center justify-center mt-4 space-x-1">
             <!-- Previous button -->

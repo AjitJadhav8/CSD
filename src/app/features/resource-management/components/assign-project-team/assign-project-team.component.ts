@@ -28,11 +28,13 @@ export class AssignProjectTeamComponent {
   selectedBilledStatus: number | null = null;
   selectedBillingPercentage: number | null = null;
 percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in steps of 10
-
-
-
-
   selectedCustomerId: number | null = null;
+
+
+ 
+
+
+
 
   ngOnInit(): void {
     this.fetchAssignedProjectTeams();
@@ -219,11 +221,38 @@ clearAssignForm() {
 
   assignedProjectTeams: any[] = []; // <-- Declare this property
 
+   // Pagination and Filtering
+   currentPage: number = 1;
+   totalItems: number = 0;
+   itemsPerPage: number = 30;
+ maxPageButtons: number = 5; // Show only 5 page numbers at a time
+ 
+   filteredAssignedProjectTeams: any[] = [];
+   paginatedAssignedProjectTeams: any[] = [];
+ 
+   // Filters
+   customerNameFilter: string = '';
+   projectNameFilter: string = '';
+   employeeNameFilter: string = '';
+   allocationStatusFilter: string = '';
+   billedStatusFilter: string = '';
+ 
+  // New filter properties
+  projectRoleFilter: string = '';
+  projectManagerFilter: string = '';
+  startDateFilter: string = '';
+  endDateFilter: string = '';
+  allocationPercentageFilter: number | null = null;
+  billingPercentageFilter: number | null = null;
    // ✅ Fetch Assigned Project Teams
    fetchAssignedProjectTeams(): void {
     this.rmgService.getAllProjectTeams().subscribe(
       (response) => {
         this.assignedProjectTeams = response;
+        this.filteredAssignedProjectTeams = [...this.assignedProjectTeams];
+        this.totalItems = this.filteredAssignedProjectTeams.length;
+        this.updatePage();
+
         console.log('Fetched Project Teams:', this.assignedProjectTeams);
       },
       (error) => {
@@ -231,6 +260,130 @@ clearAssignForm() {
       }
     );
   }
+
+/** Convert date to 'YYYY-MM-DD' format */
+formatDate(date: any): string {
+  if (!date) return ''; // Handle empty dates
+  const d = new Date(date);
+  return d.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+}
+ // Apply Filters
+ // Apply Filters
+ applyFilters(): void {
+  this.filteredAssignedProjectTeams = this.assignedProjectTeams.filter(team => {
+    return (
+      (this.customerNameFilter ? team.customer_id.toString() === this.customerNameFilter : true) &&
+      (this.projectNameFilter ? team.project_id.toString() === this.projectNameFilter : true) &&
+      (this.employeeNameFilter ? team.employee_id.toString() === this.employeeNameFilter : true) &&
+      (this.projectRoleFilter ? team.project_role_id.toString() === this.projectRoleFilter : true) &&
+      (this.projectManagerFilter ? team.project_manager_id.toString() === this.projectManagerFilter : true) &&
+      (this.startDateFilter ? this.formatDate(team.start_date) == this.startDateFilter : true) &&
+      (this.endDateFilter ? this.formatDate(team.end_date) == this.endDateFilter : true) &&
+      (this.allocationStatusFilter ? team.allocation_status.toString() === this.allocationStatusFilter : true) &&
+      (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
+      (this.billedStatusFilter ? team.billed_status.toString() === this.billedStatusFilter : true) &&
+      (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
+    );
+  });
+
+  this.totalItems = this.filteredAssignedProjectTeams.length;
+  this.currentPage = 1;
+  this.updatePage();
+}
+
+
+// Clear Filters
+// Clear Filters
+clearFilters(): void {
+  this.customerNameFilter = '';
+  this.projectNameFilter = '';
+  this.employeeNameFilter = '';
+  this.projectRoleFilter = '';
+  this.projectManagerFilter = '';
+  this.startDateFilter = '';
+  this.endDateFilter = '';
+  this.allocationStatusFilter = '';
+  this.allocationPercentageFilter = null;
+  this.billedStatusFilter = '';
+  this.billingPercentageFilter = null;
+  this.applyFilters();
+}
+// Clear Individual Filter
+clearFilter(filterName: string): void {
+  switch (filterName) {
+    case 'customerNameFilter':
+      this.customerNameFilter = '';
+      break;
+    case 'projectNameFilter':
+      this.projectNameFilter = '';
+      break;
+    case 'employeeNameFilter':
+      this.employeeNameFilter = '';
+      break;
+    case 'projectRoleFilter':
+      this.projectRoleFilter = '';
+      break;
+    case 'projectManagerFilter':
+      this.projectManagerFilter = '';
+      break;
+    case 'startDateFilter':
+      this.startDateFilter = '';
+      break;
+    case 'endDateFilter':
+      this.endDateFilter = '';
+      break;
+    case 'allocationStatusFilter':
+      this.allocationStatusFilter = '';
+      break;
+    case 'allocationPercentageFilter':
+      this.allocationPercentageFilter = null;
+      break;
+    case 'billedStatusFilter':
+      this.billedStatusFilter = '';
+      break;
+    case 'billingPercentageFilter':
+      this.billingPercentageFilter = null;
+      break;
+  }
+  this.applyFilters(); // Reapply filters after clearing
+}
+// Pagination Variables
+
+updatePage(): void {
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  const endIndex = startIndex + this.itemsPerPage;
+  this.paginatedAssignedProjectTeams = this.filteredAssignedProjectTeams.slice(startIndex, endIndex);
+}
+
+// Change page
+changePage(page: number): void {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    this.updatePage();
+  }
+}
+
+// Compute total pages
+get totalPages(): number {
+  return Math.ceil(this.filteredAssignedProjectTeams.length / this.itemsPerPage);
+}
+
+// Compute visible page numbers
+getVisiblePageNumbers(): number[] {
+  const totalPages = this.totalPages;
+  const halfRange = Math.floor(this.maxPageButtons / 2);
+
+  let startPage = Math.max(1, this.currentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.maxPageButtons) {
+    startPage = Math.max(1, endPage - this.maxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+
 
 // delete project team
 deleteAssignProjectTeam(projectTeamId: number): void {
