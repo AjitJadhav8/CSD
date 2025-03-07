@@ -75,6 +75,25 @@ filterProjects(): void {
 
   // ------------------Project------------------------
 
+  projectCurrentPage: number = 1;
+projectTotalItems: number = 0;
+projectItemsPerPage: number = 30; // Adjust as needed
+projectMaxPageButtons: number = 5; // Show only 5 page numbers at a time
+paginatedProjects: any[] = [];
+
+// Filters for Projects
+projectNameFilterOfProject: string = '';
+projectCustomerNameFilter: string = '';
+projectManagerFilterOfProject: string = '';
+typeOfProjectFilter: string = '';
+typeOfEngagementFilter: string = '';
+projectStatusFilter: string = '';
+plannedStartDateFilter: string = '';
+actualStartDateFilter: string = '';
+tentativeEndDateFilter: string = '';
+projectDescriptionFilter: string = '';
+
+
   project = {
     project_id: null, // Primary key
     project_name: '',
@@ -116,13 +135,122 @@ filterProjects(): void {
       (response) => {
         console.log('Projects Response:', response);
         this.projects = response;
+        this.filteredProjects = [...this.projects];
+      this.projectTotalItems = this.filteredProjects.length;
+      this.updateProjectPage();
       },
       (error) => {
         console.error('Error fetching projects:', error);
       }
     );
   }
+// Apply Filters for Projects
+// Apply Filters
+applyProjectFilters(): void {
+  this.filteredProjects = this.projects.filter(project => {
+    return (
+      (this.projectNameFilterOfProject ? project.project_name.toLowerCase().includes(this.projectNameFilterOfProject.toLowerCase()) : true) &&
+      (this.projectCustomerNameFilter ? project.customer_name.toLowerCase().includes(this.projectCustomerNameFilter.toLowerCase()) : true) &&
+      (this.projectManagerFilterOfProject ? project.project_manager.toLowerCase().includes(this.projectManagerFilterOfProject.toLowerCase()) : true) &&
+      (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Convert to number
+      (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Convert to number
+      (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Convert to number
+      (this.plannedStartDateFilter ? project.planned_start_date === this.plannedStartDateFilter : true) &&
+      (this.actualStartDateFilter ? project.actual_start_date === this.actualStartDateFilter : true) &&
+      (this.tentativeEndDateFilter ? project.tentative_end_date === this.tentativeEndDateFilter : true) &&
+      (this.projectDescriptionFilter ? project.project_description?.toLowerCase().includes(this.projectDescriptionFilter.toLowerCase()) : true)
+    );
+  });
 
+  this.projectTotalItems = this.filteredProjects.length;
+  this.projectCurrentPage = 1;
+  this.updateProjectPage();
+}
+
+// Clear Filters for Projects
+clearProjectFilters(): void {
+  this.projectNameFilterOfProject = '';
+  this.projectCustomerNameFilter = '';
+  this.projectManagerFilterOfProject = '';
+  this.typeOfProjectFilter = '';
+  this.typeOfEngagementFilter = '';
+  this.projectStatusFilter = '';
+  this.plannedStartDateFilter = '';
+  this.actualStartDateFilter = '';
+  this.tentativeEndDateFilter = '';
+  this.projectDescriptionFilter = '';
+  this.applyProjectFilters();
+}
+
+// Clear Individual Filter for Projects
+// Clear Individual Filter
+clearProjectFilter(filterName: string): void {
+  switch (filterName) {
+    case 'projectNameFilterOfProject':
+      this.projectNameFilterOfProject = '';
+      break;
+    case 'projectCustomerNameFilter':
+      this.projectCustomerNameFilter = '';
+      break;
+    case 'projectManagerFilterOfProject':
+      this.projectManagerFilterOfProject = '';
+      break;
+    case 'typeOfProjectFilter':
+      this.typeOfProjectFilter = '';
+      break;
+    case 'typeOfEngagementFilter':
+      this.typeOfEngagementFilter = '';
+      break;
+    case 'projectStatusFilter':
+      this.projectStatusFilter = '';
+      break;
+    case 'plannedStartDateFilter':
+      this.plannedStartDateFilter = '';
+      break;
+    case 'actualStartDateFilter':
+      this.actualStartDateFilter = '';
+      break;
+    case 'tentativeEndDateFilter':
+      this.tentativeEndDateFilter = '';
+      break;
+    case 'projectDescriptionFilter':
+      this.projectDescriptionFilter = '';
+      break;
+  }
+  this.applyProjectFilters(); // Reapply filters after clearing
+}
+
+// Pagination Logic for Projects
+updateProjectPage(): void {
+  const startIndex = (this.projectCurrentPage - 1) * this.projectItemsPerPage;
+  const endIndex = startIndex + this.projectItemsPerPage;
+  this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+}
+
+changeProjectPage(page: number): void {
+  if (page >= 1 && page <= this.projectTotalPages) {
+    this.projectCurrentPage = page;
+    this.updateProjectPage();
+  }
+}
+
+get projectTotalPages(): number {
+  return Math.ceil(this.filteredProjects.length / this.projectItemsPerPage);
+}
+
+getVisibleProjectPageNumbers(): number[] {
+  const totalPages = this.projectTotalPages;
+  const halfRange = Math.floor(this.projectMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.projectCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.projectMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.projectMaxPageButtons) {
+    startPage = Math.max(1, endPage - this.projectMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
   submitProject(projectNgForm: NgForm): void {
 
     if (projectNgForm.invalid) {
@@ -217,6 +345,17 @@ filterProjects(): void {
   }
 
   // ------------------Project Deliverable------------------------
+  deliverableCurrentPage: number = 1;
+  deliverableTotalItems: number = 0;
+  deliverableItemsPerPage: number = 30; // Adjust as needed
+  deliverableMaxPageButtons: number = 5; // Show only 5 page numbers at a time
+  filteredProjectDeliverables: any[] = [];
+  paginatedProjectDeliverables: any[] = [];
+  
+  // Filters for Project Deliverables
+  deliverableNameFilter: string = '';
+  customerNameFilter: string = '';
+  projectNameFilter: string = '';
 
   projectDeliverableForm: any = {
     project_id: '',
@@ -246,12 +385,86 @@ filterProjects(): void {
       (response) => {
         console.log('Project Deliverables Response:', response);
         this.projectDeliverables = response;
+        this.filteredProjectDeliverables = [...this.projectDeliverables];
+      this.deliverableTotalItems = this.filteredProjectDeliverables.length;
+      this.updateDeliverablePage();
       },
       (error) => {
         console.error('Error fetching project deliverables:', error);
       }
     );
   }
+  
+// Apply Filters for Project Deliverables
+applyDeliverableFilters(): void {
+  this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
+    return (
+      (this.deliverableNameFilter ? deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()) : true) &&
+      (this.customerNameFilter ? deliverable.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
+      (this.projectNameFilter ? deliverable.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true)
+    );
+  });
+
+  this.deliverableTotalItems = this.filteredProjectDeliverables.length;
+  this.deliverableCurrentPage = 1;
+  this.updateDeliverablePage();
+}
+
+// Clear Filters for Project Deliverables
+clearDeliverableFilters(): void {
+  this.deliverableNameFilter = '';
+  this.customerNameFilter = '';
+  this.projectNameFilter = '';
+  this.applyDeliverableFilters();
+}
+
+// Clear Individual Filter for Project Deliverables
+clearDeliverableFilter(filterName: string): void {
+  switch (filterName) {
+    case 'deliverableNameFilter':
+      this.deliverableNameFilter = '';
+      break;
+    case 'customerNameFilter':
+      this.customerNameFilter = '';
+      break;
+    case 'projectNameFilter':
+      this.projectNameFilter = '';
+      break;
+  }
+  this.applyDeliverableFilters(); // Reapply filters after clearing
+}
+
+// Pagination Logic for Project Deliverables
+updateDeliverablePage(): void {
+  const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
+  const endIndex = startIndex + this.deliverableItemsPerPage;
+  this.paginatedProjectDeliverables = this.filteredProjectDeliverables.slice(startIndex, endIndex);
+}
+
+changeDeliverablePage(page: number): void {
+  if (page >= 1 && page <= this.deliverableTotalPages) {
+    this.deliverableCurrentPage = page;
+    this.updateDeliverablePage();
+  }
+}
+
+get deliverableTotalPages(): number {
+  return Math.ceil(this.filteredProjectDeliverables.length / this.deliverableItemsPerPage);
+}
+
+getVisibleDeliverablePageNumbers(): number[] {
+  const totalPages = this.deliverableTotalPages;
+  const halfRange = Math.floor(this.deliverableMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.deliverableCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.deliverableMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.deliverableMaxPageButtons) {
+    startPage = Math.max(1, endPage - this.deliverableMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
 
   submitProjectDeliverable(projectDeliverableFormRef: NgForm): void {
 
@@ -336,7 +549,7 @@ filterProjects(): void {
 
   taskCategoryCurrentPage: number = 1;
   taskCategoryTotalItems: number = 0;
-  taskCategoryItemsPerPage: number = 10; // Adjust as needed
+  taskCategoryItemsPerPage: number = 30; // Adjust as needed
   taskCategoryMaxPageButtons: number = 5; // Show only 5 page numbers at a time
   filteredTaskCategories: any[] = [];
   paginatedTaskCategories: any[] = [];
