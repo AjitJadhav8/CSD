@@ -332,7 +332,16 @@ filterProjects(): void {
   }
 
 
-  // ------------------Project Deliverable------------------------
+  // ------------------Project task category ------------------------
+
+  taskCategoryCurrentPage: number = 1;
+  taskCategoryTotalItems: number = 0;
+  taskCategoryItemsPerPage: number = 10; // Adjust as needed
+  taskCategoryMaxPageButtons: number = 5; // Show only 5 page numbers at a time
+  filteredTaskCategories: any[] = [];
+  paginatedTaskCategories: any[] = [];
+    taskCategoryNameFilter: string = '';
+
 
   taskCategories: any[] = [];
   taskCategoryForm = { task_category_name: '' };
@@ -341,12 +350,77 @@ filterProjects(): void {
     this.dataService.getAllTaskCategories().subscribe(
       (response) => {
         this.taskCategories = response;
+        this.filteredTaskCategories = [...this.taskCategories];
+        this.taskCategoryTotalItems = this.filteredTaskCategories.length;
+        this.updateTaskCategoryPage();
       },
       (error) => {
         console.error('Error fetching task categories:', error);
       }
     );
   }
+  
+  // Apply Filters
+  applyTaskCategoryFilters(): void {
+    this.filteredTaskCategories = this.taskCategories.filter(task => {
+      return (
+        (this.taskCategoryNameFilter ? task.task_category_name.toLowerCase().includes(this.taskCategoryNameFilter.toLowerCase()) : true)
+      );
+    });
+
+    this.taskCategoryTotalItems = this.filteredTaskCategories.length;
+    this.taskCategoryCurrentPage = 1;
+    this.updateTaskCategoryPage();
+  }
+
+  // Clear Filters
+  clearTaskCategoryFilters(): void {
+    this.taskCategoryNameFilter = '';
+    this.applyTaskCategoryFilters();
+  }
+
+  // Clear Individual Filter
+  clearTaskCategoryFilter(filterName: string): void {
+    switch (filterName) {
+      case 'taskCategoryNameFilter':
+        this.taskCategoryNameFilter = '';
+        break;
+    }
+    this.applyTaskCategoryFilters(); // Reapply filters after clearing
+  }
+
+  // Pagination Logic
+  updateTaskCategoryPage(): void {
+    const startIndex = (this.taskCategoryCurrentPage - 1) * this.taskCategoryItemsPerPage;
+    const endIndex = startIndex + this.taskCategoryItemsPerPage;
+    this.paginatedTaskCategories = this.filteredTaskCategories.slice(startIndex, endIndex);
+  }
+
+  changeTaskCategoryPage(page: number): void {
+    if (page >= 1 && page <= this.taskCategoryTotalPages) {
+      this.taskCategoryCurrentPage = page;
+      this.updateTaskCategoryPage();
+    }
+  }
+
+  get taskCategoryTotalPages(): number {
+    return Math.ceil(this.filteredTaskCategories.length / this.taskCategoryItemsPerPage);
+  }
+
+  getVisibleTaskCategoryPageNumbers(): number[] {
+    const totalPages = this.taskCategoryTotalPages;
+    const halfRange = Math.floor(this.taskCategoryMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.taskCategoryCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.taskCategoryMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.taskCategoryMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.taskCategoryMaxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
 
   submitTaskCategory(taskCategoryFormRef: NgForm): void {
     if (taskCategoryFormRef.invalid) {
