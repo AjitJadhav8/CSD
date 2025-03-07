@@ -14,8 +14,9 @@ const routes: Routes = [
   { 
     path: '', component: ResourceManagementDashboardComponent, 
     children: [
-      { path: 'allocation-report', component: AllocationReportComponent },
+      { path: '', redirectTo: 'assign-project-team', pathMatch: 'full' }, // ✅ Default to Assign Project Team
       { path: 'assign-project-team', component: AssignProjectTeamComponent },
+      { path: 'allocation-report', component: AllocationReportComponent },
       { path: 'all-teams-timesheet', component: AllTeamsTimesheetComponent },
       { path: 'all-projects-team', component: AllProjectsTeamComponent },
       { path: 'view-resource-demand', component: ViewResourceDemandComponent },
@@ -23,6 +24,7 @@ const routes: Routes = [
     ]
   }
 ];
+
 
 
 @NgModule({

@@ -958,15 +958,16 @@ class OrgController {
         try {
             const query = `
             SELECT 
-                mpd.pd_id AS project_deliverable_id, 
-                mpd.project_deliverable_name,
-                mc.customer_name,
-                mp.project_name
-            FROM master_project_deliverables mpd
-            JOIN master_project mp ON mpd.project_id = mp.project_id
-            JOIN master_customer mc ON mp.customer_id = mc.customer_id
-            WHERE mpd.is_deleted = 0
-            ORDER BY mpd.pd_id DESC
+    mpd.pd_id, 
+    mpd.project_deliverable_name,
+    mc.customer_name,
+    mp.project_name
+FROM master_project_deliverables mpd
+JOIN master_project mp ON mpd.project_id = mp.project_id
+JOIN master_customer mc ON mp.customer_id = mc.customer_id
+WHERE mpd.is_deleted = 0
+ORDER BY mpd.pd_id DESC;
+
         `;
 
             db.query(query, (err: any, results: any) => {
