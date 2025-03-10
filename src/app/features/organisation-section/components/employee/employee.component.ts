@@ -41,7 +41,6 @@ export class EmployeeComponent {
 
   // ------------------ Department ------------------------
 
-  showDepartmentModal: boolean = false;
   departmentName = '';
 
 
@@ -135,7 +134,6 @@ export class EmployeeComponent {
 
   // ------------------ Position ------------------------
 
-  showPositionModal: boolean = false;
   positionName = '';
   positions: any[] = [];
 
@@ -227,7 +225,6 @@ export class EmployeeComponent {
 
   // ------------------ Skill ------------------------
 
-  showSkillModal: boolean = false;
   skillName = '';
   skillCategory = '';
   skillDescription = '';
@@ -329,7 +326,6 @@ export class EmployeeComponent {
 
   // ------------------ Employee ------------------------
 
-  showEmployeeModal: boolean = false;
   employee = {
     selectedUserId: null,   // For selected employee
     selectedReportingManagerId: null, // For selected reporting manager
@@ -443,7 +439,7 @@ export class EmployeeComponent {
 
   // ------------------ Reporting Manager  ------------------------
 
-  showReportingManagerModal: boolean = false;
+
   fromDate: string = '';
   tillDate: string = '';
   reportingManagerHistory: any[] = [];
@@ -484,7 +480,6 @@ export class EmployeeComponent {
       (response) => {
         console.log('Reporting Manager history added successfully');
         this.fetchReportingManagerHistory(); // Refresh the list after submission
-        this.toggleModal('reportingManager'); // Close modal
 
         // Success Toast Notification
         Swal.fire({
@@ -562,24 +557,5 @@ export class EmployeeComponent {
   }
 
   selectedSection: string = 'employee';
-  toggleModal(type: string) {
-    switch (type) {
-      case 'position':
-        this.showPositionModal = !this.showPositionModal;
-        break;
-      case 'skill':
-        this.showSkillModal = !this.showSkillModal;
-        break;
 
-      case 'reportingManager':
-        this.showReportingManagerModal = !this.showReportingManagerModal;
-        break;
-      case 'employee':
-        this.showEmployeeModal = !this.showEmployeeModal;
-        break;
-      case 'department':
-        this.showDepartmentModal = !this.showDepartmentModal;
-        break;
-    }
-  }
 }
