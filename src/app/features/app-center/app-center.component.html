@@ -1,23 +1,28 @@
 <app-navbar></app-navbar>
 
-<nav class="bg-gray-800 p-4 shadow-md flex justify-center space-x-6">
-  <a routerLink="/organisation" 
-     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
-    Organisation Section
-  </a>
-  <a routerLink="/timesheet" 
-     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
-    Timesheet App
-  </a>
-  <!-- <a routerLink="/joining-pipeline" 
-     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
-    Joining Pipeline
-  </a> -->
-  <a routerLink="/resource-management" 
-     class="text-white text-lg font-semibold px-4 py-2 rounded hover:bg-gray-700 transition">
-    Resource Management
-  </a>
-</nav>
+<div class="p-8 min-h-screen bg-gray-100">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome to App Center</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Organisation Section -->
+    <a routerLink="/organisation" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
+      <img src="" alt="Organisation" class="w-26 h-16 mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Organisation Section</h2>
+    </a>
+
+    <!-- Timesheet App -->
+    <a routerLink="/timesheet" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
+      <img src="" alt="Timesheet" class="w-26 h-16 mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Timesheet App</h2>
+    </a>
+
+    <!-- Resource Management -->
+    <a routerLink="/resource-management" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
+      <img src="" alt="Resource Management" class="w-26 h-16 mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Resource Management</h2>
+    </a>
+  </div>
+</div>
 
 <div class="p-6">
   <router-outlet></router-outlet>

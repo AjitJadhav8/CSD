@@ -1,4 +1,4 @@
-<div class="grid grid-cols-5 gap-4">
+<div class="grid grid-cols-5 gap-4 mt-8">
     <!-- Row 1 -->
     <div>
         <label class="block mb-2 font-semibold">Customer Name*</label>
@@ -67,11 +67,11 @@
         <label class="block mb-2 font-semibold">Allocation Status*</label>
         <div class="flex gap-4">
             <label>
-                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="1" name="allocationStatus">
+                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="1" name="allocationStatus" (change)="onAllocationStatusChange()">
                 Employee
             </label>
             <label>
-                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="0" name="allocationStatus">
+                <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="0" name="allocationStatus" (change)="onAllocationStatusChange()">
                 Shadow
             </label>
         </div>

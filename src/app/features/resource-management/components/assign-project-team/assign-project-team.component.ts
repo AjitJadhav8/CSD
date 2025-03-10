@@ -31,7 +31,12 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
   selectedCustomerId: number | null = null;
 
 
- 
+  onAllocationStatusChange() {
+    if (this.selectedAllocationStatus === 0) { // If Shadow is selected
+        this.selectedBilledStatus = 0; // Set to Not Billed
+        this.selectedBillingPercentage = 0; // Set Billing Percentage to 0
+    }
+}
 
 
 

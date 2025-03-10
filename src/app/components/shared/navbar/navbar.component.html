@@ -5,51 +5,88 @@
 
 
   <!-- Navbar Center (Organisation Links - Conditionally Shown) -->
-  <div *ngIf="showOrganisationLinks" class="hidden sm:flex space-x-6">
-    <a [routerLink]="['/organisation', 'customer']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Customer</a>
-    <a [routerLink]="['/organisation', 'employee']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Employee</a>
-    <a [routerLink]="['/organisation', 'project']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Project</a>
-    <a [routerLink]="['/organisation', 'admin']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Admin</a>
-  </div>
+ <!-- Navbar Center (Organisation Links - Conditionally Shown) -->
+<!-- Navbar Center (Organisation Links - Conditionally Shown) -->
+<div *ngIf="showOrganisationLinks" class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
+  <a [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Customer
+  </a>
+  <a [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Employee
+  </a>
+  <a [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Project
+  </a>
+  <a [routerLink]="['/organisation', 'admin']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Admin
+  </a>
+</div>
 
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
-  <div *ngIf="showTimesheetLinks" class="hidden sm:flex space-x-6">
-    <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Fill Timesheet</a>
-    <!-- <a [routerLink]="['/timesheet', 'summary-report']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Timesheet Summary Report</a> -->
-    <!-- <a [routerLink]="['/timesheet', 'fill-backdated-timesheet']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">Fill Backdated Timesheet</a>
-  <a [routerLink]="['/timesheet', 'view-my-projects']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">View My Projects</a> -->
-    
-    <!-- <a [routerLink]="['/timesheet', 'view-timesheet']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">View Timesheet</a> -->
-    <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Export My Timesheet</a>
-    <a [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="font-bold text-blue-600"
-      class="text-gray-700 hover:text-blue-600">Manager's Hub</a>
-  </div>
+<!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
+<div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
+  <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Fill Timesheet
+  </a>
+  <!-- <a [routerLink]="['/timesheet', 'summary-report']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Timesheet Summary Report
+  </a> -->
+  <!-- <a [routerLink]="['/timesheet', 'fill-backdated-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Fill Backdated Timesheet
+  </a>
+  <a [routerLink]="['/timesheet', 'view-my-projects']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    View My Projects
+  </a> -->
+  <!-- <a [routerLink]="['/timesheet', 'view-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    View Timesheet
+  </a> -->
+  <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Export My Timesheet
+  </a>
+  <a [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Manager's Hub
+  </a>
+</div>
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
-<div *ngIf="showResourceManagementLinks" class="hidden sm:flex space-x-6">
-  <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">Allocation Report</a> -->
-  <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">Assign Project Team</a>
-  <a [routerLink]="['/resource-management', 'all-teams-timesheet']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">All Teams Timesheet</a>
-  <a [routerLink]="['/resource-management', 'all-projects-team']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">All Projects Team</a>
-  <a [routerLink]="['/resource-management', 'view-resource-demand']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">View Resource Demand</a>
-  <a [routerLink]="['/resource-management', 'view-update-employee-skills']" routerLinkActive="font-bold text-blue-600"
-    class="text-gray-700 hover:text-blue-600">View/Update Employee Skills</a>
+<!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
+<div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
+  <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Allocation Report
+  </a> -->
+  <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    Assign Project Team
+  </a>
+  <a [routerLink]="['/resource-management', 'all-teams-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    All Teams Timesheet
+  </a>
+  <a [routerLink]="['/resource-management', 'all-projects-team']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    All Projects Team
+  </a>
+  <a [routerLink]="['/resource-management', 'view-resource-demand']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    View Resource Demand
+  </a>
+  <a [routerLink]="['/resource-management', 'view-update-employee-skills']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+    View/Update Employee Skills
+  </a>
 </div>
 
 

@@ -38,6 +38,7 @@ filterProjects(): void {
 
 
   ngOnInit(): void {
+    
     this.fetchTaskCategories();
     this.fetchProjects();
     this.fetchProjectDeliverables();
@@ -136,7 +137,7 @@ projectDescriptionFilter: string = '';
         console.log('Projects Response:', response);
         this.projects = response;
         this.filteredProjects = [...this.projects];
-      this.projectTotalItems = this.filteredProjects.length;
+      this.projectTotalItems = this.filteredProjects.length
       this.updateProjectPage();
       },
       (error) => {
@@ -144,29 +145,43 @@ projectDescriptionFilter: string = '';
       }
     );
   }
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+  
+    // Convert UTC date to local timezone correctly
+    const date = new Date(dateString);
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  
+    // Format as YYYY-MM-DD
+    return localDate.toISOString().split('T')[0];
+  }
+  
+  
+  
 // Apply Filters for Projects
 // Apply Filters
 applyProjectFilters(): void {
+
   this.filteredProjects = this.projects.filter(project => {
     return (
       (this.projectNameFilterOfProject ? project.project_name.toLowerCase().includes(this.projectNameFilterOfProject.toLowerCase()) : true) &&
       (this.projectCustomerNameFilter ? project.customer_name.toLowerCase().includes(this.projectCustomerNameFilter.toLowerCase()) : true) &&
       (this.projectManagerFilterOfProject ? project.project_manager.toLowerCase().includes(this.projectManagerFilterOfProject.toLowerCase()) : true) &&
-      (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Convert to number
-      (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Convert to number
-      (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Convert to number
-      (this.plannedStartDateFilter ? project.planned_start_date === this.plannedStartDateFilter : true) &&
-      (this.actualStartDateFilter ? project.actual_start_date === this.actualStartDateFilter : true) &&
-      (this.tentativeEndDateFilter ? project.tentative_end_date === this.tentativeEndDateFilter : true) &&
+      (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Use ID for filtering
+      (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Use ID for filtering
+      (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Use ID for filtering
+      (this.plannedStartDateFilter ? this.formatDate(project.planned_start_date) === this.plannedStartDateFilter : true) &&
+      (this.actualStartDateFilter ? this.formatDate(project.actual_start_date) === this.actualStartDateFilter : true) &&
+      (this.tentativeEndDateFilter ? this.formatDate(project.tentative_end_date) === this.tentativeEndDateFilter : true) &&
       (this.projectDescriptionFilter ? project.project_description?.toLowerCase().includes(this.projectDescriptionFilter.toLowerCase()) : true)
     );
   });
 
+  console.log('Filtered Projects:', this.filteredProjects);
   this.projectTotalItems = this.filteredProjects.length;
   this.projectCurrentPage = 1;
   this.updateProjectPage();
 }
-
 // Clear Filters for Projects
 clearProjectFilters(): void {
   this.projectNameFilterOfProject = '';
@@ -225,6 +240,7 @@ updateProjectPage(): void {
   const startIndex = (this.projectCurrentPage - 1) * this.projectItemsPerPage;
   const endIndex = startIndex + this.projectItemsPerPage;
   this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+  console.log('Paginated Projects:', this.paginatedProjects); // <-- Add this line
 }
 
 changeProjectPage(page: number): void {

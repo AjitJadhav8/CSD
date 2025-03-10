@@ -867,8 +867,13 @@ class OrgController {
           p.project_name,
           c.customer_name,
           CONCAT(u.user_first_name, ' ', u.user_last_name) AS project_manager,
+            p.type_of_project_id, -- Include ID
           tp.project_type_name AS type_of_project,
+            p.type_of_engagement_id, -- Include ID
+
           te.type_of_engagement_name AS type_of_engagement,
+            p.project_status_id, -- Include ID
+
           ps.status_name AS project_status,
           p.planned_start_date,
           p.actual_start_date,
