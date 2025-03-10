@@ -86,12 +86,32 @@ export class CustomerComponent {
           timer: 3000 // Disappears after 3 seconds
         });
         this.fetchCustomers(); // Refresh the customer list
-        this.toggleModal(); // Close the modal after successful submission
+        // this.toggleModal(); // Close the modal after successful submission
         this.resetCustomerForm(); // Reset form fields after successful submission
+        form.resetForm();
 
       },
       error: (error) => console.error('Error adding customer:', error)
     });
+  }
+  resetCustomerForm() {
+    this.customer = {
+      customerName: '',
+      companyWebsite: '',
+      email: '',
+      phone: '',
+      alternatePhone: '',
+      status: '',
+      sector: '',
+      industry: '',
+      domain: '',
+      customerType: '',
+      city: '',
+      state: '',
+      pincode: '',
+      country: '',
+      description: ''
+    };
   }
 
   fetchCustomers(): void {
@@ -141,25 +161,7 @@ export class CustomerComponent {
     });
   }
   // Function to reset form fields
-  resetCustomerForm() {
-    this.customer = {
-      customerName: '',
-      companyWebsite: '',
-      email: '',
-      phone: '',
-      alternatePhone: '',
-      status: '',
-      sector: '',
-      industry: '',
-      domain: '',
-      customerType: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: '',
-      description: ''
-    };
-  }
+
 
   // ------------------ Customer Category ------------------------
 
@@ -223,25 +225,25 @@ export class CustomerComponent {
     });
   }
 
-  saveCategory(): void {
+  saveCategory(form: NgForm): void {
+    if (form.invalid) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please fill all required fields!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
+  }
     const category = {
       sector: this.newSector ? this.newSector : this.selectedSector,
       industry: this.newIndustry ? this.newIndustry : this.selectedIndustry,
       domain: this.newDomain ? this.newDomain : this.selectedDomain
     };
 
-    // Validation check
-    if (!category.sector || !category.industry || !category.domain) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Please fill all required fields!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
-    }
+    
 
     this.dataService.addCategory(category).subscribe(
       () => {
@@ -259,7 +261,8 @@ export class CustomerComponent {
 
         this.fetchMasterCategories(); // Refresh categories list
         this.resetCategoryForm();
-        this.toggleModal(); // Close the modal after successful submission
+        form.resetForm();
+        // this.toggleModal(); // Close the modal after successful submission
       },
       (error) => {
         console.error('Error adding category:', error);
@@ -350,8 +353,8 @@ export class CustomerComponent {
   toggleCategoryModal() {
     this.showCategoryModal = !this.showCategoryModal;
   }
-  toggleModal() {
-    this.showModal = !this.showModal;
-  }
+  // toggleModal() {
+  //   this.showModal = !this.showModal;
+  // }
 
 }
