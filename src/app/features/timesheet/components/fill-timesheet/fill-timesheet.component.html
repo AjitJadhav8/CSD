@@ -1,28 +1,18 @@
 <div class="p-4">
 
     <!-- Button to open the modal -->
-    <button (click)="toggleModal('timesheet')" class="bg-blue-500 text-white px-4 py-2 rounded-lg my-4">
-        Open Timesheet Modal
-    </button>
+    <h3 class="text-xl font-semibold mb-4">Fill Timesheet</h3>
+
     <!-- Timesheet Form Modal -->
-    <div *ngIf="showTimesheetModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-        (click)="toggleModal('timesheet')">
-        <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="text-xl font-semibold">Add Timesheet Entry</h3>
-                <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                    (click)="toggleModal('timesheet')">&times;</button>
-            </div>
+ 
 
             <!-- Scrollable Form -->
-            <div class=" max-h-[70vh] overflow-y-auto p-2">
                 <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(); $event.preventDefault()">
-                    <div class="bg-white p-6 rounded-xl grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-6 gap-4">
                         <!-- First Row (Full Width) -->
-                        <div class="col-span-2 flex flex-col items-center">
-                            <label class="text-gray-700 font-medium">Filling Timesheet for</label>
-                            <input type="date" class="p-2 border rounded-lg w-1/2 text-center"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Filling Timesheet for</label>
+                            <input type="date" class="border p-2 w-full rounded-md"
                                 [(ngModel)]="selectedDate" [min]="minDate" [max]="maxDate" name="selectedDate"
                                 #selectedDateInput="ngModel" required
                                 [ngClass]="{'border-red-500': (selectedDateInput.invalid && selectedDateInput.touched) || (timesheetForm.submitted && selectedDateInput.invalid)}">
@@ -33,9 +23,9 @@
                         </div>
 
                         <!-- Second Row (Customer & Project) -->
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Select Customer</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedCustomer" name="selectedCustomer"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Select Customer</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedCustomer" name="selectedCustomer"
                                 #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required
                                 [ngClass]="{'border-red-500': (selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)}">
                                 <option value="" disabled selected>Select Customer</option>
@@ -49,9 +39,9 @@
                             </span>
                         </div>
 
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Select Project</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedProject" name="selectedProject"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Select Project</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedProject" name="selectedProject"
                                 #selectedProjectInput="ngModel" [disabled]="!selectedCustomer"
                                 (change)="onProjectChange()" required
                                 [ngClass]="{'border-red-500': (selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)}">
@@ -67,9 +57,9 @@
                         </div>
 
                         <!-- Third Row (Deliverable & Task Category) -->
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Project Deliverable</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedDeliverable"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Project Deliverable</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDeliverable"
                                 name="selectedDeliverable" #selectedDeliverableInput="ngModel"
                                 [disabled]="!selectedProject" required
                                 [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
@@ -85,9 +75,9 @@
                             </span>
                         </div>
 
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Task Category</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedTaskCategory"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Task Category</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedTaskCategory"
                                 name="selectedTaskCategory" #selectedTaskCategoryInput="ngModel" required
                                 [ngClass]="{'border-red-500': (selectedTaskCategoryInput.invalid && selectedTaskCategoryInput.touched) || (timesheetForm.submitted && selectedTaskCategoryInput.invalid)}">
                                 <option value="" disabled selected>Select Task Category</option>
@@ -102,10 +92,10 @@
                         </div>
 
                         <!-- Fourth Row (Full Width - Task Description) -->
-                        <div class="col-span-2 flex flex-col">
-                            <label class="text-gray-700 font-medium">Task Description</label>
-                            <textarea class="p-2 border rounded-lg" [(ngModel)]="taskDescription" name="taskDescription"
-                                #taskDescriptionInput="ngModel" rows="3" required
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Task Description</label>
+                            <textarea class="border p-2 w-full rounded-md" [(ngModel)]="taskDescription" name="taskDescription"
+                                #taskDescriptionInput="ngModel" rows="1" required
                                 [ngClass]="{'border-red-500': (taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)}"></textarea>
                             <span class="text-red-500 text-sm"
                                 *ngIf="(taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)">
@@ -114,9 +104,9 @@
                         </div>
 
                         <!-- Fifth Row (Hours & Minutes) -->
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Hours</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedHours" name="selectedHours"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Hours</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedHours" name="selectedHours"
                                 #selectedHoursInput="ngModel" required
                                 [ngClass]="{'border-red-500': (selectedHoursInput.invalid && selectedHoursInput.touched) || (timesheetForm.submitted && selectedHoursInput.invalid)}">
                                 <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
@@ -127,9 +117,9 @@
                             </span>
                         </div>
 
-                        <div class="flex flex-col">
-                            <label class="text-gray-700 font-medium">Minutes</label>
-                            <select class="p-2 border rounded-lg" [(ngModel)]="selectedMinutes" name="selectedMinutes"
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Minutes</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedMinutes" name="selectedMinutes"
                                 #selectedMinutesInput="ngModel" required
                                 [ngClass]="{'border-red-500': (selectedMinutesInput.invalid && selectedMinutesInput.touched) || (timesheetForm.submitted && selectedMinutesInput.invalid)}">
                                 <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
@@ -141,15 +131,15 @@
                         </div>
 
                         <!-- Sixth Row (Full Width - Task Status) -->
-                        <div class="col-span-2 flex flex-col items-center">
-                            <label class="text-gray-700 font-medium mb-2">Task Status</label>
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Task Status</label>
                             <div class="flex space-x-2">
-                                <button type="button" class="px-6 py-2 rounded-lg text-white transition"
+                                <button type="button" class="px-2 py-2 rounded-lg text-white transition"
                                     [class.bg-green-600]="selectedTaskStatus === 1"
                                     [class.bg-gray-300]="selectedTaskStatus !== 1" (click)="selectedTaskStatus = 1">
                                     ✅ Completed
                                 </button>
-                                <button type="button" class="px-6 py-2 rounded-lg text-white transition"
+                                <button type="button" class="px-2 py-2 rounded-lg text-white transition"
                                     [class.bg-yellow-600]="selectedTaskStatus === 0"
                                     [class.bg-gray-300]="selectedTaskStatus !== 0" (click)="selectedTaskStatus = 0">
                                     ⚠ In Progress
@@ -160,19 +150,15 @@
                                 Task Status is required
                             </span>
                         </div>
-
+</div>
                         <!-- Submit Button (Full Width) -->
-                        <div class="col-span-2 flex justify-center mt-6">
+                        <div class="mt-4">
                             <button type="submit"
-                                class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 shadow-md">
+                                class="bg-blue-500 text-white px-4 py-2 rounded">
                                 Submit
                             </button>
                         </div>
-                    </div>
                 </form>
-            </div>
-        </div>
-    </div>
 
 
     <!-- 🔹 Timesheet Table Section -->
