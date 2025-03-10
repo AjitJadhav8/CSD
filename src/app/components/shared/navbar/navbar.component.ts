@@ -15,7 +15,13 @@ export class NavbarComponent {
   @Input() showTimesheetLinks: boolean = false;
   @Input() showResourceManagementLinks: boolean = false; // New Input
 
-
+  navigateToCustomerSection(section: string) {
+    localStorage.setItem('selectedCustomerSection', section);
+    this.router.navigate(['/organisation/customer']).then(() => {
+      // Force refresh customer component to detect changes
+      window.dispatchEvent(new Event('storage'));
+    });
+  }
 
   showDropdown = false;
   showChangePasswordForm = false;

@@ -18,8 +18,25 @@ export class CustomerComponent {
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
+  // Load section from localStorage
+  this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
+
+  // Listen for changes (e.g., when clicking Customer Categories)
+  window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchMasterCategories();
     this.fetchCustomers();
+  }
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
+  }
+
+  updateSectionFromStorage() {
+    this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
+  }
+
+  changeSection(section: string) {
+    this.selectedSection = section;
+    localStorage.setItem('selectedCustomerSection', section);
   }
 
 

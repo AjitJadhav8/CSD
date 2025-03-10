@@ -2,10 +2,10 @@
     <!-- Top Buttons -->
     <div class="flex space-x-4 mb-4">
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'customer'">Customer</button>
+          (click)="changeSection('customer')">Customer</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'customerCategory'">Customer Categories</button>
-    </div>
+          (click)="changeSection('customerCategory')">Customer Categories</button>
+      </div>
 
     <!-- Customer Section -->
     <div *ngIf="selectedSection === 'customer'" class="p-2">
