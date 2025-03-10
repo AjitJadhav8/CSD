@@ -10,33 +10,32 @@
     </div>
     <!-- Task Category Section -->
     <div *ngIf="selectedSection === 'taskCategory'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('taskCategory')">+ Add Task
-            Category</button>
+        <h3 class="text-xl font-semibold mb-4">Add New Task Category</h3>
 
-        <div *ngIf="showTaskCategoryModal"
-            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-            (click)="toggleModal('taskCategory')">
-            <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
-                <!-- Modal Header -->
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-xl font-semibold">Add Task Category</h3>
-                    <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                        (click)="toggleModal('taskCategory')">&times;</button>
-                </div>
-                <form #taskCategoryFormRef="ngForm" (submit)="submitTaskCategory(taskCategoryFormRef)">
-                    <label class="block mb-2 font-semibold">Task Category Name*</label>
-                    <input type="text" [(ngModel)]="taskCategoryForm.task_category_name" #taskCategoryField="ngModel"
-                        name="taskCategoryName" required class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (taskCategoryField.invalid && taskCategoryField.touched) || (taskCategoryFormRef.submitted && taskCategoryField.invalid)}" />
 
-                    <span class="text-red-500 text-sm"
-                        *ngIf="taskCategoryField.invalid && (taskCategoryField.touched || taskCategoryFormRef.submitted)">
-                        Task Category Name is required.
-                    </span>
-                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded mt-3">Save</button>
-                </form>
+
+                   <!-- Task Category Form -->
+    <form #taskCategoryFormRef="ngForm" (submit)="submitTaskCategory(taskCategoryFormRef); $event.preventDefault()">
+        <div class="grid grid-cols-6 gap-4">
+            <!-- Task Category Name -->
+            <div class="form-group">
+                <label>Task Category Name*</label>
+                <input type="text" [(ngModel)]="taskCategoryForm.task_category_name" #taskCategoryField="ngModel"
+                    name="taskCategoryName" required class="border p-2 w-full rounded-md"
+                    [ngClass]="{'border-red-500': (taskCategoryField.invalid && taskCategoryField.touched) || (taskCategoryFormRef.submitted && taskCategoryField.invalid)}" />
+                <span class="text-red-500 text-sm"
+                    *ngIf="taskCategoryField.invalid && (taskCategoryField.touched || taskCategoryFormRef.submitted)">
+                    Task Category Name is required.
+                </span>
             </div>
         </div>
+
+        <!-- Submit Button -->
+        <div class="mt-4">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+        </div>
+    </form>
+           
 
         <div class="rounded-lg w-full overflow-x-auto">
             <!-- Filter Section -->
@@ -127,27 +126,15 @@
     </div>
     <!-- Project Deliverable Section -->
     <div *ngIf="selectedSection === 'projectDeliverable'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('projectDeliverable')">+ Add
-            Project Deliverable</button>
+        <h3 class="text-xl font-semibold mb-4">Add New Task Category</h3>
 
-        <div *ngIf="showProjectDeliverableModal"
-            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-            (click)="toggleModal('projectDeliverable')">
-
-            <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg relative p-6" (click)="$event.stopPropagation()">
-
-                <!-- Modal Header -->
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-xl font-semibold">Add Project Deliverable</h3>
-                    <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                        (click)="toggleModal('projectDeliverable')">&times;</button>
-                </div>
-
-                <div class="mt-4">
                     <form #projectDeliverableFormRef="ngForm"
                         (ngSubmit)="submitProjectDeliverable(projectDeliverableFormRef)">
+
+
                         <!-- Select Customer -->
-                        <div>
+                        <div class="grid grid-cols-6 gap-4">
+                            <div class="form-group">
                             <label class="block mb-2 font-semibold">Customer Name*</label>
                             <select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel"
                                 name="customer" required class="border p-2 w-full rounded-md"
@@ -162,9 +149,10 @@
                                 *ngIf="customerField.invalid && (customerField.touched || projectDeliverableFormRef.submitted)">
                                 Customer is required.
                             </span>
+                            </div>
 
                             <!-- Select Project -->
-                            <div>
+                            <div class="form-group">
                                 <label class="block mb-2 font-semibold">Select Project*</label>
                                 <select [(ngModel)]="projectDeliverableForm.project_id" #projectField="ngModel"
                                     name="project" required class="border p-2 w-full rounded-md"
@@ -180,7 +168,7 @@
                             </div>
 
                             <!-- Deliverable Name -->
-                            <div>
+                            <div class="form-group">
                                 <label class="block mb-2 font-semibold">Project Deliverable*</label>
                                 <input type="text" [(ngModel)]="projectDeliverableForm.project_deliverable_name"
                                     #deliverableField="ngModel" name="deliverable" required
@@ -194,13 +182,11 @@
                         </div>
 
                         <!-- Save Button -->
-                        <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                        <div class="mt-4 ">
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
+               
 
         <div class="rounded-lg w-full overflow-x-auto">
             <!-- Filter Section -->
@@ -317,21 +303,14 @@
 
 
     <div *ngIf="selectedSection === 'project'">
-        <button class="bg-green-500 text-white px-4 py-2 rounded mb-4" (click)="toggleModal('project')">+ Add
-            Project</button>
+        <h3 class="text-xl font-semibold mb-4">Add Project</h3>
 
-        <div *ngIf="showProjectModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
-            (click)="toggleModal('project')">
-            <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-xl font-semibold">Add New Project</h3>
-                    <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                        (click)="toggleModal('project')">&times;</button>
-                </div>
-                <div class="mt-4 max-h-[70vh] overflow-y-auto p-2">
+
+        
+            
 
                     <form #projectNgForm="ngForm" (ngSubmit)="submitProject(projectNgForm)">
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-6 gap-4">
 
                             <!-- Customer Name -->
                             <div class="form-group">
@@ -465,23 +444,22 @@
                                 <input type="date" class="border p-2 w-full rounded-md"
                                     [(ngModel)]="projectForm.tentative_end_date" name="tentative_end_date">
                             </div>
+                            <div class="form-group">
+                                <label class="block mb-2 font-semibold">Project Description</label>
+                                <textarea class="border p-2 w-full rounded-md" rows="1"
+                                    placeholder="Enter project details..." [(ngModel)]="projectForm.project_description"
+                                    name="project_description"></textarea>
+                            </div>
                         </div>
 
                         <!-- Project Description -->
-                        <div class="mt-4">
-                            <label class="block mb-2 font-semibold">Project Description</label>
-                            <textarea class="border p-2 w-full rounded-md" rows="3"
-                                placeholder="Enter project details..." [(ngModel)]="projectForm.project_description"
-                                name="project_description"></textarea>
-                        </div>
+                       
                         <!-- Save Button -->
-                        <div class="mt-4 flex justify-center">
-                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
+                        <div class="mt-4">
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
+                
 
         <div class="rounded-lg w-full overflow-x-auto">
             <!-- Filter Section -->

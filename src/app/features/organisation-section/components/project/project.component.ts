@@ -749,22 +749,6 @@ getVisibleDeliverablePageNumbers(): number[] {
 
 
   selectedSection: string = 'project';
-  showTaskCategoryModal: boolean = false;
-  showProjectDeliverableModal: boolean = false;
-  showProjectModal: boolean = false;
 
-  toggleModal(type: string) {
-    switch (type) {
-      case 'taskCategory':
-        this.showTaskCategoryModal = !this.showTaskCategoryModal;
-        break;
-      case 'projectDeliverable':
-        this.showProjectDeliverableModal = !this.showProjectDeliverableModal;
-        break;
-      case 'project':
-        this.showProjectModal = !this.showProjectModal;
-        break;
-    }
-  }
 
 }
