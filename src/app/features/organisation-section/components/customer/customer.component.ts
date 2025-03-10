@@ -86,7 +86,6 @@ export class CustomerComponent {
           timer: 3000 // Disappears after 3 seconds
         });
         this.fetchCustomers(); // Refresh the customer list
-        // this.toggleModal(); // Close the modal after successful submission
         this.resetCustomerForm(); // Reset form fields after successful submission
         form.resetForm();
 
@@ -262,7 +261,6 @@ export class CustomerComponent {
         this.fetchMasterCategories(); // Refresh categories list
         this.resetCategoryForm();
         form.resetForm();
-        // this.toggleModal(); // Close the modal after successful submission
       },
       (error) => {
         console.error('Error adding category:', error);
@@ -348,13 +346,5 @@ export class CustomerComponent {
   // ------------------ Other ------------------------
 
   selectedSection: string = 'customer';
-  showModal: boolean = false;
-  showCategoryModal: boolean = false;
-  toggleCategoryModal() {
-    this.showCategoryModal = !this.showCategoryModal;
-  }
-  // toggleModal() {
-  //   this.showModal = !this.showModal;
-  // }
 
 }
