@@ -11,7 +11,7 @@
     <!-- Employee Dropdown -->
 
     <div class="relative" #employeeDropdown>
-      <a (click)="toggleEmployeeDropdown()" [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link" 
+      <a (click)="toggleEmployeeDropdown()" [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
         Employee
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -25,23 +25,24 @@
       <!-- Dropdown Menu -->
       <div *ngIf="showEmployeeDropdown"
         class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
-        <a (click)="navigateToEmployeeSection('employee')"
+        <a (click)="navigateToEmployeeSection('employee')" [class.active-link]="isEmployeeSectionActive('employee')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Employee
         </a>
-        <a (click)="navigateToEmployeeSection('department')"
+        <a (click)="navigateToEmployeeSection('department')" [class.active-link]="isEmployeeSectionActive('department')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Department
         </a>
-        <a (click)="navigateToEmployeeSection('position')"
+        <a (click)="navigateToEmployeeSection('position')" [class.active-link]="isEmployeeSectionActive('position')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Position
         </a>
-        <a (click)="navigateToEmployeeSection('skills')"
+        <a (click)="navigateToEmployeeSection('skills')" [class.active-link]="isEmployeeSectionActive('skills')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Skills
         </a>
         <a (click)="navigateToEmployeeSection('reportingManagerHistory')"
+          [class.active-link]="isEmployeeSectionActive('reportingManagerHistory')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Reporting Manager History
         </a>
@@ -50,7 +51,7 @@
 
     <!-- Customer Dropdown -->
     <div class="relative" #customerDropdown>
-      <a (click)="toggleCustomerDropdown()" [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"  
+      <a (click)="toggleCustomerDropdown()" [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
         Customer
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -62,11 +63,15 @@
       </a>
 
       <!-- Dropdown Menu -->
-      <div *ngIf="showCustomerDropdown"class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
-        <a (click)="navigateToCustomerSection('customer')" class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      <div *ngIf="showCustomerDropdown"
+        class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
+        <a (click)="navigateToCustomerSection('customer')" [class.active-link]="isCustomerSectionActive('customer')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Customer
         </a>
-        <a (click)="navigateToCustomerSection('customerCategory')" class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <a (click)="navigateToCustomerSection('customerCategory')"
+          [class.active-link]="isCustomerSectionActive('customerCategory')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Customer Categories
         </a>
       </div>
@@ -74,7 +79,7 @@
 
     <!-- Project Dropdown -->
     <div class="relative" #projectDropdown>
-      <a (click)="toggleProjectDropdown()" [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"  
+      <a (click)="toggleProjectDropdown()" [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
         Project
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -88,30 +93,31 @@
       <!-- Dropdown Menu -->
       <div *ngIf="showProjectDropdown"
         class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
-        <a (click)="navigateToProjectSection('project')"
+        <a (click)="navigateToProjectSection('project')" [class.active-link]="isProjectSectionActive('project')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project
         </a>
         <a (click)="navigateToProjectSection('projectDeliverable')"
+          [class.active-link]="isProjectSectionActive('projectDeliverable')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Deliverable
         </a>
         <a (click)="navigateToProjectSection('taskCategory')"
+          [class.active-link]="isProjectSectionActive('taskCategory')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Task Category
         </a>
       </div>
-    </div>    
+    </div>
 
-    <a [routerLink]="['/organisation', 'admin']" routerLinkActive="active-link"
+    <!-- <a [routerLink]="['/organisation', 'admin']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Admin
-    </a>
+    </a> -->
   </div>
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
-  <div *ngIf="showTimesheetLinks"
-  class="hidden sm:flex gap-2 p-1 rounded-md">
+  <div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
     <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Fill Timesheet
@@ -143,8 +149,7 @@
   </div>
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
-  <div *ngIf="showResourceManagementLinks"
-    class="hidden sm:flex gap-2 p-1 rounded-md">
+  <div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
     <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="active-link"
     class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
     Allocation Report

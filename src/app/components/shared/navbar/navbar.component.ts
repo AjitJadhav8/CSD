@@ -5,12 +5,12 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink,RouterModule],
+  imports: [CommonModule, RouterLink, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  
+
   isActive(route: string): boolean {
     return this.router.url === route;
   }
@@ -19,14 +19,15 @@ export class NavbarComponent {
   @Input() showTimesheetLinks: boolean = false;
   @Input() showResourceManagementLinks: boolean = false; // New Input
 
-  
-
   navigateToCustomerSection(section: string) {
     localStorage.setItem('selectedCustomerSection', section);
     this.router.navigate(['/organisation/customer']).then(() => {
       // Force refresh customer component to detect changes
       window.dispatchEvent(new Event('storage'));
     });
+  }
+  isCustomerSectionActive(section: string): boolean {
+    return localStorage.getItem('selectedCustomerSection') === section;
   }
   navigateToProjectSection(section: string) {
     localStorage.setItem('selectedProjectSection', section);
@@ -35,20 +36,25 @@ export class NavbarComponent {
       window.dispatchEvent(new Event('storage'));
     });
   }
+  isProjectSectionActive(section: string): boolean {
+    return localStorage.getItem('selectedProjectSection') === section;
+  }
   navigateToEmployeeSection(section: string) {
     localStorage.setItem('selectedEmployeeSection', section);
+
     this.router.navigate(['/organisation/employee']).then(() => {
       // Force refresh employee component to detect changes
       window.dispatchEvent(new Event('storage'));
     });
   }
-  
+  isEmployeeSectionActive(section: string): boolean {
+    return localStorage.getItem('selectedEmployeeSection') === section;
+  }
 
   showDropdown = false;
   showChangePasswordForm = false;
   showUpdateEmailForm = false;
   loggedInUserName = ''; // Replace with actual user data
-
   showCustomerDropdown = false;
   showProjectDropdown = false;
   showEmployeeDropdown = false;
