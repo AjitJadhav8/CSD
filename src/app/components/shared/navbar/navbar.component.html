@@ -6,72 +6,13 @@
 
   <!-- Navbar Center (Organisation Links - Conditionally Shown) -->
   <!-- Organisation Links (Dropdown for Customer) -->
-  <div *ngIf="showOrganisationLinks"
-    class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
-
-    <!-- Customer Dropdown -->
-    <div class="relative" #customerDropdown>
-      <a (click)="toggleCustomerDropdown()" [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
-        Customer
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
-          [class.rotate-180]="showCustomerDropdown" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
-        </svg>
-      </a>
-
-      <!-- Dropdown Menu -->
-      <div *ngIf="showCustomerDropdown"
-        class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
-        <a (click)="navigateToCustomerSection('customer')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
-          Customer
-        </a>
-        <a (click)="navigateToCustomerSection('customerCategory')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
-          Customer Categories
-        </a>
-      </div>
-    </div>
-
-    <!-- Project Dropdown -->
-    <div class="relative" #projectDropdown>
-      <a (click)="toggleProjectDropdown()" [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
-        Project
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
-          [class.rotate-180]="showProjectDropdown" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
-        </svg>
-      </a>
-
-      <!-- Dropdown Menu -->
-      <div *ngIf="showProjectDropdown"
-        class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
-        <a (click)="navigateToProjectSection('project')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
-          Project
-        </a>
-        <a (click)="navigateToProjectSection('projectDeliverable')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
-          Project Deliverable
-        </a>
-        <a (click)="navigateToProjectSection('taskCategory')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
-          Task Category
-        </a>
-      </div>
-    </div>
-
+  <div *ngIf="showOrganisationLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
 
     <!-- Employee Dropdown -->
+
     <div class="relative" #employeeDropdown>
-      <a (click)="toggleEmployeeDropdown()" [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+      <a (click)="toggleEmployeeDropdown()" [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link" 
+        class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
         Employee
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
           [class.rotate-180]="showEmployeeDropdown" viewBox="0 0 20 20" fill="currentColor">
@@ -85,39 +26,94 @@
       <div *ngIf="showEmployeeDropdown"
         class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
         <a (click)="navigateToEmployeeSection('employee')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Employee
         </a>
         <a (click)="navigateToEmployeeSection('department')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Department
         </a>
         <a (click)="navigateToEmployeeSection('position')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Position
         </a>
         <a (click)="navigateToEmployeeSection('skills')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Skills
         </a>
         <a (click)="navigateToEmployeeSection('reportingManagerHistory')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-500 hover:text-white cursor-pointer">
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Reporting Manager History
         </a>
       </div>
     </div>
 
+    <!-- Customer Dropdown -->
+    <div class="relative" #customerDropdown>
+      <a (click)="toggleCustomerDropdown()" [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"  
+        class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
+        Customer
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showCustomerDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showCustomerDropdown"class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
+        <a (click)="navigateToCustomerSection('customer')" class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Customer
+        </a>
+        <a (click)="navigateToCustomerSection('customerCategory')" class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Customer Categories
+        </a>
+      </div>
+    </div>
+
+    <!-- Project Dropdown -->
+    <div class="relative" #projectDropdown>
+      <a (click)="toggleProjectDropdown()" [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"  
+        class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
+        Project
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showProjectDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showProjectDropdown"
+        class="absolute left-0 mt-1 w-44 bg-white shadow-lg rounded-md border border-gray-200 z-10">
+        <a (click)="navigateToProjectSection('project')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Project
+        </a>
+        <a (click)="navigateToProjectSection('projectDeliverable')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Project Deliverable
+        </a>
+        <a (click)="navigateToProjectSection('taskCategory')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Task Category
+        </a>
+      </div>
+    </div>    
+
     <a [routerLink]="['/organisation', 'admin']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Admin
     </a>
   </div>
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
   <div *ngIf="showTimesheetLinks"
-    class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
+  class="hidden sm:flex gap-2 p-1 rounded-md">
     <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Fill Timesheet
     </a>
     <!-- <a [routerLink]="['/timesheet', 'summary-report']" routerLinkActive="active-link"
@@ -137,7 +133,7 @@
     View Timesheet
   </a> -->
     <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Export My Timesheet
     </a>
     <!-- <a [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
@@ -148,29 +144,29 @@
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
   <div *ngIf="showResourceManagementLinks"
-    class="hidden sm:flex gap-2 bg-gray-50 p-1 rounded-md border border-gray-200 shadow-sm">
+    class="hidden sm:flex gap-2 p-1 rounded-md">
     <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="active-link"
     class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
     Allocation Report
   </a> -->
     <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Assign Project Team
     </a>
     <a [routerLink]="['/resource-management', 'all-teams-timesheet']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       All Teams Timesheet
     </a>
     <a [routerLink]="['/resource-management', 'all-projects-team']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       All Projects Team
     </a>
     <a [routerLink]="['/resource-management', 'view-resource-demand']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       View Resource Demand
     </a>
     <a [routerLink]="['/resource-management', 'view-update-employee-skills']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       View/Update Employee Skills
     </a>
   </div>

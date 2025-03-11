@@ -1,15 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink,RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  
+  isActive(route: string): boolean {
+    return this.router.url === route;
+  }
 
   @Input() showOrganisationLinks: boolean = false;
   @Input() showTimesheetLinks: boolean = false;

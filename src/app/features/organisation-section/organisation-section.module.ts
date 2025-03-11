@@ -17,7 +17,7 @@ const routes: Routes = [
   { 
     path: '', component: OrganisationDashboardComponent,
     children: [
-      { path: '', redirectTo: 'customer', pathMatch: 'full' }, // ✅ Default to Customer
+      { path: '', redirectTo: 'employee', pathMatch: 'full' }, // ✅ Default to Customer
       { path: 'customer', component: CustomerComponent },
       { path: 'employee', component: EmployeeComponent },
       { path: 'project', component: ProjectComponent },
