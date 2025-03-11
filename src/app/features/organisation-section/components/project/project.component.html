@@ -2,11 +2,11 @@
     <!-- Section Selection Buttons -->
     <div class="flex space-x-4 mb-4">
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'project'">Project</button>
+            (click)="changeSection('project')">Project</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'projectDeliverable'">Project Deliverable</button>
+            (click)="changeSection('projectDeliverable')">Project Deliverable</button>
         <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="selectedSection = 'taskCategory'">Task Category</button>
+            (click)="changeSection('taskCategory')">Task Category</button>
     </div>
     <!-- Task Category Section -->
     <div *ngIf="selectedSection === 'taskCategory'">
@@ -126,7 +126,7 @@
     </div>
     <!-- Project Deliverable Section -->
     <div *ngIf="selectedSection === 'projectDeliverable'">
-        <h3 class="text-xl font-semibold mb-4">Add New Task Category</h3>
+        <h3 class="text-xl font-semibold mb-4">Add New Project Deliverable</h3>
 
                     <form #projectDeliverableFormRef="ngForm"
                         (ngSubmit)="submitProjectDeliverable(projectDeliverableFormRef)">

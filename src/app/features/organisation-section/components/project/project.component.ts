@@ -38,6 +38,11 @@ filterProjects(): void {
 
 
   ngOnInit(): void {
+
+    this.selectedSection = localStorage.getItem('selectedProjectSection') || 'project';
+
+    // Listen for changes (e.g., when clicking Project Deliverable)
+    window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     
     this.fetchTaskCategories();
     this.fetchProjects();
@@ -62,6 +67,19 @@ filterProjects(): void {
         console.error('Error fetching data', error);
       }
     );
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
+  }
+
+  updateSectionFromStorage() {
+    this.selectedSection = localStorage.getItem('selectedProjectSection') || 'project';
+  }
+
+  changeSection(section: string) {
+    this.selectedSection = section;
+    localStorage.setItem('selectedProjectSection', section);
   }
 
   optionProject: any[] = [];

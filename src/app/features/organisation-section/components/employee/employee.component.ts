@@ -16,6 +16,12 @@ export class EmployeeComponent {
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
+
+    // Load section from localStorage
+    this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
+
+    // Listen for changes (e.g., when clicking Department)
+    window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchEmployees();
     this.fetchDepartments();
     this.fetchPositions();
@@ -33,6 +39,18 @@ export class EmployeeComponent {
       }
     );
 
+  }
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
+  }
+
+  updateSectionFromStorage() {
+    this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
+  }
+
+  changeSection(section: string) {
+    this.selectedSection = section;
+    localStorage.setItem('selectedEmployeeSection', section);
   }
 
   optioRoles: any[] = [];
