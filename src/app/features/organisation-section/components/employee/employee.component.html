@@ -274,8 +274,8 @@
                     <td class="border p-2">{{ employee.user_blood_group }}</td>
                     <td class="border p-2">{{ employee.user_DOJ | date:'dd-MMM-yyyy' }}</td>
                     <td class="border p-2">
-                        <!-- <button class="bg-blue-500 text-white px-2 py-1 rounded"
-                            (click)="assignDetails(employee)">Assign Details</button> -->
+                        <button class="bg-blue-500 text-white px-2 py-1 rounded"
+                            (click)="assignDetails(employee)">Assign Details</button>
                         <button class="bg-red-500 text-white px-2 py-1 rounded"
                             (click)="deleteEmployee(employee.user_id)">Delete</button>
                     </td>
@@ -286,9 +286,9 @@
 
 
         <!-- Assign Details Modal -->
-        <div *ngIf="showAssignDetailsModal"
+        <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-            <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6">
+            <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
                 <div class="flex justify-between items-center border-b pb-2">
                     <h3 class="text-xl font-semibold">Assign Employee Details</h3>
                     <button class="text-gray-500 hover:text-gray-700 text-2xl"
@@ -302,7 +302,7 @@
                             <div><label>Reporting Manager*</label><select required class="border p-2 w-full">
                                     <option>Select Reporting Manager</option>
                                 </select></div>
-                            <div><label>Employee Position*</label><select required class="border p-2 w-full">
+                            <div><label>Employee Designation*</label><select required class="border p-2 w-full">
                                     <option>Select Position</option>
                                 </select></div>
 
@@ -311,21 +311,40 @@
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                 </select></div>
-                            <div><label>Requirement*</label><select required class="border p-2 w-full">
-                                    <option>Select Requirement</option>
-                                </select></div>
-                            <div>
-                                <label>Project</label>
-                                <select required class="border p-2 w-full">
-                                    <option>Select Project</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Project Role*</label>
-                                <select required class="border p-2 w-full">
-                                    <option>Select Project Role</option>
-                                </select>
-                            </div>
+
+                                <div class="form-group">
+                                    <label>Role*</label>
+                                    <select [(ngModel)]="employee.role_id" #role="ngModel" name="role" required
+                                        class="border p-2 w-full rounded-md"
+                                        [ngClass]="{'border-red-500': (role.invalid && role.touched) || (employeeForm.submitted && role.invalid)}">
+                                        <option value="" disabled selected>Select Role</option>
+                                        <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
+                                        </option>
+                                    </select>
+                                    <span class="text-red-500 text-sm"
+                                        *ngIf="(role.invalid && role.touched) || (employeeForm.submitted && role.invalid)">
+                                        Role is required
+                                    </span>
+                                </div>
+                
+                                <!-- Department -->
+                                <div class="form-group">
+                                    <label>Department*</label>
+                                    <select [(ngModel)]="employee.department_id" #department="ngModel" name="department" required
+                                        class="border p-2 w-full rounded-md"
+                                        [ngClass]="{'border-red-500': (department.invalid && department.touched) || (employeeForm.submitted && department.invalid)}">
+                                        <option value="" disabled selected>Select Department</option>
+                                        <option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                                            {{ department.department_name }}
+                                        </option>
+                                    </select>
+                                    <span class="text-red-500 text-sm"
+                                        *ngIf="(department.invalid && department.touched) || (employeeForm.submitted && department.invalid)">
+                                        Department is required
+                                    </span>
+                                </div>
+                
+                 
 
                         </div>
                     </form>

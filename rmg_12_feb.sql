@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `rmg` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `rmg`;
+CREATE DATABASE  IF NOT EXISTS `rmg2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `rmg2`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: localhost    Database: rmg
+-- Host: localhost    Database: rmg2
 -- ------------------------------------------------------
 -- Server version	8.0.39
 
@@ -33,7 +33,7 @@ CREATE TABLE `master_category` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `master_category` (
 
 LOCK TABLES `master_category` WRITE;
 /*!40000 ALTER TABLE `master_category` DISABLE KEYS */;
-INSERT INTO `master_category` VALUES (1,'Manufacturing','Textile','Fibre',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(2,'Manufacturing','Textile','Nilon',1,'2025-02-17 07:46:36','2025-02-18 04:40:03'),(3,'Technology','Software','AI',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(4,'Technology','Hardware','Semiconductors',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(5,'Healthcare','Pharmaceutical','Medicines',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(6,'Healthcare','Medical Devices','MRI Machines',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(7,'Finance','Banking','Loans',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(8,'Finance','Insurance','Health Insurance',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(9,'Education','Online Learning','E-Learning Platforms',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(10,'Retail','E-Commerce','Online Store',0,'2025-02-17 07:46:36','2025-02-17 07:46:36'),(11,'Food','Package','Bread',0,'2025-02-19 12:23:40','2025-02-19 12:23:40'),(12,'Technology','Software','ML',0,'2025-02-19 12:25:02','2025-02-19 12:25:02'),(13,'Manufacturing','Iron','Domain 1',0,'2025-02-19 12:44:52','2025-02-19 12:44:52'),(14,'Manufacturing','Industry 1','Domain New',0,'2025-02-19 12:49:46','2025-02-19 12:49:46'),(15,'Technology','Software','Web Dev',0,'2025-02-19 12:50:07','2025-02-19 12:50:07'),(16,'New Cat','New Cat In 1','New Cat Dom 1',0,'2025-02-20 05:29:55','2025-02-20 05:29:55'),(17,'Healthcare','Pharmaceutical','D Pharma',0,'2025-02-20 05:35:07','2025-02-20 05:35:07'),(18,'Healthcare','Medical Devices','New med ',1,'2025-02-20 05:48:59','2025-02-20 09:10:34');
+INSERT INTO `master_category` VALUES (1,'Manufacturing','Textile','Fibre',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(2,'Manufacturing','Textile','Nilon',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(3,'Technology','Software','AI',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(4,'Technology','Hardware','Semiconductors',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(5,'Healthcare','Pharmaceutical','Medicines',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(6,'Healthcare','Medical Devices','MRI Machines',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(7,'Finance','Banking','Loans',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(8,'Finance','Insurance','Health Insurance',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(9,'Education','Online Learning','E-Learning Platforms',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(10,'Retail','E-Commerce','Online Store',0,'2025-02-17 07:46:36','2025-03-07 05:59:00'),(11,'Food','Package','Bread',0,'2025-02-19 12:23:40','2025-03-07 05:59:00'),(12,'Technology','Software','ML',0,'2025-02-19 12:25:02','2025-03-07 05:59:00'),(19,'Finance','Investment','Stocks',0,'2025-03-07 06:03:36','2025-03-07 06:03:36'),(20,'Technology','IOT','Arduino',0,'2025-03-10 10:22:02','2025-03-10 10:22:02'),(21,'asddasd','asdssa','dasdas',1,'2025-03-10 10:35:08','2025-03-10 10:35:12');
 /*!40000 ALTER TABLE `master_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +75,7 @@ CREATE TABLE `master_customer` (
   UNIQUE KEY `customer_email` (`customer_email`),
   KEY `master_customer_ibfk_1` (`category_id`),
   CONSTRAINT `master_customer_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `master_category` (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,7 +84,7 @@ CREATE TABLE `master_customer` (
 
 LOCK TABLES `master_customer` WRITE;
 /*!40000 ALTER TABLE `master_customer` DISABLE KEYS */;
-INSERT INTO `master_customer` VALUES (1,'Customer1','a','a','a','a',1,'a','a','a','a','a',0,'2025-02-17 14:20:07','2025-02-26 09:34:18',1,0),(2,'Customer2','aa','aa','aa','aa',2,'a','a','a','a','a',0,'2025-02-17 14:21:22','2025-02-26 09:34:29',1,1),(4,'Customer3','ccc','c@gmail.com','4589856545','4589856545',1,'vv','vv','xs','kk','sasd',0,'2025-02-17 14:24:33','2025-02-26 09:34:29',1,1),(5,'Customr3 ','c','c','c','c',5,'c','c','c','c','c',0,'2025-02-20 05:29:09','2025-02-26 09:34:29',0,0),(6,'Ajit','','ajit@gmail.com','8545256540','555555',16,'Nashik','Maharashtra','411045','India','',0,'2025-02-20 09:27:58','2025-02-20 09:27:58',1,1);
+INSERT INTO `master_customer` VALUES (7,'Burger King','bk.com','bk@bk.com','1010101010','1010101010',11,'Pune','Maharashtra','411111','India','Making Burgers',0,'2025-03-07 06:00:09','2025-03-07 06:00:09',1,1),(8,'Suzlon','suzlone.com','suzlon@suzlon.com','2020202020','2020203030',3,'Dehi','Maharashtra','455555','India ','Ai related Work',0,'2025-03-07 06:01:38','2025-03-07 06:01:38',1,1),(9,'Esag','esag.com','esag@gmail.com','3030303030','6060606060',19,'Banglore','Karnataka','855665','India','Investment',0,'2025-03-07 06:04:19','2025-03-07 06:04:19',0,0),(10,'NRB','','nrb@gmail.com','8888888888','',2,'Mumbai','Maharashtra','400222','India','',0,'2025-03-10 07:11:38','2025-03-10 07:11:38',1,1),(11,'Blue Star','bs.com','bs@gmail.com','8888888888','',12,'Pune','Maharashtra','422222','India','BBB STAR',0,'2025-03-10 09:56:56','2025-03-10 09:56:56',1,1),(12,'Prominotech','promino.com','pr@gmail.com','5555555555','',3,'Pune','Mah','411045','India','SD Company',0,'2025-03-10 10:10:37','2025-03-10 10:10:37',0,1);
 /*!40000 ALTER TABLE `master_customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +102,7 @@ CREATE TABLE `master_department` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`department_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +111,7 @@ CREATE TABLE `master_department` (
 
 LOCK TABLES `master_department` WRITE;
 /*!40000 ALTER TABLE `master_department` DISABLE KEYS */;
-INSERT INTO `master_department` VALUES (1,'Service Delivery',0,'2025-02-18 05:24:13','2025-02-18 05:24:13'),(2,'Manager',1,'2025-02-18 05:25:05','2025-02-18 09:42:23'),(3,'IT',0,'2025-02-18 09:56:27','2025-02-18 09:56:27'),(4,'Manager',0,'2025-02-19 10:47:40','2025-02-19 10:47:40'),(5,'Developer',0,'2025-02-20 10:00:13','2025-02-20 10:00:13'),(6,'HR',1,'2025-02-20 11:53:44','2025-02-20 11:54:12');
+INSERT INTO `master_department` VALUES (1,'Service Delivery',0,'2025-02-18 05:24:13','2025-02-18 05:24:13'),(2,'Manager',0,'2025-02-18 05:25:05','2025-02-18 09:42:23'),(3,'IT',0,'2025-02-18 09:56:27','2025-02-18 09:56:27'),(5,'Developer',0,'2025-02-20 10:00:13','2025-02-20 10:00:13'),(6,'HR',0,'2025-02-20 11:53:44','2025-02-20 11:54:12'),(7,'APPLICATION',0,'2025-03-07 06:11:33','2025-03-07 06:11:33'),(8,'RMG',0,'2025-03-10 11:26:24','2025-03-10 11:26:24');
 /*!40000 ALTER TABLE `master_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `master_position` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`position_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `master_position` (
 
 LOCK TABLES `master_position` WRITE;
 /*!40000 ALTER TABLE `master_position` DISABLE KEYS */;
-INSERT INTO `master_position` VALUES (1,'Intern',0,'2025-02-18 05:30:28','2025-02-18 05:30:28'),(2,'WEB DEV',1,'2025-02-18 09:46:22','2025-02-18 09:46:32'),(3,'Full Stack Developer',0,'2025-02-20 10:04:10','2025-02-20 10:04:10');
+INSERT INTO `master_position` VALUES (4,'Angular Developer',0,'2025-03-07 06:11:56','2025-03-07 06:11:56'),(5,'Intern',0,'2025-03-07 07:24:56','2025-03-07 07:24:56');
 /*!40000 ALTER TABLE `master_position` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +175,7 @@ CREATE TABLE `master_project` (
   CONSTRAINT `master_project_ibfk_3` FOREIGN KEY (`type_of_engagement_id`) REFERENCES `master_type_of_engagement` (`type_of_engagement_id`),
   CONSTRAINT `master_project_ibfk_4` FOREIGN KEY (`project_manager_id`) REFERENCES `master_user` (`user_id`),
   CONSTRAINT `master_project_ibfk_5` FOREIGN KEY (`project_status_id`) REFERENCES `master_project_status` (`project_status_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +184,7 @@ CREATE TABLE `master_project` (
 
 LOCK TABLES `master_project` WRITE;
 /*!40000 ALTER TABLE `master_project` DISABLE KEYS */;
-INSERT INTO `master_project` VALUES (1,1,'C1 P1','2025-02-02','2025-02-28',1,1,1,1,'2025-02-28','OKOKOK',0,'2025-02-19 05:56:00','2025-02-19 08:30:26'),(2,6,'a','2025-02-04','2025-02-19',1,2,2,1,'2025-02-28','',0,'2025-02-20 12:42:25','2025-02-20 12:42:25'),(3,6,'Project 2','2025-02-01','2025-02-12',2,1,2,2,'2025-02-28','',0,'2025-02-28 06:55:33','2025-02-28 06:55:33');
+INSERT INTO `master_project` VALUES (4,7,'BK-ETL','2025-03-01','2025-03-03',2,1,7,1,'2025-03-31','ETL PROCESS',0,'2025-03-07 06:13:13','2025-03-07 06:13:13'),(5,8,'Revam','2025-03-08','2025-03-05',1,2,7,1,'2025-03-20','Re structure',0,'2025-03-07 06:14:02','2025-03-07 06:14:02'),(6,10,'Databricks + PBI','2024-12-02','2025-01-02',2,1,7,2,'2025-03-31','',0,'2025-03-10 07:14:03','2025-03-10 07:14:03');
 /*!40000 ALTER TABLE `master_project` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +208,7 @@ CREATE TABLE `master_project_deliverables` (
   KEY `project_id` (`project_id`),
   CONSTRAINT `master_project_deliverables_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `master_customer` (`customer_id`),
   CONSTRAINT `master_project_deliverables_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `master_project` (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +217,7 @@ CREATE TABLE `master_project_deliverables` (
 
 LOCK TABLES `master_project_deliverables` WRITE;
 /*!40000 ALTER TABLE `master_project_deliverables` DISABLE KEYS */;
-INSERT INTO `master_project_deliverables` VALUES (1,1,1,'deliverable 1',0,'2025-02-19 07:13:56','2025-02-19 07:13:56'),(2,1,2,'a prject del 1',0,'2025-02-28 07:03:44','2025-02-28 07:03:44');
+INSERT INTO `master_project_deliverables` VALUES (3,7,4,'RND Table',0,'2025-03-07 06:14:42','2025-03-07 06:14:42'),(4,7,4,'Vaidation',0,'2025-03-07 06:14:57','2025-03-07 06:14:57'),(5,8,5,'RND Project',0,'2025-03-07 06:15:15','2025-03-07 06:15:15'),(6,8,5,'Meetings',0,'2025-03-07 06:15:22','2025-03-07 06:15:22');
 /*!40000 ALTER TABLE `master_project_deliverables` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,7 +262,7 @@ CREATE TABLE `master_role` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,7 +271,7 @@ CREATE TABLE `master_role` (
 
 LOCK TABLES `master_role` WRITE;
 /*!40000 ALTER TABLE `master_role` DISABLE KEYS */;
-INSERT INTO `master_role` VALUES (1,'superadmin',0,'2025-02-18 06:25:18','2025-02-18 06:25:18'),(2,'admin',0,'2025-02-18 06:25:18','2025-02-18 06:25:18'),(3,'projectManager',0,'2025-03-04 04:29:39','2025-03-04 04:29:39');
+INSERT INTO `master_role` VALUES (1,'superadmin',0,'2025-02-18 06:25:18','2025-02-18 06:25:18'),(2,'admin',0,'2025-02-18 06:25:18','2025-02-18 06:25:18'),(3,'projectManager',0,'2025-03-04 04:29:39','2025-03-04 04:29:39'),(4,'employee',0,'2025-03-06 13:16:31','2025-03-06 13:16:31');
 /*!40000 ALTER TABLE `master_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,7 +291,7 @@ CREATE TABLE `master_skill` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`skill_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +300,7 @@ CREATE TABLE `master_skill` (
 
 LOCK TABLES `master_skill` WRITE;
 /*!40000 ALTER TABLE `master_skill` DISABLE KEYS */;
-INSERT INTO `master_skill` VALUES (1,'React','technical','ES6, Arrow',0,'2025-02-18 05:57:27','2025-02-18 05:57:27'),(2,'Angualr','soft-skill','aaa',1,'2025-02-18 09:54:06','2025-02-18 09:54:18'),(3,'Angular','technical','Angular ES6, Node',0,'2025-02-20 10:10:36','2025-02-20 10:10:36');
+INSERT INTO `master_skill` VALUES (4,'Angular','technical','ES6',0,'2025-03-07 06:12:12','2025-03-07 06:12:12');
 /*!40000 ALTER TABLE `master_skill` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -318,7 +318,7 @@ CREATE TABLE `master_task_category` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`task_cat_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,7 +327,7 @@ CREATE TABLE `master_task_category` (
 
 LOCK TABLES `master_task_category` WRITE;
 /*!40000 ALTER TABLE `master_task_category` DISABLE KEYS */;
-INSERT INTO `master_task_category` VALUES (1,'New Task',0,'2025-02-19 09:49:31','2025-02-19 09:49:31'),(2,'task 2',1,'2025-02-19 09:53:27','2025-02-19 09:53:56'),(3,'Task 2',0,'2025-02-20 11:26:32','2025-02-20 11:26:32'),(4,'aa',0,'2025-02-28 07:00:02','2025-02-28 07:00:02');
+INSERT INTO `master_task_category` VALUES (5,'Developement',0,'2025-03-07 06:15:39','2025-03-07 06:15:39'),(6,'RND',0,'2025-03-07 06:15:43','2025-03-07 06:15:43'),(7,'Maintenance',0,'2025-03-07 06:15:57','2025-03-07 06:15:57'),(8,'Support',0,'2025-03-07 06:16:02','2025-03-07 06:16:02');
 /*!40000 ALTER TABLE `master_task_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -422,7 +422,7 @@ CREATE TABLE `master_user` (
   KEY `department_id` (`department_id`),
   CONSTRAINT `master_user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `master_role` (`role_id`),
   CONSTRAINT `master_user_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `master_department` (`department_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +431,7 @@ CREATE TABLE `master_user` (
 
 LOCK TABLES `master_user` WRITE;
 /*!40000 ALTER TABLE `master_user` DISABLE KEYS */;
-INSERT INTO `master_user` VALUES (1,'44','Ajit','Navnath','Jadhav','ajitjadhav30april@gmail.com','555',0,NULL,'Baner, Pune','4898589858','4898589858','2001-07-08','AB+','2025-02-17',1,1,0,'2025-02-18 07:22:01','2025-02-26 10:53:03',NULL,NULL),(2,'45','Abhi','sac','Joshi','ab@gmail.com','',1,'2028-12-18','Pune','4444','4444','2002-01-01','A+','2025-02-10',1,1,0,'2025-02-18 10:28:40','2025-02-18 10:28:40',NULL,NULL),(3,'444','Mayur','','Dighe ','m@gmail.com','',0,NULL,'','5289546856','5256485952','2025-02-13','O-','2025-02-21',2,1,0,'2025-02-20 10:58:27','2025-02-20 10:58:27',NULL,NULL),(4,'4444','Jon','','Don','s@gmail.com','',1,'2025-02-27','','8888888888','7777777777','2025-02-04','AB-','2025-02-11',1,3,0,'2025-02-20 11:01:47','2025-02-20 11:01:47',NULL,NULL),(5,'21','Project','','Manager 1','manager@gmail.com','123',0,NULL,'Pune','5656565656','6565656565','2019-12-30','A+','2025-02-01',3,4,0,'2025-03-04 05:22:52','2025-03-04 05:25:16',NULL,NULL);
+INSERT INTO `master_user` VALUES (6,'01','Ajit','Navnath','Jadhav','ajit30april@gmail.com','123',0,NULL,'Pune','1010101010','1010100101','2001-07-08','AB+','2025-03-01',1,5,0,'2025-03-07 05:55:39','2025-03-07 05:55:39',NULL,NULL),(7,'02','Chaitanya','','Chandgude','chaitanya@gmail.com','123',0,NULL,'Pune','4040506050','1020305056','2005-01-04','AB+','2025-03-01',3,2,0,'2025-03-07 06:10:17','2025-03-07 06:10:17',NULL,NULL),(8,'03','Devang','','Kolhe','deva@gmail.com','123',0,NULL,'Pune','8585858585','8585858588','2003-01-01','B-','2025-03-01',4,5,0,'2025-03-07 07:23:39','2025-03-07 07:23:39',NULL,NULL);
 /*!40000 ALTER TABLE `master_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -493,8 +493,10 @@ CREATE TABLE `trans_project_team` (
   `project_manager_id` int DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `allocation_status` varchar(50) DEFAULT NULL,
+  `allocation_status` tinyint(1) DEFAULT NULL,
   `allocation_percentage` int DEFAULT NULL,
+  `billed_status` tinyint(1) DEFAULT '0',
+  `billing_percentage` int DEFAULT NULL,
   `is_deleted` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -509,7 +511,7 @@ CREATE TABLE `trans_project_team` (
   CONSTRAINT `trans_project_team_ibfk_3` FOREIGN KEY (`employee_id`) REFERENCES `master_user` (`user_id`),
   CONSTRAINT `trans_project_team_ibfk_4` FOREIGN KEY (`project_role_id`) REFERENCES `master_position` (`position_id`),
   CONSTRAINT `trans_project_team_ibfk_5` FOREIGN KEY (`project_manager_id`) REFERENCES `master_user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -518,7 +520,7 @@ CREATE TABLE `trans_project_team` (
 
 LOCK TABLES `trans_project_team` WRITE;
 /*!40000 ALTER TABLE `trans_project_team` DISABLE KEYS */;
-INSERT INTO `trans_project_team` VALUES (1,6,3,4,3,5,'2025-03-02','2025-03-29','Employee',100,1,'2025-03-04 12:46:26','2025-03-05 05:32:21'),(2,1,1,2,1,5,'2025-03-01','2025-03-29','Employee',60,0,'2025-03-05 06:46:15','2025-03-05 06:46:15'),(3,6,3,3,1,4,'2025-03-01','2025-03-29','Employee',40,0,'2025-03-05 06:47:53','2025-03-05 06:47:53'),(4,6,3,2,3,4,'2025-03-01','2025-03-29','Employee',30,0,'2025-03-05 07:06:55','2025-03-05 07:06:55'),(5,1,1,3,1,5,'2025-03-01','2025-03-30','Shadow',60,0,'2025-03-05 07:30:34','2025-03-05 07:30:34'),(6,1,1,2,3,4,'2025-03-01','2025-03-30','Shadow',10,1,'2025-03-05 09:27:57','2025-03-05 09:30:05'),(7,1,1,2,1,4,'2025-03-01','2025-03-29','Employee',10,1,'2025-03-05 09:31:09','2025-03-05 10:18:29'),(8,1,1,2,1,5,'2025-03-01','2025-03-29','Shadow',10,1,'2025-03-05 10:19:26','2025-03-05 10:26:04');
+INSERT INTO `trans_project_team` VALUES (15,7,4,6,4,7,'2025-03-01','2025-03-30',1,100,1,100,1,'2025-03-07 06:16:43','2025-03-10 07:04:16'),(16,8,5,8,5,7,'2025-03-01','2025-03-21',1,50,1,50,1,'2025-03-07 07:25:31','2025-03-10 07:53:01'),(17,7,4,8,5,7,'2025-03-01','2025-03-15',1,30,1,100,0,'2025-03-10 07:05:38','2025-03-10 07:05:38');
 /*!40000 ALTER TABLE `trans_project_team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -552,7 +554,6 @@ CREATE TABLE `trans_reporting_manager_history` (
 
 LOCK TABLES `trans_reporting_manager_history` WRITE;
 /*!40000 ALTER TABLE `trans_reporting_manager_history` DISABLE KEYS */;
-INSERT INTO `trans_reporting_manager_history` VALUES (1,1,2,'2025-02-19','2025-02-19',0,'2025-02-18 12:33:05','2025-02-18 14:03:59');
 /*!40000 ALTER TABLE `trans_reporting_manager_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -583,7 +584,7 @@ CREATE TABLE `trans_timesheet` (
   CONSTRAINT `fk_task_category` FOREIGN KEY (`task_cat_id`) REFERENCES `master_task_category` (`task_cat_id`) ON DELETE CASCADE,
   CONSTRAINT `trans_timesheet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `master_user` (`user_id`),
   CONSTRAINT `trans_timesheet_ibfk_2` FOREIGN KEY (`pd_id`) REFERENCES `master_project_deliverables` (`pd_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -592,7 +593,7 @@ CREATE TABLE `trans_timesheet` (
 
 LOCK TABLES `trans_timesheet` WRITE;
 /*!40000 ALTER TABLE `trans_timesheet` DISABLE KEYS */;
-INSERT INTO `trans_timesheet` VALUES (1,'2025-02-25',1,1,1,'25 - 1',13,30,1,0,'2025-02-28 07:06:54','2025-02-28 07:06:54'),(2,'2025-02-25',1,1,3,'25 - 2',13,45,1,0,'2025-02-28 07:07:22','2025-02-28 07:07:22'),(3,'2025-02-25',1,2,4,'25-3',14,30,1,0,'2025-02-28 07:07:49','2025-02-28 07:07:49'),(4,'2025-02-28',1,2,3,'28  - 2',7,30,1,0,'2025-02-28 07:08:14','2025-02-28 07:08:14'),(5,'2025-02-28',1,2,3,'28-2',15,30,1,0,'2025-02-28 07:08:38','2025-02-28 07:08:38'),(6,'2025-02-28',1,1,1,'ADADS',10,15,0,0,'2025-02-28 09:18:58','2025-02-28 09:18:58'),(7,'2025-03-02',1,2,3,'asc',12,15,1,0,'2025-03-03 05:26:50','2025-03-03 05:26:50'),(8,'2025-03-03',1,2,1,'aaaa',11,15,1,0,'2025-03-03 06:35:50','2025-03-03 06:35:50'),(9,'2025-03-03',1,1,4,'aaaa',7,30,1,1,'2025-03-03 06:48:03','2025-03-03 06:50:21'),(10,'2025-03-02',1,1,1,'asdasd',11,15,1,0,'2025-03-03 06:49:46','2025-03-03 06:49:46'),(11,'2025-03-03',1,2,3,'OK',2,30,1,0,'2025-03-03 09:40:45','2025-03-03 09:40:45'),(12,'2025-03-03',1,2,1,'OK',8,30,1,0,'2025-03-03 09:53:03','2025-03-03 09:53:03'),(13,'2025-03-04',1,2,3,'OK',11,30,1,0,'2025-03-04 05:06:14','2025-03-04 05:06:14');
+INSERT INTO `trans_timesheet` VALUES (16,'2025-03-07',6,3,6,'DONE RND',2,30,1,0,'2025-03-07 06:18:15','2025-03-07 06:18:15');
 /*!40000 ALTER TABLE `trans_timesheet` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -605,4 +606,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-05 16:16:51
+-- Dump completed on 2025-03-12  9:18:26
