@@ -18,6 +18,8 @@ export class CustomerComponent {
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.selectedSection = 'customer';
+    localStorage.setItem('selectedCustomerSection', 'customer');
   // Load section from localStorage
   this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
 

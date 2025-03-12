@@ -16,7 +16,9 @@ export class EmployeeComponent {
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
-
+    this.selectedSection = 'employee';
+    localStorage.setItem('selectedEmployeeSection', 'employee');
+  
     // Load section from localStorage
     this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
 

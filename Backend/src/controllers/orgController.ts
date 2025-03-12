@@ -612,8 +612,9 @@ class OrgController {
             u.user_blood_group, 
             u.user_DOJ 
         FROM master_user u
-        LEFT JOIN master_role r ON u.role_id = r.role_id
-        LEFT JOIN master_department d ON u.department_id = d.department_id
+        LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
+        LEFT JOIN master_role r ON tud.role_id = r.role_id
+        LEFT JOIN master_department d ON tud.department_id = d.department_id
         WHERE u.is_deleted = 0
         ORDER BY u.user_id DESC 
     `; // Explicitly mention each column name

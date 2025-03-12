@@ -10,7 +10,18 @@ class AuthController {
     const { email, password } = req.body;
 
     try {
-      const query = 'SELECT * FROM master_user WHERE user_email = ? AND is_deleted = 0';
+      const query = `
+            SELECT 
+                mu.user_id,
+                mu.user_first_name,
+                mu.user_last_name,
+                mu.user_email,
+                mu.user_password,
+                tud.role_id
+                FROM master_user mu
+            LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
+            WHERE mu.user_email = ? AND mu.is_deleted = 0
+        `;
       db.query(query, [email], (err, results: any[]) => {
         if (err) {
           res.status(500).json({ message: 'Server error' });
@@ -23,6 +34,11 @@ class AuthController {
         }
 
         const user = results[0];
+        // Check if role_id is NULL (role not assigned)
+        if (user.role_id === null) {
+          res.status(403).json({ message: 'Please assign a role before logging in.' });
+          return;
+      }
 
         // Compare plain passwords directly
         if (password !== user.user_password) {
@@ -38,8 +54,9 @@ class AuthController {
             user_id: user.user_id,
             first_name: user.user_first_name,
             last_name: user.user_last_name,
-            role_id: user.role_id,
-            email: user.user_email
+            email: user.user_email,
+            role_id: user.role_id // Now fetched from trans_user_details
+
           }
         });
       });

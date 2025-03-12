@@ -39,6 +39,9 @@ filterProjects(): void {
 
   ngOnInit(): void {
 
+    this.selectedSection = 'project';
+    localStorage.setItem('selectedProjectSection', 'project');
+
     this.selectedSection = localStorage.getItem('selectedProjectSection') || 'project';
 
     // Listen for changes (e.g., when clicking Project Deliverable)
