@@ -15,7 +15,7 @@
 
 
     <!-- Employee Section -->
-    <div *ngIf="selectedSection === 'employee'">
+    <div *ngIf="selectedSection === 'employee'" >
         <h3 class="text-xl font-semibold mb-4">Add New Employee</h3>
 
 
@@ -201,10 +201,13 @@
             </div>
             <!-- Submit Button -->
             <div class="mt-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Employee</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Save Employee</button>
             </div>
 
         </form>
+        <div class="rounded-lg w-full overflow-x-auto">
+        <div class="rounded-lg w-full inline-block whitespace-nowrap">
+
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
@@ -250,7 +253,7 @@
                 </tr>
             </tbody>
         </table>
-
+        </div></div>
 
 
         <!-- Assign Details Modal -->
@@ -385,7 +388,8 @@
             </div>
         </form>
 
-
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="rounded-lg w-full inline-block whitespace-nowrap">
         <table class="w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
@@ -405,6 +409,7 @@
                 </tr>
             </tbody>
         </table>
+        </div></div>
     </div>
 
     <!-- Position Section -->
@@ -436,7 +441,9 @@
         </form>
 
 
-
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="rounded-lg w-full inline-block whitespace-nowrap">
+    
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
                 <tr class="bg-gray-100">
@@ -456,6 +463,7 @@
                 </tr>
             </tbody>
         </table>
+        </div></div>
     </div>
 
     <!-- Skills Section -->
@@ -513,6 +521,9 @@
         </form>
 
 
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="rounded-lg w-full inline-block whitespace-nowrap">
+    
         <!-- Skills Table -->
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
@@ -538,6 +549,7 @@
                 </tr>
             </tbody>
         </table>
+        </div></div>
 
     </div>
 
@@ -623,7 +635,9 @@
             </div>
         </form>
 
-
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="rounded-lg w-full inline-block whitespace-nowrap">
+    
         <!-- Reporting Manager History Table -->
         <table class="w-full border-collapse border border-gray-300 mt-4">
             <thead>
@@ -651,5 +665,6 @@
                 </tr>
             </tbody>
         </table>
+        </div></div>
     </div>
 </div>
