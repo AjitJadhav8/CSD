@@ -101,6 +101,12 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/employee/${employeeId}`);
   }
 
+  // ------------------ Role ------------------------
+
+  addAssignDetails(assignDetails: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/assign-details`, assignDetails);
+  }
+
   // ------------------ Reporting manager history ------------------------
 
   addReportingManagerHistory(payload: any): Observable<any> {

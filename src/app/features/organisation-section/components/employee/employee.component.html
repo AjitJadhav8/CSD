@@ -106,37 +106,6 @@
                     </span>
                 </div>
 
-                <!-- <div class="form-group">
-                    <label>Role*</label>
-                    <select [(ngModel)]="employee.role_id" #role="ngModel" name="role" required
-                        class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (role.invalid && role.touched) || (employeeForm.submitted && role.invalid)}">
-                        <option value="" disabled selected>Select Role</option>
-                        <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
-                        </option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(role.invalid && role.touched) || (employeeForm.submitted && role.invalid)">
-                        Role is required
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Department*</label>
-                    <select [(ngModel)]="employee.department_id" #department="ngModel" name="department" required
-                        class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (department.invalid && department.touched) || (employeeForm.submitted && department.invalid)}">
-                        <option value="" disabled selected>Select Department</option>
-                        <option *ngFor="let department of optionDepartments" [value]="department.department_id">
-                            {{ department.department_name }}
-                        </option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(department.invalid && department.touched) || (employeeForm.submitted && department.invalid)">
-                        Department is required
-                    </span>
-                </div> -->
-
                 <!-- Passport Yes/No -->
                 <div class="form-group">
                     <label class="block font-semibold">Do you have a passport?</label>
@@ -189,7 +158,8 @@
                 <div class="form-group">
                     <label>Blood Group*</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="employee.user_blood_group"
-                        #userBloodGroup="ngModel" name="user_blood_group" list="bloodGroupList" required
+                        #userBloodGroup="ngModel" name="user_blood_group" list="bloodGroupList" required         pattern="A\+|A-|B\+|B-|AB\+|AB-|O\+|O-|RH\+|RH-"
+
                         [ngClass]="{'border-red-500': (userBloodGroup.invalid && userBloodGroup.touched) || (employeeForm.submitted && userBloodGroup.invalid)}"
                         placeholder="Select or type blood group">
 
@@ -294,63 +264,94 @@
                 </div>
 
                 <div class="mt-4">
-                    <form>
+                    <form #assignDetailsForm="ngForm" (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()">
                         <div class="grid grid-cols-2 gap-4">
-
-                            <div><label>Reporting Manager*</label><select required class="border p-2 w-full">
-                                    <option>Select Reporting Manager</option>
-                                </select></div>
-                            <div><label>Employee Designation*</label><select required class="border p-2 w-full">
-                                    <option>Select Position</option>
-                                </select></div>
-
-                            <div><label>Timesheet Filling Required ?*</label><select required class="border p-2 w-full">
-                                    <option value="">Select Option</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select></div>
-
-                                <div class="form-group">
-                                    <label>Role*</label>
-                                    <select [(ngModel)]="employee.role_id" #role="ngModel" name="role" required
-                                        class="border p-2 w-full rounded-md"
-                                        [ngClass]="{'border-red-500': (role.invalid && role.touched) || (employeeForm.submitted && role.invalid)}">
-                                        <option value="" disabled selected>Select Role</option>
-                                        <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
-                                        </option>
-                                    </select>
-                                    <span class="text-red-500 text-sm"
-                                        *ngIf="(role.invalid && role.touched) || (employeeForm.submitted && role.invalid)">
-                                        Role is required
-                                    </span>
-                                </div>
-                
-                                <!-- Department -->
-                                <div class="form-group">
-                                    <label>Department*</label>
-                                    <select [(ngModel)]="employee.department_id" #department="ngModel" name="department" required
-                                        class="border p-2 w-full rounded-md"
-                                        [ngClass]="{'border-red-500': (department.invalid && department.touched) || (employeeForm.submitted && department.invalid)}">
-                                        <option value="" disabled selected>Select Department</option>
-                                        <option *ngFor="let department of optionDepartments" [value]="department.department_id">
-                                            {{ department.department_name }}
-                                        </option>
-                                    </select>
-                                    <span class="text-red-500 text-sm"
-                                        *ngIf="(department.invalid && department.touched) || (employeeForm.submitted && department.invalid)">
-                                        Department is required
-                                    </span>
-                                </div>
-                
-                 
-
+                            <div class="form-group">
+                                <label>Reporting Manager*</label>
+                                <select [(ngModel)]="assignDetailsData.reporting_manager_id" #reportingManager="ngModel"
+                                    name="reporting_manager_id" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (reportingManager.invalid && reportingManager.touched) || (assignDetailsForm.submitted && reportingManager.invalid)}">
+                                    <option value="" disabled selected>Select Reporting Manager</option>
+                                    <option *ngFor="let manager of optionUsers" [value]="manager.user_id">
+                                        {{ manager.user_first_name }} {{ manager.user_last_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(reportingManager.invalid && reportingManager.touched) || (assignDetailsForm.submitted && reportingManager.invalid)">
+                                    Reporting Manager is required
+                                </span>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Employee Designation*</label>
+                                <select [(ngModel)]="assignDetailsData.designation_id" #designation="ngModel"
+                                    name="designation_id" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (designation.invalid && designation.touched) || (assignDetailsForm.submitted && designation.invalid)}">
+                                    <option value="" disabled selected>Select Position</option>
+                                    <option *ngFor="let designation of optionPositionName" [value]="designation.designation_id">
+                                        {{ designation.position_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(designation.invalid && designation.touched) || (assignDetailsForm.submitted && designation.invalid)">
+                                    Designation is required
+                                </span>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Timesheet Filling Required ?*</label>
+                                <select [(ngModel)]="assignDetailsData.is_timesheet_required" #timesheetRequired="ngModel"
+                                    name="is_timesheet_required" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (timesheetRequired.invalid && timesheetRequired.touched) || (assignDetailsForm.submitted && timesheetRequired.invalid)}">
+                                    <option value="" disabled selected>Select Option</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(timesheetRequired.invalid && timesheetRequired.touched) || (assignDetailsForm.submitted && timesheetRequired.invalid)">
+                                    Timesheet requirement is required
+                                </span>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Role*</label>
+                                <select [(ngModel)]="assignDetailsData.role_id" #role="ngModel" name="role_id" required
+                                    class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (role.invalid && role.touched) || (assignDetailsForm.submitted && role.invalid)}">
+                                    <option value="" disabled selected>Select Role</option>
+                                    <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(role.invalid && role.touched) || (assignDetailsForm.submitted && role.invalid)">
+                                    Role is required
+                                </span>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Department*</label>
+                                <select [(ngModel)]="assignDetailsData.department_id" #department="ngModel"
+                                    name="department_id" required class="border p-2 w-full rounded-md"
+                                    [ngClass]="{'border-red-500': (department.invalid && department.touched) || (assignDetailsForm.submitted && department.invalid)}">
+                                    <option value="" disabled selected>Select Department</option>
+                                    <option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                                        {{ department.department_name }}
+                                    </option>
+                                </select>
+                                <span class="text-red-500 text-sm"
+                                    *ngIf="(department.invalid && department.touched) || (assignDetailsForm.submitted && department.invalid)">
+                                    Department is required
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-center">
+                            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Assign Details</button>
                         </div>
                     </form>
+
                 </div>
 
-                <div class="mt-4 flex justify-center">
-                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Save</button>
-                </div>
+                
             </div>
         </div>
 

@@ -35,6 +35,8 @@ export class EmployeeComponent {
         this.optioRoles = response.roles;
         this.optionDepartments = response.departments;
         this.optionUsers = response.users;  // Store user data
+        this.optionPositionName = response.positions;  // Store position data
+
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
@@ -58,6 +60,8 @@ export class EmployeeComponent {
   optioRoles: any[] = [];
   optionUsers: any[] = [];
   optionDepartments: any[] = [];
+  optionPositionName: any[] = [];
+
 
   // ------------------ Department ------------------------
 
@@ -346,6 +350,7 @@ export class EmployeeComponent {
 
   // ------------------ Employee ------------------------
 
+
   employee = {
     selectedUserId: null,   // For selected employee
     selectedReportingManagerId: null, // For selected reporting manager
@@ -415,7 +420,6 @@ export class EmployeeComponent {
     );
   }
 
-
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
       console.error('Employee ID is undefined!');
@@ -455,6 +459,93 @@ export class EmployeeComponent {
       }
     });
   }
+  reportingManagers: any[] = [];
+  designations: any[] = [];
+  assignDetailsData = {
+    user_id: null as number | null, // Allow both number and null
+    reporting_manager_id: null,
+    designation_id: null,
+    is_timesheet_required: null,
+    role_id: null,
+    department_id: null
+  };
+  
+  assignDetails(employee: any): void {
+    console.log('Setting user_id:', employee.user_id);
+    this.assignDetailsData.user_id = employee.user_id; // Set the user_id
+    this.showAssignDetailsModal = true;
+    console.log('assignDetailsData:', this.assignDetailsData);
+}
+
+ 
+  
+submitAssignDetails(assignDetailsForm: NgForm): void {
+  console.log('Submitting assignDetailsData:', this.assignDetailsData);
+
+  // Validate the form
+  if (assignDetailsForm.invalid) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please fill all required fields correctly!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Ensure user_id is present
+  if (!this.assignDetailsData.user_id) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'User ID is required!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Send data to the backend
+  this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
+      (response) => {
+          console.log('Details assigned successfully!', response);
+          this.fetchEmployees();
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Details assigned successfully!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+          this.showAssignDetailsModal = false;
+          assignDetailsForm.resetForm();
+      },
+      (error) => {
+          console.error('Error assigning details:', error);
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to assign details. Please try again.',
+              toast: true,
+              position: 'top-end',
+              timer: 3000,
+              showConfirmButton: false
+          });
+      }
+  );
+}
+  showAssignDetailsModal: boolean = false;
+
+  toggleAssignDetailsModal() {
+    this.showAssignDetailsModal = !this.showAssignDetailsModal;
+  }
+
 
 
   // ------------------ Reporting Manager  ------------------------
@@ -567,14 +658,7 @@ export class EmployeeComponent {
 
 
   selectedEmployee: any;
-  showAssignDetailsModal: boolean = false;
-  assignDetails(employee: any) {
-    this.selectedEmployee = employee;
-    this.toggleAssignDetailsModal();
-  }
-  toggleAssignDetailsModal() {
-    this.showAssignDetailsModal = !this.showAssignDetailsModal;
-  }
+
 
   selectedSection: string = 'employee';
 

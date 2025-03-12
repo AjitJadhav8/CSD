@@ -57,6 +57,9 @@ router.post('/employee', orgController.addEmployee);
 router.get('/employees', orgController.getAllEmployees);
 router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
 
+router.post('/assign-details', orgController.assignDetails);
+
+
 // ---- Reporting Manager History --------
 
 router.post('/reporting-manager-history', orgController.addReportingManagerHistory);
