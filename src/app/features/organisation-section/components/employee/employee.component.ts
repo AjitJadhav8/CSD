@@ -508,11 +508,37 @@ deleteDesignation(designationId: number): void {
   }
 
   assignDetails(employee: any): void {
-    this.assignDetailsData.user_id = employee.user_id;
-    this.assignDetailsData.user_first_name = employee.user_first_name;
-    this.assignDetailsData.user_last_name = employee.user_last_name;
-    this.showAssignDetailsModal = true;
-  }
+    // Fetch employee details from the backend
+    this.dataService.getEmployeeDetails(employee.user_id).subscribe(
+        (data) => {
+            // Populate assignDetailsData with the fetched data
+            this.assignDetailsData = {
+                user_id: data.user_id,
+                user_first_name: data.user_first_name,
+                user_last_name: data.user_last_name,
+                user_emergency_contact: data.user_emergency_contact || '',
+                is_passport: data.is_passport || null,
+                passport_validity: data.passport_validity || null,
+                user_current_address: data.user_current_address || '',
+                user_DOB: data.user_DOB || null,
+                user_blood_group: data.user_blood_group || '',
+                user_DOJ: data.user_DOJ || null,
+                reporting_manager_id: data.reporting_manager_id || null,
+                designation_id: data.designation_id || null,
+                is_timesheet_required: data.is_timesheet_required || null,
+                department_id: data.department_id || null,
+                role_id: data.role_id || null
+            };
+            console.log('assssign', this.assignDetailsData);
+
+            // Show the modal
+            this.showAssignDetailsModal = true;
+        },
+        (error) => {
+            console.error('Error fetching employee details:', error);
+        }
+    );
+}
 
   submitAssignDetails(assignDetailsForm: NgForm): void {
     if (assignDetailsForm.invalid) {

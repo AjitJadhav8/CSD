@@ -121,6 +121,9 @@ export class DataService {
     return this.http.post(`${this.apiUrl}/api/assign-details`, assignDetails);
   }
 
+  getEmployeeDetails(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/employees/${userId}`);
+}
   // ------------------ Reporting manager history ------------------------
 
   addReportingManagerHistory(payload: any): Observable<any> {

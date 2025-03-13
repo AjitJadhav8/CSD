@@ -56,14 +56,14 @@ router.delete('/skills/:skillId', orgController.softDeleteSkill);
 // Route to fetch roles and departments
 
 
-// ---- Category --------
+// ---- employee --------
 
 router.post('/employee', orgController.addEmployee);
 router.get('/employees', orgController.getAllEmployees);
 router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
 
 router.post('/assign-details', orgController.assignDetails);
-
+router.get('/employees/:userId', orgController.getEmployeeDetails);
 
 // ---- Reporting Manager History --------
 

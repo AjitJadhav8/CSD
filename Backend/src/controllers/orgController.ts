@@ -821,7 +821,41 @@ class OrgController {
         }
     }
 
-
+    async getEmployeeDetails(req: Request, res: Response): Promise<void> {
+        try {
+            const { userId } = req.params;
+    
+            // Query to fetch employee details from master_user and trans_user_details
+            const query = `
+                SELECT 
+                    mu.user_id, mu.user_first_name, mu.user_last_name, 
+                    mu.user_emergency_contact, mu.is_passport, mu.passport_validity, 
+                    mu.user_current_address, mu.user_DOB, mu.user_blood_group, mu.user_DOJ,
+                    tud.role_id, tud.department_id, tud.is_timesheet_required, tud.reporting_manager_id
+                FROM master_user mu
+                LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
+                WHERE mu.user_id = ?
+            `;
+    
+            // Execute the query
+            db.query(query, [userId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error fetching employee details:', err);
+                    return res.status(500).json({ error: 'Error fetching employee details' });
+                }
+    
+                if (result.length === 0) {
+                    return res.status(404).json({ error: 'Employee not found' });
+                }
+    
+                // Return the employee details
+                res.status(200).json(result[0]);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
     
     
