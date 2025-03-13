@@ -635,48 +635,126 @@ class OrgController {
 
     // ---- Employee --------
 
-        async addEmployee(req: Request, res: Response): Promise<void> {
-            try {
-                const {
-                    user_code, user_first_name, user_middle_name, user_last_name,
-                    user_email, user_contact, user_emergency_contact,
-                    is_passport, passport_validity, user_current_address, user_DOB,
-                    user_blood_group, user_DOJ, user_password
-                } = req.body;
-
-                const password = user_password ? user_password : '123';
-
-                // SQL query to insert the new employee into the database
-                const query = `
-                    INSERT INTO master_user (
-                        user_code, user_first_name, user_middle_name, user_last_name, 
-                        user_email, user_contact, user_emergency_contact, 
-                        is_passport, passport_validity, user_current_address, user_DOB, 
-                        user_blood_group, user_DOJ, user_password
-                    ) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `;
-
-                const values = [
-                    user_code, user_first_name, user_middle_name, user_last_name,
-                    user_email, user_contact, user_emergency_contact,
-                    is_passport, passport_validity, user_current_address, user_DOB,
-                    user_blood_group, user_DOJ, password
-                ];
-
-                // Insert the data into the database
-                db.query(query, values, (err: any, result: any) => {
-                    if (err) {
-                        console.error('Error saving employee:', err);
-                        return res.status(500).json({ error: 'Error saving employee' });
-                    }
-                    res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
+    async addEmployee(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                user_code, user_first_name, user_middle_name, user_last_name,
+                user_email, user_contact, user_password
+            } = req.body;
+    
+            // Default password if not provided
+            const password = user_password ? user_password : '123';
+    
+            // SQL query to insert the new employee into the database
+            const query = `
+                INSERT INTO master_user (
+                    user_code, user_first_name, user_middle_name, user_last_name, 
+                    user_email, user_contact, user_password
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `;
+    
+            const values = [
+                user_code, user_first_name, user_middle_name, user_last_name,
+                user_email, user_contact, password
+            ];
+    
+            // Insert the data into the database
+            db.query(query, values, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error saving employee:', err);
+                    return res.status(500).json({ error: 'Error saving employee' });
+                }
+                res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
+    async assignDetails(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                user_id,
+                user_emergency_contact,
+                is_passport,
+                passport_validity,
+                user_current_address,
+                user_DOB,
+                user_blood_group,
+                user_DOJ,
+                role_id,
+                department_id,
+                is_timesheet_required,
+                reporting_manager_id
+            } = req.body;
+    
+            // Validate required fields
+            if (!user_id) {
+                res.status(400).json({ error: "User ID is required" });
+                return;
+            }
+    
+            // Update master_user table with personal details
+            const updateMasterUserQuery = `
+                UPDATE master_user
+                SET 
+                    user_emergency_contact = ?,
+                    is_passport = ?,
+                    passport_validity = ?,
+                    user_current_address = ?,
+                    user_DOB = ?,
+                    user_blood_group = ?,
+                    user_DOJ = ?
+                WHERE user_id = ?
+            `;
+    
+            const masterUserValues = [
+                user_emergency_contact,
+                is_passport,
+                passport_validity,
+                user_current_address,
+                user_DOB,
+                user_blood_group,
+                user_DOJ,
+                user_id
+            ];
+    
+            // Execute the update query for master_user
+            db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
+                if (err) {
+                    console.error("Error updating master_user:", err);
+                    res.status(500).json({ error: "Error updating employee details" });
+                    return;
+                }
+    
+                // Insert organizational and application-related details into trans_user_details
+                const insertTransUserDetailsQuery = `
+                    INSERT INTO trans_user_details (
+                        user_id, role_id, department_id, is_timesheet_required, reporting_manager_id
+                    )
+                    VALUES (?, ?, ?, ?, ?)
+                `;
+    
+                const transUserDetailsValues = [
+                    user_id, role_id, department_id, is_timesheet_required, reporting_manager_id
+                ];
+    
+                // Execute the insert query for trans_user_details
+                db.query(insertTransUserDetailsQuery, transUserDetailsValues, (err: any, result: any) => {
+                    if (err) {
+                        console.error("Error assigning details:", err);
+                        res.status(500).json({ error: "Error assigning details" });
+                        return;
+                    }
+                    res.status(200).json({ message: "Details assigned successfully" });
+                });
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
 
     async getAllEmployees(req: Request, res: Response): Promise<void> {
         try {
@@ -745,37 +823,7 @@ class OrgController {
 
 
 
-    async assignDetails(req: Request, res: Response): Promise<void> {
-        try {
-            const { user_id, role_id, department_id, is_timesheet_required, reporting_manager_id } = req.body;
     
-            // Validate required fields
-            if (!user_id || !role_id || !department_id || is_timesheet_required === null || !reporting_manager_id) {
-                res.status(400).json({ error: "All fields are required" });
-                return;
-            }
-    
-            const query = `
-                INSERT INTO trans_user_details (user_id, role_id, department_id, is_timesheet_required, reporting_manager_id)
-                VALUES (?, ?, ?, ?, ?)
-            `;
-    
-            const values = [user_id, role_id, department_id, is_timesheet_required, reporting_manager_id];
-    
-            // Execute the query
-            db.query(query, values, (err: any, result: any) => {
-                if (err) {
-                    console.error("Error assigning details:", err);
-                    res.status(500).json({ error: "Error assigning details" });
-                    return;
-                }
-                res.status(200).json({ message: "Details assigned successfully" });
-            });
-        } catch (error) {
-            console.error("Error:", error);
-            res.status(500).json({ error: "Internal Server Error" });
-        }
-    }
     
     
 

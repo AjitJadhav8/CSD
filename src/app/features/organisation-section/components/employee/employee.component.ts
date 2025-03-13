@@ -443,37 +443,35 @@ deleteDesignation(designationId: number): void {
 
 
   employee = {
-    selectedUserId: null,   // For selected employee
-    selectedReportingManagerId: null, // For selected reporting manager
-    user_id: null,  // Add user_id here
-    user_code: '',
     user_first_name: '',
     user_middle_name: '',
     user_last_name: '',
     user_email: '',
     user_contact: '',
+    selectedUserId: null, // Add this property
+    user_code:'',
+  selectedReportingManagerId: null // Add this property
+  };
+  reportingManagers: any[] = [];
+  assignDetailsData = {
+    user_id: null,
+    user_first_name: '', // Add this property
+    user_last_name: '',  // Add this property
     user_emergency_contact: '',
-    role_id: null,
-    department_id: null,
     is_passport: null,
     passport_validity: null,
     user_current_address: '',
     user_DOB: null,
     user_blood_group: '',
-    user_DOJ: null
+    user_DOJ: null,
+    reporting_manager_id: null,
+    designation_id: null,
+    is_timesheet_required: null,
+    department_id: null,
+    role_id: null
   };
   employees: any[] = [];
-
-  fetchEmployees(): void {
-    this.dataService.getAllEmployees().subscribe(
-      (data) => {
-        this.employees = data;
-      },
-      (error) => {
-        console.error('Error fetching employees:', error);
-      }
-    );
-  }
+  activeTab: 'personal' | 'organizational' | 'application' = 'personal';
 
   submitEmployee(employeeForm: NgForm): void {
     if (employeeForm.invalid) {
@@ -486,14 +484,13 @@ deleteDesignation(designationId: number): void {
         timer: 3000,
         showConfirmButton: false
       });
-      return; // Stop execution if form is invalid
+      return;
     }
 
     this.dataService.addEmployee(this.employee).subscribe(
       (response) => {
         console.log('Employee saved successfully!', response);
         this.fetchEmployees();
-        // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
@@ -503,13 +500,75 @@ deleteDesignation(designationId: number): void {
           timer: 3000
         });
         employeeForm.resetForm();
-
       },
       (error) => {
         console.error('Error saving employee:', error);
       }
     );
   }
+
+  assignDetails(employee: any): void {
+    this.assignDetailsData.user_id = employee.user_id;
+    this.assignDetailsData.user_first_name = employee.user_first_name;
+    this.assignDetailsData.user_last_name = employee.user_last_name;
+    this.showAssignDetailsModal = true;
+  }
+
+  submitAssignDetails(assignDetailsForm: NgForm): void {
+    if (assignDetailsForm.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
+    }
+
+    this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
+      (response) => {
+        console.log('Details assigned successfully!', response);
+        this.fetchEmployees();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Details assigned successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.showAssignDetailsModal = false;
+        assignDetailsForm.resetForm();
+      },
+      (error) => {
+        console.error('Error assigning details:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to assign details. Please try again.',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
+    );
+  }
+
+fetchEmployees(): void {
+  this.dataService.getAllEmployees().subscribe(
+    (data) => {
+      this.employees = data;
+    },
+    (error) => {
+      console.error('Error fetching employees:', error);
+    }
+  );
+}
+
 
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
@@ -550,86 +609,9 @@ deleteDesignation(designationId: number): void {
       }
     });
   }
-  reportingManagers: any[] = [];
-  assignDetailsData = {
-    user_id: null as number | null, // Allow both number and null
-    reporting_manager_id: null,
-    designation_id: null,
-    is_timesheet_required: null,
-    role_id: null,
-    department_id: null
-  };
+
   
-  assignDetails(employee: any): void {
-    console.log('Setting user_id:', employee.user_id);
-    this.assignDetailsData.user_id = employee.user_id; // Set the user_id
-    this.showAssignDetailsModal = true;
-    console.log('assignDetailsData:', this.assignDetailsData);
-}
 
- 
-  
-submitAssignDetails(assignDetailsForm: NgForm): void {
-  console.log('Submitting assignDetailsData:', this.assignDetailsData);
-
-  // Validate the form
-  if (assignDetailsForm.invalid) {
-      Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Please fill all required fields correctly!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
-      });
-      return;
-  }
-
-  // Ensure user_id is present
-  if (!this.assignDetailsData.user_id) {
-      Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'User ID is required!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
-      });
-      return;
-  }
-
-  // Send data to the backend
-  this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
-      (response) => {
-          console.log('Details assigned successfully!', response);
-          this.fetchEmployees();
-          Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Details assigned successfully!',
-              showConfirmButton: false,
-              timer: 3000
-          });
-          this.showAssignDetailsModal = false;
-          assignDetailsForm.resetForm();
-      },
-      (error) => {
-          console.error('Error assigning details:', error);
-          Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Failed to assign details. Please try again.',
-              toast: true,
-              position: 'top-end',
-              timer: 3000,
-              showConfirmButton: false
-          });
-      }
-  );
-}
   showAssignDetailsModal: boolean = false;
 
   toggleAssignDetailsModal() {
