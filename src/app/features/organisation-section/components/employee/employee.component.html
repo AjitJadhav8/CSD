@@ -254,7 +254,7 @@
         <!-- Assign Details Modal -->
         <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-            <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6" (click)="$event.stopPropagation()">
+            <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto" (click)="$event.stopPropagation()">
                 <div class="flex justify-between items-center border-b pb-2">
                     <h3 class="text-xl font-semibold">
                         Assign Details for - 
@@ -266,7 +266,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <form #assignDetailsForm="ngForm" (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()">
+                    <form #assignDetailsForm="ngForm" (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()" >
                         <!-- Tab Buttons -->
                 <div class="flex space-x-4 border-b">
                     <button type="button"
