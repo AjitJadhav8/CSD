@@ -46,8 +46,8 @@
             <label class="block mb-2 font-semibold">Project Role*</label>
             <select [(ngModel)]="selectedProjectRoleId" name="projectRole" class="border p-2 w-full rounded-md">
                 <option value="" disabled selected>Select Project Role</option>
-                <option *ngFor="let role of optionProjectRoles" [value]="role.position_id">
-                    {{ role.position_name }}
+                <option *ngFor="let role of optionProjectRoles" [value]="role.project_role_id">
+                    {{ role.project_role_name }}
                 </option>
             </select>
         </div>
@@ -315,7 +315,7 @@
                         <td class="border p-2">{{ team.customer_name }}</td>
                         <td class="border p-2">{{ team.project_name }}</td>
                         <td class="border p-2">{{ team.employee_name }}</td>
-                        <td class="border p-2">{{ team.project_role }}</td>
+                        <td class="border p-2">{{ team.project_role_name }}</td>
                         <td class="border p-2">{{ team.project_manager_name }}</td>
                         <td class="border p-2">{{ team.start_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="border p-2">{{ team.end_date | date:'dd-MMM-yyyy' }}</td>

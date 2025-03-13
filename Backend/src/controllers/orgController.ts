@@ -67,9 +67,15 @@ class OrgController {
         FROM master_project_role WHERE is_deleted = 0
     `;
     
+    const designationQuery = `
+    SELECT 
+        designation_id, designation_name, is_deleted, created_at, updated_at
+    FROM master_designation WHERE is_deleted = 0
+`;
+
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -136,12 +142,18 @@ class OrgController {
                          resolve(results);
                     });
                 }),
+                new Promise((resolve, reject) => {
+                    db.query(designationQuery, (err: any, results: any) => {
+                        if (err) reject(err) ;
+                         resolve(results);
+                    });
+                }),
 
             ]);
 
             // Return roles, departments, and user info in the response
             res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
-                taskCategories,projectRole });
+                taskCategories,projectRole,designation });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -546,7 +558,80 @@ class OrgController {
           res.status(500).json({ error: 'Internal Server Error' });
         }
       }
-      
+
+          // ---- Designation --------
+
+          async addDesignation(req: Request, res: Response): Promise<void> {
+            try {
+              const { designation_name } = req.body;
+          
+              if (!designation_name) {
+                res.status(400).json({ error: 'Designation name is required' });
+                return;
+              }
+          
+              const insertQuery = `
+                INSERT INTO master_designation (designation_name)
+                VALUES (?)`;
+          
+              db.query(insertQuery, [designation_name], (err: any, result: any) => {
+                if (err) {
+                  console.error('Error adding designation:', err);
+                  res.status(500).json({ error: 'Error adding designation' });
+                  return;
+                }
+                res.status(201).json({ message: 'Designation added successfully', designation_id: result.insertId });
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+          
+          async getAllDesignations(req: Request, res: Response): Promise<void> {
+            try {
+              const query = `
+                SELECT designation_id, designation_name
+                FROM master_designation
+                WHERE is_deleted = 0
+                ORDER BY designation_id DESC`;
+          
+              db.query(query, (err, results) => {
+                if (err) {
+                  console.error('Error fetching designations:', err);
+                  return res.status(500).json({ error: 'Error fetching designations' });
+                }
+                res.status(200).json(results);
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+          
+          async softDeleteDesignation(req: Request, res: Response): Promise<void> {
+            try {
+              const { designationId } = req.params;
+          
+              const updateQuery = `UPDATE master_designation SET is_deleted = 1 WHERE designation_id = ?`;
+          
+              db.query(updateQuery, [designationId], (err: any, result: any) => {
+                if (err) {
+                  console.error('Error deleting designation:', err);
+                  return res.status(500).json({ error: 'Error deleting designation' });
+                }
+          
+                if (result.affectedRows === 0) {
+                  return res.status(404).json({ error: 'Designation not found' });
+                }
+          
+                res.status(200).json({ message: 'Designation soft deleted successfully' });
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
 
     // ---- Employee --------
 

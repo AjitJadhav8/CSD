@@ -29,6 +29,7 @@ export class EmployeeComponent {
     this.fetchProjectRoles();
     this.fetchSkills();
     this.fetchReportingManagerHistory();
+    this.fetchDesignations();
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles and Departments:', response);
@@ -36,6 +37,7 @@ export class EmployeeComponent {
         this.optionDepartments = response.departments;
         this.optionUsers = response.users;  // Store user data
         this.optionPositionName = response.projectRole;  // Store position data
+        this.optionDesignation = response.designation;  // Store designation data
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
@@ -60,6 +62,7 @@ export class EmployeeComponent {
   optionUsers: any[] = [];
   optionDepartments: any[] = [];
   optionPositionName: any[] = [];
+  optionDesignation: any[] = [];
 
 
   // ------------------ Department ------------------------
@@ -247,6 +250,91 @@ export class EmployeeComponent {
 
   // ------------------ Designation ------------------------
 
+  designationName = '';
+designations: any[] = [];
+
+fetchDesignations(): void {
+  this.dataService.getAllDesignations().subscribe(
+    (response) => {
+      console.log('Designations Response:', response);
+      this.designations = response;  // Assuming the response contains the designations data
+    },
+    (error) => {
+      console.error('Error fetching designations:', error);
+    }
+  );
+}
+
+submitDesignation(designationForm: NgForm): void {
+  if (designationForm.invalid) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'warning',
+      title: 'Designation Name is required!',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    return;
+  }
+
+  this.dataService.addDesignation(this.designationName).subscribe(
+    (response) => {
+      this.fetchDesignations();
+      console.log('Designation added:', response);
+
+      // Success Toast Notification
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Designation added successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+      this.designationName = ''; // Reset input field
+      designationForm.resetForm(); // Reset form validation
+    },
+    (error) => {
+      console.error('Error adding designation:', error);
+    }
+  );
+}
+
+deleteDesignation(designationId: number): void {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This designation will be deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.dataService.deleteDesignation(designationId).subscribe(
+        () => {
+          console.log('Designation deleted successfully');
+          this.fetchDesignations();
+
+          // Success Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Designation deleted successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        },
+        (error) => {
+          console.error('Error deleting designation:', error);
+        }
+      );
+    }
+  });
+}
 
 
 
@@ -463,7 +551,6 @@ export class EmployeeComponent {
     });
   }
   reportingManagers: any[] = [];
-  designations: any[] = [];
   assignDetailsData = {
     user_id: null as number | null, // Allow both number and null
     reporting_manager_id: null,

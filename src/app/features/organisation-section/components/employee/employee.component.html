@@ -292,8 +292,8 @@
                                     name="designation_id" required class="border p-2 w-full rounded-md"
                                     [ngClass]="{'border-red-500': (designation.invalid && designation.touched) || (assignDetailsForm.submitted && designation.invalid)}">
                                     <option value="" disabled selected>Select Position</option>
-                                    <option *ngFor="let designation of optionPositionName" [value]="designation.designation_id">
-                                        {{ designation.position_name }}
+                                    <option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                                        {{ designation.designation_name }}
                                     </option>
                                 </select>
                                 <span class="text-red-500 text-sm"
@@ -461,7 +461,54 @@
         </div>
       </div>
 
-      
+    
+      <!-- Designation Section -->
+<div *ngIf="selectedSection === 'designation'">
+    <h3 class="text-xl font-semibold mb-4">Add New Designation</h3>
+  
+    <form #designationForm="ngForm" (submit)="submitDesignation(designationForm); $event.preventDefault()">
+      <div class="grid grid-cols-6 gap-4">
+        <div class="form-group">
+          <label>Designation Name*</label>
+          <input type="text" [(ngModel)]="designationName" #designationNameField="ngModel" name="designationName"
+            required class="border p-2 w-full rounded-md"
+            [ngClass]="{'border-red-500': (designationNameField.invalid && designationNameField.touched) || (designationForm.submitted && designationNameField.invalid)}" />
+          <span class="text-red-500 text-sm"
+            *ngIf="designationNameField.invalid && (designationNameField.touched || designationForm.submitted)">
+            Designation Name is required.
+          </span>
+        </div>
+      </div>
+  
+      <div class="mt-4">
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Designation</button>
+      </div>
+    </form>
+  
+    <div class="rounded-lg w-full overflow-x-auto">
+      <div class="rounded-lg w-full inline-block whitespace-nowrap">
+        <table class="w-full border-collapse border border-gray-300 mt-4">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2">S.No.</th>
+              <th class="border p-2">Designation Name</th>
+              <th class="border p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let designation of designations; let i = index" class="hover:bg-gray-50">
+              <td class="border p-2">{{ i + 1 }}</td>
+              <td class="border p-2">{{ designation.designation_name }}</td>
+              <td class="border p-2">
+                <button class="bg-red-500 text-white px-2 py-1 rounded"
+                  (click)="deleteDesignation(designation.designation_id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
       
 
     <!-- Skills Section -->

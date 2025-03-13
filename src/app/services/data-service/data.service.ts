@@ -71,6 +71,20 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/project-roles/${projectRoleId}`);
   }
 
+    // ------------------ Designation ------------------------
+
+  addDesignation(designationName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/designation`, { designation_name: designationName });
+  }
+  
+  getAllDesignations(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/designations`);
+  }
+  
+  deleteDesignation(designationId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/designations/${designationId}`);
+  }
+
   // ------------------ Skills ------------------------
 
   addSkill(skillData: any): Observable<any> {

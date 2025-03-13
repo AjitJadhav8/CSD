@@ -39,7 +39,11 @@ router.post('/project-role', orgController.addProjectRole);
 router.get('/project-roles', orgController.getAllProjectRoles);
 router.delete('/project-roles/:projectRoleId', orgController.softDeleteProjectRole);
 
+// ---- Designation --------
 
+router.post('/designation', orgController.addDesignation);
+router.get('/designations', orgController.getAllDesignations);
+router.delete('/designations/:designationId', orgController.softDeleteDesignation);
 
 // ---- Skills --------
 

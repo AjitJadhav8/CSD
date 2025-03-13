@@ -59,7 +59,7 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
         this.optionProjectManagers = response.users;
         this.optionCustomers = response.customers;
         this.optionProjects = response.projects;
-        this.optionProjectRoles = response.positions;
+        this.optionProjectRoles = response.projectRole;
         console.log(this.optionCustomers);
         console.log(this.optionProjects);
         console.log(this.optionEmployees);

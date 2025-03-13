@@ -116,7 +116,7 @@ class RmgController {
                 mc.customer_id, mc.customer_name,
                 mp.project_id, mp.project_name,
                 mu1.user_id AS employee_id, CONCAT(mu1.user_first_name, ' ', mu1.user_last_name) AS employee_name,
-                mpj.position_id AS project_role_id, mpj.position_name AS project_role,
+                mpj.project_role_id AS project_role_id, mpj.project_role_name AS project_role_name,
                 mu2.user_id AS project_manager_id, CONCAT(mu2.user_first_name, ' ', mu2.user_last_name) AS project_manager_name,
                 tpt.start_date,
                 tpt.end_date,
@@ -128,7 +128,7 @@ class RmgController {
             LEFT JOIN master_customer mc ON tpt.customer_id = mc.customer_id
             LEFT JOIN master_project mp ON tpt.project_id = mp.project_id
             LEFT JOIN master_user mu1 ON tpt.employee_id = mu1.user_id
-            LEFT JOIN master_position mpj ON tpt.project_role_id = mpj.position_id
+            LEFT JOIN master_project_role mpj ON tpt.project_role_id = mpj.project_role_id
             LEFT JOIN master_user mu2 ON tpt.project_manager_id = mu2.user_id
             WHERE tpt.is_deleted = 0
              ORDER BY tpt.project_team_id DESC`;
