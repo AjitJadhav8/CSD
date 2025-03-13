@@ -155,7 +155,7 @@ export class EmployeeComponent {
   }
 
 
-  // ------------------ Position Project Role ------------------------
+  // ------------------ Position- Project Role ------------------------
 
   projectRoleName = '';
   projectRoles: any[] = [];
@@ -244,6 +244,10 @@ export class EmployeeComponent {
       }
     });
   }
+
+  // ------------------ Designation ------------------------
+
+
 
 
   // ------------------ Skill ------------------------
