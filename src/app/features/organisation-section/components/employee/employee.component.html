@@ -225,7 +225,7 @@
                     <th class="border p-2">Date of Birth</th>
                     <th class="border p-2">Blood Group</th>
                     <th class="border p-2">Date of Joining</th>
-                    
+
                     <th class="border p-2">Action</th>
                 </tr>
             </thead>
@@ -414,58 +414,53 @@
     </div>
 
     <!-- Position Section -->
-    <div *ngIf="selectedSection === 'position'">
-
-        <h3 class="text-xl font-semibold mb-4">Add New Position</h3>
-
-
-        <!-- Position Form -->
-        <form #positionForm="ngForm" (submit)="submitPosition(positionForm); $event.preventDefault()">
-            <div class="grid grid-cols-6 gap-4">
-                <!-- Position Name -->
-                <div class="form-group">
-                    <label>Position Name*</label>
-                    <input type="text" [(ngModel)]="positionName" #positionNameField="ngModel" name="positionName"
-                        required class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (positionNameField.invalid && positionNameField.touched) || (positionForm.submitted && positionNameField.invalid)}" />
-                    <span class="text-red-500 text-sm"
-                        *ngIf="positionNameField.invalid && (positionNameField.touched || positionForm.submitted)">
-                        Position Name is required.
-                    </span>
-                </div>
+    <div *ngIf="selectedSection === 'project_role'">
+        <h3 class="text-xl font-semibold mb-4">Add New Project Role</h3>
+      
+        <form #projectRoleForm="ngForm" (submit)="submitProjectRole(projectRoleForm); $event.preventDefault()">
+          <div class="grid grid-cols-6 gap-4">
+            <div class="form-group">
+              <label>Project Role Name*</label>
+              <input type="text" [(ngModel)]="projectRoleName" #projectRoleNameField="ngModel" name="projectRoleName"
+                required class="border p-2 w-full rounded-md"
+                [ngClass]="{'border-red-500': (projectRoleNameField.invalid && projectRoleNameField.touched) || (projectRoleForm.submitted && projectRoleNameField.invalid)}" />
+              <span class="text-red-500 text-sm"
+                *ngIf="projectRoleNameField.invalid && (projectRoleNameField.touched || projectRoleForm.submitted)">
+                Project Role Name is required.
+              </span>
             </div>
-
-            <!-- Submit Button -->
-            <div class="mt-4">
-                <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Position</button>
-            </div>
+          </div>
+      
+          <div class="mt-4">
+            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded">Add Project Role</button>
+          </div>
         </form>
-
-
+      
         <div class="rounded-lg w-full overflow-x-auto">
-            <div class="rounded-lg w-full inline-block whitespace-nowrap">
-    
-        <table class="w-full border-collapse border border-gray-300 mt-4">
-            <thead>
+          <div class="rounded-lg w-full inline-block whitespace-nowrap">
+            <table class="w-full border-collapse border border-gray-300 mt-4">
+              <thead>
                 <tr class="bg-gray-100">
-                    <th class="border p-2">S.No.</th>
-                    <th class="border p-2">Position Name</th>
-                    <th class="border p-2">Action</th>
+                  <th class="border p-2">S.No.</th>
+                  <th class="border p-2">Project Role Name</th>
+                  <th class="border p-2">Action</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let position of positions; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td>
-                    <td class="border p-2">{{ position.position_name }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deletePosition(position.position_id)">Delete</button>
-                    </td>
+              </thead>
+              <tbody>
+                <tr *ngFor="let projectRole of projectRoles; let i = index" class="hover:bg-gray-50">
+                  <td class="border p-2">{{ i + 1 }}</td>
+                  <td class="border p-2">{{ projectRole.project_role_name }}</td>
+                  <td class="border p-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded"
+                      (click)="deleteProjectRole(projectRole.project_role_id)">Delete</button>
+                  </td>
                 </tr>
-            </tbody>
-        </table>
-        </div></div>
-    </div>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
 
     <!-- Skills Section -->
     <div *ngIf="selectedSection === 'skills'">

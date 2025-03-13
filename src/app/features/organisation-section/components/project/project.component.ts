@@ -60,7 +60,7 @@ filterProjects(): void {
         this.optionTypeOfEngagement = response.typeOfEngagement;
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
-        this.optionProject = response.projects;
+        this.optionProject = response.projectRole;
 
         this.filteredProjects = []; // Initially empty
 

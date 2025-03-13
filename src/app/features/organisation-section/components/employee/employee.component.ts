@@ -26,7 +26,7 @@ export class EmployeeComponent {
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchEmployees();
     this.fetchDepartments();
-    this.fetchPositions();
+    this.fetchProjectRoles();
     this.fetchSkills();
     this.fetchReportingManagerHistory();
     this.dataService.getOptions().subscribe(
@@ -35,8 +35,7 @@ export class EmployeeComponent {
         this.optioRoles = response.roles;
         this.optionDepartments = response.departments;
         this.optionUsers = response.users;  // Store user data
-        this.optionPositionName = response.positions;  // Store position data
-
+        this.optionPositionName = response.projectRole;  // Store position data
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
@@ -156,66 +155,66 @@ export class EmployeeComponent {
   }
 
 
-  // ------------------ Position ------------------------
+  // ------------------ Position Project Role ------------------------
 
-  positionName = '';
-  positions: any[] = [];
+  projectRoleName = '';
+  projectRoles: any[] = [];
 
-  fetchPositions(): void {
-    this.dataService.getAllPositions().subscribe(
+  fetchProjectRoles(): void {
+    this.dataService.getAllProjectRoles().subscribe(
       (response) => {
-        console.log('Positions Response:', response); // Log the response
+        console.log('Project Roles Response:', response);
 
-        this.positions = response;  // Assuming the response contains the positions data
+        this.projectRoles = response;  // Assuming the response contains the positions data
       },
       (error) => {
-        console.error('Error fetching positions:', error);
+        console.error('Error fetching project roles:', error);
       }
     );
   }
 
-  submitPosition(positionForm: NgForm): void {
-    if (positionForm.invalid) {
+  submitProjectRole(projectRoleForm: NgForm): void {
+    if (projectRoleForm.invalid) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'warning',
-        title: 'Position Name is required!',
+        title: 'Project Role Name is required!',
         showConfirmButton: false,
         timer: 3000
       });
       return;
     }
 
-    this.dataService.addPosition(this.positionName).subscribe(
+    this.dataService.addProjectRole(this.projectRoleName).subscribe(
       (response) => {
-        this.fetchPositions();
-        console.log('Position added:', response);
+        this.fetchProjectRoles();
+        console.log('Project Role added:', response);
 
         // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
-          title: 'Position added successfully!',
+          title: 'Project Role added successfully!',
           showConfirmButton: false,
           timer: 3000
         });
 
-        this.positionName = ''; // Reset input field
-        positionForm.resetForm(); // Reset form validation
+        this.projectRoleName = ''; // Reset input field
+        projectRoleForm.resetForm(); // Reset form validation
       },
       (error) => {
-        console.error('Error adding position:', error);
+        console.error('Error adding project role:', error);
       }
     );
   }
 
 
-  deletePosition(positionId: number): void {
+  deleteProjectRole(projectRoleId: number): void {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'This position will be deleted!',
+      text: 'This project role will be deleted!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -223,23 +222,23 @@ export class EmployeeComponent {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.dataService.deletePosition(positionId).subscribe(
+        this.dataService.deleteProjectRole(projectRoleId).subscribe(
           () => {
-            console.log('Position deleted successfully');
-            this.fetchPositions();
+            console.log('Project Role deleted successfully');
+            this.fetchProjectRoles();
 
             // Success Toast Notification
             Swal.fire({
               toast: true,
               position: 'top-end',
               icon: 'success',
-              title: 'Position deleted successfully!',
+              title: 'Project Role deleted successfully!',
               showConfirmButton: false,
               timer: 3000
             });
           },
           (error) => {
-            console.error('Error deleting position:', error);
+            console.error('Error deleting project role:', error);
           }
         );
       }

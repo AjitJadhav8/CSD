@@ -35,9 +35,10 @@ router.delete('/departments/:departmentId', orgController.softDeleteDepartment);
 
 // ---- Position --------
 
-router.post('/position', orgController.addPosition);
-router.get('/positions', orgController.getAllPositions);
-router.delete('/positions/:positionId', orgController.softDeletePosition);
+router.post('/project-role', orgController.addProjectRole);
+router.get('/project-roles', orgController.getAllProjectRoles);
+router.delete('/project-roles/:projectRoleId', orgController.softDeleteProjectRole);
+
 
 
 // ---- Skills --------

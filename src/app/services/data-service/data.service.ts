@@ -59,16 +59,16 @@ export class DataService {
 
   // ------------------ Position ------------------------
 
-  addPosition(positionName: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/position`, { position_name: positionName });
+  addProjectRole(projectRoleName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/project-role`, { project_role_name: projectRoleName });
   }
 
-  getAllPositions(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/api/positions`);
+  getAllProjectRoles(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/project-roles`);
   }
-
-  deletePosition(positionId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/positions/${positionId}`);
+  
+  deleteProjectRole(projectRoleId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/project-roles/${projectRoleId}`);
   }
 
   // ------------------ Skills ------------------------

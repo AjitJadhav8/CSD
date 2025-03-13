@@ -61,14 +61,15 @@ class OrgController {
         FROM master_task_category WHERE is_deleted = 0
         `;
 
-        const positionQuery = `
+        const projectRoleQuery = `
         SELECT 
-            position_id, position_name, is_deleted, created_at, updated_at
-        FROM master_position WHERE is_deleted = 0
+            project_role_id, project_role_name, is_deleted, created_at, updated_at
+        FROM master_project_role WHERE is_deleted = 0
     `;
+    
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, positions] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -130,7 +131,7 @@ class OrgController {
                     });
                 }),
                 new Promise((resolve, reject) => {
-                    db.query(positionQuery, (err: any, results: any) => {
+                    db.query(projectRoleQuery, (err: any, results: any) => {
                         if (err) reject(err) ;
                          resolve(results);
                     });
@@ -140,7 +141,7 @@ class OrgController {
 
             // Return roles, departments, and user info in the response
             res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
-                taskCategories,positions });
+                taskCategories,projectRole });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -474,77 +475,78 @@ class OrgController {
 
     // ---- Position --------
 
-    async addPosition(req: Request, res: Response): Promise<void> {
+    async addProjectRole(req: Request, res: Response): Promise<void> {
         try {
-            const { position_name } = req.body;
-
-            if (!position_name) {
-                res.status(400).json({ error: 'Position name is required' });
-                return;
-            }
-
-            const insertQuery = `
-            INSERT INTO master_position (position_name)
+          const { project_role_name } = req.body;
+      
+          if (!project_role_name) {
+            res.status(400).json({ error: 'Project role name is required' });
+            return;
+          }
+      
+          const insertQuery = `
+            INSERT INTO master_project_role (project_role_name)
             VALUES (?)`;
-
-            db.query(insertQuery, [position_name], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error adding position:', err);
-                    res.status(500).json({ error: 'Error adding position' });
-                    return;
-                }
-                res.status(201).json({ message: 'Position added successfully', position_id: result.insertId });
-            });
+      
+          db.query(insertQuery, [project_role_name], (err: any, result: any) => {
+            if (err) {
+              console.error('Error adding project role:', err);
+              res.status(500).json({ error: 'Error adding project role' });
+              return;
+            }
+            res.status(201).json({ message: 'Project role added successfully', project_role_id: result.insertId });
+          });
         } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
-
-    async getAllPositions(req: Request, res: Response): Promise<void> {
+      }
+      
+      async getAllProjectRoles(req: Request, res: Response): Promise<void> {
         try {
-            const query = `
-    SELECT position_id, position_name
-    FROM master_position
-    WHERE is_deleted = 0
-    ORDER BY position_id DESC  
-`;
-            db.query(query, (err, results) => {
-                if (err) {
-                    console.error('Error fetching positions:', err);
-                    return res.status(500).json({ error: 'Error fetching positions' });
-                }
-                res.status(200).json(results);  // Return the result as JSON
-            });
+          const query = `
+            SELECT project_role_id, project_role_name
+            FROM master_project_role
+            WHERE is_deleted = 0
+            ORDER BY project_role_id DESC`;
+      
+          db.query(query, (err, results) => {
+            if (err) {
+              console.error('Error fetching project roles:', err);
+              return res.status(500).json({ error: 'Error fetching project roles' });
+            }
+            res.status(200).json(results);
+          });
         } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
-
-    async softDeletePosition(req: Request, res: Response): Promise<void> {
+      }
+      
+      async softDeleteProjectRole(req: Request, res: Response): Promise<void> {
         try {
-            const { positionId } = req.params;
-
-            const updateQuery = `UPDATE master_position SET is_deleted = 1 WHERE position_id = ?`;
-
-            db.query(updateQuery, [positionId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting position:', err);
-                    return res.status(500).json({ error: 'Error deleting position' });
-                }
-
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Position not found' });
-                }
-
-                res.status(200).json({ message: 'Position soft deleted successfully' });
-            });
+          const { projectRoleId } = req.params;
+      
+          const updateQuery = `UPDATE master_project_role SET is_deleted = 1 WHERE project_role_id = ?`;
+      
+          db.query(updateQuery, [projectRoleId], (err: any, result: any) => {
+            if (err) {
+              console.error('Error deleting project role:', err);
+              return res.status(500).json({ error: 'Error deleting project role' });
+            }
+      
+            if (result.affectedRows === 0) {
+              return res.status(404).json({ error: 'Project role not found' });
+            }
+      
+            res.status(200).json({ message: 'Project role soft deleted successfully' });
+          });
         } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
+      }
+      
 
     // ---- Employee --------
 
