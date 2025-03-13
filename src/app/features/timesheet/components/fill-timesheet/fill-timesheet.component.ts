@@ -132,7 +132,7 @@ export class FillTimesheetComponent {
           showConfirmButton: false,
           timer: 3000
         });
-
+        
         setTimeout(() => this.fetchTimesheets(), 100);
       },
       error: (error) => {
@@ -249,13 +249,17 @@ export class FillTimesheetComponent {
   }
 
   // currentDate: Date = new Date();
-  hoursList = Array.from({ length: 24 }, (_, i) => i);
-  minutesList = [0, 15, 30, 45];
+  hoursList = Array.from({ length: 8 }, (_, i) => i + 1);
+  minutesList = [15, 30, 45];
   taskStatusList = [
     { value: 0, label: 'In Progress' },
     { value: 1, label: 'Completed' }
   ];
 
-  selectedTaskStatus: number | null = null; // No default selection
+  selectedTaskStatus: number = 0; // Default to "In Progress"
 
+  toggleTaskStatus() {
+    this.selectedTaskStatus = this.selectedTaskStatus === 1 ? 0 : 1;
+  }
+  
 }

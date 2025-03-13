@@ -95,7 +95,7 @@
                         <div class="form-group">
                             <label class="block mb-2 font-semibold">Task Description</label>
                             <textarea class="border p-2 w-full rounded-md" [(ngModel)]="taskDescription" name="taskDescription"
-                                #taskDescriptionInput="ngModel" rows="1" required
+                                #taskDescriptionInput="ngModel" rows="3" required
                                 [ngClass]="{'border-red-500': (taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)}"></textarea>
                             <span class="text-red-500 text-sm"
                                 *ngIf="(taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)">
@@ -133,23 +133,28 @@
                         <!-- Sixth Row (Full Width - Task Status) -->
                         <div class="form-group">
                             <label class="block mb-2 font-semibold">Task Status</label>
-                            <div class="flex space-x-2">
-                                <button type="button" class="px-2 py-2 rounded-lg text-white transition"
-                                    [class.bg-green-600]="selectedTaskStatus === 1"
-                                    [class.bg-gray-300]="selectedTaskStatus !== 1" (click)="selectedTaskStatus = 1">
-                                    ✅ Completed
-                                </button>
-                                <button type="button" class="px-2 py-2 rounded-lg text-white transition"
-                                    [class.bg-yellow-600]="selectedTaskStatus === 0"
-                                    [class.bg-gray-300]="selectedTaskStatus !== 0" (click)="selectedTaskStatus = 0">
-                                    ⚠ In Progress
-                                </button>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm font-medium" [class.text-gray-500]="selectedTaskStatus === 0"
+                                    [class.text-green-600]="selectedTaskStatus === 1">
+                                    {{ selectedTaskStatus === 1 ? '✅ Completed' : '⚠ In Progress' }}
+                                </span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [checked]="selectedTaskStatus === 1"
+                                        (change)="toggleTaskStatus()">
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                                        peer-checked:after:translate-x-full peer-checked:after:border-white
+                                        after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                                        after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                                        peer-checked:bg-green-600">
+                                    </div>
+                                </label>
                             </div>
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(selectedTaskStatus === null && timesheetForm.submitted)">
+                            <span class="text-red-500 text-sm" *ngIf="selectedTaskStatus === null && timesheetForm.submitted">
                                 Task Status is required
                             </span>
                         </div>
+                        
+                        
 </div>
                         <!-- Submit Button (Full Width) -->
                         <div class="mt-4">
