@@ -685,6 +685,8 @@ class OrgController {
                 user_DOJ,
                 role_id,
                 department_id,
+                designation_id, // Added
+
                 is_timesheet_required,
                 reporting_manager_id
             } = req.body;
@@ -728,26 +730,76 @@ class OrgController {
                     return;
                 }
     
-                // Insert organizational and application-related details into trans_user_details
-                const insertTransUserDetailsQuery = `
-                    INSERT INTO trans_user_details (
-                        user_id, role_id, department_id, is_timesheet_required, reporting_manager_id
-                    )
-                    VALUES (?, ?, ?, ?, ?)
+                // Check if a record already exists in trans_user_details for the given user_id
+                const checkRecordQuery = `
+                    SELECT * FROM trans_user_details WHERE user_id = ?
                 `;
     
-                const transUserDetailsValues = [
-                    user_id, role_id, department_id, is_timesheet_required, reporting_manager_id
-                ];
-    
-                // Execute the insert query for trans_user_details
-                db.query(insertTransUserDetailsQuery, transUserDetailsValues, (err: any, result: any) => {
+                db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
                     if (err) {
-                        console.error("Error assigning details:", err);
-                        res.status(500).json({ error: "Error assigning details" });
+                        console.error("Error checking trans_user_details:", err);
+                        res.status(500).json({ error: "Error checking trans_user_details" });
                         return;
                     }
-                    res.status(200).json({ message: "Details assigned successfully" });
+    
+                    if (result.length > 0) {
+                        // Record exists, perform UPDATE
+                        const updateTransUserDetailsQuery = `
+                            UPDATE trans_user_details
+                            SET 
+                                role_id = ?,
+                                department_id = ?,
+                                                            designation_id = ?, 
+
+                                is_timesheet_required = ?,
+                                reporting_manager_id = ?
+                            WHERE user_id = ?
+                        `;
+    
+                        const updateValues = [
+                            role_id,
+                            department_id,
+                            designation_id,
+                            is_timesheet_required,
+                            reporting_manager_id,
+                            user_id
+                        ];
+    
+                        db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
+                            if (err) {
+                                console.error("Error updating trans_user_details:", err);
+                                res.status(500).json({ error: "Error updating trans_user_details" });
+                                return;
+                            }
+                            res.status(200).json({ message: "Details updated successfully" });
+                        });
+                    } else {
+                        // Record does not exist, perform INSERT
+                        const insertTransUserDetailsQuery = `
+                            INSERT INTO trans_user_details (
+                                user_id, role_id, department_id, designation_id, is_timesheet_required, reporting_manager_id
+                            )
+                        VALUES (?, ?, ?, ?, ?, ?)
+                        `;
+    
+                        const insertValues = [
+                            user_id,
+                            role_id,
+                            department_id,
+                            designation_id, 
+                            is_timesheet_required,
+                            reporting_manager_id
+                        ];
+    
+                        db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
+                            if (err) {
+                                console.error("Error inserting trans_user_details:", err);
+                                res.status(500).json({ error: "Error inserting trans_user_details" });
+                                return;
+                            }
+                            res.status(200).json({ message: "Details assigned successfully" });
+                        });
+                    }
                 });
             });
         } catch (error) {
@@ -831,7 +883,7 @@ class OrgController {
                     mu.user_id, mu.user_first_name, mu.user_last_name, 
                     mu.user_emergency_contact, mu.is_passport, mu.passport_validity, 
                     mu.user_current_address, mu.user_DOB, mu.user_blood_group, mu.user_DOJ,
-                    tud.role_id, tud.department_id, tud.is_timesheet_required, tud.reporting_manager_id
+                    tud.role_id, tud.department_id, tud.designation_id, tud.is_timesheet_required, tud.reporting_manager_id
                 FROM master_user mu
                 LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
                 WHERE mu.user_id = ?

@@ -461,9 +461,9 @@ deleteDesignation(designationId: number): void {
     is_passport: null,
     passport_validity: null,
     user_current_address: '',
-    user_DOB: null,
+    user_DOB: null as string | null,  // Update type
     user_blood_group: '',
-    user_DOJ: null,
+    user_DOJ: null as string | null,  // Update type
     reporting_manager_id: null,
     designation_id: null,
     is_timesheet_required: null,
@@ -507,10 +507,27 @@ deleteDesignation(designationId: number): void {
     );
   }
 
+  formatDate(dateString: string): string | null {
+    if (!dateString) return null;
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null; // Check for invalid date
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
   assignDetails(employee: any): void {
     // Fetch employee details from the backend
     this.dataService.getEmployeeDetails(employee.user_id).subscribe(
         (data) => {
+
+          const formattedDOB = this.formatDate(data.user_DOB);
+          const formattedDOJ = this.formatDate(data.user_DOJ);
+
             // Populate assignDetailsData with the fetched data
             this.assignDetailsData = {
                 user_id: data.user_id,
@@ -520,9 +537,9 @@ deleteDesignation(designationId: number): void {
                 is_passport: data.is_passport || null,
                 passport_validity: data.passport_validity || null,
                 user_current_address: data.user_current_address || '',
-                user_DOB: data.user_DOB || null,
+                user_DOB: formattedDOB, // Use formatted date
                 user_blood_group: data.user_blood_group || '',
-                user_DOJ: data.user_DOJ || null,
+                user_DOJ: formattedDOJ, // Use formatted date
                 reporting_manager_id: data.reporting_manager_id || null,
                 designation_id: data.designation_id || null,
                 is_timesheet_required: data.is_timesheet_required || null,
@@ -539,6 +556,7 @@ deleteDesignation(designationId: number): void {
         }
     );
 }
+
 
   submitAssignDetails(assignDetailsForm: NgForm): void {
     if (assignDetailsForm.invalid) {
