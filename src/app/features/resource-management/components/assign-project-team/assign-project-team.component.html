@@ -66,21 +66,27 @@
                 class="border p-2 w-full rounded-md">
         </div>
 
-        <div>
-            <label class="block mb-2 font-semibold">Allocation Status*</label>
-            <div class="flex gap-4">
-                <label>
-                    <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="1" name="allocationStatus"
-                        (change)="onAllocationStatusChange()">
-                    Employee
-                </label>
-                <label>
-                    <input type="radio" [(ngModel)]="selectedAllocationStatus" [value]="0" name="allocationStatus"
-                        (change)="onAllocationStatusChange()">
-                    Shadow
-                </label>
+       <div>
+    <label class="block mb-2 font-semibold">Allocation Status*</label>
+    <div class="flex gap-4 items-center">
+        <span class="text-sm font-medium" [class.text-gray-500]="selectedAllocationStatus === 0"
+            [class.text-green-600]="selectedAllocationStatus === 1">
+            {{ selectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
+        </span>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" [checked]="selectedAllocationStatus === 1"
+                (change)="toggleAllocationStatus()">
+            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                peer-checked:after:translate-x-full peer-checked:after:border-white
+                after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                peer-checked:bg-green-600">
             </div>
-        </div>
+        </label>
+    </div>
+
+</div>
+
 
 
         <div>
@@ -94,19 +100,26 @@
             </select>
         </div>
         <!-- Billed Status -->
-        <div>
-            <label class="block mb-2 font-semibold">Billed Status*</label>
-            <div class="flex gap-4">
-                <label>
-                    <input type="radio" [(ngModel)]="selectedBilledStatus" [value]="1" name="billedStatus">
-                    Billed
-                </label>
-                <label>
-                    <input type="radio" [(ngModel)]="selectedBilledStatus" [value]="0" name="billedStatus">
-                    Not Billed
-                </label>
+<div>
+    <label class="block mb-2 font-semibold">Billed Status*</label>
+    <div class="flex gap-4 items-center">
+        <span class="text-sm font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
+            [class.text-green-600]="selectedBilledStatus === 1">
+            {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
+        </span>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
+                (change)="toggleBilledStatus()">
+            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                peer-checked:after:translate-x-full peer-checked:after:border-white
+                after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                peer-checked:bg-green-600">
             </div>
-        </div>
+        </label>
+    </div>
+</div>
+
 
         <!-- Billing Percentage -->
         <div>

@@ -25,7 +25,6 @@ export class AssignProjectTeamComponent {
   optionProjectRoles: any[] = [];
   optionProjectManagers: any[] = [];
   allocationPercentages = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  selectedBilledStatus: number | null = null;
   selectedBillingPercentage: number | null = null;
 percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in steps of 10
   selectedCustomerId: number | null = null;
@@ -113,7 +112,6 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
   selectedEmployeeId: number | null = null;
   selectedProjectRoleId: number | null = null;
   selectedProjectManagerId: number | null = null;
-  selectedAllocationStatus: number | null = null;
   selectedAllocationPercentage: number | null = null;
   startDate: string | null = null;
   tentativeEndDate: string | null = null;
@@ -436,6 +434,19 @@ deleteAssignProjectTeam(projectTeamId: number): void {
     }
   });
 }
+  selectedAllocationStatus: number | null = null;
+
+
+toggleAllocationStatus() {
+  this.selectedAllocationStatus = this.selectedAllocationStatus === 1 ? 0 : 1;
+}
+
+selectedBilledStatus: number | null = null;
+
+toggleBilledStatus() {
+  this.selectedBilledStatus = this.selectedBilledStatus === 1 ? 0 : 1;
+}
+
 
 
 

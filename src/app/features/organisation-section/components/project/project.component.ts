@@ -18,21 +18,22 @@ export class ProjectComponent {
   constructor(private dataService: DataService, private http: HttpClient) { }
   filteredProjects: any[] = []; // Store filtered projects
 
-  // Function to filter projects based on selected customer
 // Method to filter projects based on selected customer
 filterProjects(): void {
-  const selectedCustomerId = Number(this.projectDeliverableForm.customer_id);
-  
+  const selectedCustomerId = Number(this.projectDeliverableForm.customer_id); 
+
+  console.log("Selected Customer ID:", selectedCustomerId);
+  console.log("Available Projects:", this.optionProject);
 
   if (selectedCustomerId) {
-    this.filteredProjects = this.optionProject.filter(
-      project => Number(project.customer_id) === selectedCustomerId
-    );
+    this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
+    console.log("Filtered Projects:", this.filteredProjects);
   } else {
     this.filteredProjects = []; // No customer selected, show empty
   }
 
-  console.log("Filtered Projects:", this.filteredProjects);
+  // Trigger Angular Change Detection
+  this.filteredProjects = [...this.filteredProjects];  
 }
 
 
@@ -60,7 +61,7 @@ filterProjects(): void {
         this.optionTypeOfEngagement = response.typeOfEngagement;
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
-        this.optionProject = response.projectRole;
+        this.optionProject = response.projects;
 
         this.filteredProjects = []; // Initially empty
 
