@@ -6,7 +6,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'app-center', pathMatch: 'full' },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'reset-password/:token', component: ResetPasswordComponent },  // Add this route
     { path: 'app-center', component: AppCenterComponent, canActivate: [authGuard] },
