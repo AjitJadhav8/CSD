@@ -11,6 +11,11 @@ import Swal from 'sweetalert2';
 })
 export class NavbarComponent {
 
+    // Method to check if the current route is '/app-center'
+    isAppCenterRoute(): boolean {
+      return this.router.url === '/app-center';
+    }
+
   isActive(route: string): boolean {
     return this.router.url === route;
   }

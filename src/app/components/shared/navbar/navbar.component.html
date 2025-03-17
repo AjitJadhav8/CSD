@@ -1,12 +1,28 @@
 <!-- NAVBAR -->
 <div class="flex flex-col sm:flex-row items-center sm:justify-between p-2 bg-white">
-  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7 cursor-pointer"
-    [routerLink]="['/app-center']" />
+  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7"
+     />
+
+    <!-- Home Button (Same Style as Other Navigation Buttons) -->
+  <div *ngIf="!isAppCenterRoute()" class="flex gap-2 p-1 rounded-md">
+    <a [routerLink]="['/app-center']" routerLinkActive="active-link"
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
+      Home
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 2a1 1 0 01.7.3l6 6a1 1 0 11-1.4 1.4L10 4.4l-5.3 5.3a1 1 0 01-1.4-1.4l6-6A1 1 0 0110 2z"
+          clip-rule="evenodd" />
+        <path fill-rule="evenodd"
+          d="M4 10a1 1 0 011-1h1v6a1 1 0 001 1h6a1 1 0 001-1v-6h1a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1v-7z"
+          clip-rule="evenodd" />
+      </svg>
+    </a>
+  </div>
 
 
   <!-- Navbar Center (Organisation Links - Conditionally Shown) -->
   <!-- Organisation Links (Dropdown for Customer) -->
-  <div *ngIf="showOrganisationLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
+  <div *ngIf="showOrganisationLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
 
     <!-- Employee Dropdown -->
 
@@ -122,7 +138,7 @@
   </div>
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
-  <div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
+  <div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
     <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Fill Timesheet
@@ -154,7 +170,7 @@
   </div>
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
-  <div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 p-1 rounded-md">
+  <div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
     <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="active-link"
     class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
     Allocation Report
