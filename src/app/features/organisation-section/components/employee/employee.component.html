@@ -117,19 +117,19 @@
 
                     <!-- Name Filter -->
                     <!-- Name Filter Dropdown -->
-<div class="relative flex-grow">
-    <select [(ngModel)]="nameFilter" (change)="applyFilters()"
-        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-        <option value="">Select Name</option>
-        <option *ngFor="let emp of optionUsers" [value]="emp.user_id">
-            {{ emp.user_first_name }} {{ emp.user_last_name }}
-        </option>
-    </select>
-    <button *ngIf="nameFilter" (click)="clearFilter('nameFilter')"
-        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-        ×
-    </button>
-</div>
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="nameFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Name</option>
+                            <option *ngFor="let emp of optionUsers" [value]="emp.user_id">
+                                {{ emp.user_first_name }} {{ emp.user_last_name }}
+                            </option>
+                        </select>
+                        <button *ngIf="nameFilter" (click)="clearFilter('nameFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
 
 
                     <!-- Email Filter -->
@@ -144,35 +144,35 @@
 
                     <!-- Department Filter -->
                     <!-- Department Filter -->
-<div class="relative flex-grow">
-    <select [(ngModel)]="departmentFilter" (change)="applyFilters()"
-        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-        <option value="">Select Department</option>
-        <option *ngFor="let department of optionDepartments" [value]="department.department_id">
-            {{ department.department_name }}
-        </option>
-    </select>
-    <button *ngIf="departmentFilter" (click)="clearFilter('departmentFilter')"
-        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-        ×
-    </button>
-</div>
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="departmentFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Department</option>
+                            <option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                                {{ department.department_name }}
+                            </option>
+                        </select>
+                        <button *ngIf="departmentFilter" (click)="clearFilter('departmentFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
 
                     <!-- Designation Filter -->
                     <!-- Designation Filter -->
-<div class="relative flex-grow">
-    <select [(ngModel)]="designationFilter" (change)="applyFilters()"
-        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-        <option value="">Select Designation</option>
-        <option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
-            {{ designation.designation_name }}
-        </option>
-    </select>
-    <button *ngIf="designationFilter" (click)="clearFilter('designationFilter')"
-        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-        ×
-    </button>
-</div>
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="designationFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Designation</option>
+                            <option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                                {{ designation.designation_name }}
+                            </option>
+                        </select>
+                        <button *ngIf="designationFilter" (click)="clearFilter('designationFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
 
                     <div class="relative flex-grow">
                         <input type="text" [(ngModel)]="addressFilter" placeholder="Address" (input)="applyFilters()"
@@ -240,6 +240,7 @@
                             <td class="border p-2">
                                 <button class="bg-blue-500 text-white px-2 py-1 rounded m-2"
                                     (click)="assignDetails(employee)">Assign Details</button>
+                                    <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" (click)="openEmployeeEditModal(employee)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteEmployee(employee.user_id)">Delete</button>
                             </td>
@@ -263,6 +264,87 @@
                     Next
                 </button>
             </div>
+            <!-- Edit Modal -->
+<div *ngIf="isEmployeeEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" (click)="closeEmployeeEditModal()">
+    <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+      <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
+      <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
+        <div class="grid grid-cols-6 gap-4">
+          <!-- Employee Code -->
+          <div class="form-group">
+            <label>Employee Code*</label>
+            <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel" name="editUserCode" required
+              class="border p-2 w-full rounded-md"
+              [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
+              Employee Code is required
+            </span>
+          </div>
+  
+          <!-- First Name -->
+          <div class="form-group">
+            <label>First Name*</label>
+            <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
+              name="editUserFirstName" required class="border p-2 w-full rounded-md"
+              [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
+              First Name is required
+            </span>
+          </div>
+  
+          <!-- Middle Name -->
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
+              class="border p-2 w-full rounded-md">
+          </div>
+  
+          <!-- Last Name -->
+          <div class="form-group">
+            <label>Last Name*</label>
+            <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
+              name="editUserLastName" required class="border p-2 w-full rounded-md"
+              [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
+              Last Name is required
+            </span>
+          </div>
+  
+          <!-- Email ID -->
+          <div class="form-group">
+            <label>Email ID*</label>
+            <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel" name="editUserEmail"
+              required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              class="border p-2 w-full rounded-md"
+              [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
+              Valid Email is required
+            </span>
+          </div>
+  
+          <!-- Contact Number -->
+          <div class="form-group">
+            <label>Contact Number*</label>
+            <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel" name="editUserContact"
+              required pattern="^[0-9]{10}$" class="border p-2 w-full rounded-md"
+              [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
+              Enter a valid 10-digit phone number
+            </span>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" (click)="closeEmployeeEditModal()">Cancel</button>
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
         </div>
         <!-- <th class="border p-2">Emergency Contact</th>
                     <th class="border p-2">Role</th> -->
@@ -530,6 +612,8 @@
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ department.department_name }}</td>
                             <td class="border p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="openDepartmentEditModal(department)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteDepartment(department.department_id)">Delete</button>
                             </td>
@@ -538,9 +622,35 @@
                 </table>
             </div>
         </div>
+        <!-- Add this modal for editing department -->
+        <div *ngIf="isEditDepartmentModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-1/3">
+                <h3 class="text-xl font-semibold mb-4">Edit Department</h3>
+                <form #editDepartmentForm="ngForm"
+                    (submit)="updateDepartment(editDepartmentForm); $event.preventDefault()">
+                    <div class="form-group">
+                        <label>Department Name*</label>
+                        <input type="text" [(ngModel)]="editDepartmentName" #editDepartmentNameField="ngModel"
+                            name="editDepartmentName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editDepartmentNameField.invalid && editDepartmentNameField.touched) || (editDepartmentForm.submitted && editDepartmentNameField.invalid)}" />
+                        <span class="text-red-500 text-sm"
+                            *ngIf="editDepartmentNameField.invalid && (editDepartmentNameField.touched || editDepartmentForm.submitted)">
+                            Department Name is required.
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeDepartmentEditModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update
+                            Department</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <!-- Position Section -->
+    <!-- Project Role Section -->
     <div *ngIf="selectedSection === 'project_role'">
         <h3 class="text-xl font-semibold mb-4">Add New Project Role</h3>
 
@@ -578,6 +688,8 @@
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ projectRole.project_role_name }}</td>
                             <td class="border p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="openProjectRoleEditModal(projectRole)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteProjectRole(projectRole.project_role_id)">Delete</button>
                             </td>
@@ -586,6 +698,36 @@
                 </table>
             </div>
         </div>
+
+        <!-- Edit Modal -->
+        <div *ngIf="isProjectRoleEditModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            (click)="closeProjectRoleEditModal()">
+            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+                <h3 class="text-xl font-semibold mb-4">Edit Project Role</h3>
+                <form #editProjectRoleForm="ngForm"
+                    (submit)="updateProjectRole(editProjectRoleForm); $event.preventDefault()">
+                    <div class="form-group">
+                        <label>Project Role Name*</label>
+                        <input type="text" [(ngModel)]="editProjectRoleName" #editProjectRoleNameField="ngModel"
+                            name="editProjectRoleName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editProjectRoleNameField.invalid && editProjectRoleNameField.touched) || (editProjectRoleForm.submitted && editProjectRoleNameField.invalid)}" />
+                        <span class="text-red-500 text-sm"
+                            *ngIf="editProjectRoleNameField.invalid && (editProjectRoleNameField.touched || editProjectRoleForm.submitted)">
+                            Project Role Name is required.
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeProjectRoleEditModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Project
+                            Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
     </div>
 
 
@@ -627,12 +769,42 @@
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ designation.designation_name }}</td>
                             <td class="border p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="editDesignationModule(designation)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteDesignation(designation.designation_id)">Delete</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div *ngIf="isDesignationModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            (click)="closeDesignationModule()">
+            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+                <h3 class="text-xl font-semibold mb-4">Edit Designation</h3>
+                <form #editDesignationForm="ngForm"
+                    (submit)="updateDesignation(editDesignationForm); $event.preventDefault()">
+                    <div class="form-group">
+                        <label>Designation Name*</label>
+                        <input type="text" [(ngModel)]="editDesignationName" #editDesignationNameField="ngModel"
+                            name="editDesignationName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editDesignationNameField.invalid && editDesignationNameField.touched) || (editDesignationForm.submitted && editDesignationNameField.invalid)}" />
+                        <span class="text-red-500 text-sm"
+                            *ngIf="editDesignationNameField.invalid && (editDesignationNameField.touched || editDesignationForm.submitted)">
+                            Designation Name is required.
+                        </span>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeDesignationModule()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update
+                            Designation</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -715,12 +887,68 @@
                             <td class="border p-2">{{ skill.skill_description }}</td>
 
                             <td class="border p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="openEditSkillModal(skill)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteSkill(skill.skill_id)">Delete</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div *ngIf="isSkillModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            (click)="closeSkillModal()">
+            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+                <h3 class="text-xl font-semibold mb-4">Edit Skill</h3>
+                <form #editSkillForm="ngForm" (submit)="updateSkill(editSkillForm); $event.preventDefault()">
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- Skill Name -->
+                        <div class="form-group">
+                            <label>Skill Name*</label>
+                            <input type="text" [(ngModel)]="editSkillName" #editSkillNameField="ngModel"
+                                name="editSkillName" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editSkillNameField.invalid && editSkillNameField.touched) || (editSkillForm.submitted && editSkillNameField.invalid)}" />
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editSkillNameField.invalid && (editSkillNameField.touched || editSkillForm.submitted)">
+                                Skill Name is required.
+                            </span>
+                        </div>
+
+                        <!-- Skill Category -->
+                        <div class="form-group">
+                            <label>Skill Category*</label>
+                            <select [(ngModel)]="editSkillCategory" #editSkillCategoryField="ngModel"
+                                name="editSkillCategory" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editSkillCategoryField.invalid && editSkillCategoryField.touched) || (editSkillForm.submitted && editSkillCategoryField.invalid)}">
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="technical">Technical</option>
+                                <option value="soft-skill">Soft Skill</option>
+                                <option value="management">Management</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editSkillCategoryField.invalid && (editSkillCategoryField.touched || editSkillForm.submitted)">
+                                Skill Category is required.
+                            </span>
+                        </div>
+
+                        <!-- Skill Description -->
+                        <div class="form-group">
+                            <label>Skill Description</label>
+                            <textarea [(ngModel)]="editSkillDescription" name="editSkillDescription"
+                                class="border p-2 w-full rounded-md" rows="1"
+                                placeholder="Enter skill details..."></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeSkillModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Skill</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -833,12 +1061,88 @@
                             <td class="border p-2">{{ manager.from_date | date:'dd-MMM-yyyy' }}</td>
                             <td class="border p-2">{{ manager.till_date | date:'dd-MMM-yyyy' }}</td>
                             <td class="border p-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="openEditModal(manager)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteReportingManager(manager.reporting_manager_history_id)">Delete</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            (click)="closeEditModal()">
+            <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
+                <h3 class="text-xl font-semibold mb-4">Edit Reporting Manager History</h3>
+                <form #editReportingManagerForm="ngForm"
+                    (ngSubmit)="updateReportingManager(editReportingManagerForm); $event.preventDefault()">
+                    <div class="grid grid-cols-4 gap-4">
+                        <!-- Employee Name Dropdown -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Employee Name*</label>
+                            <select [(ngModel)]="editEmployeeId" #editEmployeeField="ngModel" name="editEmployee"
+                                required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editEmployeeField.invalid && editEmployeeField.touched) || (editReportingManagerForm.submitted && editEmployeeField.invalid)}">
+                                <option value="" disabled selected>Select Employee</option>
+                                <option *ngFor="let user of optionUsers" [value]="user.user_id">
+                                    {{ user.user_first_name }} {{ user.user_last_name }}
+                                </option>
+                            </select>
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editEmployeeField.invalid && (editEmployeeField.touched || editReportingManagerForm.submitted)">
+                                Employee Name is required.
+                            </span>
+                        </div>
+
+                        <!-- Reporting Manager Dropdown -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Reporting Manager*</label>
+                            <select [(ngModel)]="editReportingManagerId" #editManagerField="ngModel"
+                                name="editReportingManager" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editManagerField.invalid && editManagerField.touched) || (editReportingManagerForm.submitted && editManagerField.invalid)}">
+                                <option value="" disabled selected>Select Reporting Manager</option>
+                                <option *ngFor="let user of optionUsers" [value]="user.user_id">
+                                    {{ user.user_first_name }} {{ user.user_last_name }}
+                                </option>
+                            </select>
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editManagerField.invalid && (editManagerField.touched || editReportingManagerForm.submitted)">
+                                Reporting Manager is required.
+                            </span>
+                        </div>
+
+                        <!-- From Date -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">From Date*</label>
+                            <input type="date" [(ngModel)]="editFromDate" #editFromDateField="ngModel"
+                                name="editFromDate" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editFromDateField.invalid && editFromDateField.touched) || (editReportingManagerForm.submitted && editFromDateField.invalid)}" />
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editFromDateField.invalid && (editFromDateField.touched || editReportingManagerForm.submitted)">
+                                From Date is required.
+                            </span>
+                        </div>
+
+                        <!-- Till Date -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Till Date*</label>
+                            <input type="date" [(ngModel)]="editTillDate" #editTillDateField="ngModel"
+                                name="editTillDate" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editTillDateField.invalid && editTillDateField.touched) || (editReportingManagerForm.submitted && editTillDateField.invalid)}" />
+                            <span class="text-red-500 text-sm"
+                                *ngIf="editTillDateField.invalid && (editTillDateField.touched || editReportingManagerForm.submitted)">
+                                Till Date is required.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeEditModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

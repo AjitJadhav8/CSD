@@ -47,32 +47,32 @@ class OrgController {
             LEFT JOIN master_user u ON p.project_manager_id = u.user_id
             WHERE p.is_deleted = 0
         `;
-        
+
             const projectDeliverablesQuery = `
         SELECT 
             pd_id, customer_id, project_id, project_deliverable_name 
         FROM master_project_deliverables WHERE is_deleted = 0
         `;
 
-        const taskCategoryQuery = `
+            const taskCategoryQuery = `
         SELECT 
             task_cat_id, task_category_name 
         FROM master_task_category WHERE is_deleted = 0
         `;
 
-        const projectRoleQuery = `
+            const projectRoleQuery = `
         SELECT 
             project_role_id, project_role_name, is_deleted, created_at, updated_at
         FROM master_project_role WHERE is_deleted = 0
     `;
-    
-    const designationQuery = `
+
+            const designationQuery = `
     SELECT 
         designation_id, designation_name, is_deleted, created_at, updated_at
     FROM master_designation WHERE is_deleted = 0
 `;
-    // New query for master_category
-    const masterCategoryQuery = `
+            // New query for master_category
+            const masterCategoryQuery = `
     SELECT 
         category_id, sector, industry, domain, is_deleted, created_at, updated_at
     FROM master_category WHERE is_deleted = 0
@@ -81,7 +81,7 @@ class OrgController {
 
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory ] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -144,14 +144,14 @@ class OrgController {
                 }),
                 new Promise((resolve, reject) => {
                     db.query(projectRoleQuery, (err: any, results: any) => {
-                        if (err) reject(err) ;
-                         resolve(results);
+                        if (err) reject(err);
+                        resolve(results);
                     });
                 }),
                 new Promise((resolve, reject) => {
                     db.query(designationQuery, (err: any, results: any) => {
-                        if (err) reject(err) ;
-                         resolve(results);
+                        if (err) reject(err);
+                        resolve(results);
                     });
                 }),
                 new Promise((resolve, reject) => {
@@ -164,8 +164,10 @@ class OrgController {
             ]);
 
             // Return roles, departments, and user info in the response
-            res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
-                taskCategories,projectRole,designation,  masterCategory });
+            res.status(200).json({
+                roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables,
+                taskCategories, projectRole, designation, masterCategory
+            });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -496,154 +498,253 @@ class OrgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+    async updateDepartment(req: Request, res: Response): Promise<void> {
+        try {
+            const { departmentId } = req.params;
+            const { department_name } = req.body;
 
-    // ---- Position --------
+            if (!department_name) {
+                res.status(400).json({ error: 'Department name is required' });
+                return;
+            }
+
+            const updateQuery = `
+            UPDATE master_department
+            SET department_name = ?, updated_at = NOW()
+            WHERE department_id = ?`;
+
+            db.query(updateQuery, [department_name, departmentId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating department:', err);
+                    res.status(500).json({ error: 'Error updating department' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Department not found' });
+                }
+
+                res.status(200).json({ message: 'Department updated successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // ---- Project Role --------
 
     async addProjectRole(req: Request, res: Response): Promise<void> {
         try {
-          const { project_role_name } = req.body;
-      
-          if (!project_role_name) {
-            res.status(400).json({ error: 'Project role name is required' });
-            return;
-          }
-      
-          const insertQuery = `
+            const { project_role_name } = req.body;
+
+            if (!project_role_name) {
+                res.status(400).json({ error: 'Project role name is required' });
+                return;
+            }
+
+            const insertQuery = `
             INSERT INTO master_project_role (project_role_name)
             VALUES (?)`;
-      
-          db.query(insertQuery, [project_role_name], (err: any, result: any) => {
-            if (err) {
-              console.error('Error adding project role:', err);
-              res.status(500).json({ error: 'Error adding project role' });
-              return;
-            }
-            res.status(201).json({ message: 'Project role added successfully', project_role_id: result.insertId });
-          });
+
+            db.query(insertQuery, [project_role_name], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error adding project role:', err);
+                    res.status(500).json({ error: 'Error adding project role' });
+                    return;
+                }
+                res.status(201).json({ message: 'Project role added successfully', project_role_id: result.insertId });
+            });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
-      
-      async getAllProjectRoles(req: Request, res: Response): Promise<void> {
+    }
+
+    async getAllProjectRoles(req: Request, res: Response): Promise<void> {
         try {
-          const query = `
+            const query = `
             SELECT project_role_id, project_role_name
             FROM master_project_role
             WHERE is_deleted = 0
             ORDER BY project_role_id DESC`;
-      
-          db.query(query, (err, results) => {
-            if (err) {
-              console.error('Error fetching project roles:', err);
-              return res.status(500).json({ error: 'Error fetching project roles' });
-            }
-            res.status(200).json(results);
-          });
+
+            db.query(query, (err, results) => {
+                if (err) {
+                    console.error('Error fetching project roles:', err);
+                    return res.status(500).json({ error: 'Error fetching project roles' });
+                }
+                res.status(200).json(results);
+            });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
-      
-      async softDeleteProjectRole(req: Request, res: Response): Promise<void> {
+    }
+
+    async softDeleteProjectRole(req: Request, res: Response): Promise<void> {
         try {
-          const { projectRoleId } = req.params;
-      
-          const updateQuery = `UPDATE master_project_role SET is_deleted = 1 WHERE project_role_id = ?`;
-      
-          db.query(updateQuery, [projectRoleId], (err: any, result: any) => {
-            if (err) {
-              console.error('Error deleting project role:', err);
-              return res.status(500).json({ error: 'Error deleting project role' });
-            }
-      
-            if (result.affectedRows === 0) {
-              return res.status(404).json({ error: 'Project role not found' });
-            }
-      
-            res.status(200).json({ message: 'Project role soft deleted successfully' });
-          });
+            const { projectRoleId } = req.params;
+
+            const updateQuery = `UPDATE master_project_role SET is_deleted = 1 WHERE project_role_id = ?`;
+
+            db.query(updateQuery, [projectRoleId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error deleting project role:', err);
+                    return res.status(500).json({ error: 'Error deleting project role' });
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Project role not found' });
+                }
+
+                res.status(200).json({ message: 'Project role soft deleted successfully' });
+            });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
+    async updateProjectRole(req: Request, res: Response): Promise<void> {
+        try {
+            const { projectRoleId } = req.params;
+            const { project_role_name } = req.body;
 
-          // ---- Designation --------
+            if (!project_role_name) {
+                res.status(400).json({ error: 'Project role name is required' });
+                return;
+            }
 
-          async addDesignation(req: Request, res: Response): Promise<void> {
-            try {
-              const { designation_name } = req.body;
-          
-              if (!designation_name) {
+            const updateQuery = `
+            UPDATE master_project_role
+            SET project_role_name = ?, updated_at = NOW()
+            WHERE project_role_id = ?`;
+
+            db.query(updateQuery, [project_role_name, projectRoleId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating project role:', err);
+                    res.status(500).json({ error: 'Error updating project role' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Project role not found' });
+                }
+
+                res.status(200).json({ message: 'Project role updated successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // ---- Designation --------
+
+    async addDesignation(req: Request, res: Response): Promise<void> {
+        try {
+            const { designation_name } = req.body;
+
+            if (!designation_name) {
                 res.status(400).json({ error: 'Designation name is required' });
                 return;
-              }
-          
-              const insertQuery = `
+            }
+
+            const insertQuery = `
                 INSERT INTO master_designation (designation_name)
                 VALUES (?)`;
-          
-              db.query(insertQuery, [designation_name], (err: any, result: any) => {
+
+            db.query(insertQuery, [designation_name], (err: any, result: any) => {
                 if (err) {
-                  console.error('Error adding designation:', err);
-                  res.status(500).json({ error: 'Error adding designation' });
-                  return;
+                    console.error('Error adding designation:', err);
+                    res.status(500).json({ error: 'Error adding designation' });
+                    return;
                 }
                 res.status(201).json({ message: 'Designation added successfully', designation_id: result.insertId });
-              });
-            } catch (error) {
-              console.error('Error:', error);
-              res.status(500).json({ error: 'Internal Server Error' });
-            }
-          }
-          
-          async getAllDesignations(req: Request, res: Response): Promise<void> {
-            try {
-              const query = `
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getAllDesignations(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
                 SELECT designation_id, designation_name
                 FROM master_designation
                 WHERE is_deleted = 0
                 ORDER BY designation_id DESC`;
-          
-              db.query(query, (err, results) => {
+
+            db.query(query, (err, results) => {
                 if (err) {
-                  console.error('Error fetching designations:', err);
-                  return res.status(500).json({ error: 'Error fetching designations' });
+                    console.error('Error fetching designations:', err);
+                    return res.status(500).json({ error: 'Error fetching designations' });
                 }
                 res.status(200).json(results);
-              });
-            } catch (error) {
-              console.error('Error:', error);
-              res.status(500).json({ error: 'Internal Server Error' });
-            }
-          }
-          
-          async softDeleteDesignation(req: Request, res: Response): Promise<void> {
-            try {
-              const { designationId } = req.params;
-          
-              const updateQuery = `UPDATE master_designation SET is_deleted = 1 WHERE designation_id = ?`;
-          
-              db.query(updateQuery, [designationId], (err: any, result: any) => {
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async softDeleteDesignation(req: Request, res: Response): Promise<void> {
+        try {
+            const { designationId } = req.params;
+
+            const updateQuery = `UPDATE master_designation SET is_deleted = 1 WHERE designation_id = ?`;
+
+            db.query(updateQuery, [designationId], (err: any, result: any) => {
                 if (err) {
-                  console.error('Error deleting designation:', err);
-                  return res.status(500).json({ error: 'Error deleting designation' });
+                    console.error('Error deleting designation:', err);
+                    return res.status(500).json({ error: 'Error deleting designation' });
                 }
-          
+
                 if (result.affectedRows === 0) {
-                  return res.status(404).json({ error: 'Designation not found' });
+                    return res.status(404).json({ error: 'Designation not found' });
                 }
-          
+
                 res.status(200).json({ message: 'Designation soft deleted successfully' });
-              });
-            } catch (error) {
-              console.error('Error:', error);
-              res.status(500).json({ error: 'Internal Server Error' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async updateDesignation(req: Request, res: Response): Promise<void> {
+        try {
+            const { designationId } = req.params;
+            const { designation_name } = req.body;
+
+            if (!designation_name) {
+                res.status(400).json({ error: 'Designation name is required' });
+                return;
             }
-          }
+
+            const updateQuery = `
+                UPDATE master_designation
+                SET designation_name = ?, updated_at = NOW()
+                WHERE designation_id = ?`;
+
+            db.query(updateQuery, [designation_name, designationId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating designation:', err);
+                    res.status(500).json({ error: 'Error updating designation' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Designation not found' });
+                }
+
+                res.status(200).json({ message: 'Designation updated successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
     // ---- Employee --------
 
@@ -653,10 +754,10 @@ class OrgController {
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact, user_password
             } = req.body;
-    
+
             // Default password if not provided
             const password = user_password ? user_password : '123';
-    
+
             // SQL query to insert the new employee into the database
             const query = `
                 INSERT INTO master_user (
@@ -665,12 +766,12 @@ class OrgController {
                 ) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
-    
+
             const values = [
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact, password
             ];
-    
+
             // Insert the data into the database
             db.query(query, values, (err: any, result: any) => {
                 if (err) {
@@ -702,13 +803,13 @@ class OrgController {
                 is_timesheet_required,
                 reporting_manager_id
             } = req.body;
-    
+
             // Validate required fields
             if (!user_id) {
                 res.status(400).json({ error: "User ID is required" });
                 return;
             }
-    
+
             // Update master_user table with personal details
             const updateMasterUserQuery = `
                 UPDATE master_user
@@ -722,7 +823,7 @@ class OrgController {
                     user_DOJ = ?
                 WHERE user_id = ?
             `;
-    
+
             const masterUserValues = [
                 user_emergency_contact,
                 is_passport,
@@ -733,7 +834,7 @@ class OrgController {
                 user_DOJ,
                 user_id
             ];
-    
+
             // Execute the update query for master_user
             db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
                 if (err) {
@@ -741,19 +842,19 @@ class OrgController {
                     res.status(500).json({ error: "Error updating employee details" });
                     return;
                 }
-    
+
                 // Check if a record already exists in trans_user_details for the given user_id
                 const checkRecordQuery = `
                     SELECT * FROM trans_user_details WHERE user_id = ?
                 `;
-    
+
                 db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
                     if (err) {
                         console.error("Error checking trans_user_details:", err);
                         res.status(500).json({ error: "Error checking trans_user_details" });
                         return;
                     }
-    
+
                     if (result.length > 0) {
                         // Record exists, perform UPDATE
                         const updateTransUserDetailsQuery = `
@@ -767,7 +868,7 @@ class OrgController {
                                 reporting_manager_id = ?
                             WHERE user_id = ?
                         `;
-    
+
                         const updateValues = [
                             role_id,
                             department_id,
@@ -776,7 +877,7 @@ class OrgController {
                             reporting_manager_id,
                             user_id
                         ];
-    
+
                         db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error updating trans_user_details:", err);
@@ -793,16 +894,16 @@ class OrgController {
                             )
                         VALUES (?, ?, ?, ?, ?, ?)
                         `;
-    
+
                         const insertValues = [
                             user_id,
                             role_id,
                             department_id,
-                            designation_id, 
+                            designation_id,
                             is_timesheet_required,
                             reporting_manager_id
                         ];
-    
+
                         db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error inserting trans_user_details:", err);
@@ -854,7 +955,7 @@ class OrgController {
             LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
             WHERE u.is_deleted = 0
             ORDER BY u.user_id DESC 
-    `; 
+    `;
 
             db.query(query, (err, results) => {
                 if (err) {
@@ -871,7 +972,7 @@ class OrgController {
     async getEmployeeDetails(req: Request, res: Response): Promise<void> {
         try {
             const { userId } = req.params;
-    
+
             // Query to fetch employee details from master_user and trans_user_details
             const query = `
                 SELECT 
@@ -883,18 +984,18 @@ class OrgController {
                 LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
                 WHERE mu.user_id = ?
             `;
-    
+
             // Execute the query
             db.query(query, [userId], (err: any, result: any) => {
                 if (err) {
                     console.error('Error fetching employee details:', err);
                     return res.status(500).json({ error: 'Error fetching employee details' });
                 }
-    
+
                 if (result.length === 0) {
                     return res.status(404).json({ error: 'Employee not found' });
                 }
-    
+
                 // Return the employee details
                 res.status(200).json(result[0]);
             });
@@ -928,11 +1029,59 @@ class OrgController {
         }
     }
 
-    
+    async updateEmployee(req: Request, res: Response): Promise<void> {
+        try {
+          const { employeeId } = req.params;
+          const {
+            user_code, user_first_name, user_middle_name, user_last_name,
+            user_email, user_contact
+          } = req.body;
+      
+          if (!user_code || !user_first_name || !user_last_name || !user_email || !user_contact) {
+            res.status(400).json({ error: 'All required fields must be filled' });
+            return;
+          }
+      
+          const updateQuery = `
+            UPDATE master_user
+            SET 
+              user_code = ?,
+              user_first_name = ?,
+              user_middle_name = ?,
+              user_last_name = ?,
+              user_email = ?,
+              user_contact = ?,
+              updated_at = NOW()
+            WHERE user_id = ?`;
+      
+          const values = [
+            user_code, user_first_name, user_middle_name, user_last_name,
+            user_email, user_contact, employeeId
+          ];
+      
+          db.query(updateQuery, values, (err: any, result: any) => {
+            if (err) {
+              console.error('Error updating employee:', err);
+              res.status(500).json({ error: 'Error updating employee' });
+              return;
+            }
+      
+            if (result.affectedRows === 0) {
+              return res.status(404).json({ error: 'Employee not found' });
+            }
+      
+            res.status(200).json({ message: 'Employee updated successfully' });
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
 
-    
-    
-    
+
+
+
+
 
     // ---- Skill --------
 
@@ -1006,6 +1155,39 @@ class OrgController {
                 }
 
                 res.status(200).json({ message: 'Skill soft deleted successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async updateSkill(req: Request, res: Response): Promise<void> {
+        try {
+            const { skillId } = req.params;
+            const { skill_name, skill_category, skill_description } = req.body;
+
+            if (!skill_name || !skill_category) {
+                res.status(400).json({ error: 'Skill Name and Category are required' });
+                return;
+            }
+
+            const updateQuery = `
+            UPDATE master_skill
+            SET skill_name = ?, skill_category = ?, skill_description = ?, updated_at = NOW()
+            WHERE skill_id = ?`;
+
+            db.query(updateQuery, [skill_name, skill_category, skill_description, skillId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating skill:', err);
+                    res.status(500).json({ error: 'Error updating skill' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Skill not found' });
+                }
+
+                res.status(200).json({ message: 'Skill updated successfully' });
             });
         } catch (error) {
             console.error('Error:', error);
@@ -1092,6 +1274,39 @@ class OrgController {
                 }
 
                 res.status(200).json({ message: 'Reporting manager history entry soft deleted successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async updateReportingManagerHistory(req: Request, res: Response): Promise<void> {
+        try {
+            const { managerId } = req.params;
+            const { employee_id, reporting_manager_id, from_date, till_date } = req.body;
+
+            if (!employee_id || !reporting_manager_id || !from_date || !till_date) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            const updateQuery = `
+            UPDATE trans_reporting_manager_history
+            SET employee_id = ?, reporting_manager_id = ?, from_date = ?, till_date = ?, updated_at = NOW()
+            WHERE reporting_manager_history_id = ?`;
+
+            db.query(updateQuery, [employee_id, reporting_manager_id, from_date, till_date, managerId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating reporting manager history:', err);
+                    res.status(500).json({ error: 'Error updating reporting manager history' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Reporting manager history entry not found' });
+                }
+
+                res.status(200).json({ message: 'Reporting manager history updated successfully' });
             });
         } catch (error) {
             console.error('Error:', error);

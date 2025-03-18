@@ -32,24 +32,28 @@ router.delete('/customer/category/:categoryId', orgController.softDeleteCategory
 router.post('/department', orgController.addDepartment);
 router.get('/departments', orgController.getAllDepartments);
 router.delete('/departments/:departmentId', orgController.softDeleteDepartment);
+router.put('/departments/:departmentId', orgController.updateDepartment);
 
-// ---- Position --------
+// ---- Project Role --------
 
 router.post('/project-role', orgController.addProjectRole);
 router.get('/project-roles', orgController.getAllProjectRoles);
 router.delete('/project-roles/:projectRoleId', orgController.softDeleteProjectRole);
+router.put('/project-roles/:projectRoleId', orgController.updateProjectRole);
 
 // ---- Designation --------
 
 router.post('/designation', orgController.addDesignation);
 router.get('/designations', orgController.getAllDesignations);
 router.delete('/designations/:designationId', orgController.softDeleteDesignation);
+router.put('/designations/:designationId', orgController.updateDesignation);
 
 // ---- Skills --------
 
 router.post('/skill', orgController.addSkill);
 router.get('/skills', orgController.getAllSkills);
 router.delete('/skills/:skillId', orgController.softDeleteSkill);
+router.put('/skills/:skillId', orgController.updateSkill);
 
 
 
@@ -64,12 +68,14 @@ router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
 
 router.post('/assign-details', orgController.assignDetails);
 router.get('/employees/:userId', orgController.getEmployeeDetails);
+router.put('/employee/:employeeId', orgController.updateEmployee);
 
 // ---- Reporting Manager History --------
 
 router.post('/reporting-manager-history', orgController.addReportingManagerHistory);
 router.get('/reporting-manager-history', orgController.getReportingManagerHistory);
 router.delete('/reporting-manager-history/:managerId', orgController.softDeleteReportingManager);
+router.put('/reporting-manager-history/:managerId', orgController.updateReportingManagerHistory);
 
 // ---- Project --------
 

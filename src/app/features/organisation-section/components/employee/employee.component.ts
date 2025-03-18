@@ -18,7 +18,7 @@ export class EmployeeComponent {
   ngOnInit(): void {
     this.selectedSection = 'employee';
     localStorage.setItem('selectedEmployeeSection', 'employee');
-  
+
     // Load section from localStorage
     this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
 
@@ -68,7 +68,6 @@ export class EmployeeComponent {
   // ------------------ Department ------------------------
 
   departmentName = '';
-
 
   // Fetch departments data from the backend
   fetchDepartments(): void {
@@ -155,6 +154,59 @@ export class EmployeeComponent {
         );
       }
     });
+  }
+  isEditDepartmentModalOpen = false;
+  editDepartmentName = '';
+  editDepartmentId: number | null = null;
+  // Open Edit Modal
+  openDepartmentEditModal(department: any): void {
+    this.editDepartmentName = department.department_name;
+    this.editDepartmentId = department.department_id;
+    this.isEditDepartmentModalOpen = true;
+  }
+
+  // Close Edit Modal
+  closeDepartmentEditModal(): void {
+    this.isEditDepartmentModalOpen = false;
+    this.editDepartmentName = '';
+    this.editDepartmentId = null;
+  }
+
+  // Update Department
+  updateDepartment(editDepartmentForm: NgForm): void {
+    if (editDepartmentForm.invalid || !this.editDepartmentId) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Department Name is required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    this.dataService.updateDepartment(this.editDepartmentId, this.editDepartmentName).subscribe(
+      (response) => {
+        this.fetchDepartments();
+        console.log('Department updated:', response);
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Department updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.closeDepartmentEditModal();
+      },
+      (error) => {
+        console.error('Error updating department:', error);
+      }
+    );
   }
 
 
@@ -247,94 +299,199 @@ export class EmployeeComponent {
       }
     });
   }
-
-  // ------------------ Designation ------------------------
-
-  designationName = '';
-designations: any[] = [];
-
-fetchDesignations(): void {
-  this.dataService.getAllDesignations().subscribe(
-    (response) => {
-      console.log('Designations Response:', response);
-      this.designations = response;  // Assuming the response contains the designations data
-    },
-    (error) => {
-      console.error('Error fetching designations:', error);
-    }
-  );
-}
-
-submitDesignation(designationForm: NgForm): void {
-  if (designationForm.invalid) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'warning',
-      title: 'Designation Name is required!',
-      showConfirmButton: false,
-      timer: 3000
-    });
-    return;
+  editProjectRoleName = '';
+  editProjectRoleId: number | null = null;
+  isProjectRoleEditModalOpen = false;
+  // Open Edit Modal
+  openProjectRoleEditModal(projectRole: any): void {
+    this.editProjectRoleName = projectRole.project_role_name;
+    this.editProjectRoleId = projectRole.project_role_id;
+    this.isProjectRoleEditModalOpen = true;
   }
 
-  this.dataService.addDesignation(this.designationName).subscribe(
-    (response) => {
-      this.fetchDesignations();
-      console.log('Designation added:', response);
+  // Close Edit Modal
+  closeProjectRoleEditModal(): void {
+    this.isProjectRoleEditModalOpen = false;
+    this.editProjectRoleName = '';
+    this.editProjectRoleId = null;
+  }
 
-      // Success Toast Notification
+  // Update Project Role
+  updateProjectRole(editProjectRoleForm: NgForm): void {
+    if (editProjectRoleForm.invalid || !this.editProjectRoleId) {
       Swal.fire({
         toast: true,
         position: 'top-end',
-        icon: 'success',
-        title: 'Designation added successfully!',
+        icon: 'warning',
+        title: 'Project Role Name is required!',
         showConfirmButton: false,
         timer: 3000
       });
-
-      this.designationName = ''; // Reset input field
-      designationForm.resetForm(); // Reset form validation
-    },
-    (error) => {
-      console.error('Error adding designation:', error);
+      return;
     }
-  );
-}
 
-deleteDesignation(designationId: number): void {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This designation will be deleted!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.dataService.deleteDesignation(designationId).subscribe(
-        () => {
-          console.log('Designation deleted successfully');
-          this.fetchDesignations();
+    this.dataService.updateProjectRole(this.editProjectRoleId, this.editProjectRoleName).subscribe(
+      (response) => {
+        this.fetchProjectRoles();
+        console.log('Project Role updated:', response);
 
-          // Success Toast Notification
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Designation deleted successfully!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-        },
-        (error) => {
-          console.error('Error deleting designation:', error);
-        }
-      );
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project Role updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.closeProjectRoleEditModal();
+      },
+      (error) => {
+        console.error('Error updating project role:', error);
+      }
+    );
+  }
+  // ------------------ Designation ------------------------
+
+  designationName = '';
+  designations: any[] = [];
+
+  fetchDesignations(): void {
+    this.dataService.getAllDesignations().subscribe(
+      (response) => {
+        console.log('Designations Response:', response);
+        this.designations = response;  // Assuming the response contains the designations data
+      },
+      (error) => {
+        console.error('Error fetching designations:', error);
+      }
+    );
+  }
+
+  submitDesignation(designationForm: NgForm): void {
+    if (designationForm.invalid) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Designation Name is required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
     }
-  });
-}
+
+    this.dataService.addDesignation(this.designationName).subscribe(
+      (response) => {
+        this.fetchDesignations();
+        console.log('Designation added:', response);
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Designation added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.designationName = ''; // Reset input field
+        designationForm.resetForm(); // Reset form validation
+      },
+      (error) => {
+        console.error('Error adding designation:', error);
+      }
+    );
+  }
+
+  deleteDesignation(designationId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This designation will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteDesignation(designationId).subscribe(
+          () => {
+            console.log('Designation deleted successfully');
+            this.fetchDesignations();
+
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Designation deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          (error) => {
+            console.error('Error deleting designation:', error);
+          }
+        );
+      }
+    });
+  }
+  editDesignationName = '';
+  editDesignationId: number | null = null;
+  isDesignationModalOpen = false;
+  // Open Edit Modal
+  editDesignationModule(designation: any): void {
+    this.editDesignationName = designation.designation_name;
+    this.editDesignationId = designation.designation_id;
+    this.isDesignationModalOpen = true;
+  }
+
+  // Close Edit Modal
+  closeDesignationModule(): void {
+    this.isDesignationModalOpen = false;
+    this.editDesignationName = '';
+    this.editDesignationId = null;
+  }
+
+  // Update Designation
+  updateDesignation(editDesignationForm: NgForm): void {
+    if (editDesignationForm.invalid || !this.editDesignationId) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Designation Name is required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    this.dataService.updateDesignation(this.editDesignationId, this.editDesignationName).subscribe(
+      (response) => {
+        this.fetchDesignations();
+        console.log('Designation updated:', response);
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Designation updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.closeDesignationModule();
+      },
+      (error) => {
+        console.error('Error updating designation:', error);
+      }
+    );
+  }
 
 
 
@@ -438,6 +595,72 @@ deleteDesignation(designationId: number): void {
     });
   }
 
+  editSkillName = '';
+  editSkillCategory = '';
+  editSkillDescription = '';
+  editSkillId: number | null = null;
+  isSkillModalOpen = false;
+  // Open Edit Modal
+  openEditSkillModal(skill: any): void {
+    this.editSkillName = skill.skill_name;
+    this.editSkillCategory = skill.skill_category;
+    this.editSkillDescription = skill.skill_description;
+    this.editSkillId = skill.skill_id;
+    this.isSkillModalOpen = true;
+  }
+
+  // Close Edit Modal
+  closeSkillModal(): void {
+    this.isSkillModalOpen = false;
+    this.editSkillName = '';
+    this.editSkillCategory = '';
+    this.editSkillDescription = '';
+    this.editSkillId = null;
+  }
+
+  // Update Skill
+  updateSkill(editSkillForm: NgForm): void {
+    if (editSkillForm.invalid || !this.editSkillId) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Skill Name and Category are required!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    const skillData = {
+      skill_name: this.editSkillName.trim(),
+      skill_category: this.editSkillCategory,
+      skill_description: this.editSkillDescription?.trim() || null,
+    };
+
+    this.dataService.updateSkill(this.editSkillId, skillData).subscribe(
+      (response) => {
+        console.log('Skill updated:', response);
+        this.fetchSkills();
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Skill updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.closeSkillModal();
+      },
+      (error) => {
+        console.error('Error updating skill:', error);
+      }
+    );
+  }
+
 
   // ------------------ Employee ------------------------
 
@@ -449,8 +672,8 @@ deleteDesignation(designationId: number): void {
     user_email: '',
     user_contact: '',
     selectedUserId: null, // Add this property
-    user_code:'',
-  selectedReportingManagerId: null // Add this property
+    user_code: '',
+    selectedReportingManagerId: null // Add this property
   };
   reportingManagers: any[] = [];
   assignDetailsData = {
@@ -518,44 +741,44 @@ deleteDesignation(designationId: number): void {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
-}
+  }
 
   assignDetails(employee: any): void {
     // Fetch employee details from the backend
     this.dataService.getEmployeeDetails(employee.user_id).subscribe(
-        (data) => {
+      (data) => {
 
-          const formattedDOB = this.formatDate(data.user_DOB);
-          const formattedDOJ = this.formatDate(data.user_DOJ);
+        const formattedDOB = this.formatDate(data.user_DOB);
+        const formattedDOJ = this.formatDate(data.user_DOJ);
 
-            // Populate assignDetailsData with the fetched data
-            this.assignDetailsData = {
-                user_id: data.user_id,
-                user_first_name: data.user_first_name,
-                user_last_name: data.user_last_name,
-                user_emergency_contact: data.user_emergency_contact || '',
-                is_passport: data.is_passport || null,
-                passport_validity: data.passport_validity || null,
-                user_current_address: data.user_current_address || '',
-                user_DOB: formattedDOB, // Use formatted date
-                user_blood_group: data.user_blood_group || '',
-                user_DOJ: formattedDOJ, // Use formatted date
-                reporting_manager_id: data.reporting_manager_id || null,
-                designation_id: data.designation_id || null,
-                is_timesheet_required: data.is_timesheet_required || null,
-                department_id: data.department_id || null,
-                role_id: data.role_id || null
-            };
-            console.log('assssign', this.assignDetailsData);
+        // Populate assignDetailsData with the fetched data
+        this.assignDetailsData = {
+          user_id: data.user_id,
+          user_first_name: data.user_first_name,
+          user_last_name: data.user_last_name,
+          user_emergency_contact: data.user_emergency_contact || '',
+          is_passport: data.is_passport || null,
+          passport_validity: data.passport_validity || null,
+          user_current_address: data.user_current_address || '',
+          user_DOB: formattedDOB, // Use formatted date
+          user_blood_group: data.user_blood_group || '',
+          user_DOJ: formattedDOJ, // Use formatted date
+          reporting_manager_id: data.reporting_manager_id || null,
+          designation_id: data.designation_id || null,
+          is_timesheet_required: data.is_timesheet_required || null,
+          department_id: data.department_id || null,
+          role_id: data.role_id || null
+        };
+        console.log('assssign', this.assignDetailsData);
 
-            // Show the modal
-            this.showAssignDetailsModal = true;
-        },
-        (error) => {
-            console.error('Error fetching employee details:', error);
-        }
+        // Show the modal
+        this.showAssignDetailsModal = true;
+      },
+      (error) => {
+        console.error('Error fetching employee details:', error);
+      }
     );
-}
+  }
 
 
   submitAssignDetails(assignDetailsForm: NgForm): void {
@@ -602,19 +825,19 @@ deleteDesignation(designationId: number): void {
     );
   }
 
-fetchEmployees(): void {
-  this.dataService.getAllEmployees().subscribe(
-    (data) => {
-      this.employees = data;
-      this.applyFilters(); // Apply filters after fetching data
+  fetchEmployees(): void {
+    this.dataService.getAllEmployees().subscribe(
+      (data) => {
+        this.employees = data;
+        this.applyFilters(); // Apply filters after fetching data
 
-      console.log('fetch employeee0', this.employees)
-    },
-    (error) => {
-      console.error('Error fetching employees:', error);
-    }
-  );
-}
+        console.log('fetch employeee0', this.employees)
+      },
+      (error) => {
+        console.error('Error fetching employees:', error);
+      }
+    );
+  }
 
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
@@ -682,9 +905,9 @@ fetchEmployees(): void {
       return (
         (!this.employeeCodeFilter ||
           employee.user_code?.toLowerCase().includes(this.employeeCodeFilter.toLowerCase())) &&
-       
-          (!this.nameFilter ||
-            employee.user_id?.toString() === this.nameFilter.toString())&&
+
+        (!this.nameFilter ||
+          employee.user_id?.toString() === this.nameFilter.toString()) &&
 
 
 
@@ -692,7 +915,7 @@ fetchEmployees(): void {
           employee.user_email?.toLowerCase().includes(this.emailFilter.toLowerCase())) &&
         (!this.departmentFilter ||
           employee.department_id?.toString() === this.departmentFilter.toString()) && // Convert both to string
-          
+
         (!this.designationFilter ||
           employee.designation_id?.toString() === this.designationFilter.toString()) && // Convert both to string
         (!this.addressFilter ||
@@ -704,58 +927,124 @@ fetchEmployees(): void {
     this.currentPage = 1;
     this.updatePage();
   }
-  
-  
-    // Clear Filters
-    clearFilters(): void {
-      this.employeeCodeFilter = '';
-      this.nameFilter = '';
-      this.emailFilter = '';
-      this.departmentFilter = '';
-      this.designationFilter = '';
-      this.reportingManagerFilter = '';
-      this.addressFilter = '';
-      this.applyFilters();
+
+
+  // Clear Filters
+  clearFilters(): void {
+    this.employeeCodeFilter = '';
+    this.nameFilter = '';
+    this.emailFilter = '';
+    this.departmentFilter = '';
+    this.designationFilter = '';
+    this.reportingManagerFilter = '';
+    this.addressFilter = '';
+    this.applyFilters();
+  }
+
+  clearFilter(filterName: string): void {
+    (this as any)[filterName] = '';
+    this.applyFilters();
+  }
+
+
+  // Pagination
+  updatePage(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedEmployees = this.filteredEmployees.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePage();
     }
-    
-    clearFilter(filterName: string): void {
-      (this as any)[filterName] = '';
-      this.applyFilters();
-    }
-    
-  
-    // Pagination
-    updatePage(): void {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      this.paginatedEmployees = this.filteredEmployees.slice(startIndex, endIndex);
-    }
-  
-    changePage(page: number): void {
-      if (page >= 1 && page <= this.totalPages) {
-        this.currentPage = page;
-        this.updatePage();
-      }
-    }
-  
-    get totalPages(): number {
-      return Math.ceil(this.filteredEmployees.length / this.itemsPerPage);
-    }
-  
-    getVisiblePageNumbers(): number[] {
-      const totalPages = this.totalPages;
-      const halfRange = Math.floor(this.maxPageButtons / 2);
-  
-      let startPage = Math.max(1, this.currentPage - halfRange);
-      let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
-  
-      if (endPage - startPage + 1 < this.maxPageButtons) {
-        startPage = Math.max(1, endPage - this.maxPageButtons + 1);
-      }
-  
-      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredEmployees.length / this.itemsPerPage);
+  }
+
+  getVisiblePageNumbers(): number[] {
+    const totalPages = this.totalPages;
+    const halfRange = Math.floor(this.maxPageButtons / 2);
+
+    let startPage = Math.max(1, this.currentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.maxPageButtons) {
+      startPage = Math.max(1, endPage - this.maxPageButtons + 1);
     }
 
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+  editEmployee = {
+    user_id: null,
+    user_first_name: '',
+    user_middle_name: '',
+    user_last_name: '',
+    user_email: '',
+    user_contact: '',
+    user_code: '',
+  };
+  isEmployeeEditModalOpen = false;
+   // Open Edit Modal
+   openEmployeeEditModal(employee: any): void {
+    this.editEmployee = { ...employee };
+    this.isEmployeeEditModalOpen = true;
+  }
+
+  // Close Edit Modal
+  closeEmployeeEditModal(): void {
+    this.isEmployeeEditModalOpen = false;
+    this.editEmployee = {
+      user_id: null,
+      user_first_name: '',
+      user_middle_name: '',
+      user_last_name: '',
+      user_email: '',
+      user_contact: '',
+      user_code: '',
+    };
+  }
+
+    // Update Employee
+    updateEmployee(editEmployeeForm: NgForm): void {
+      if (editEmployeeForm.invalid || !this.editEmployee.user_id) {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'All required fields must be filled!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        return;
+      }
+  
+      this.dataService.updateEmployee(this.editEmployee.user_id, this.editEmployee).subscribe(
+        (response) => {
+          console.log('Employee updated successfully');
+          this.fetchEmployees(); // Refresh the list after update
+  
+          // Success Toast Notification
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Employee updated successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+  
+          this.closeEmployeeEditModal();
+        },
+        (error) => {
+          console.error('Error updating employee:', error);
+        }
+      );
+    }
 
   // ------------------ Reporting Manager  ------------------------
 
@@ -819,8 +1108,6 @@ fetchEmployees(): void {
     );
   }
 
-
-
   deleteReportingManager(managerId: number): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -856,7 +1143,75 @@ fetchEmployees(): void {
   }
 
 
+  editFromDate: string = '';
+  editTillDate: string = '';
+  editEmployeeId: number | null = null;
+  editReportingManagerId: number | null = null;
+  editReportingManagerHistoryId: number | null = null;
+  isEditModalOpen = false;
+  // Open Edit Modal
+  openEditModal(manager: any): void {
+    this.editEmployeeId = manager.employee_id;
+    this.editReportingManagerId = manager.reporting_manager_id;
+    this.editFromDate = manager.from_date;
+    this.editTillDate = manager.till_date;
+    this.editReportingManagerHistoryId = manager.reporting_manager_history_id;
+    this.isEditModalOpen = true;
+  }
 
+  // Close Edit Modal
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.editEmployeeId = null;
+    this.editReportingManagerId = null;
+    this.editFromDate = '';
+    this.editTillDate = '';
+    this.editReportingManagerHistoryId = null;
+  }
+
+  // Update Reporting Manager History
+  updateReportingManager(editReportingManagerForm: NgForm): void {
+    if (editReportingManagerForm.invalid || !this.editReportingManagerHistoryId) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'All required fields must be filled!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    const payload = {
+      employee_id: this.editEmployeeId,
+      reporting_manager_id: this.editReportingManagerId,
+      from_date: this.editFromDate,
+      till_date: this.editTillDate,
+    };
+
+    this.dataService.updateReportingManagerHistory(this.editReportingManagerHistoryId, payload).subscribe(
+      (response) => {
+        console.log('Reporting Manager history updated successfully');
+        this.fetchReportingManagerHistory(); // Refresh the list after update
+
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Reporting Manager history updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        this.closeEditModal();
+      },
+      (error) => {
+        console.error('Error updating reporting manager history', error);
+      }
+    );
+  }
   // ------------------ Other  ------------------------
 
   hasPassport: boolean = false;

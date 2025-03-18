@@ -56,8 +56,10 @@ export class DataService {
   deleteDepartment(departmentId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/departments/${departmentId}`);
   }
-
-  // ------------------ Position ------------------------
+  updateDepartment(departmentId: number, departmentName: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/departments/${departmentId}`, { department_name: departmentName });
+  }
+  // ------------------ Project Role ------------------------
 
   addProjectRole(projectRoleName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/project-role`, { project_role_name: projectRoleName });
@@ -66,23 +68,29 @@ export class DataService {
   getAllProjectRoles(): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/project-roles`);
   }
-  
+
   deleteProjectRole(projectRoleId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/project-roles/${projectRoleId}`);
   }
+  updateProjectRole(projectRoleId: number, projectRoleName: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/project-roles/${projectRoleId}`, { project_role_name: projectRoleName });
+  }
 
-    // ------------------ Designation ------------------------
+  // ------------------ Designation ------------------------
 
   addDesignation(designationName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/designation`, { designation_name: designationName });
   }
-  
+
   getAllDesignations(): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/designations`);
   }
-  
+
   deleteDesignation(designationId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/designations/${designationId}`);
+  }
+  updateDesignation(designationId: number, designationName: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/designations/${designationId}`, { designation_name: designationName });
   }
 
   // ------------------ Skills ------------------------
@@ -97,6 +105,10 @@ export class DataService {
 
   deleteSkill(skillId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/skills/${skillId}`);
+  }
+
+  updateSkill(skillId: number, skillData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/skills/${skillId}`, skillData);
   }
 
 
@@ -115,6 +127,10 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/employee/${employeeId}`);
   }
 
+  updateEmployee(employeeId: number, employeeData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/employee/${employeeId}`, employeeData);
+  }
+
   // ------------------ Role ------------------------
 
   addAssignDetails(assignDetails: any): Observable<any> {
@@ -123,7 +139,7 @@ export class DataService {
 
   getEmployeeDetails(userId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/api/employees/${userId}`);
-}
+  }
   // ------------------ Reporting manager history ------------------------
 
   addReportingManagerHistory(payload: any): Observable<any> {
@@ -136,6 +152,9 @@ export class DataService {
 
   deleteReportingManager(managerId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/reporting-manager-history/${managerId}`);
+  }
+  updateReportingManagerHistory(managerId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/reporting-manager-history/${managerId}`, payload);
   }
 
   // ------------------ Project ------------------------
@@ -180,7 +199,7 @@ export class DataService {
   deleteTaskCategory(taskCatId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/task-categories/${taskCatId}`);
   }
-// ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------
+  // ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------
 
 
 }
