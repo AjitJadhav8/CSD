@@ -823,30 +823,38 @@ class OrgController {
     async getAllEmployees(req: Request, res: Response): Promise<void> {
         try {
             const query = `
-        SELECT 
-            u.user_id,
-            u.user_code,
-            u.user_first_name,
-            u.user_middle_name,
-            u.user_last_name, 
-            u.user_email, 
-            u.user_contact, 
-            u.user_emergency_contact, 
-            r.role_name, 
-            d.department_name,
-            u.is_passport, 
-            u.passport_validity, 
-            u.user_current_address, 
-            u.user_DOB, 
-            u.user_blood_group, 
-            u.user_DOJ 
-        FROM master_user u
-        LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
-        LEFT JOIN master_role r ON tud.role_id = r.role_id
-        LEFT JOIN master_department d ON tud.department_id = d.department_id
-        WHERE u.is_deleted = 0
-        ORDER BY u.user_id DESC 
-    `; // Explicitly mention each column name
+          SELECT 
+                u.user_id,
+                u.user_code,
+                u.user_first_name,
+                u.user_middle_name,
+                u.user_last_name, 
+                u.user_email, 
+                u.user_contact, 
+                u.user_emergency_contact, 
+                r.role_name, 
+                d.department_name,
+                d.department_id,
+                des.designation_name,
+                des.designation_id,
+                        tud.reporting_manager_id,  
+                rm.user_first_name AS reporting_manager_first_name,
+                rm.user_last_name AS reporting_manager_last_name,
+                u.is_passport, 
+                u.passport_validity, 
+                u.user_current_address, 
+                u.user_DOB, 
+                u.user_blood_group, 
+                u.user_DOJ 
+            FROM master_user u
+            LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
+            LEFT JOIN master_role r ON tud.role_id = r.role_id
+            LEFT JOIN master_department d ON tud.department_id = d.department_id
+            LEFT JOIN master_designation des ON tud.designation_id = des.designation_id
+            LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
+            WHERE u.is_deleted = 0
+            ORDER BY u.user_id DESC 
+    `; 
 
             db.query(query, (err, results) => {
                 if (err) {
@@ -860,31 +868,6 @@ class OrgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-
-    async softDeleteEmployee(req: Request, res: Response): Promise<void> {
-        try {
-            const { employeeId } = req.params;
-
-            const updateQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
-
-            db.query(updateQuery, [employeeId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting employee:', err);
-                    return res.status(500).json({ error: 'Error deleting employee' });
-                }
-
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Employee not found' });
-                }
-
-                res.status(200).json({ message: 'Employee soft deleted successfully' });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-
     async getEmployeeDetails(req: Request, res: Response): Promise<void> {
         try {
             const { userId } = req.params;
@@ -920,6 +903,32 @@ class OrgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+    async softDeleteEmployee(req: Request, res: Response): Promise<void> {
+        try {
+            const { employeeId } = req.params;
+
+            const updateQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
+
+            db.query(updateQuery, [employeeId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error deleting employee:', err);
+                    return res.status(500).json({ error: 'Error deleting employee' });
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Employee not found' });
+                }
+
+                res.status(200).json({ message: 'Employee soft deleted successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    
 
     
     

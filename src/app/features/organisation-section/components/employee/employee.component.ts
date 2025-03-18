@@ -606,13 +606,15 @@ fetchEmployees(): void {
   this.dataService.getAllEmployees().subscribe(
     (data) => {
       this.employees = data;
+      this.applyFilters(); // Apply filters after fetching data
+
+      console.log('fetch employeee0', this.employees)
     },
     (error) => {
       console.error('Error fetching employees:', error);
     }
   );
 }
-
 
   deleteEmployee(employeeId: number): void {
     if (employeeId === undefined) {
@@ -653,15 +655,106 @@ fetchEmployees(): void {
       }
     });
   }
-
-  
-
   showAssignDetailsModal: boolean = false;
 
   toggleAssignDetailsModal() {
     this.showAssignDetailsModal = !this.showAssignDetailsModal;
   }
 
+  employeeCodeFilter: string = '';
+  nameFilter: string = '';
+  emailFilter: string = '';
+  departmentFilter: string = '';
+  designationFilter: string = '';
+  addressFilter: string = '';
+  reportingManagerFilter: string = '';
+  // Pagination variables
+  currentPage: number = 1;
+  itemsPerPage: number = 30;
+  maxPageButtons: number = 5;
+
+  // Filtered and paginated data
+  filteredEmployees: any[] = [];
+  paginatedEmployees: any[] = [];
+  // Apply Filters
+  applyFilters(): void {
+    this.filteredEmployees = this.employees.filter((employee) => {
+      return (
+        (!this.employeeCodeFilter ||
+          employee.user_code?.toLowerCase().includes(this.employeeCodeFilter.toLowerCase())) &&
+       
+          (!this.nameFilter ||
+            employee.user_id?.toString() === this.nameFilter.toString())&&
+
+
+
+        (!this.emailFilter ||
+          employee.user_email?.toLowerCase().includes(this.emailFilter.toLowerCase())) &&
+        (!this.departmentFilter ||
+          employee.department_id?.toString() === this.departmentFilter.toString()) && // Convert both to string
+          
+        (!this.designationFilter ||
+          employee.designation_id?.toString() === this.designationFilter.toString()) && // Convert both to string
+        (!this.addressFilter ||
+          employee.user_current_address?.toLowerCase().includes(this.addressFilter.toLowerCase())) &&
+        (!this.reportingManagerFilter ||
+          employee.reporting_manager_id?.toString() === this.reportingManagerFilter.toString()) // Convert both to string
+      );
+    });
+    this.currentPage = 1;
+    this.updatePage();
+  }
+  
+  
+    // Clear Filters
+    clearFilters(): void {
+      this.employeeCodeFilter = '';
+      this.nameFilter = '';
+      this.emailFilter = '';
+      this.departmentFilter = '';
+      this.designationFilter = '';
+      this.reportingManagerFilter = '';
+      this.addressFilter = '';
+      this.applyFilters();
+    }
+    
+    clearFilter(filterName: string): void {
+      (this as any)[filterName] = '';
+      this.applyFilters();
+    }
+    
+  
+    // Pagination
+    updatePage(): void {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      this.paginatedEmployees = this.filteredEmployees.slice(startIndex, endIndex);
+    }
+  
+    changePage(page: number): void {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+        this.updatePage();
+      }
+    }
+  
+    get totalPages(): number {
+      return Math.ceil(this.filteredEmployees.length / this.itemsPerPage);
+    }
+  
+    getVisiblePageNumbers(): number[] {
+      const totalPages = this.totalPages;
+      const halfRange = Math.floor(this.maxPageButtons / 2);
+  
+      let startPage = Math.max(1, this.currentPage - halfRange);
+      let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
+  
+      if (endPage - startPage + 1 < this.maxPageButtons) {
+        startPage = Math.max(1, endPage - this.maxPageButtons + 1);
+      }
+  
+      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    }
 
 
   // ------------------ Reporting Manager  ------------------------
