@@ -27,7 +27,42 @@ export class CustomerComponent {
   window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchMasterCategories();
     this.fetchCustomers();
+
+    this.dataService.getOptions().subscribe(
+      (response) => {
+        this.optionMasterCategory = response.masterCategory
+
+        console.log('Roles and Departments:', response);
+        this.optioRoles = response.roles;
+        this.optionDepartments = response.departments;
+        this.optionUsers = response.users;  // Store user data
+        this.optionPositionName = response.projectRole;  // Store position data
+        this.optionDesignation = response.designation;  // Store designation data
+        this.optionCustomers = response.customers;  // Store customer data
+        this.distinctSectors = this.getDistinctValues('sector');
+        this.distinctIndustries = this.getDistinctValues('industry');
+      },
+      (error) => {
+        console.error('Error fetching roles and departments', error);
+      }
+    );
   }
+    // Helper method to get distinct values for a specific field
+    getDistinctValues(field: string): string[] {
+      const values = this.optionMasterCategory.map((category) => category[field]);
+      return [...new Set(values)]; // Use Set to remove duplicates
+    }
+    distinctSectors: string[] = [];
+    distinctIndustries: string[] = [];
+  optionMasterCategory : any[] = [];
+  optionCustomers: any[] = [];
+  optioRoles: any[] = [];
+  optionUsers: any[] = [];
+  optionDepartments: any[] = [];
+  optionPositionName: any[] = [];
+  optionDesignation: any[] = [];
+
+
   ngOnDestroy() {
     window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
   }
@@ -137,6 +172,8 @@ export class CustomerComponent {
       next: (data) => {
         console.log('Fetched customers:', data);
         this.customers = data;
+        this.applyFilters();
+
       },
       error: (error) => {
         console.error('Error fetching customers:', error);
@@ -179,8 +216,175 @@ export class CustomerComponent {
     });
   }
   // Function to reset form fields
+  filteredCustomers: any[] = [];
+  paginatedCustomers: any[] = [];
 
+  // Filters
+  customerNameFilter: string = '';
+  companyWebsiteFilter: string = '';
+  emailFilter: string = '';
+  phoneFilter: string = '';
+  alternatePhoneFilter: string = '';
+  statusFilter: string = '';
+  sectorFilter: string = '';
+  industryFilter: string = '';
+  domainFilter: string = '';
+  customerTypeFilter: string = '';
+  cityFilter: string = '';
+  stateFilter: string = '';
+  pincodeFilter: string = '';
+  countryFilter: string = '';
+  descriptionFilter: string = '';
 
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 30;
+  maxPageButtons: number = 5;
+
+// Apply Filters
+applyFilters(): void {
+  this.filteredCustomers = this.customers.filter((customer) => {
+    return (
+      (this.customerNameFilter
+        ? customer.customer_id.toString() === this.customerNameFilter
+        : true) &&
+      (this.companyWebsiteFilter
+        ? customer.customer_company_website?.toLowerCase().includes(this.companyWebsiteFilter.toLowerCase())
+        : true) &&
+      (this.emailFilter
+        ? customer.customer_email?.toLowerCase().includes(this.emailFilter.toLowerCase())
+        : true) &&
+      (this.phoneFilter
+        ? customer.customer_phone?.includes(this.phoneFilter)
+        : true) &&
+      (this.alternatePhoneFilter
+        ? customer.customer_alternate_phone?.includes(this.alternatePhoneFilter)
+        : true) &&
+        (this.statusFilter
+          ? (customer.is_active ? 'Active' : 'Inactive') === this.statusFilter
+          : true) &&
+          (this.sectorFilter
+            ? customer.sector === this.sectorFilter
+            : true) &&
+          (this.industryFilter
+            ? customer.industry === this.industryFilter
+            : true) &&
+          (this.domainFilter
+            ? customer.domain === this.domainFilter
+            : true) &&
+        (this.customerTypeFilter
+          ? (customer.is_new ? 'Potential' : 'Existing') === this.customerTypeFilter
+          : true) &&
+      (this.cityFilter
+        ? customer.customer_city?.toLowerCase().includes(this.cityFilter.toLowerCase())
+        : true) &&
+      (this.stateFilter
+        ? customer.customer_state?.toLowerCase().includes(this.stateFilter.toLowerCase())
+        : true) &&
+      (this.pincodeFilter
+        ? customer.customer_pincode?.includes(this.pincodeFilter)
+        : true) &&
+      (this.countryFilter
+        ? customer.customer_country?.toLowerCase().includes(this.countryFilter.toLowerCase())
+        : true) &&
+      (this.descriptionFilter
+        ? customer.customer_description?.toLowerCase().includes(this.descriptionFilter.toLowerCase())
+        : true)
+    );
+  });
+  this.currentPage = 1;
+  this.updatePage();
+}
+// Clear Filters
+clearFilters(): void {
+  this.customerNameFilter = '';
+  this.customerTypeFilter = '';
+  this.applyFilters();
+}
+
+// Clear Individual Filter
+clearFilter(filterName: string): void {
+  switch (filterName) {
+    case 'customerNameFilter':
+      this.customerNameFilter = '';
+      break;
+    case 'companyWebsiteFilter':
+      this.companyWebsiteFilter = '';
+      break;
+    case 'emailFilter':
+      this.emailFilter = '';
+      break;
+    case 'phoneFilter':
+      this.phoneFilter = '';
+      break;
+    case 'alternatePhoneFilter':
+      this.alternatePhoneFilter = '';
+      break;
+    case 'statusFilter':
+      this.statusFilter = '';
+      break;
+    case 'sectorFilter':
+      this.sectorFilter = '';
+      break;
+    case 'industryFilter':
+      this.industryFilter = '';
+      break;
+    case 'domainFilter':
+      this.domainFilter = '';
+      break;
+    case 'customerTypeFilter':
+      this.customerTypeFilter = '';
+      break;
+    case 'cityFilter':
+      this.cityFilter = '';
+      break;
+    case 'stateFilter':
+      this.stateFilter = '';
+      break;
+    case 'pincodeFilter':
+      this.pincodeFilter = '';
+      break;
+    case 'countryFilter':
+      this.countryFilter = '';
+      break;
+    case 'descriptionFilter':
+      this.descriptionFilter = '';
+      break;
+  }
+  this.applyFilters(); // Reapply filters after clearing
+}
+
+// Pagination
+updatePage(): void {
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  const endIndex = startIndex + this.itemsPerPage;
+  this.paginatedCustomers = this.filteredCustomers.slice(startIndex, endIndex);
+}
+
+changePage(page: number): void {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    this.updatePage();
+  }
+}
+
+get totalPages(): number {
+  return Math.ceil(this.filteredCustomers.length / this.itemsPerPage);
+}
+
+getVisiblePageNumbers(): number[] {
+  const totalPages = this.totalPages;
+  const halfRange = Math.floor(this.maxPageButtons / 2);
+
+  let startPage = Math.max(1, this.currentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.maxPageButtons) {
+    startPage = Math.max(1, endPage - this.maxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
   // ------------------ Customer Category ------------------------
 
   sectors: string[] = [];

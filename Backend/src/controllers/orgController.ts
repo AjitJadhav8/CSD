@@ -48,7 +48,6 @@ class OrgController {
             WHERE p.is_deleted = 0
         `;
         
-
             const projectDeliverablesQuery = `
         SELECT 
             pd_id, customer_id, project_id, project_deliverable_name 
@@ -72,10 +71,17 @@ class OrgController {
         designation_id, designation_name, is_deleted, created_at, updated_at
     FROM master_designation WHERE is_deleted = 0
 `;
+    // New query for master_category
+    const masterCategoryQuery = `
+    SELECT 
+        category_id, sector, industry, domain, is_deleted, created_at, updated_at
+    FROM master_category WHERE is_deleted = 0
+`;
+
 
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory ] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -148,12 +154,18 @@ class OrgController {
                          resolve(results);
                     });
                 }),
+                new Promise((resolve, reject) => {
+                    db.query(masterCategoryQuery, (err: any, results: any) => {
+                        if (err) reject(err);
+                        resolve(results);
+                    });
+                }),
 
             ]);
 
             // Return roles, departments, and user info in the response
             res.status(200).json({ roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects,projectDeliverables,
-                taskCategories,projectRole,designation });
+                taskCategories,projectRole,designation,  masterCategory });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });

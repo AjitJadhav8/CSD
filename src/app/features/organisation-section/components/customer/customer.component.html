@@ -24,6 +24,7 @@
                         *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">Customer
                         Name is required</span>
                 </div>
+
                 <div class="form-group">
                     <label>Company Website</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.companyWebsite"
@@ -34,35 +35,22 @@
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email"
-                        #email="ngModel" name="email" 
-                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
->
+                        #email="ngModel" name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
                 </div>
 
-                <!-- Phone Number (Required & 10 Digits) -->
-                <!-- <div class="form-group">
-                    <label>Phone Number*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone"
-                        #phone="ngModel" name="phone" required pattern="^[0-9]{10}$"
-                        [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)">Enter
-                        a valid
-                        10-digit phone number</span>
-                </div> -->
 
                 <div class="form-group">
                     <label>Phone Number</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone"
                         #phone="ngModel" name="phone" pattern="^\d{10}$"
                         [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
-                    
+
                     <span class="text-red-500 text-sm"
                         *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
                         Enter a valid 10-digit phone number
                     </span>
                 </div>
-                
+
 
                 <div class="form-group">
                     <label>Alternate Phone Number</label>
@@ -151,39 +139,16 @@
                         Type is required</span>
                 </div>
 
-                <!-- City (Required) -->
-                <!-- <div class="form-group">
-                    <label>City*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city" #city="ngModel"
-                        name="city" required
-                        [ngClass]="{'border-red-500': (city.invalid && city.touched) || (customerForm.submitted && city.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="city.invalid && (city.touched || customerForm.submitted)">City is
-                        required</span>
-                </div> -->
                 <div class="form-group">
                     <label>City</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city"
-                        #city="ngModel" name="city"
+                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city" #city="ngModel"
+                        name="city"
                         [ngClass]="{'border-red-500': (city.touched && city.invalid) || (customerForm.submitted && city.invalid)}">
                     <span class="text-red-500 text-sm"
                         *ngIf="(city.touched && city.invalid) || (customerForm.submitted && city.invalid)">
                         Enter a valid city
                     </span>
                 </div>
-
-                <!-- State (Required) -->
-                <!-- <div class="form-group">
-                    <label>State*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.state"
-                        #state="ngModel" name="state" required
-                        [ngClass]="{'border-red-500': (state.invalid && state.touched) || (customerForm.submitted && state.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="state.invalid && (state.touched || customerForm.submitted)">State is
-                        required</span>
-                </div> -->
-
-
                 <div class="form-group">
                     <label>State</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.state"
@@ -196,17 +161,6 @@
                 </div>
 
 
-
-                <!-- Pincode (Required & 6 Digits) -->
-                <!-- <div class="form-group">
-                    <label>Pincode*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.pincode"
-                        #pincode="ngModel" name="pincode" required pattern="^[0-9]{6}$"
-                        [ngClass]="{'border-red-500': (pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="pincode.invalid && (pincode.touched || customerForm.submitted)">Enter a valid
-                        6-digit pincode</span>
-                </div> -->
                 <div class="form-group">
                     <label>Pincode</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.pincode"
@@ -229,21 +183,13 @@
                         Enter a valid country
                     </span>
                 </div>
-                <!-- <div class="form-group">
-                    <label>Country*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.country"
-                        #country="ngModel" name="country" required
-                        [ngClass]="{'border-red-500': (country.invalid && country.touched) || (customerForm.submitted && country.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="country.invalid && (country.touched || customerForm.submitted)">Enter
-                        Country</span>
-                </div> -->
+
                 <div class="form-group">
                     <label>Customer Description</label>
-                    <textarea class="border p-2 w-full rounded-md" [(ngModel)]="customer.description" 
-                        name="description" rows="3"></textarea>
+                    <textarea class="border p-2 w-full rounded-md" [(ngModel)]="customer.description" name="description"
+                        rows="3"></textarea>
                 </div>
-                
+
             </div>
 
             <!-- Submit Button -->
@@ -257,57 +203,243 @@
         <!-- Customer Table -->
         <h3 class="mt-6 font-bold">Customer List</h3>
 
-        <div class="rounded-lg w-full overflow-x-auto">
+        <div class="rounded-lg w-full overflow-x-auto p-2">
+            <!-- Filters -->
+            <!-- Filters -->
+            <div class="min-w-max">
+                <div
+                    class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+                    <!-- Customer Name Filter -->
+                    <!-- Customer Name Filter -->
+                    <div class="relative flex-grow">
+                        <select
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300"
+                            [(ngModel)]="customerNameFilter" (change)="applyFilters()" name="customerNameFilter">
+                            <option value="" disabled selected>Select Customer</option>
+                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </option>
+                        </select>
+                        <button *ngIf="customerNameFilter" (click)="clearFilter('customerNameFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Company Website Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website"
+                            (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Email Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Phone Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="phoneFilter" (click)="clearFilter('phoneFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Alternate Phone Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="alternatePhoneFilter" placeholder="Alternate Phone"
+                            (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="alternatePhoneFilter" (click)="clearFilter('alternatePhoneFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <!-- Customer Status Filter -->
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="statusFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <button *ngIf="statusFilter" (click)="clearFilter('statusFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Sector Filter -->
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="sectorFilter" (change)="applyFilters()"
+                          class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                          <option value="">Select Sector</option>
+                          <option *ngFor="let sector of distinctSectors" [value]="sector">
+                            {{ sector }}
+                          </option>
+                        </select>
+                        <button *ngIf="sectorFilter" (click)="clearFilter('sectorFilter')"
+                          class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                          ×
+                        </button>
+                      </div>
+
+                     
+                      <div class="relative flex-grow">
+                        <select [(ngModel)]="industryFilter" (change)="applyFilters()"
+                          class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                          <option value="">Select Industry</option>
+                          <option *ngFor="let industry of distinctIndustries" [value]="industry">
+                            {{ industry }}
+                          </option>
+                        </select>
+                        <button *ngIf="industryFilter" (click)="clearFilter('industryFilter')"
+                          class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                          ×
+                        </button>
+                      </div>
+
+                    <!-- Domain Filter -->
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="domainFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Segment</option>
+                            <option *ngFor="let category of optionMasterCategory" [value]="category.domain">
+                                {{ category.domain }}
+                            </option>
+                        </select>
+                        <button *ngIf="domainFilter" (click)="clearFilter('domainFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Customer Type Filter -->
+                    <!-- Customer Type Filter -->
+                    <div class="relative flex-grow">
+                        <select [(ngModel)]="customerTypeFilter" (change)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">Select Type</option>
+                            <option value="Existing">Existing</option>
+                            <option value="Potential">Potential</option>
+                        </select>
+                        <button *ngIf="customerTypeFilter" (click)="clearFilter('customerTypeFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- City Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="cityFilter" placeholder="City" (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="cityFilter" (click)="clearFilter('cityFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+
+                    <!-- Description Filter -->
+                    <div class="relative flex-grow">
+                        <input type="text" [(ngModel)]="descriptionFilter" placeholder="Description"
+                            (input)="applyFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        <button *ngIf="descriptionFilter" (click)="clearFilter('descriptionFilter')"
+                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                            ×
+                        </button>
+                    </div>
+
+                    <!-- Clear All Filters -->
+                    <button (click)="clearFilters()"
+                        class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
+                        All
+                        Filters</button>
+                </div>
+            </div>
+
+
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-    
-        <table class="w-full border-collapse border border-gray-300 mt-4">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">S.No.</th>
-                    <th class="border p-2">Customer Name</th>
-                    <th class="border p-2">Company Website</th>
-                    <th class="border p-2">Email Address</th>
-                    <th class="border p-2">Phone Number</th>
-                    <th class="border p-2">Alternate Phone Number</th>
-                    <th class="border p-2">Customer Status</th>
-                    <th class="border p-2">Customer Sector</th>
-                    <th class="border p-2">Customer Industry</th>
-                    <th class="border p-2">Customer Segment</th>
-                    <th class="border p-2">Customer Type</th>
-                    <th class="border p-2">City</th>
-                    <th class="border p-2">State</th>
-                    <th class="border p-2">Pincode</th>
-                    <th class="border p-2">Country</th>
-                    <th class="border p-2">Customer Description</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let customer of customers; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-                    <td class="border p-2">{{ customer.customer_name }}</td>
-                    <td class="border p-2">{{ customer.customer_company_website || '-'}}</td>
-                    <td class="border p-2">{{ customer.customer_email || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_phone || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_alternate_phone || '-' }}</td>
-                    <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
-                    <td class="border p-2">{{ customer.sector || '-' }}</td>
-                    <td class="border p-2">{{ customer.industry || '-' }}</td>
-                    <td class="border p-2">{{ customer.domain || '-' }}</td>
-                    <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
-                    <td class="border p-2">{{ customer.customer_city || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_state || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_pincode || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_country || '-' }}</td>
-                    <td class="border p-2">{{ customer.customer_description || '-' }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteCustomer(customer.customer_id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </div></div>
+
+                <table class="w-full border-collapse border border-gray-300 mt-4">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border p-2">S.No.</th>
+                            <th class="border p-2">Customer Name</th>
+                            <th class="border p-2">Company Website</th>
+                            <th class="border p-2">Email Address</th>
+                            <th class="border p-2">Phone Number</th>
+                            <th class="border p-2">Alternate Phone Number</th>
+                            <th class="border p-2">Customer Status</th>
+                            <th class="border p-2">Customer Sector</th>
+                            <th class="border p-2">Customer Industry</th>
+                            <th class="border p-2">Customer Segment</th>
+                            <th class="border p-2">Customer Type</th>
+                            <th class="border p-2">City</th>
+                            <th class="border p-2">State</th>
+                            <th class="border p-2">Pincode</th>
+                            <th class="border p-2">Country</th>
+                            <th class="border p-2">Customer Description</th>
+                            <th class="border p-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
+                            <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+                            <td class="border p-2">{{ customer.customer_name }}</td>
+                            <td class="border p-2">{{ customer.customer_company_website || '-'}}</td>
+                            <td class="border p-2">{{ customer.customer_email || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_phone || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_alternate_phone || '-' }}</td>
+                            <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+                            <td class="border p-2">{{ customer.sector || '-' }}</td>
+                            <td class="border p-2">{{ customer.industry || '-' }}</td>
+                            <td class="border p-2">{{ customer.domain || '-' }}</td>
+                            <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+                            <td class="border p-2">{{ customer.customer_city || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_state || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_pincode || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_country || '-' }}</td>
+                            <td class="border p-2">{{ customer.customer_description || '-' }}</td>
+                            <td class="border p-2">
+                                <button class="bg-red-500 text-white px-2 py-1 rounded"
+                                    (click)="deleteCustomer(customer.customer_id)">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="flex items-center justify-center mt-4 space-x-1">
+                <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                    class="px-3 py-1 border rounded-md">
+                    Previous
+                </button>
+                <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+                    [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+                    {{ page }}
+                </button>
+                <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                    class="px-3 py-1 border rounded-md">
+                    Next
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Customer Domain Section -->
@@ -459,33 +591,34 @@
         <h3 class="mt-6 font-bold">Category List</h3>
         <div class="rounded-lg w-full overflow-x-auto">
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-    
-        <table class="w-full border-collapse border border-gray-300 mt-4">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">S.No.</th>
-                    <th class="border p-2">Sector</th>
-                    <th class="border p-2">Industry</th>
-                    <th class="border p-2">Segment</th>
-                    <th class="border p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-                    <td class="border p-2">{{ category.sector }}</td>
-                    <td class="border p-2">{{ category.industry }}</td>
-                    <td class="border p-2">{{ category.domain }}</td>
-                    <td class="border p-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded"
-                            (click)="deleteCategory(category.category_id)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </div></div>
+
+                <table class="w-full border-collapse border border-gray-300 mt-4">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border p-2">S.No.</th>
+                            <th class="border p-2">Sector</th>
+                            <th class="border p-2">Industry</th>
+                            <th class="border p-2">Segment</th>
+                            <th class="border p-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
+                            <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+                            <td class="border p-2">{{ category.sector }}</td>
+                            <td class="border p-2">{{ category.industry }}</td>
+                            <td class="border p-2">{{ category.domain }}</td>
+                            <td class="border p-2">
+                                <button class="bg-red-500 text-white px-2 py-1 rounded"
+                                    (click)="deleteCategory(category.category_id)">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>
