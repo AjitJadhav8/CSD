@@ -312,6 +312,73 @@ class OrgController {
         }
     }
 
+    async updateCustomer(req: Request, res: Response): Promise<void> {
+        try {
+          const { customerId } = req.params;
+          const {
+            customerName, companyWebsite, email, phone, alternatePhone, status,
+            domain, customerType, city, state, pincode, country, description
+          } = req.body;
+      
+          // Determine flags for active and new customers
+          const isActive = status === 'Active' ? 1 : 0;
+          const isNew = customerType === 'Existing' ? 1 : 0;
+      
+          // Query to get category_id based on selected domain
+          const categoryQuery = `
+            SELECT category_id FROM master_category 
+            WHERE domain = ?
+            LIMIT 1
+          `;
+      
+          db.query(categoryQuery, [domain], (err: any, results: any) => {
+            if (err) {
+              console.error('Error fetching category ID:', err);
+              res.status(500).json({ error: 'Error fetching category ID' });
+              return;
+            }
+      
+            if (results.length === 0) {
+              console.error(`Category not found for Domain: ${domain}`);
+              res.status(400).json({ error: `Invalid domain: ${domain}` });
+              return;
+            }
+      
+            const categoryId = results[0].category_id; // Get category_id
+      
+            // Update customer data with retrieved category_id
+            const updateQuery = `
+              UPDATE master_customer 
+              SET 
+                customer_name = ?, customer_company_website = ?, customer_email = ?, customer_phone = ?, customer_alternate_phone = ?, 
+                category_id = ?, customer_city = ?, customer_state = ?, customer_pincode = ?, customer_country = ?, 
+                customer_description = ?, is_active = ?, is_new = ?
+              WHERE customer_id = ?
+            `;
+      
+            db.query(updateQuery, [
+              customerName, companyWebsite, email, phone, alternatePhone,
+              categoryId, city, state, pincode, country, description, isActive, isNew, customerId
+            ], (updateErr: any, result: any) => {
+              if (updateErr) {
+                console.error('Database error:', updateErr);
+                res.status(500).json({ error: 'Error updating customer' });
+                return;
+              }
+      
+              if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Customer not found' });
+              }
+      
+              res.status(200).json({ message: 'Customer updated successfully' });
+            });
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
+
     // ---- Category --------
 
     async getMasterCategories(req: Request, res: Response): Promise<void> {

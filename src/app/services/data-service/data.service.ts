@@ -27,6 +27,9 @@ export class DataService {
   softDeleteCustomer(customerId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/customer/${customerId}`);
   }
+  updateCustomer(customerId: number, customerData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/customer/${customerId}`, customerData);
+  }
 
   // ------------------ Category ------------------------
 

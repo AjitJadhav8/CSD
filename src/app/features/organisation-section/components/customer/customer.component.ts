@@ -97,6 +97,179 @@ export class CustomerComponent {
     country: '',
     description: ''
   };
+  editCustomer = {
+    customerName: '',
+    companyWebsite: '',
+    email: '',
+    phone: '',
+    alternatePhone: '',
+    status: '',
+    sector: '',
+    industry: '',
+    domain: '',
+    customerType: '',
+    city: '',
+    state: '',
+    pincode: '',
+    country: '',
+    description: ''
+  };
+  editSelectedSector: string = '';
+  editSelectedIndustry: string = '';
+  editSelectedDomain: string = '';
+  editCustomerId: number | null = null;
+  isCustomerModalOpen = false;
+
+  // Open Edit Modal
+  editCustomerModule(customer: any): void {
+    // Map all fields from the selected customer to the editCustomer object
+    this.editCustomer = {
+      customerName: customer.customer_name,
+      companyWebsite: customer.customer_company_website,
+      email: customer.customer_email,
+      phone: customer.customer_phone,
+      alternatePhone: customer.customer_alternate_phone,
+      status: customer.is_active ? 'Active' : 'Inactive',
+      sector: customer.sector,
+      industry: customer.industry,
+      domain: customer.domain,
+      customerType: customer.is_new ? 'Potential' : 'Existing',
+      city: customer.customer_city,
+      state: customer.customer_state,
+      pincode: customer.customer_pincode,
+      country: customer.customer_country,
+      description: customer.customer_description
+    };
+  
+    // Set the selected sector, industry, and domain for dropdowns
+    this.editSelectedSector = customer.sector;
+    this.editSelectedIndustry = customer.industry;
+    this.editSelectedDomain = customer.domain;
+  
+    // Trigger filtering for industries and domains
+    this.filterEditIndustries();
+    this.filterEditDomains();
+  
+    // Set the customer ID for the update operation
+    this.editCustomerId = customer.customer_id;
+  
+    // Open the edit modal
+    this.isCustomerModalOpen = true;
+  }
+  filterEditIndustries(): void {
+    if (!this.editSelectedSector) {
+      this.industries = []; // Clear industries if no sector is selected
+      this.editSelectedIndustry = ''; // Reset selected industry
+      this.domains = []; // Clear domains
+      this.editSelectedDomain = ''; // Reset selected domain
+      return;
+    }
+
+    // Filter industries based on the selected sector
+    this.industries = [...new Set(
+      this.allCategories
+        .filter(item => item.sector === this.editSelectedSector)
+        .map(item => item.industry)
+    )];
+
+    // Reset selected industry and domains
+    this.editSelectedIndustry = '';
+    this.domains = [];
+    this.editSelectedDomain = '';
+  }
+
+  filterEditDomains(): void {
+    if (!this.editSelectedIndustry) {
+      this.domains = []; // Clear domains if no industry is selected
+      this.editSelectedDomain = ''; // Reset selected domain
+      return;
+    }
+
+    // Filter domains based on the selected industry
+    this.domains = [...new Set(
+      this.allCategories
+        .filter(item => item.industry === this.editSelectedIndustry)
+        .map(item => item.domain)
+    )];
+
+    // Reset selected domain
+    this.editSelectedDomain = '';
+  }
+
+  // Close Edit Modal
+  closeCustomerModule(): void {
+    this.isCustomerModalOpen = false;
+    this.editCustomer = {
+      customerName: '',
+      companyWebsite: '',
+      email: '',
+      phone: '',
+      alternatePhone: '',
+      status: '',
+      sector: '',
+      industry: '',
+      domain: '',
+      customerType: '',
+      city: '',
+      state: '',
+      pincode: '',
+      country: '',
+      description: ''
+    };
+    this.editSelectedSector = '';
+    this.editSelectedIndustry = '';
+    this.editSelectedDomain = '';
+    this.editCustomerId = null;
+  }
+
+  // Update Customer
+  updateCustomer(editCustomerForm: NgForm): void {
+    if (editCustomerForm.invalid || !this.editCustomerId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
+    }
+
+    const customerData = {
+      customerName: this.editCustomer.customerName,
+      companyWebsite: this.editCustomer.companyWebsite,
+      email: this.editCustomer.email,
+      phone: this.editCustomer.phone,
+      alternatePhone: this.editCustomer.alternatePhone,
+      status: this.editCustomer.status,
+      domain: this.editSelectedDomain,
+      customerType: this.editCustomer.customerType,
+      city: this.editCustomer.city,
+      state: this.editCustomer.state,
+      pincode: this.editCustomer.pincode,
+      country: this.editCustomer.country,
+      description: this.editCustomer.description
+    };
+
+    this.dataService.updateCustomer(this.editCustomerId, customerData).subscribe({
+      next: (response) => {
+        console.log('Customer updated successfully', response);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Customer updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchCustomers();
+        this.closeCustomerModule();
+      },
+      error: (error) => console.error('Error updating customer:', error)
+    });
+  }
 
   submitCustomer(form: NgForm) {
     if (form.invalid) {
@@ -215,6 +388,43 @@ export class CustomerComponent {
       }
     });
   }
+
+  filterIndustries(): void {
+    if (!this.selectedSector) {
+      this.industries = [];
+      this.selectedIndustry = ''; // Reset industry
+      this.domains = [];
+      this.selectedDomain = ''; // Reset domain
+      return;
+    }
+
+    this.industries = [...new Set(
+      this.allCategories
+        .filter(item => item.sector === this.selectedSector)
+        .map(item => item.industry)
+    )];
+
+    this.selectedIndustry = ''; // Reset selected industry
+    this.domains = [];
+    this.selectedDomain = ''; // Reset domain
+  }
+
+  filterDomains(): void {
+    if (!this.selectedIndustry) {
+      this.domains = [];
+      this.selectedDomain = ''; // Reset domain
+      return;
+    }
+
+    this.domains = [...new Set(
+      this.allCategories
+        .filter(item => item.industry === this.selectedIndustry)
+        .map(item => item.domain)
+    )];
+
+    this.selectedDomain = ''; // Reset domain
+  }
+  
   // Function to reset form fields
   filteredCustomers: any[] = [];
   paginatedCustomers: any[] = [];
@@ -491,41 +701,7 @@ getVisiblePageNumbers(): number[] {
     );
   }
 
-  filterIndustries(): void {
-    if (!this.selectedSector) {
-      this.industries = [];
-      this.selectedIndustry = ''; // Reset industry
-      this.domains = [];
-      this.selectedDomain = ''; // Reset domain
-      return;
-    }
-
-    this.industries = [...new Set(
-      this.allCategories
-        .filter(item => item.sector === this.selectedSector)
-        .map(item => item.industry)
-    )];
-
-    this.selectedIndustry = ''; // Reset selected industry
-    this.domains = [];
-    this.selectedDomain = ''; // Reset domain
-  }
-
-  filterDomains(): void {
-    if (!this.selectedIndustry) {
-      this.domains = [];
-      this.selectedDomain = ''; // Reset domain
-      return;
-    }
-
-    this.domains = [...new Set(
-      this.allCategories
-        .filter(item => item.industry === this.selectedIndustry)
-        .map(item => item.domain)
-    )];
-
-    this.selectedDomain = ''; // Reset domain
-  }
+  
 
   newSector: string = '';
   newIndustry: string = '';

@@ -9,11 +9,9 @@ router.get('/roles-and-departments', orgController.getOptions);
 
 // Route for creating a new customer
 router.post('/customer', orgController.createCustomer);
-
-// Route for fetching all customers
 router.get('/customers', orgController.getCustomers);
-
 router.delete('/customer/:customerId', orgController.softDeleteCustomer);
+router.put('/customer/:customerId', orgController.updateCustomer);
 
 // ---- Category --------
 
