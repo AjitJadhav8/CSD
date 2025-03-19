@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RmgService } from '../../../../services/rmg-service/rmg.service';
 import Swal from 'sweetalert2';
@@ -71,41 +71,7 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
       }
     );
   }
-  onProjectChange(event: Event) {
-    const projectId = (event.target as HTMLSelectElement).value;
-    if (projectId) {
-      const selectedProject = this.optionProjects.find(project => project.project_id === +projectId);
-      if (selectedProject) {
-        this.selectedProjectManagerId = selectedProject.project_manager_id;
   
-        // Find the manager's name using the project_manager_id
-        const selectedManager = this.optionProjectManagers.find(manager => manager.user_id === this.selectedProjectManagerId);
-        this.selectedProjectManagerName = selectedManager ? `${selectedManager.user_first_name} ${selectedManager.user_last_name}` : 'Not Assigned';
-      }
-    } else {
-      this.selectedProjectManagerId = null;
-      this.selectedProjectManagerName = 'Not Assigned';
-    }
-  }
-  
-
-
-  // Method to filter projects based on selected customer
-  // Method to filter projects based on selected customer
-  filterProjects(): void {
-    const customerId = Number(this.selectedCustomerId); // Ensure it's a number
-
-    if (customerId) {
-      this.filteredProjects = this.optionProjects.filter(
-        project => Number(project.customer_id) === customerId
-      );
-    } else {
-      this.filteredProjects = [];
-    }
-
-    console.log("Selected Customer ID:", customerId);
-    console.log("Filtered Projects:", this.filteredProjects);
-  }
 
 
   selectedProjectId: number | null = null;
@@ -116,7 +82,67 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
   startDate: string | null = null;
   tentativeEndDate: string | null = null;
 
-
+  fetchAssignedProjectTeams(): void {
+    this.rmgService.getAllProjectTeams().subscribe(
+      (response) => {
+        this.assignedProjectTeams = response;
+        this.filteredAssignedProjectTeams = [...this.assignedProjectTeams];
+        this.totalItems = this.filteredAssignedProjectTeams.length;
+        this.updatePage();
+  
+        console.log('Fetched Project Teams:', this.assignedProjectTeams);
+      },
+      (error) => {
+        console.error('Error fetching project teams:', error);
+      }
+    );
+  }
+  // delete project team
+  deleteAssignProjectTeam(projectTeamId: number): void {
+    console.log('Deleting Project Team:', projectTeamId);
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this project team assignment!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.rmgService.deleteProjectTeam(projectTeamId).subscribe({
+          next: (response) => {
+            console.log('Project Team Deleted:', response);
+  
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Project team deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+  
+            setTimeout(() => this.fetchAssignedProjectTeams(), 100);
+          },
+          error: (error) => {
+            console.error('Error deleting project team:', error);
+  
+            // Error Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Failed to delete project team!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        });
+      }
+    });
+  }
   //submit assign project team
   submitAssignProjectTeam() {
     if (!this.selectedCustomerId || !this.selectedProjectId || !this.selectedEmployeeId || !this.selectedProjectRoleId ||
@@ -206,6 +232,181 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
         }
     });
 }
+onProjectChange(event: Event) {
+  const projectId = (event.target as HTMLSelectElement).value;
+  if (projectId) {
+    const selectedProject = this.optionProjects.find(project => project.project_id === +projectId);
+    if (selectedProject) {
+      this.selectedProjectManagerId = selectedProject.project_manager_id;
+
+      // Find the manager's name using the project_manager_id
+      const selectedManager = this.optionProjectManagers.find(manager => manager.user_id === this.selectedProjectManagerId);
+      this.selectedProjectManagerName = selectedManager ? `${selectedManager.user_first_name} ${selectedManager.user_last_name}` : 'Not Assigned';
+    }
+  } else {
+    this.selectedProjectManagerId = null;
+    this.selectedProjectManagerName = 'Not Assigned';
+  }
+}
+
+// Method to filter projects based on selected customer
+filterProjects(): void {
+  const customerId = Number(this.selectedCustomerId); // Ensure it's a number
+
+  if (customerId) {
+    this.filteredProjects = this.optionProjects.filter(
+      project => Number(project.customer_id) === customerId
+    );
+  } else {
+    this.filteredProjects = [];
+  }
+
+  console.log("Selected Customer ID:", customerId);
+  console.log("Filtered Projects:", this.filteredProjects);
+}
+
+
+isEditModalOpen = false;
+editSelectedCustomerId: number | null = null;
+editSelectedProjectId: number | null = null;
+editSelectedEmployeeId: number | null = null;
+editSelectedProjectRoleId: number | null = null;
+editStartDate: string = '';
+editTentativeEndDate: string = '';
+editSelectedAllocationStatus: number = 0;
+editSelectedAllocationPercentage: number | null = null;
+editSelectedBilledStatus: number = 0;
+editSelectedBillingPercentage: number | null = null;
+editProjectTeamId: number | null = null;
+
+updateAssignTeam(form: NgForm): void {
+  if (form.invalid || !this.editProjectTeamId) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'warning',
+      title: 'All fields are required!',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    return;
+  }
+
+  const updateData = {
+    customer_id: this.editSelectedCustomerId,
+    project_id: this.editSelectedProjectId,
+    employee_id: this.editSelectedEmployeeId,
+    project_role_id: this.editSelectedProjectRoleId,
+    start_date: this.formatDate(this.editStartDate),
+  end_date: this.formatDate(this.editTentativeEndDate) || null,
+    allocation_status: this.editSelectedAllocationStatus,
+    allocation_percentage: Number(this.editSelectedAllocationPercentage),
+    billed_status: this.editSelectedBilledStatus,
+    billing_percentage: Number(this.editSelectedBillingPercentage)
+  };
+
+  this.rmgService.updateAssignTeam(this.editProjectTeamId, updateData).subscribe({
+    next: (response) => {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Assign Team updated successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+      this.fetchAssignedProjectTeams(); // Refresh the list
+      this.closeEditModal();
+    },
+    error: (error) => {
+      console.error('Error updating assign team:', error);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Failed to update assign team!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }
+  });
+}
+
+
+// Open Edit Modal
+openEditModal(team: any): void {
+  console.log('Team Data:', team);
+
+  this.editSelectedCustomerId = team.customer_id;
+  this.editSelectedProjectId = team.project_id;
+  this.editSelectedEmployeeId = team.employee_id;
+  this.editSelectedProjectRoleId = team.project_role_id;
+  this.editStartDate = this.formatDate(team.start_date);
+  this.editTentativeEndDate = this.formatDate(team.end_date);
+  this.editSelectedAllocationStatus = team.allocation_status;
+  this.editSelectedAllocationPercentage = team.allocation_percentage;
+  this.editSelectedBilledStatus = team.billed_status;
+  this.editSelectedBillingPercentage = team.billing_percentage;
+  this.editProjectTeamId = team.project_team_id;
+
+  this.selectedCustomerId = team.customer_id;
+
+  this.filterProjects();
+
+  this.isEditModalOpen = true;
+  console.log('Selected Project ID:', this.editSelectedProjectId);
+  console.log('Filtered Projects:', this.filteredProjects);
+}
+
+// Close Edit Modal
+closeEditModal(): void {
+  this.isEditModalOpen = false;
+  this.editSelectedCustomerId = null;
+  this.editSelectedProjectId = null;
+  this.editSelectedEmployeeId = null;
+  this.editSelectedProjectRoleId = null;
+  this.editStartDate = '';
+  this.editTentativeEndDate = '';
+  this.editSelectedAllocationStatus = 0;
+  this.editSelectedAllocationPercentage = null;
+  this.editSelectedBilledStatus = 0;
+  this.editSelectedBillingPercentage = null;
+  this.editProjectTeamId = null;
+}
+
+// Toggle Allocation Status
+toggleEditAllocationStatus(): void {
+  this.editSelectedAllocationStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
+}
+
+// Toggle Billed Status
+toggleEditBilledStatus(): void {
+  this.editSelectedBilledStatus = this.editSelectedBilledStatus === 1 ? 0 : 1;
+}
+
+// Update Assign Team
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Clear Form Fields
 clearAssignForm() {
@@ -248,21 +449,7 @@ clearAssignForm() {
   allocationPercentageFilter: number | null = null;
   billingPercentageFilter: number | null = null;
    // ✅ Fetch Assigned Project Teams
-   fetchAssignedProjectTeams(): void {
-    this.rmgService.getAllProjectTeams().subscribe(
-      (response) => {
-        this.assignedProjectTeams = response;
-        this.filteredAssignedProjectTeams = [...this.assignedProjectTeams];
-        this.totalItems = this.filteredAssignedProjectTeams.length;
-        this.updatePage();
-
-        console.log('Fetched Project Teams:', this.assignedProjectTeams);
-      },
-      (error) => {
-        console.error('Error fetching project teams:', error);
-      }
-    );
-  }
+   
 
 /** Convert date to 'YYYY-MM-DD' format */
 formatDate(date: any): string {
@@ -388,52 +575,6 @@ getVisiblePageNumbers(): number[] {
 
 
 
-// delete project team
-deleteAssignProjectTeam(projectTeamId: number): void {
-  console.log('Deleting Project Team:', projectTeamId);
-
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'You will not be able to recover this project team assignment!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'No, keep it'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.rmgService.deleteProjectTeam(projectTeamId).subscribe({
-        next: (response) => {
-          console.log('Project Team Deleted:', response);
-
-          // Success Toast Notification
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Project team deleted successfully!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-
-          setTimeout(() => this.fetchAssignedProjectTeams(), 100);
-        },
-        error: (error) => {
-          console.error('Error deleting project team:', error);
-
-          // Error Toast Notification
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Failed to delete project team!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-        }
-      });
-    }
-  });
-}
   selectedAllocationStatus: number | null = null;
 
 

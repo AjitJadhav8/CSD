@@ -3,6 +3,46 @@ import db from '../config/db'; // Import MySQL database connection
 
 class RmgController {
 
+
+    constructor() {
+        // Bind `this` to the class instance
+        this.updateAssignTeam = this.updateAssignTeam.bind(this);
+      }
+    // Delete project team assignment
+    async softDeleteProjectTeam(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
+    
+            // Check if project team exists
+            const checkQuery = `SELECT * FROM trans_project_team WHERE project_team_id = ? AND is_deleted = 0`;
+            db.query(checkQuery, [id], (err, results) => {
+                if (err) {
+                    console.error('Database Error:', err);
+                    res.status(500).json({ error: 'Database Error', details: err.message });
+                    return;
+                }
+    
+    
+                // Perform soft delete by updating is_deleted = 1
+                const deleteQuery = `UPDATE trans_project_team SET is_deleted = 1, updated_at = NOW() WHERE project_team_id = ?`;
+    
+                db.query(deleteQuery, [id], (error) => {
+                    if (error) {
+                        console.error('Error deleting project team:', error);
+                        res.status(500).json({ error: 'Failed to delete project team', details: error.message });
+                        return;
+                    }
+    
+                    res.status(200).json({ message: 'Project team deleted successfully' });
+                });
+            });
+    
+        } catch (error) {
+            console.error('Internal Server Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
     async assignProjectTeam(req: Request, res: Response): Promise<void> {
         try {
             const { customer_id, project_id, employee_id, project_role_id, project_manager_id, start_date, end_date, allocation_status, allocation_percentage, billed_status, billing_percentage } = req.body;
@@ -86,28 +126,9 @@ class RmgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-    async getEmployeeAllocation(employeeId: number): Promise<number> {
-        return new Promise((resolve, reject) => {
-            const query = `
-                SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
-                FROM trans_project_team
-                WHERE employee_id = ? AND is_deleted = 0`;
-    
-            db.query(query, [employeeId], (error, results: any) => {
-                if (error) {
-                    console.error('Database Error:', error);
-                    reject(error);
-                } else {
-                    const totalAllocation = Number(results[0]?.total_allocation) || 0; // Convert to number
-                    console.log(`Employee ${employeeId} Current Allocation:`, totalAllocation);
-                    resolve(totalAllocation);
-                }
-            });
-        });
-    }
+   
     
     
-
      // Fetch all assigned project teams
      async getAllProjectTeams(req: Request, res: Response): Promise<void> {
         try {
@@ -148,41 +169,132 @@ class RmgController {
         }
     }
 
-
-    // Delete project team assignment
-    async softDeleteProjectTeam(req: Request, res: Response): Promise<void> {
-        try {
-            const { id } = req.params;
+     // Get Employee Allocation
+  
+     async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
+        return new Promise((resolve, reject) => {
+          let query = `
+            SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
+            FROM trans_project_team
+            WHERE employee_id = ? AND is_deleted = 0`;
     
-            // Check if project team exists
-            const checkQuery = `SELECT * FROM trans_project_team WHERE project_team_id = ? AND is_deleted = 0`;
-            db.query(checkQuery, [id], (err, results) => {
-                if (err) {
-                    console.error('Database Error:', err);
-                    res.status(500).json({ error: 'Database Error', details: err.message });
-                    return;
+          const params: any[] = [employeeId];
+    
+          // Exclude the current assignment if `excludeProjectTeamId` is provided
+          if (excludeProjectTeamId) {
+            query += ` AND project_team_id != ?`;
+            params.push(excludeProjectTeamId);
+          }
+    
+          db.query(query, params, (error, results: any) => {
+            if (error) {
+              console.error('Database Error:', error);
+              reject(error);
+            } else {
+              const totalAllocation = Number(results[0]?.total_allocation) || 0;
+              console.log(`Employee ${employeeId} Current Allocation:`, totalAllocation);
+              resolve(totalAllocation);
+            }
+          });
+        });
+      }
+
+      async updateAssignTeam(req: Request, res: Response): Promise<void> {
+        try {
+          const id = Number(req.params.id);
+          const {
+            customer_id, project_id, employee_id, project_role_id,
+            start_date, end_date, allocation_status, allocation_percentage,
+            billed_status, billing_percentage
+          } = req.body;
+    
+          console.log('Received Project ID:', project_id);
+    
+          // Validate required fields
+          if (!customer_id || !project_id || !employee_id || !project_role_id || !start_date || !allocation_status || allocation_percentage === undefined || billed_status === undefined || billing_percentage === undefined) {
+            res.status(400).json({ error: 'Missing required fields' });
+            return;
+          }
+    
+          // Validate allocation_percentage (must be a number between 0 and 100)
+          if (isNaN(allocation_percentage) || allocation_percentage < 0 || allocation_percentage > 100) {
+            res.status(400).json({ error: 'allocation_percentage must be a number between 0 and 100' });
+            return;
+          }
+    
+          // Validate start_date and end_date (if provided)
+          if (end_date && new Date(start_date) > new Date(end_date)) {
+            res.status(400).json({ error: 'start_date must be before or equal to end_date' });
+            return;
+          }
+    
+          // Check if the employee is already assigned to the same project (excluding the current assignment)
+          const checkAssignmentQuery = `
+            SELECT COUNT(*) AS assignment_count
+            FROM trans_project_team
+            WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0`;
+    
+          db.query(checkAssignmentQuery, [employee_id, project_id, id], (error, results: any) => {
+            if (error) {
+              console.error('Database Error:', error);
+              res.status(500).json({ error: 'Database Error', details: error.message });
+              return;
+            }
+    
+            const assignmentCount = results[0]?.assignment_count || 0;
+            if (assignmentCount > 0) {
+              res.status(400).json({ error: 'Employee is already assigned to this project' });
+              return;
+            }
+    
+            // Use an arrow function to preserve `this` context
+            this.getEmployeeAllocation(employee_id, id).then(currentAllocation => {
+              console.log(`Current allocation for employee ${employee_id}:`, currentAllocation);
+              console.log(`Requested allocation:`, allocation_percentage);
+    
+              // Check if the new allocation exceeds 100%
+              if (currentAllocation + allocation_percentage > 100) {
+                const remainingAllocation = Math.max(0, 100 - currentAllocation);
+                res.status(400).json({
+                  error: `Employee allocation exceeds 100%. Only ${remainingAllocation}% allocation is remaining.`
+                });
+                return;
+              }
+    
+              // Update the assignment
+              const updateQuery = `
+                UPDATE trans_project_team
+                SET
+                  customer_id = ?, project_id = ?, employee_id = ?, project_role_id = ?,
+                  start_date = ?, end_date = ?, allocation_status = ?, allocation_percentage = ?,
+                  billed_status = ?, billing_percentage = ?, updated_at = NOW()
+                WHERE project_team_id = ?`;
+    
+              db.query(updateQuery, [
+                customer_id, project_id, employee_id, project_role_id,
+                start_date, end_date, allocation_status, allocation_percentage,
+                billed_status, billing_percentage, id
+              ], (error, result) => {
+                if (error) {
+                  console.error('Database Error:', error);
+                  res.status(500).json({ error: 'Database Error', details: error.message });
+                  return;
                 }
     
-    
-                // Perform soft delete by updating is_deleted = 1
-                const deleteQuery = `UPDATE trans_project_team SET is_deleted = 1, updated_at = NOW() WHERE project_team_id = ?`;
-    
-                db.query(deleteQuery, [id], (error) => {
-                    if (error) {
-                        console.error('Error deleting project team:', error);
-                        res.status(500).json({ error: 'Failed to delete project team', details: error.message });
-                        return;
-                    }
-    
-                    res.status(200).json({ message: 'Project team deleted successfully' });
-                });
+                res.status(200).json({ message: 'Assign Team updated successfully' });
+              });
+            }).catch(err => {
+              console.error('Error getting employee allocation:', err);
+              res.status(500).json({ error: 'Internal Server Error' });
             });
-    
+          });
         } catch (error) {
-            console.error('Internal Server Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Error updating assign team:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
+      }
+
+    
     
     
 

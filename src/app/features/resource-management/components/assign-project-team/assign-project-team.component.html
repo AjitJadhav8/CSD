@@ -141,6 +141,139 @@
             Submit
         </button>
     </div>
+    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditModal()">
+        <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+          <h3 class="text-xl font-semibold mb-4">Edit Assign Team</h3>
+          <form #editAssignTeamForm="ngForm" (ngSubmit)="updateAssignTeam(editAssignTeamForm); $event.preventDefault()">
+            <div class="grid grid-cols-6 gap-4">
+              <!-- Customer Name -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Customer Name*</label>
+                <select [(ngModel)]="editSelectedCustomerId" name="editCustomer" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Customer</option>
+                  <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                    {{ customer.customer_name }}
+                  </option>
+                </select>
+              </div>
+      
+              <!-- Project Name -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Project Name*</label>
+                <select [(ngModel)]="editSelectedProjectId" name="editProject" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Project</option>
+                  <option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                    {{ project.project_name }}
+                  </option>
+                </select>
+              </div>
+      
+              <!-- Employee Name -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Employee Name*</label>
+                <select [(ngModel)]="editSelectedEmployeeId" name="editEmployee" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Employee</option>
+                  <option *ngFor="let employee of optionEmployees" [value]="employee.user_id">
+                    {{ employee.user_first_name }} {{ employee.user_last_name }}
+                  </option>
+                </select>
+              </div>
+      
+              <!-- Project Role -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Project Role*</label>
+                <select [(ngModel)]="editSelectedProjectRoleId" name="editProjectRole" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Project Role</option>
+                  <option *ngFor="let role of optionProjectRoles" [value]="role.project_role_id">
+                    {{ role.project_role_name }}
+                  </option>
+                </select>
+              </div>
+      
+              <!-- Start Date -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Start Date*</label>
+                <input type="date" [(ngModel)]="editStartDate" name="editStartDate" class="border p-2 w-full rounded-md" required>
+              </div>
+      
+              <!-- Tentative End Date -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Tentative End Date</label>
+                <input type="date" [(ngModel)]="editTentativeEndDate" name="editTentativeEndDate" class="border p-2 w-full rounded-md">
+              </div>
+      
+              <!-- Allocation Status -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Allocation Status*</label>
+                <div class="flex gap-4 items-center">
+                  <span class="text-sm font-medium" [class.text-gray-500]="editSelectedAllocationStatus === 0"
+                    [class.text-green-600]="editSelectedAllocationStatus === 1">
+                    {{ editSelectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
+                  </span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer" [checked]="editSelectedAllocationStatus === 1"
+                      (change)="toggleEditAllocationStatus()">
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                      peer-checked:after:translate-x-full peer-checked:after:border-white
+                      after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                      after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                      peer-checked:bg-green-600">
+                    </div>
+                  </label>
+                </div>
+              </div>
+      
+              <!-- Allocation Percentage -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Allocation Percentage*</label>
+                <select [(ngModel)]="editSelectedAllocationPercentage" name="editAllocationPercentage" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Allocation Percentage</option>
+                  <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
+                    {{ percentage }}%
+                  </option>
+                </select>
+              </div>
+      
+              <!-- Billed Status -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Billed Status*</label>
+                <div class="flex gap-4 items-center">
+                  <span class="text-sm font-medium" [class.text-gray-500]="editSelectedBilledStatus === 0"
+                    [class.text-green-600]="editSelectedBilledStatus === 1">
+                    {{ editSelectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
+                  </span>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer" [checked]="editSelectedBilledStatus === 1"
+                      (change)="toggleEditBilledStatus()">
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                      peer-checked:after:translate-x-full peer-checked:after:border-white
+                      after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                      after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                      peer-checked:bg-green-600">
+                    </div>
+                  </label>
+                </div>
+              </div>
+      
+              <!-- Billing Percentage -->
+              <div class="form-group">
+                <label class="block mb-2 font-semibold">Billing Percentage*</label>
+                <select [(ngModel)]="editSelectedBillingPercentage" name="editBillingPercentage" class="border p-2 w-full rounded-md" required>
+                  <option value="" disabled selected>Select Billing Percentage</option>
+                  <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
+                </select>
+              </div>
+            </div>
+      
+            <!-- Submit Button -->
+            <div class="mt-4">
+              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     <div class="rounded-lg w-full overflow-x-auto">
         <!-- Filter Section -->
@@ -339,6 +472,7 @@
                         <td class="border p-2">{{ team.billed_status ? 'Billed' : 'Not Billed' }}</td>
                         <td class="border p-2">{{ team.billing_percentage }}%</td>
                         <td class="border p-2">
+                            <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" (click)="openEditModal(team)">Edit</button>
                             <button class="bg-red-500 text-white px-2 py-1 rounded"
                                 (click)="deleteAssignProjectTeam(team.project_team_id)">
                                 Delete

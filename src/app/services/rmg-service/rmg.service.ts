@@ -15,24 +15,28 @@ export class RmgService {
     const token = localStorage.getItem('token'); // Retrieve token from storage
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
+  // delete project team assignment
+  deleteProjectTeam(id: number): Observable<any> {
+    const headers = this.getAuthHeaders(); 
+    return this.http.delete(`${this.apiUrl}/api/rmg/assignments/${id}`, { headers });
+  }
 
   submitAssignProjectTeam(assignmentData: any): Observable<any> {
     const headers = this.getAuthHeaders(); // Get headers with token
     return this.http.post(`${this.apiUrl}/api/rmg/assign`, assignmentData, { headers });
   }
 
-    // Fetch all project team assignments
     getAllProjectTeams(): Observable<any> {
-      const headers = this.getAuthHeaders(); // Get headers with token
+      const headers = this.getAuthHeaders(); 
       return this.http.get(`${this.apiUrl}/api/rmg/assignments`, { headers });
     }
 
-    // delete project team assignment
-    deleteProjectTeam(id: number): Observable<any> {
-      const headers = this.getAuthHeaders(); // Get headers with token
-      return this.http.delete(`${this.apiUrl}/api/rmg/assignments/${id}`, { headers });
-    }
     
+    
+    updateAssignTeam(projectTeamId: number, updateData: any): Observable<any> {
+      const headers = this.getAuthHeaders();
+      return this.http.put(`${this.apiUrl}/api/rmg/assignments/${projectTeamId}`, updateData, { headers });
+    }
 
 
 }

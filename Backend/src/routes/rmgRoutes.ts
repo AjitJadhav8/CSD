@@ -8,6 +8,8 @@ router.post('/assign', protect, rmgController.assignProjectTeam.bind(rmgControll
 router.get('/assignments', protect, rmgController.getAllProjectTeams);
 router.delete('/assignments/:id', protect, rmgController.softDeleteProjectTeam);
 
+router.put('/assignments/:id', protect, rmgController.updateAssignTeam);
+
 
 
 export default router;

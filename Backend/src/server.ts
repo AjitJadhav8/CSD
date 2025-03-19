@@ -16,6 +16,7 @@ const app = express(); // Initialize app
 // Middleware
 app.use(express.json()); // Use express built-in JSON parser instead of bodyParser
 app.use(cors());
+app.options('*', cors());
 
 // Use the routes
 app.use('/api', orgRoutes);
