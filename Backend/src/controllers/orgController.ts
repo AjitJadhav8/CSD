@@ -1427,6 +1427,8 @@ class OrgController {
           p.project_id,
           p.project_name,
           c.customer_name,
+          c.customer_id,
+           u.user_id AS project_manager_id,
           CONCAT(u.user_first_name, ' ', u.user_last_name) AS project_manager,
             p.type_of_project_id, -- Include ID
           tp.project_type_name AS type_of_project,
@@ -1486,6 +1488,48 @@ class OrgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+    async updateProject(req: Request, res: Response): Promise<void> {
+        try {
+          const { projectId } = req.params;
+          const {
+            customer_id, project_name, planned_start_date, actual_start_date,
+            type_of_project_id, type_of_engagement_id, project_manager_id,
+            project_status_id, tentative_end_date, project_description
+          } = req.body;
+      
+          const updateQuery = `
+            UPDATE master_project 
+            SET 
+              customer_id = ?, project_name = ?, planned_start_date = ?, actual_start_date = ?, 
+              type_of_project_id = ?, type_of_engagement_id = ?, project_manager_id = ?, 
+              project_status_id = ?, tentative_end_date = ?, project_description = ?
+            WHERE project_id = ?
+          `;
+      
+          const values = [
+            customer_id, project_name, planned_start_date, actual_start_date,
+            type_of_project_id, type_of_engagement_id, project_manager_id,
+            project_status_id, tentative_end_date, project_description, projectId
+          ];
+      
+          db.query(updateQuery, values, (err: any, result: any) => {
+            if (err) {
+              console.error('Error updating project:', err);
+              return res.status(500).json({ error: 'Error updating project' });
+            }
+      
+            if (result.affectedRows === 0) {
+              return res.status(404).json({ error: 'Project not found' });
+            }
+      
+            res.status(200).json({ message: 'Project updated successfully' });
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
 
     // ---- Project Deliverable --------
 

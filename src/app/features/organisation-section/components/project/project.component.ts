@@ -16,25 +16,7 @@ import Swal from 'sweetalert2';
 export class ProjectComponent {
 
   constructor(private dataService: DataService, private http: HttpClient) { }
-  filteredProjects: any[] = []; // Store filtered projects
-
-// Method to filter projects based on selected customer
-filterProjects(): void {
-  const selectedCustomerId = Number(this.projectDeliverableForm.customer_id); 
-
-  console.log("Selected Customer ID:", selectedCustomerId);
-  console.log("Available Projects:", this.optionProject);
-
-  if (selectedCustomerId) {
-    this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
-    console.log("Filtered Projects:", this.filteredProjects);
-  } else {
-    this.filteredProjects = []; // No customer selected, show empty
-  }
-
-  // Trigger Angular Change Detection
-  this.filteredProjects = [...this.filteredProjects];  
-}
+ 
 
 
 
@@ -120,7 +102,7 @@ projectDescriptionFilter: string = '';
   project = {
     project_id: null, // Primary key
     project_name: '',
-    customer_id: null, // Foreign key reference
+    customer_id: 'null', // Foreign key reference
     customer_name: '',
     project_manager_id: null, // Foreign key reference
     project_manager: '',
@@ -167,6 +149,98 @@ projectDescriptionFilter: string = '';
       }
     );
   }
+  submitProject(projectNgForm: NgForm): void {
+
+    if (projectNgForm.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return; // Stop execution if form is invalid
+    }
+
+    this.dataService.addProject(this.projectForm).subscribe(
+      (response) => {
+        console.log('Project added successfully:', response);
+        this.fetchProjects();
+        projectNgForm.resetForm();
+        // Success Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end', // Change to 'bottom-end' if needed
+          icon: 'success',
+          title: 'Project added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+      },
+      (error) => {
+        console.error('Error adding project', error);
+
+        // Error Toast Notification
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding project!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    );
+  }
+
+
+  deleteProject(projectId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This project will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteProject(projectId).subscribe(
+          (response) => {
+            console.log('Project deleted successfully:', response);
+            this.fetchProjects(); // Refresh the list
+
+            // Success Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Project deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+
+          },
+          (error) => {
+            console.error('Error deleting project:', error);
+
+            // Error Toast Notification
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error deleting project!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        );
+      }
+    });
+  }
   formatDate(dateString: string): string {
     if (!dateString) return '';
   
@@ -177,7 +251,116 @@ projectDescriptionFilter: string = '';
     // Format as YYYY-MM-DD
     return localDate.toISOString().split('T')[0];
   }
+
+  isEditProjectModalOpen = false;
+  editProjectFormData: any = {
+    customer_id: '',
+    project_name: '',
+    planned_start_date: '',
+    actual_start_date: '',
+    type_of_project_id: '',
+    type_of_engagement_id: '',
+    project_manager_id: '',
+    project_status_id: '',
+    tentative_end_date: '',
+    project_description: '',
+  };
+  editProjectId: number | null = null;
+
+  // Open Edit Modal
+  openEditProjectModal(project: any): void {
+    this.editProjectFormData = {
+      customer_id: project.customer_id || '',  // Ensure customer_id is set
+      project_name: project.project_name || '',
+      planned_start_date: this.formatDate(project.planned_start_date),
+      actual_start_date: this.formatDate(project.actual_start_date),
+      type_of_project_id: project.type_of_project_id || '',
+      type_of_engagement_id: project.type_of_engagement_id || '',
+      project_manager_id: project.project_manager_id || '', // Ensure project_manager_id is set
+      project_status_id: project.project_status_id || '',
+      tentative_end_date: this.formatDate(project.tentative_end_date),
+      project_description: project.project_description || '',
+    };
+    this.editProjectId = project.project_id;
+    this.isEditProjectModalOpen = true;
+    console.log('afsd', this.editProjectFormData)
+  }
   
+
+  // Close Edit Modal
+  closeEditProjectModal(): void {
+    this.isEditProjectModalOpen = false;
+    this.editProjectFormData = {
+      customer_id: '',
+      project_name: '',
+      planned_start_date: '',
+      actual_start_date: '',
+      type_of_project_id: '',
+      type_of_engagement_id: '',
+      project_manager_id: '',
+      project_status_id: '',
+      tentative_end_date: '',
+      project_description: '',
+    };
+    this.editProjectId = null;
+  }
+
+  // Update Project
+  updateProject(editProjectForm: NgForm): void {
+    if (editProjectForm.invalid || !this.editProjectId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
+    }
+
+    this.dataService.updateProject(this.editProjectId, this.editProjectFormData).subscribe({
+      next: (response) => {
+        console.log('Project updated successfully', response);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchProjects();
+        this.closeEditProjectModal();
+      },
+      error: (error) => console.error('Error updating project:', error)
+    });
+  }
+
+
+
+
+
+  filteredProjects: any[] = []; // Store filtered projects
+
+  // Method to filter projects based on selected customer
+  filterProjects(): void {
+    const selectedCustomerId = Number(this.projectDeliverableForm.customer_id); 
+  
+    console.log("Selected Customer ID:", selectedCustomerId);
+    console.log("Available Projects:", this.optionProject);
+  
+    if (selectedCustomerId) {
+      this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
+      console.log("Filtered Projects:", this.filteredProjects);
+    } else {
+      this.filteredProjects = []; // No customer selected, show empty
+    }
+  
+    // Trigger Angular Change Detection
+    this.filteredProjects = [...this.filteredProjects];  
+  }
   
   
 // Apply Filters for Projects
@@ -289,98 +472,7 @@ getVisibleProjectPageNumbers(): number[] {
 
   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 }
-  submitProject(projectNgForm: NgForm): void {
-
-    if (projectNgForm.invalid) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill all required fields correctly!',
-        toast: true,
-        position: 'top-end',
-        timer: 3000,
-        showConfirmButton: false
-      });
-      return; // Stop execution if form is invalid
-    }
-
-    this.dataService.addProject(this.projectForm).subscribe(
-      (response) => {
-        console.log('Project added successfully:', response);
-        this.fetchProjects();
-        projectNgForm.resetForm();
-        // Success Toast Notification
-        Swal.fire({
-          toast: true,
-          position: 'top-end', // Change to 'bottom-end' if needed
-          icon: 'success',
-          title: 'Project added successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-
-      },
-      (error) => {
-        console.error('Error adding project', error);
-
-        // Error Toast Notification
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Error adding project!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    );
-  }
-
-
-  deleteProject(projectId: number): void {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This project will be deleted!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.dataService.deleteProject(projectId).subscribe(
-          (response) => {
-            console.log('Project deleted successfully:', response);
-            this.fetchProjects(); // Refresh the list
-
-            // Success Toast Notification
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Project deleted successfully!',
-              showConfirmButton: false,
-              timer: 3000
-            });
-
-          },
-          (error) => {
-            console.error('Error deleting project:', error);
-
-            // Error Toast Notification
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'error',
-              title: 'Error deleting project!',
-              showConfirmButton: false,
-              timer: 3000
-            });
-          }
-        );
-      }
-    });
-  }
+ 
 
   // ------------------Project Deliverable------------------------
   deliverableCurrentPage: number = 1;

@@ -174,6 +174,10 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/project/${projectId}`);
   }
 
+  updateProject(projectId: number, projectData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/project/${projectId}`, projectData);
+  }
+
   // ------------------ Project Deliverable ------------------------
 
 
