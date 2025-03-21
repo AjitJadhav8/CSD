@@ -50,27 +50,27 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
 
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
-            const { timesheet_date, pd_id, task_description, hours, minutes, task_status, task_cat_id } = req.body;
-            const user_id = (req as any).user?.user_id; // Use "as any" to access req.user
-
-            // Validate required fields
-            if (!timesheet_date || !user_id || !pd_id || !task_cat_id || hours === undefined || minutes === undefined || task_status === undefined) {
-                res.status(400).json({ error: 'Missing required fields' });
-                return;
-            }
-
-            const query = `
-                INSERT INTO trans_timesheet (timesheet_date,user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id, is_deleted, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
-
-            db.query(query, [timesheet_date, user_id, pd_id, task_description, hours, minutes, task_status, task_cat_id]);
-
-            res.status(201).json({ message: 'Timesheet entry submitted successfully' });
+          const { timesheet_date, phase_id, pd_id, task_description, hours, minutes, task_status } = req.body;
+          const user_id = (req as any).user?.user_id;
+      
+          // Validate required fields
+          if (!timesheet_date || !user_id || !phase_id || !pd_id || hours === undefined || minutes === undefined || task_status === undefined) {
+            res.status(400).json({ error: 'Missing required fields' });
+            return;
+          }
+      
+          const query = `
+            INSERT INTO trans_timesheet (timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status, is_deleted, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+      
+          db.query(query, [timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status]);
+      
+          res.status(201).json({ message: 'Timesheet entry submitted successfully' });
         } catch (error) {
-            console.error('Error submitting timesheet:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+          console.error('Error submitting timesheet:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
         }
-    }
+      }
 
 
     // fethch timesheet
@@ -84,27 +84,27 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             }
 
             const query = `
-                 SELECT 
-                t.timesheet_id, 
-                t.user_id, 
-                t.pd_id, 
-                t.task_description,
-                m.project_deliverable_name, 
-                p.project_name, 
-                c.customer_name, 
-                tc.task_category_name, 
-                t.hours, 
-                t.minutes, 
-                t.task_status, 
-                t.timesheet_date
-            FROM trans_timesheet t
-            LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
-            LEFT JOIN master_project p ON m.project_id = p.project_id
-            LEFT JOIN master_customer c ON p.customer_id = c.customer_id
-            LEFT JOIN master_task_category tc ON t.task_cat_id = tc.task_cat_id
-            WHERE t.is_deleted = 0 AND t.user_id = ? 
-                AND DATE(t.created_at) = CURDATE()  -- Filter for records submitted today
-            ORDER BY t.timesheet_id DESC`;
+                SELECT 
+    t.timesheet_id, 
+    t.user_id, 
+    t.pd_id, 
+    t.task_description,
+    m.project_deliverable_name, 
+    p.project_name, 
+    c.customer_name, 
+    ph.project_phase_name, 
+    t.hours, 
+    t.minutes, 
+    t.task_status, 
+    t.timesheet_date
+FROM trans_timesheet t
+LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
+LEFT JOIN master_project_phases ph ON m.phase_id = ph.phase_id  -- Corrected: Linking through phases
+LEFT JOIN master_project p ON ph.project_id = p.project_id      -- Corrected: Linking through phases
+LEFT JOIN master_customer c ON p.customer_id = c.customer_id
+WHERE t.is_deleted = 0 AND t.user_id = ? 
+  AND DATE(t.created_at) = CURDATE()
+ORDER BY t.timesheet_id DESC`;
 
             db.query(query, [userId], (err, results) => {
                 if (err) {
@@ -172,27 +172,30 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             }
 
             const query = `
-             SELECT 
-                t.timesheet_id, 
-                t.user_id, 
-                t.pd_id, 
-                t.task_description,
-                m.project_deliverable_name, 
-                p.project_name, 
-                c.customer_name, 
-                tc.task_category_name, 
-                t.hours, 
-                t.minutes, 
-                t.task_status, 
-                t.timesheet_date
-            FROM trans_timesheet t
-            LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
-            LEFT JOIN master_project p ON m.project_id = p.project_id
-            LEFT JOIN master_customer c ON p.customer_id = c.customer_id
-            LEFT JOIN master_task_category tc ON t.task_cat_id = tc.task_cat_id
-            WHERE t.is_deleted = 0 
-                AND t.user_id = ? 
-            ORDER BY t.timesheet_id DESC`;
+    SELECT 
+    t.timesheet_id, 
+    t.user_id, 
+    t.pd_id, 
+    t.task_description,
+    m.project_deliverable_name, 
+    p.project_name, 
+    c.customer_name, 
+    ph.project_phase_name,  -- Added phase name instead of task category
+    t.hours, 
+    t.minutes, 
+    t.task_status, 
+    t.timesheet_date
+FROM trans_timesheet t
+LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
+LEFT JOIN master_project_phases ph ON m.phase_id = ph.phase_id  -- Linking deliverables to phases
+LEFT JOIN master_project p ON ph.project_id = p.project_id      -- Linking phases to projects
+LEFT JOIN master_customer c ON ph.customer_id = c.customer_id  -- Linking phases to customers
+WHERE t.is_deleted = 0 
+    AND t.user_id = ? 
+ORDER BY t.timesheet_id DESC;
+
+`;
+
 
             db.query(query, [userId], (err, results) => {
                 if (err) {

@@ -58,24 +58,41 @@
 
                         <!-- Third Row (Deliverable & Task Category) -->
                         <div class="form-group">
-                            <label class="block mb-2 font-semibold">Project Deliverable</label>
-                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDeliverable"
-                                name="selectedDeliverable" #selectedDeliverableInput="ngModel"
-                                [disabled]="!selectedProject" required
-                                [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
-                                <option value="" disabled selected>Select Deliverable</option>
-                                <option *ngFor="let deliverable of filterOptionProjectDeliverables"
-                                    [value]="deliverable.pd_id">
-                                    {{ deliverable.project_deliverable_name }}
-                                </option>
+                            <label class="block mb-2 font-semibold">Select Phase</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedPhase" name="selectedPhase"
+                              #selectedPhaseInput="ngModel" [disabled]="!selectedProject" required
+                              (change)="onPhaseChange()"
+                              [ngClass]="{'border-red-500': (selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)}">
+                              <option value="" disabled selected>Select Phase</option>
+                              <option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
+                                {{ phase.project_phase_name }}
+                              </option>
                             </select>
                             <span class="text-red-500 text-sm"
-                                *ngIf="(selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)">
-                                Deliverable is required
+                              *ngIf="(selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)">
+                              Phase is required
                             </span>
-                        </div>
+                          </div>
 
                         <div class="form-group">
+                            <label class="block mb-2 font-semibold">Project Deliverable</label>
+                            <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDeliverable"
+                              name="selectedDeliverable" #selectedDeliverableInput="ngModel"
+                              [disabled]="!selectedPhase" required
+                              [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
+                              <option value="" disabled selected>Select Deliverable</option>
+                              <option *ngFor="let deliverable of filterOptionProjectDeliverables"
+                                [value]="deliverable.pd_id">
+                                {{ deliverable.project_deliverable_name }}
+                              </option>
+                            </select>
+                            <span class="text-red-500 text-sm"
+                              *ngIf="(selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)">
+                              Deliverable is required
+                            </span>
+                          </div>
+
+                        <!-- <div class="form-group">
                             <label class="block mb-2 font-semibold">Task Category</label>
                             <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedTaskCategory"
                                 name="selectedTaskCategory" #selectedTaskCategoryInput="ngModel" required
@@ -89,7 +106,10 @@
                                 *ngIf="(selectedTaskCategoryInput.invalid && selectedTaskCategoryInput.touched) || (timesheetForm.submitted && selectedTaskCategoryInput.invalid)">
                                 Task Category is required
                             </span>
-                        </div>
+                        </div> -->
+
+                        <!-- Add Phase Dropdown -->
+
 
                         <!-- Fourth Row (Full Width - Task Description) -->
                         <div class="form-group">
@@ -175,7 +195,7 @@
                     <th class="border p-2">Project Deliverable</th>
                     <th class="border p-2">Project Name</th>
                     <th class="border p-2">Customer Name</th>
-                    <th class="border p-2">Task Category</th>
+                    <th class="border p-2"> Phase </th>
                     <th class="border p-2">Task Description</th>
 
                     <th class="border p-2">Hours</th>
@@ -192,7 +212,7 @@
                     <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
                     <td class="border p-2">{{ timesheet.project_name }}</td>
                     <td class="border p-2">{{ timesheet.customer_name }}</td>
-                    <td class="border p-2">{{ timesheet.task_category_name }}</td>
+                    <td class="border p-2">{{ timesheet.project_phase_name }}</td>
                     <td class="border p-2">{{ timesheet.task_description }}</td>
                     <td class="border p-2">{{ timesheet.hours }}</td>
                     <td class="border p-2">{{ timesheet.minutes }}</td>

@@ -54,13 +54,17 @@ export class FillTimesheetComponent {
       (response) => {
         console.log('Fetched Data:', response);
         this.optionProjectDeliverables = response.projectDeliverables; // Keep all deliverables intact
-        this.optionTaskCategories = response.taskCategories;
+        this.optionPhases =response.phases
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
       }
     );
   }
+
+  selectedPhase: number | null = null;
+filterOptionPhases: any[] = [];
+
 
   selectedCustomer: number | string = '';
   selectedProject: number | null = null;
@@ -94,7 +98,7 @@ export class FillTimesheetComponent {
 
 
   submitTimesheet() {
-    if (!this.userId || !this.selectedDeliverable || !this.selectedTaskCategory || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
+    if (!this.userId || !this.selectedDeliverable || !this.selectedPhase || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
       console.error('Missing required fields');
       // Show warning if required fields are missing
       Swal.fire({
@@ -112,11 +116,11 @@ export class FillTimesheetComponent {
       timesheet_date: this.selectedDate, // Directly sending selected date
       user_id: this.userId,
       pd_id: this.selectedDeliverable,
-      task_description: this.taskDescription,
+      phase_id: this.selectedPhase, // Include phase_id
       hours: this.selectedHours,
       minutes: this.selectedMinutes,
       task_status: this.selectedTaskStatus,
-      task_cat_id: this.selectedTaskCategory // New field added
+      task_description: this.taskDescription,
     };
 
     this.timesheetService.submitTimesheet(timesheetData).subscribe({
@@ -214,6 +218,9 @@ export class FillTimesheetComponent {
   optionProjectDeliverables: any[] = [];
   filterOptionProjectDeliverables: any[] = [];
   optionTaskCategories: any[] = [];
+  optionPhases: any[] = [];
+
+  
 
   onCustomerChange() {
     console.log('Selected Customer:', this.selectedCustomer);
@@ -237,16 +244,42 @@ export class FillTimesheetComponent {
     const projectId = Number(this.selectedProject);
     console.log('Converted Project ID:', projectId);
 
+    // Ensure optionPhases is populated
+    console.log('All Phases:', this.optionPhases);
+
+    // Filter phases based on the selected project
+    this.filterOptionPhases = this.optionPhases.filter(
+      (phase) => phase.project_id === projectId
+    );
+
+    console.log('Filtered Phases:', this.filterOptionPhases);
+
+    // Reset dependent dropdowns
+    this.selectedPhase = null;
+    this.selectedDeliverable = null;
+    this.filterOptionProjectDeliverables = []; // Clear deliverables
+}
+
+onPhaseChange() {
+    console.log('Selected Phase:', this.selectedPhase);
+
+    const phaseId = Number(this.selectedPhase);
+    console.log('Converted Phase ID:', phaseId);
+
     // Ensure optionProjectDeliverables is populated
     console.log('All Deliverables:', this.optionProjectDeliverables);
 
-    // Filter from optionProjectDeliverables instead of modifying the original list
+    // Filter deliverables based on the selected phase
     this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
-      (deliverable) => deliverable.project_id === projectId
+      (deliverable) => deliverable.phase_id === phaseId
     );
 
     console.log('Filtered Deliverables:', this.filterOptionProjectDeliverables);
-  }
+
+    // Reset deliverable selection
+    this.selectedDeliverable = null;
+}
+
 
   // currentDate: Date = new Date();
   hoursList = Array.from({ length: 8 }, (_, i) => i + 1);

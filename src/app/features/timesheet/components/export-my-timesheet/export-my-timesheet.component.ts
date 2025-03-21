@@ -100,7 +100,7 @@ export class ExportMyTimesheetComponent {
         'Project Deliverable': item.project_deliverable_name,
         'Project Name': item.project_name,
         'Customer Name': item.customer_name,
-        'Task Category': item.task_category_name,
+        'Phase': item.project_phase_name,
         'Task Description': item.task_description,
         'Hours': item.hours,
         'Minutes': item.minutes,
