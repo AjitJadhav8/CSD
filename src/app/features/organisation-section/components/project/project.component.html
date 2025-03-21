@@ -627,10 +627,10 @@
                     </form>
                 <!-- Edit Modal -->
 <div *ngIf="isEditProjectModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditProjectModal()">
-    <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+    <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
       <h3 class="text-xl font-semibold mb-4">Edit Project</h3>
       <form #editProjectForm="ngForm" (ngSubmit)="updateProject(editProjectForm); $event.preventDefault()">
-        <div class="grid grid-cols-6 gap-4">
+        <div class="grid grid-cols-5 gap-4">
           <!-- Customer Name -->
           <div class="form-group">
             <label class="block mb-2 font-semibold">Customer Name*</label>

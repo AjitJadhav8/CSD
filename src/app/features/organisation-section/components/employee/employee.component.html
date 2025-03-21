@@ -96,11 +96,11 @@
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Save Employee</button>
             </div>
         </form>
-        <div *ngIf="isEmployeeEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" (click)="closeEmployeeEditModal()">
+        <div *ngIf="isEmployeeEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEmployeeEditModal()">
             <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
               <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
               <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
-                <div class="grid grid-cols-6 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                   <!-- Employee Code -->
                   <div class="form-group">
                     <label>Employee Code*</label>
@@ -624,8 +624,8 @@
         </div>
         <!-- Add this modal for editing department -->
         <div *ngIf="isEditDepartmentModalOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg w-1/3">
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" >
+            <div class="bg-white p-6 rounded-lg w-1/3" >
                 <h3 class="text-xl font-semibold mb-4">Edit Department</h3>
                 <form #editDepartmentForm="ngForm"
                     (submit)="updateDepartment(editDepartmentForm); $event.preventDefault()">
@@ -701,7 +701,7 @@
 
         <!-- Edit Modal -->
         <div *ngIf="isProjectRoleEditModalOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeProjectRoleEditModal()">
             <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Project Role</h3>
@@ -782,7 +782,7 @@
 
         <!-- Edit Modal -->
         <div *ngIf="isDesignationModalOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeDesignationModule()">
             <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Designation</h3>
@@ -899,9 +899,9 @@
         </div>
 
         <!-- Edit Modal -->
-        <div *ngIf="isSkillModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+        <div *ngIf="isSkillModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeSkillModal()">
-            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+            <div class="bg-white p-6 rounded-lg w-1/4" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Skill</h3>
                 <form #editSkillForm="ngForm" (submit)="updateSkill(editSkillForm); $event.preventDefault()">
                     <div class="grid grid-cols-3 gap-4">
@@ -1072,13 +1072,13 @@
             </div>
         </div>
         <!-- Edit Modal -->
-        <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+        <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeEditModal()">
             <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Reporting Manager History</h3>
                 <form #editReportingManagerForm="ngForm"
                     (ngSubmit)="updateReportingManager(editReportingManagerForm); $event.preventDefault()">
-                    <div class="grid grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 gap-4">
                         <!-- Employee Name Dropdown -->
                         <div class="form-group">
                             <label class="block mb-2 font-semibold">Employee Name*</label>
