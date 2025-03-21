@@ -197,7 +197,7 @@ class OrgController {
 
             // Determine flags for active and new customers
             const isActive = status === 'Active' ? 1 : 0;
-            const isNew = customerType === 'Existing' ? 1 : 0;
+            const isNew = customerType === 'Potential' ? 1 : 0;
 
             // Query to get category_id based on selected domain
             const categoryQuery = `
@@ -333,7 +333,7 @@ class OrgController {
       
           // Determine flags for active and new customers
           const isActive = status === 'Active' ? 1 : 0;
-          const isNew = customerType === 'Existing' ? 1 : 0;
+          const isNew = customerType === 'Potential' ? 1 : 0;
       
           // Query to get category_id based on selected domain
           const categoryQuery = `

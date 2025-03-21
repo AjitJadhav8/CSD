@@ -32,19 +32,38 @@
                 </div>
 
                 <!-- Email (Required & Valid Email) -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email"
                         #email="ngModel" name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                </div> -->
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email" #email="ngModel"
+                        name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+                    <span class="text-red-500 text-sm"
+                        *ngIf="email.touched && email.value && email.invalid">
+                        Enter a valid email address
+                    </span>
                 </div>
 
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Phone Number</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone"
                         #phone="ngModel" name="phone" pattern="^\d{10}$"
                         [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
 
+                    <span class="text-red-500 text-sm"
+                        *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
+                        Enter a valid 10-digit phone number
+                    </span>
+                </div> -->
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone" #phone="ngModel"
+                        name="phone" pattern="^\d{10}$"
+                        [ngClass]="{'border-red-500': (phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)}">
                     <span class="text-red-500 text-sm"
                         *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
                         Enter a valid 10-digit phone number
