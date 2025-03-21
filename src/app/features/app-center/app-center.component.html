@@ -1,27 +1,36 @@
 <app-navbar></app-navbar>
 
-<div class="p-8 min-h-screen bg-gray-100">
-  <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome to App Center</h1>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Organisation Section -->
-    <a routerLink="/organisation" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
-      <img src="" alt="Organisation" class="w-26 h-16 mb-4">
+<div class="flex flex-wrap justify-center gap-6">
+  <!-- Organisation Section -->
+  <ng-container *ngIf="userRole !== '4'">
+    <a
+      routerLink="/organisation"
+      class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50 w-80"
+    >
+      <img src="" alt="Organisation" class="w-26 h-16 mb-4" />
       <h2 class="text-xl font-semibold text-gray-800">Organisation Master</h2>
     </a>
+  </ng-container>
 
-    <!-- Timesheet App -->
-    <a routerLink="/timesheet" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
-      <img src="" alt="Timesheet" class="w-26 h-16 mb-4">
-      <h2 class="text-xl font-semibold text-gray-800">Timesheet App</h2>
-    </a>
+  <!-- Timesheet App -->
+  <a
+    routerLink="/timesheet"
+    class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50 w-80"
+    >
+    <img src="" alt="Timesheet" class="w-26 h-16 mb-4" />
+    <h2 class="text-xl font-semibold text-gray-800">Timesheet App</h2>
+  </a>
 
-    <!-- Resource Management -->
-    <a routerLink="/resource-management" class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50">
-      <img src="" alt="Resource Management" class="w-26 h-16 mb-4">
+  <!-- Resource Management -->
+  <ng-container *ngIf="userRole !== '4'">
+    <a
+      routerLink="/resource-management"
+      class="bg-white p-6 shadow-md rounded-xl flex flex-col items-center transition hover:shadow-lg hover:bg-gray-50 w-80"
+    >
+      <img src="" alt="Resource Management" class="w-26 h-16 mb-4" />
       <h2 class="text-xl font-semibold text-gray-800">Resource Management</h2>
     </a>
-  </div>
+  </ng-container>
 </div>
 
 <div class="p-6">

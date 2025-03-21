@@ -2,16 +2,31 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  // Check if window is defined to avoid SSR errors
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token'); // Access localStorage safely
+    const token = localStorage.getItem('token');
+    const roleId = localStorage.getItem('role_id'); // Get the user's role_id
 
-    if (token) {
-      return true; // Allow access if token exists
+    if (!token) {
+      // Redirect to login if no token exists
+      const router = inject(Router);
+      router.navigate(['/login']);
+      return false;
     }
+
+    // Define restricted routes for role_id 4 (employee)
+    const restrictedRoutesForEmployee = ['/organisation', '/resource-management'];
+
+    if (roleId === '4' && restrictedRoutesForEmployee.some(route => state.url.startsWith(route))) {
+      // Deny access to restricted routes for role_id 4
+      const router = inject(Router);
+      router.navigate(['/timesheet']); // Redirect to timesheet or a forbidden page
+      return false;
+    }
+
+    return true; // Allow access for other roles
   }
 
-  // Redirect to login if token is missing
+  // Redirect to login if window is undefined (SSR)
   const router = inject(Router);
   router.navigate(['/login']);
   return false;
