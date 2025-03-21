@@ -865,18 +865,17 @@ class OrgController {
                 user_DOJ,
                 role_id,
                 department_id,
-                designation_id, // Added
-
+                designation_id,
                 is_timesheet_required,
                 reporting_manager_id
             } = req.body;
-
+    
             // Validate required fields
             if (!user_id) {
                 res.status(400).json({ error: "User ID is required" });
                 return;
             }
-
+    
             // Update master_user table with personal details
             const updateMasterUserQuery = `
                 UPDATE master_user
@@ -890,7 +889,7 @@ class OrgController {
                     user_DOJ = ?
                 WHERE user_id = ?
             `;
-
+    
             const masterUserValues = [
                 user_emergency_contact,
                 is_passport,
@@ -901,7 +900,7 @@ class OrgController {
                 user_DOJ,
                 user_id
             ];
-
+    
             // Execute the update query for master_user
             db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
                 if (err) {
@@ -909,33 +908,37 @@ class OrgController {
                     res.status(500).json({ error: "Error updating employee details" });
                     return;
                 }
-
+    
                 // Check if a record already exists in trans_user_details for the given user_id
                 const checkRecordQuery = `
                     SELECT * FROM trans_user_details WHERE user_id = ?
                 `;
-
+    
                 db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
                     if (err) {
                         console.error("Error checking trans_user_details:", err);
                         res.status(500).json({ error: "Error checking trans_user_details" });
                         return;
                     }
-
+    
+                    let previousReportingManagerId: number | null = null;
+    
                     if (result.length > 0) {
-                        // Record exists, perform UPDATE
+                        // Record exists, store the previous reporting manager ID
+                        previousReportingManagerId = result[0].reporting_manager_id;
+    
+                        // Perform UPDATE
                         const updateTransUserDetailsQuery = `
                             UPDATE trans_user_details
                             SET 
                                 role_id = ?,
                                 department_id = ?,
-                                                            designation_id = ?, 
-
+                                designation_id = ?,
                                 is_timesheet_required = ?,
                                 reporting_manager_id = ?
                             WHERE user_id = ?
                         `;
-
+    
                         const updateValues = [
                             role_id,
                             department_id,
@@ -944,14 +947,74 @@ class OrgController {
                             reporting_manager_id,
                             user_id
                         ];
-
+    
                         db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error updating trans_user_details:", err);
                                 res.status(500).json({ error: "Error updating trans_user_details" });
                                 return;
                             }
-                            res.status(200).json({ message: "Details updated successfully" });
+    
+                            // Update the is_RM flag for the new reporting manager
+                            if (reporting_manager_id) {
+                                const updateIsRmQuery = `
+                                    UPDATE master_user
+                                    SET is_RM = 1
+                                    WHERE user_id = ?
+                                `;
+    
+                                db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+                                    if (updateIsRmErr) {
+                                        console.error("Error updating is_RM flag:", updateIsRmErr);
+                                        res.status(500).json({ error: "Error updating is_RM flag" });
+                                        return;
+                                    }
+    
+                                    // Check if the previous reporting manager is still assigned to any user
+                                    if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
+                                        const checkPreviousRmQuery = `
+                                            SELECT COUNT(*) AS user_count
+                                            FROM trans_user_details
+                                            WHERE reporting_manager_id = ? AND is_deleted = 0
+                                        `;
+    
+                                        db.query(checkPreviousRmQuery, [previousReportingManagerId], (checkErr: any, checkResult: any) => {
+                                            if (checkErr) {
+                                                console.error("Error checking previous reporting manager assignments:", checkErr);
+                                                res.status(500).json({ error: "Error checking previous reporting manager assignments" });
+                                                return;
+                                            }
+    
+                                            const userCount = checkResult[0].user_count;
+    
+                                            // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
+                                            if (userCount === 0) {
+                                                const updatePreviousRmQuery = `
+                                                    UPDATE master_user
+                                                    SET is_RM = 0
+                                                    WHERE user_id = ?
+                                                `;
+    
+                                                db.query(updatePreviousRmQuery, [previousReportingManagerId], (updatePreviousRmErr: any, updatePreviousRmResult: any) => {
+                                                    if (updatePreviousRmErr) {
+                                                        console.error("Error updating previous is_RM flag:", updatePreviousRmErr);
+                                                        res.status(500).json({ error: "Error updating previous is_RM flag" });
+                                                        return;
+                                                    }
+    
+                                                    res.status(200).json({ message: "Details updated successfully" });
+                                                });
+                                            } else {
+                                                res.status(200).json({ message: "Details updated successfully" });
+                                            }
+                                        });
+                                    } else {
+                                        res.status(200).json({ message: "Details updated successfully" });
+                                    }
+                                });
+                            } else {
+                                res.status(200).json({ message: "Details updated successfully" });
+                            }
                         });
                     } else {
                         // Record does not exist, perform INSERT
@@ -959,9 +1022,9 @@ class OrgController {
                             INSERT INTO trans_user_details (
                                 user_id, role_id, department_id, designation_id, is_timesheet_required, reporting_manager_id
                             )
-                        VALUES (?, ?, ?, ?, ?, ?)
+                            VALUES (?, ?, ?, ?, ?, ?)
                         `;
-
+    
                         const insertValues = [
                             user_id,
                             role_id,
@@ -970,14 +1033,34 @@ class OrgController {
                             is_timesheet_required,
                             reporting_manager_id
                         ];
-
+    
                         db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error inserting trans_user_details:", err);
                                 res.status(500).json({ error: "Error inserting trans_user_details" });
                                 return;
                             }
-                            res.status(200).json({ message: "Details assigned successfully" });
+    
+                            // Update the is_RM flag for the new reporting manager
+                            if (reporting_manager_id) {
+                                const updateIsRmQuery = `
+                                    UPDATE master_user
+                                    SET is_RM = 1
+                                    WHERE user_id = ?
+                                `;
+    
+                                db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+                                    if (updateIsRmErr) {
+                                        console.error("Error updating is_RM flag:", updateIsRmErr);
+                                        res.status(500).json({ error: "Error updating is_RM flag" });
+                                        return;
+                                    }
+    
+                                    res.status(200).json({ message: "Details assigned successfully" });
+                                });
+                            } else {
+                                res.status(200).json({ message: "Details assigned successfully" });
+                            }
                         });
                     }
                 });
@@ -987,6 +1070,125 @@ class OrgController {
             res.status(500).json({ error: "Internal Server Error" });
         }
     }
+    async softDeleteEmployee(req: Request, res: Response): Promise<void> {
+        try {
+            const { employeeId } = req.params;
+    
+            // Soft delete the employee in master_user
+            const updateMasterUserQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
+            const updateTransUserDetailsQuery = `UPDATE trans_user_details SET is_deleted = 1 WHERE user_id = ?`;
+    
+            // Execute the first query to soft-delete the employee in master_user
+            db.query(updateMasterUserQuery, [employeeId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error deleting employee:', err);
+                    return res.status(500).json({ error: 'Error deleting employee' });
+                }
+    
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Employee not found' });
+                }
+    
+                // Execute the second query to soft-delete the corresponding record in trans_user_details
+                db.query(updateTransUserDetailsQuery, [employeeId], (err: any, result: any) => {
+                    if (err) {
+                        console.error('Error deleting trans_user_details:', err);
+                        return res.status(500).json({ error: 'Error deleting trans_user_details' });
+                    }
+    
+                    // Check if the soft-deleted employee was a reporting manager for any other employees
+                    const checkRmQuery = `
+                        SELECT COUNT(*) AS user_count
+                        FROM trans_user_details
+                        WHERE reporting_manager_id = ? AND is_deleted = 0
+                    `;
+    
+                    db.query(checkRmQuery, [employeeId], (checkErr: any, checkResult: any) => {
+                        if (checkErr) {
+                            console.error('Error checking reporting manager assignments:', checkErr);
+                            return res.status(500).json({ error: 'Error checking reporting manager assignments' });
+                        }
+    
+                        const userCount = checkResult[0].user_count;
+    
+                        // If the soft-deleted employee is no longer a reporting manager for any employees, set is_RM to 0
+                        if (userCount === 0) {
+                            const updateIsRmQuery = `
+                                UPDATE master_user
+                                SET is_RM = 0
+                                WHERE user_id = ?
+                            `;
+                            console.log(`Updating is_RM = 0 for user_id: ${employeeId}`);
+    
+                            db.query(updateIsRmQuery, [employeeId], (updateIsRmErr: any, updateIsRmResult: any) => {
+                                if (updateIsRmErr) {
+                                    console.error('Error updating is_RM flag:', updateIsRmErr);
+                                    return res.status(500).json({ error: 'Error updating is_RM flag' });
+                                }
+    
+                                res.status(200).json({ message: 'Employee and details soft deleted successfully. Reporting manager flag updated.' });
+                            });
+                        } else {
+                            res.status(200).json({ message: 'Employee and details soft deleted successfully' });
+                        }
+                    });
+                });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async updateEmployee(req: Request, res: Response): Promise<void> {
+        try {
+          const { employeeId } = req.params;
+          const {
+            user_code, user_first_name, user_middle_name, user_last_name,
+            user_email, user_contact
+          } = req.body;
+      
+          if (!user_code || !user_first_name || !user_last_name || !user_email || !user_contact) {
+            res.status(400).json({ error: 'All required fields must be filled' });
+            return;
+          }
+      
+          const updateQuery = `
+            UPDATE master_user
+            SET 
+              user_code = ?,
+              user_first_name = ?,
+              user_middle_name = ?,
+              user_last_name = ?,
+              user_email = ?,
+              user_contact = ?,
+              updated_at = NOW()
+            WHERE user_id = ?`;
+      
+          const values = [
+            user_code, user_first_name, user_middle_name, user_last_name,
+            user_email, user_contact, employeeId
+          ];
+      
+          db.query(updateQuery, values, (err: any, result: any) => {
+            if (err) {
+              console.error('Error updating employee:', err);
+              res.status(500).json({ error: 'Error updating employee' });
+              return;
+            }
+      
+            if (result.affectedRows === 0) {
+              return res.status(404).json({ error: 'Employee not found' });
+            }
+      
+            res.status(200).json({ message: 'Employee updated successfully' });
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
+
 
     async getAllEmployees(req: Request, res: Response): Promise<void> {
         try {
@@ -1072,79 +1274,7 @@ class OrgController {
         }
     }
 
-    async softDeleteEmployee(req: Request, res: Response): Promise<void> {
-        try {
-            const { employeeId } = req.params;
-
-            const updateQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
-
-            db.query(updateQuery, [employeeId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting employee:', err);
-                    return res.status(500).json({ error: 'Error deleting employee' });
-                }
-
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Employee not found' });
-                }
-
-                res.status(200).json({ message: 'Employee soft deleted successfully' });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-
-    async updateEmployee(req: Request, res: Response): Promise<void> {
-        try {
-          const { employeeId } = req.params;
-          const {
-            user_code, user_first_name, user_middle_name, user_last_name,
-            user_email, user_contact
-          } = req.body;
-      
-          if (!user_code || !user_first_name || !user_last_name || !user_email || !user_contact) {
-            res.status(400).json({ error: 'All required fields must be filled' });
-            return;
-          }
-      
-          const updateQuery = `
-            UPDATE master_user
-            SET 
-              user_code = ?,
-              user_first_name = ?,
-              user_middle_name = ?,
-              user_last_name = ?,
-              user_email = ?,
-              user_contact = ?,
-              updated_at = NOW()
-            WHERE user_id = ?`;
-      
-          const values = [
-            user_code, user_first_name, user_middle_name, user_last_name,
-            user_email, user_contact, employeeId
-          ];
-      
-          db.query(updateQuery, values, (err: any, result: any) => {
-            if (err) {
-              console.error('Error updating employee:', err);
-              res.status(500).json({ error: 'Error updating employee' });
-              return;
-            }
-      
-            if (result.affectedRows === 0) {
-              return res.status(404).json({ error: 'Employee not found' });
-            }
-      
-            res.status(200).json({ message: 'Employee updated successfully' });
-          });
-        } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
-        }
-      }
-
+  
 
 
 
@@ -1383,43 +1513,6 @@ class OrgController {
 
     // ---- project --------
 
-    async addProject(req: Request, res: Response): Promise<void> {
-        try {
-            const {
-                customer_id, project_name, planned_start_date, actual_start_date,
-                type_of_project_id, type_of_engagement_id, project_manager_id,
-                project_status_id, tentative_end_date, project_description
-            } = req.body;
-
-            const query = `
-            INSERT INTO master_project 
-            (
-                customer_id, project_name, planned_start_date, actual_start_date, 
-                type_of_project_id, type_of_engagement_id, project_manager_id, 
-                project_status_id, tentative_end_date, project_description
-            ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-
-            const values = [
-                customer_id, project_name, planned_start_date, actual_start_date,
-                type_of_project_id, type_of_engagement_id, project_manager_id,
-                project_status_id, tentative_end_date, project_description
-            ];
-
-            db.query(query, values, (err: any, result: any) => {
-                if (err) {
-                    console.error('Error adding project:', err);
-                    return res.status(500).json({ error: 'Error adding project' });
-                }
-                res.status(201).json({ message: 'Project added successfully', projectId: result.insertId });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-
     async getAllProjects(req: Request, res: Response): Promise<void> {
         try {
             const query = `
@@ -1464,24 +1557,121 @@ class OrgController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+    async addProject(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                customer_id, project_name, planned_start_date, actual_start_date,
+                type_of_project_id, type_of_engagement_id, project_manager_id,
+                project_status_id, tentative_end_date, project_description
+            } = req.body;
+    
+            // Insert the project into the master_project table
+            const insertQuery = `
+                INSERT INTO master_project 
+                (
+                    customer_id, project_name, planned_start_date, actual_start_date, 
+                    type_of_project_id, type_of_engagement_id, project_manager_id, 
+                    project_status_id, tentative_end_date, project_description
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+    
+            const insertValues = [
+                customer_id, project_name, planned_start_date, actual_start_date,
+                type_of_project_id, type_of_engagement_id, project_manager_id,
+                project_status_id, tentative_end_date, project_description
+            ];
+    
+            db.query(insertQuery, insertValues, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error adding project:', err);
+                    return res.status(500).json({ error: 'Error adding project' });
+                }
+    
+                // Update the is_PM flag for the assigned project manager
+                const updateIsPmQuery = `
+                    UPDATE master_user
+                    SET is_PM = 1
+                    WHERE user_id = ?
+                `;
+    
+                db.query(updateIsPmQuery, [project_manager_id], (updateErr: any, updateResult: any) => {
+                    if (updateErr) {
+                        console.error('Error updating is_PM flag:', updateErr);
+                        return res.status(500).json({ error: 'Error updating is_PM flag' });
+                    }
+    
+                    // Return success response
+                    res.status(201).json({ message: 'Project added successfully', projectId: result.insertId });
+                });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
     async softDeleteProject(req: Request, res: Response): Promise<void> {
         try {
             const { projectId } = req.params;
-
-            const updateQuery = `UPDATE master_project SET is_deleted = 1 WHERE project_id = ?`;
-
-            db.query(updateQuery, [projectId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting project:', err);
-                    return res.status(500).json({ error: 'Error deleting project' });
+    
+            // Get the project manager ID before soft-deleting the project
+            const getManagerQuery = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
+            db.query(getManagerQuery, [projectId], (managerErr: any, managerResult: any) => {
+                if (managerErr) {
+                    console.error('Error fetching project manager:', managerErr);
+                    return res.status(500).json({ error: 'Error fetching project manager' });
                 }
-
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Project not found' });
-                }
-
-                res.status(200).json({ message: 'Project soft deleted successfully' });
+    
+                const projectManagerId = managerResult[0].project_manager_id;
+    
+                // Soft delete the project
+                const updateQuery = `UPDATE master_project SET is_deleted = 1 WHERE project_id = ?`;
+                db.query(updateQuery, [projectId], (err: any, result: any) => {
+                    if (err) {
+                        console.error('Error deleting project:', err);
+                        return res.status(500).json({ error: 'Error deleting project' });
+                    }
+    
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Project not found' });
+                    }
+    
+                    // Check if the project manager is still assigned to any project
+                    const checkManagerQuery = `
+                        SELECT COUNT(*) AS project_count
+                        FROM master_project
+                        WHERE project_manager_id = ? AND is_deleted = 0
+                    `;
+    
+                    db.query(checkManagerQuery, [projectManagerId], (checkErr: any, checkResult: any) => {
+                        if (checkErr) {
+                            console.error('Error checking project manager assignments:', checkErr);
+                            return res.status(500).json({ error: 'Error checking project manager assignments' });
+                        }
+    
+                        const projectCount = checkResult[0].project_count;
+    
+                        // If the project manager is no longer assigned to any project, set is_PM to 0
+                        if (projectCount === 0) {
+                            const updateIsPmQuery = `
+                                UPDATE master_user
+                                SET is_PM = 0
+                                WHERE user_id = ?
+                            `;
+    
+                            db.query(updateIsPmQuery, [projectManagerId], (updateIsPmErr: any, updateIsPmResult: any) => {
+                                if (updateIsPmErr) {
+                                    console.error('Error updating is_PM flag:', updateIsPmErr);
+                                    return res.status(500).json({ error: 'Error updating is_PM flag' });
+                                }
+                            });
+                        }
+    
+                        // Return success response
+                        res.status(200).json({ message: 'Project soft deleted successfully' });
+                    });
+                });
             });
         } catch (error) {
             console.error('Error:', error);
@@ -1491,45 +1681,106 @@ class OrgController {
 
     async updateProject(req: Request, res: Response): Promise<void> {
         try {
-          const { projectId } = req.params;
-          const {
-            customer_id, project_name, planned_start_date, actual_start_date,
-            type_of_project_id, type_of_engagement_id, project_manager_id,
-            project_status_id, tentative_end_date, project_description
-          } = req.body;
-      
-          const updateQuery = `
-            UPDATE master_project 
-            SET 
-              customer_id = ?, project_name = ?, planned_start_date = ?, actual_start_date = ?, 
-              type_of_project_id = ?, type_of_engagement_id = ?, project_manager_id = ?, 
-              project_status_id = ?, tentative_end_date = ?, project_description = ?
-            WHERE project_id = ?
-          `;
-      
-          const values = [
-            customer_id, project_name, planned_start_date, actual_start_date,
-            type_of_project_id, type_of_engagement_id, project_manager_id,
-            project_status_id, tentative_end_date, project_description, projectId
-          ];
-      
-          db.query(updateQuery, values, (err: any, result: any) => {
-            if (err) {
-              console.error('Error updating project:', err);
-              return res.status(500).json({ error: 'Error updating project' });
-            }
-      
-            if (result.affectedRows === 0) {
-              return res.status(404).json({ error: 'Project not found' });
-            }
-      
-            res.status(200).json({ message: 'Project updated successfully' });
-          });
+            const { projectId } = req.params;
+            const {
+                customer_id, project_name, planned_start_date, actual_start_date,
+                type_of_project_id, type_of_engagement_id, project_manager_id,
+                project_status_id, tentative_end_date, project_description
+            } = req.body;
+    
+            // Get the old project manager ID before updating
+            const getOldManagerQuery = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
+            db.query(getOldManagerQuery, [projectId], (oldManagerErr: any, oldManagerResult: any) => {
+                if (oldManagerErr) {
+                    console.error('Error fetching old project manager:', oldManagerErr);
+                    return res.status(500).json({ error: 'Error fetching old project manager' });
+                }
+    
+                const oldProjectManagerId = oldManagerResult[0].project_manager_id;
+    
+                // Update the project with the new project manager (or null if removing)
+                const updateProjectQuery = `
+                    UPDATE master_project 
+                    SET 
+                        customer_id = ?, project_name = ?, planned_start_date = ?, actual_start_date = ?, 
+                        type_of_project_id = ?, type_of_engagement_id = ?, project_manager_id = ?, 
+                        project_status_id = ?, tentative_end_date = ?, project_description = ?
+                    WHERE project_id = ?
+                `;
+    
+                const updateValues = [
+                    customer_id, project_name, planned_start_date, actual_start_date,
+                    type_of_project_id, type_of_engagement_id, project_manager_id,
+                    project_status_id, tentative_end_date, project_description, projectId
+                ];
+    
+                db.query(updateProjectQuery, updateValues, (updateErr: any, updateResult: any) => {
+                    if (updateErr) {
+                        console.error('Error updating project:', updateErr);
+                        return res.status(500).json({ error: 'Error updating project' });
+                    }
+    
+                    if (updateResult.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Project not found' });
+                    }
+    
+                    // Check if the old project manager is still assigned to any project
+                    const checkManagerQuery = `
+                        SELECT COUNT(*) AS project_count
+                        FROM master_project
+                        WHERE project_manager_id = ? AND is_deleted = 0
+                    `;
+    
+                    db.query(checkManagerQuery, [oldProjectManagerId], (checkErr: any, checkResult: any) => {
+                        if (checkErr) {
+                            console.error('Error checking project manager assignments:', checkErr);
+                            return res.status(500).json({ error: 'Error checking project manager assignments' });
+                        }
+    
+                        const projectCount = checkResult[0].project_count;
+    
+                        // If the old project manager is no longer assigned to any project, set is_PM to 0
+                        if (projectCount === 0) {
+                            const updateIsPmQuery = `
+                                UPDATE master_user
+                                SET is_PM = 0
+                                WHERE user_id = ?
+                            `;
+    
+                            db.query(updateIsPmQuery, [oldProjectManagerId], (updateIsPmErr: any, updateIsPmResult: any) => {
+                                if (updateIsPmErr) {
+                                    console.error('Error updating is_PM flag:', updateIsPmErr);
+                                    return res.status(500).json({ error: 'Error updating is_PM flag' });
+                                }
+                            });
+                        }
+                    });
+    
+                    // Update the is_PM flag for the new project manager
+                    if (project_manager_id) {
+                        const updateNewManagerQuery = `
+                            UPDATE master_user
+                            SET is_PM = 1
+                            WHERE user_id = ?
+                        `;
+    
+                        db.query(updateNewManagerQuery, [project_manager_id], (updateNewManagerErr: any, updateNewManagerResult: any) => {
+                            if (updateNewManagerErr) {
+                                console.error('Error updating is_PM flag for new manager:', updateNewManagerErr);
+                                return res.status(500).json({ error: 'Error updating is_PM flag for new manager' });
+                            }
+                        });
+                    }
+    
+                    // Return success response
+                    res.status(200).json({ message: 'Project updated successfully' });
+                });
+            });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
 
     // ---- Project Deliverable --------
 
