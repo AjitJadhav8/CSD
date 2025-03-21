@@ -167,6 +167,20 @@ projectDescriptionFilter: string = '';
       });
       return; // Stop execution if form is invalid
     }
+      // Ensure tentative_end_date is after planned_start_date
+      if (this.projectForm.tentative_end_date && this.projectForm.planned_start_date &&
+        new Date(this.projectForm.tentative_end_date) < new Date(this.projectForm.planned_start_date)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Date Range',
+            text: 'Tentative End Date should be after Planned Start Date!',
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        return;
+    }
 
     this.dataService.addProject(this.projectForm).subscribe(
       (response) => {

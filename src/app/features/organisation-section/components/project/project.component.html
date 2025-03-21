@@ -513,9 +513,14 @@
 
                             <!-- Actual Start Date -->
                             <div class="form-group">
-                                <label class="block mb-2 font-semibold">Actual Start Date</label>
-                                <input type="date" class="border p-2 w-full rounded-md"
-                                    [(ngModel)]="projectForm.actual_start_date" name="actual_start_date">
+                              <label class="block mb-2 font-semibold">Actual Start Date*</label>
+                              <input type="date" required class="border p-2 w-full rounded-md"
+                                [(ngModel)]="projectForm.actual_start_date" #actualStartDate="ngModel" name="actual_start_date"
+                                [ngClass]="{'border-red-500': (actualStartDate.invalid && actualStartDate.touched) || (projectNgForm.submitted && actualStartDate.invalid)}">
+                              <span class="text-red-500 text-sm"
+                                *ngIf="(actualStartDate.invalid && actualStartDate.touched) || (projectNgForm.submitted && actualStartDate.invalid)">
+                                Actual Start Date is required
+                              </span>
                             </div>
 
                             <!-- Type of Project -->
@@ -596,9 +601,14 @@
                             <!-- Tentative End Date -->
 
                             <div class="form-group">
-                                <label class="block mb-2 font-semibold">Tentative End Date</label>
-                                <input type="date" class="border p-2 w-full rounded-md"
-                                    [(ngModel)]="projectForm.tentative_end_date" name="tentative_end_date">
+                              <label class="block mb-2 font-semibold">Tentative End Date*</label>
+                              <input type="date" required class="border p-2 w-full rounded-md"
+                                [(ngModel)]="projectForm.tentative_end_date" #tentativeEndDate="ngModel" name="tentative_end_date"
+                                [ngClass]="{'border-red-500': (tentativeEndDate.invalid && tentativeEndDate.touched) || (projectNgForm.submitted && tentativeEndDate.invalid)}">
+                              <span class="text-red-500 text-sm"
+                                *ngIf="(tentativeEndDate.invalid && tentativeEndDate.touched) || (projectNgForm.submitted && tentativeEndDate.invalid)">
+                                Tentative End Date is required
+                              </span>
                             </div>
                             <div class="form-group">
                                 <label class="block mb-2 font-semibold">Project Description</label>
