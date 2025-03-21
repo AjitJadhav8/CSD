@@ -193,6 +193,22 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/project-deliverables/${deliverableId}`);
   }
 
+
+    // ------------------ Project Phases ------------------------
+
+
+  addProjectPhase(projectPhase: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase);
+  }
+  
+  getAllProjectPhases(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/project-phases`);
+  }
+  
+  deleteProjectPhase(phaseId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`);
+  }
+
   // ------------------ Task Category ------------------------
 
   addTaskCategory(taskCategory: any): Observable<any> {

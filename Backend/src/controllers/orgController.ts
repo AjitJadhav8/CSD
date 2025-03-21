@@ -50,7 +50,7 @@ class OrgController {
 
             const projectDeliverablesQuery = `
         SELECT 
-            pd_id, customer_id, project_id, project_deliverable_name 
+            pd_id, phase_id, project_deliverable_name 
         FROM master_project_deliverables WHERE is_deleted = 0
         `;
 
@@ -77,11 +77,16 @@ class OrgController {
         category_id, sector, industry, domain, is_deleted, created_at, updated_at
     FROM master_category WHERE is_deleted = 0
 `;
-
+  // New query for phases
+  const phasesQuery = `
+  SELECT 
+    phase_id, project_id, project_phase_name 
+  FROM master_project_phases WHERE is_deleted = 0
+`;
 
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -160,13 +165,19 @@ class OrgController {
                         resolve(results);
                     });
                 }),
+                new Promise((resolve, reject) => {
+                    db.query(phasesQuery, (err: any, results: any) => {
+                      if (err) reject(err);
+                      resolve(results);
+                    });
+                  }),
 
             ]);
 
             // Return roles, departments, and user info in the response
             res.status(200).json({
                 roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables,
-                taskCategories, projectRole, designation, masterCategory
+                taskCategories, projectRole, designation, masterCategory, phases
             });
         } catch (error) {
             console.error('Error:', error);
@@ -1784,66 +1795,68 @@ class OrgController {
 
     // ---- Project Deliverable --------
 
-    async addProjectDeliverable(req: Request, res: Response): Promise<void> {
-        try {
-            const { customer_id, project_id, project_deliverable_name } = req.body;
-
-            if (!customer_id || !project_id || !project_deliverable_name) {
-                res.status(400).json({ error: 'All fields are required' });
-                return;
-            }
-
-            const query = `
+    // ---- Project Deliverable -------
+async addProjectDeliverable(req: Request, res: Response): Promise<void> {
+    try {
+      const { phase_id, project_deliverable_name } = req.body;
+  
+      if (!phase_id || !project_deliverable_name) {
+        res.status(400).json({ error: 'All fields are required' });
+        return;
+      }
+  
+      const query = `
         INSERT INTO master_project_deliverables 
-        (customer_id, project_id, project_deliverable_name, is_deleted) 
-        VALUES (?, ?, ?, 0)
+        (phase_id, project_deliverable_name, is_deleted) 
+        VALUES (?, ?, 0)
       `;
-
-            const values = [customer_id, project_id, project_deliverable_name];
-
-            db.query(query, values, (err: any, result: any) => {
-                if (err) {
-                    console.error('Error adding project deliverable:', err);
-                    res.status(500).json({ error: 'Error adding project deliverable' });
-                    return;
-                }
-                res.status(201).json({ message: 'Project deliverable added successfully', deliverableId: result.insertId });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+  
+      const values = [phase_id, project_deliverable_name];
+  
+      db.query(query, values, (err: any, result: any) => {
+        if (err) {
+          console.error('Error adding project deliverable:', err);
+          res.status(500).json({ error: 'Error adding project deliverable' });
+          return;
         }
+        res.status(201).json({ message: 'Project deliverable added successfully', deliverableId: result.insertId });
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    async getProjectDeliverables(req: Request, res: Response): Promise<void> {
-        try {
-            const query = `
-            SELECT 
-    mpd.pd_id, 
-    mpd.project_deliverable_name,
-    mc.customer_name,
-    mp.project_name
-FROM master_project_deliverables mpd
-JOIN master_project mp ON mpd.project_id = mp.project_id
-JOIN master_customer mc ON mp.customer_id = mc.customer_id
-WHERE mpd.is_deleted = 0
-ORDER BY mpd.pd_id DESC;
-
-        `;
-
-            db.query(query, (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching project deliverables:', err);
-                    res.status(500).json({ error: 'Error fetching project deliverables' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+  }
+  
+  async getProjectDeliverables(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
+        SELECT 
+          mpd.pd_id, 
+          mpd.project_deliverable_name,
+          mc.customer_name,
+          mp.project_name,
+          mpp.project_phase_name
+        FROM master_project_deliverables mpd
+        JOIN master_project_phases mpp ON mpd.phase_id = mpp.phase_id
+        JOIN master_project mp ON mpp.project_id = mp.project_id
+        JOIN master_customer mc ON mp.customer_id = mc.customer_id
+        WHERE mpd.is_deleted = 0
+        ORDER BY mpd.pd_id DESC;
+      `;
+  
+      db.query(query, (err: any, results: any) => {
+        if (err) {
+          console.error('Error fetching project deliverables:', err);
+          res.status(500).json({ error: 'Error fetching project deliverables' });
+          return;
         }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
+  }
 
     async softDeleteProjectDeliverable(req: Request, res: Response): Promise<void> {
         try {
@@ -1868,6 +1881,91 @@ ORDER BY mpd.pd_id DESC;
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+        // ---- Project Phase --------
+        async addProjectPhase(req: Request, res: Response): Promise<void> {
+            try {
+              const { customer_id, project_id, project_phase_name } = req.body;
+          
+              if (!customer_id || !project_id || !project_phase_name) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+              }
+          
+              const query = `
+                INSERT INTO master_project_phases 
+                (customer_id, project_id, project_phase_name, is_deleted) 
+                VALUES (?, ?, ?, 0)
+              `;
+          
+              const values = [customer_id, project_id, project_phase_name];
+          
+              db.query(query, values, (err: any, result: any) => {
+                if (err) {
+                  console.error('Error adding project phase:', err);
+                  res.status(500).json({ error: 'Error adding project phase' });
+                  return;
+                }
+                res.status(201).json({ message: 'Project phase added successfully', phaseId: result.insertId });
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+          
+          async getProjectPhases(req: Request, res: Response): Promise<void> {
+            try {
+              const query = `
+                SELECT 
+                  mp.phase_id, 
+                  mp.project_phase_name,
+                  mc.customer_name,
+                  p.project_name
+                FROM master_project_phases mp
+                JOIN master_project p ON mp.project_id = p.project_id
+                JOIN master_customer mc ON p.customer_id = mc.customer_id
+                WHERE mp.is_deleted = 0
+                ORDER BY mp.phase_id DESC;
+              `;
+          
+              db.query(query, (err: any, results: any) => {
+                if (err) {
+                  console.error('Error fetching project phases:', err);
+                  res.status(500).json({ error: 'Error fetching project phases' });
+                  return;
+                }
+                res.status(200).json(results);
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
+          
+          async softDeleteProjectPhase(req: Request, res: Response): Promise<void> {
+            try {
+              const { phaseId } = req.params;
+          
+              const updateQuery = `UPDATE master_project_phases SET is_deleted = 1 WHERE phase_id = ?`;
+          
+              db.query(updateQuery, [phaseId], (err: any, result: any) => {
+                if (err) {
+                  console.error('Error deleting project phase:', err);
+                  return res.status(500).json({ error: 'Error deleting project phase' });
+                }
+          
+                if (result.affectedRows === 0) {
+                  return res.status(404).json({ error: 'Project phase not found' });
+                }
+          
+                res.status(200).json({ message: 'Project phase soft deleted successfully' });
+              });
+            } catch (error) {
+              console.error('Error:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+            }
+          }
 
     // ---- Task Category --------
 

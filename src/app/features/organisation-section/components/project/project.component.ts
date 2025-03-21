@@ -30,9 +30,10 @@ export class ProjectComponent {
     // Listen for changes (e.g., when clicking Project Deliverable)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     
-    this.fetchTaskCategories();
+    // this.fetchTaskCategories();
     this.fetchProjects();
     this.fetchProjectDeliverables();
+    this.fetchProjectPhases();
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles, Departments, Users, and Customers:', response);
@@ -44,6 +45,8 @@ export class ProjectComponent {
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
+        this.optionPhases = response.phases; // Store phases data
+
 
         this.filteredProjects = []; // Initially empty
 
@@ -67,6 +70,7 @@ export class ProjectComponent {
     this.selectedSection = section;
     localStorage.setItem('selectedProjectSection', section);
   }
+  optionPhases: any[] = [];
 
   optionProject: any[] = [];
   optionTypeOfEngagement: any[] = [];
@@ -475,6 +479,28 @@ getVisibleProjectPageNumbers(): number[] {
  
 
   // ------------------Project Deliverable------------------------
+  filterProjectsByCustomer(): void {
+    const selectedCustomerId = Number(this.selectedCustomerId);
+    if (selectedCustomerId) {
+      this.filteredProjects = this.optionProject.filter(
+        (project) => Number(project.customer_id) === selectedCustomerId
+      );
+    } else {
+      this.filteredProjects = []; // Reset if no customer is selected
+    }
+    this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
+  }
+  filterPhasesByProject(): void {
+    const selectedProjectId = Number(this.selectedProjectId);
+    if (selectedProjectId) {
+      this.filteredPhases = this.optionPhases.filter(
+        (phase) => Number(phase.project_id) === selectedProjectId
+      );
+    } else {
+      this.filteredPhases = []; // Reset if no project is selected
+    }
+    this.filteredPhases = [...this.filteredPhases]; // Trigger change detection
+  }
   deliverableCurrentPage: number = 1;
   deliverableTotalItems: number = 0;
   deliverableItemsPerPage: number = 30; // Adjust as needed
@@ -486,16 +512,18 @@ getVisibleProjectPageNumbers(): number[] {
   deliverableNameFilter: string = '';
   customerNameFilter: string = '';
   projectNameFilter: string = '';
+  phaseNameFiltered: string = ''; // New Filter
+
 
   projectDeliverableForm: any = {
-    project_id: '',
+    phase_id: '',
     project_deliverable_name: '',
-    planned_start_date: '',
-    actual_start_date: '',
-    tentative_end_date: '',
-    deliverable_description: '',
   };
-  projectDeliverables: any[] = [];  // Store project deliverables data
+  projectDeliverables: any[] = [];
+  filteredPhases: any[] = [];
+  selectedCustomerId: number | null = null;
+  selectedProjectId: number | null = null; 
+  
   projectDeliverable = {
     pd_id: null, // Primary key
     project_id: null, // Foreign key reference
@@ -513,117 +541,45 @@ getVisibleProjectPageNumbers(): number[] {
   fetchProjectDeliverables(): void {
     this.dataService.getAllProjectDeliverables().subscribe(
       (response) => {
-        console.log('Project Deliverables Response:', response);
         this.projectDeliverables = response;
         this.filteredProjectDeliverables = [...this.projectDeliverables];
-      this.deliverableTotalItems = this.filteredProjectDeliverables.length;
-      this.updateDeliverablePage();
+        this.deliverableTotalItems = this.filteredProjectDeliverables.length;
+        this.updateDeliverablePage();
       },
       (error) => {
         console.error('Error fetching project deliverables:', error);
       }
     );
   }
-  
-// Apply Filters for Project Deliverables
-applyDeliverableFilters(): void {
-  this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
-    return (
-      (this.deliverableNameFilter ? deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()) : true) &&
-      (this.customerNameFilter ? deliverable.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
-      (this.projectNameFilter ? deliverable.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true)
-    );
-  });
-
-  this.deliverableTotalItems = this.filteredProjectDeliverables.length;
-  this.deliverableCurrentPage = 1;
-  this.updateDeliverablePage();
-}
-
-// Clear Filters for Project Deliverables
-clearDeliverableFilters(): void {
-  this.deliverableNameFilter = '';
-  this.customerNameFilter = '';
-  this.projectNameFilter = '';
-  this.applyDeliverableFilters();
-}
-
-// Clear Individual Filter for Project Deliverables
-clearDeliverableFilter(filterName: string): void {
-  switch (filterName) {
-    case 'deliverableNameFilter':
-      this.deliverableNameFilter = '';
-      break;
-    case 'customerNameFilter':
-      this.customerNameFilter = '';
-      break;
-    case 'projectNameFilter':
-      this.projectNameFilter = '';
-      break;
-  }
-  this.applyDeliverableFilters(); // Reapply filters after clearing
-}
-
-// Pagination Logic for Project Deliverables
-updateDeliverablePage(): void {
-  const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
-  const endIndex = startIndex + this.deliverableItemsPerPage;
-  this.paginatedProjectDeliverables = this.filteredProjectDeliverables.slice(startIndex, endIndex);
-}
-
-changeDeliverablePage(page: number): void {
-  if (page >= 1 && page <= this.deliverableTotalPages) {
-    this.deliverableCurrentPage = page;
-    this.updateDeliverablePage();
-  }
-}
-
-get deliverableTotalPages(): number {
-  return Math.ceil(this.filteredProjectDeliverables.length / this.deliverableItemsPerPage);
-}
-
-getVisibleDeliverablePageNumbers(): number[] {
-  const totalPages = this.deliverableTotalPages;
-  const halfRange = Math.floor(this.deliverableMaxPageButtons / 2);
-
-  let startPage = Math.max(1, this.deliverableCurrentPage - halfRange);
-  let endPage = Math.min(totalPages, startPage + this.deliverableMaxPageButtons - 1);
-
-  if (endPage - startPage + 1 < this.deliverableMaxPageButtons) {
-    startPage = Math.max(1, endPage - this.deliverableMaxPageButtons + 1);
-  }
-
-  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-}
 
   submitProjectDeliverable(projectDeliverableFormRef: NgForm): void {
-
+    if (projectDeliverableFormRef.invalid) return;
+  
     this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
       (response) => {
         console.log('Project deliverable added successfully:', response);
         this.fetchProjectDeliverables(); // Refresh the list
-        // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
           title: 'Project deliverable added successfully!',
           showConfirmButton: false,
-          timer: 3000
+          timer: 3000,
         });
+        projectDeliverableFormRef.resetForm();
 
+        
       },
       (error) => {
         console.error('Error adding project deliverable', error);
-
-        // Error Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'error',
           title: 'Error adding project deliverable!',
           showConfirmButton: false,
-          timer: 3000
+          timer: 3000,
         });
       }
     );
@@ -673,139 +629,156 @@ getVisibleDeliverablePageNumbers(): number[] {
       }
     });
   }
+  
+// Apply Filters for Project Deliverables
+applyDeliverableFilters(): void {
+  this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
+    return (
+      (this.deliverableNameFilter ? deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()) : true) &&
+      (this.customerNameFilter ? deliverable.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
+      (this.projectNameFilter ? deliverable.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true) &&
+      (this.phaseNameFiltered ? deliverable.project_phase_name.toLowerCase().includes(this.phaseNameFiltered.toLowerCase()) : true) // New Filter
+    
+    );
+  });
+
+  this.deliverableTotalItems = this.filteredProjectDeliverables.length;
+  this.deliverableCurrentPage = 1;
+  this.updateDeliverablePage();
+}
+
+// Clear Filters for Project Deliverables
+clearDeliverableFilters(): void {
+  this.deliverableNameFilter = '';
+  this.customerNameFilter = '';
+  this.projectNameFilter = '';
+  this.phaseNameFiltered='';
+  this.applyDeliverableFilters();
+}
+
+// Clear Individual Filter for Project Deliverables
+clearDeliverableFilter(filterName: string): void {
+  switch (filterName) {
+    case 'deliverableNameFilter':
+      this.deliverableNameFilter = '';
+      break;
+    case 'customerNameFilter':
+      this.customerNameFilter = '';
+      break;
+    case 'projectNameFilter':
+      this.projectNameFilter = '';
+      break;
+      case 'phaseNameFiltered': // New Case
+      this.phaseNameFiltered = '';
+      break;
+  }
+  this.applyDeliverableFilters(); // Reapply filters after clearing
+}
+
+// Pagination Logic for Project Deliverables
+updateDeliverablePage(): void {
+  const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
+  const endIndex = startIndex + this.deliverableItemsPerPage;
+  this.paginatedProjectDeliverables = this.filteredProjectDeliverables.slice(startIndex, endIndex);
+}
+
+changeDeliverablePage(page: number): void {
+  if (page >= 1 && page <= this.deliverableTotalPages) {
+    this.deliverableCurrentPage = page;
+    this.updateDeliverablePage();
+  }
+}
+
+get deliverableTotalPages(): number {
+  return Math.ceil(this.filteredProjectDeliverables.length / this.deliverableItemsPerPage);
+}
+
+getVisibleDeliverablePageNumbers(): number[] {
+  const totalPages = this.deliverableTotalPages;
+  const halfRange = Math.floor(this.deliverableMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.deliverableCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.deliverableMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.deliverableMaxPageButtons) {
+    startPage = Math.max(1, endPage - this.deliverableMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+  
 
 
-  // ------------------Project task category ------------------------
+  // ----------- project Phase ------------------
 
-  taskCategoryCurrentPage: number = 1;
-  taskCategoryTotalItems: number = 0;
-  taskCategoryItemsPerPage: number = 30; // Adjust as needed
-  taskCategoryMaxPageButtons: number = 5; // Show only 5 page numbers at a time
-  filteredTaskCategories: any[] = [];
-  paginatedTaskCategories: any[] = [];
-    taskCategoryNameFilter: string = '';
+// For Project Phases
+filterProjectsForPhases(): void {
+  const selectedCustomerId = Number(this.projectPhaseForm.customer_id);
+  if (selectedCustomerId) {
+    this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
+  } else {
+    this.filteredProjects = [];
+  }
+  this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
+}
+  // Pagination and Filtering Variables
+  phaseCurrentPage: number = 1;
+  phaseTotalItems: number = 0;
+  phaseItemsPerPage: number = 30;
+  phaseMaxPageButtons: number = 5;
+  filteredProjectPhases: any[] = [];
+  paginatedProjectPhases: any[] = [];
 
+  // Filters for Project Phases
+  phaseNameFilter: string = '';
 
-  taskCategories: any[] = [];
-  taskCategoryForm = { task_category_name: '' };
+  // Form Model
+  projectPhaseForm: any = {
+    customer_id: '',
+    project_id: '',
+    project_phase_name: ''
+  };
 
-  fetchTaskCategories(): void {
-    this.dataService.getAllTaskCategories().subscribe(
+  // Data Storage
+  projectPhases: any[] = [];
+
+  fetchProjectPhases(): void {
+    this.dataService.getAllProjectPhases().subscribe(
       (response) => {
-        this.taskCategories = response;
-        this.filteredTaskCategories = [...this.taskCategories];
-        this.taskCategoryTotalItems = this.filteredTaskCategories.length;
-        this.updateTaskCategoryPage();
+        this.projectPhases = response;
+        this.filteredProjectPhases = [...this.projectPhases];
+        this.phaseTotalItems = this.filteredProjectPhases.length;
+        this.updatePhasePage();
       },
       (error) => {
-        console.error('Error fetching task categories:', error);
+        console.error('Error fetching project phases:', error);
       }
     );
   }
-  
-  // Apply Filters
-  applyTaskCategoryFilters(): void {
-    this.filteredTaskCategories = this.taskCategories.filter(task => {
-      return (
-        (this.taskCategoryNameFilter ? task.task_category_name.toLowerCase().includes(this.taskCategoryNameFilter.toLowerCase()) : true)
-      );
-    });
 
-    this.taskCategoryTotalItems = this.filteredTaskCategories.length;
-    this.taskCategoryCurrentPage = 1;
-    this.updateTaskCategoryPage();
-  }
+  submitProjectPhase(projectPhaseFormRef: NgForm): void {
+    if (projectPhaseFormRef.invalid) return;
 
-  // Clear Filters
-  clearTaskCategoryFilters(): void {
-    this.taskCategoryNameFilter = '';
-    this.applyTaskCategoryFilters();
-  }
-
-  // Clear Individual Filter
-  clearTaskCategoryFilter(filterName: string): void {
-    switch (filterName) {
-      case 'taskCategoryNameFilter':
-        this.taskCategoryNameFilter = '';
-        break;
-    }
-    this.applyTaskCategoryFilters(); // Reapply filters after clearing
-  }
-
-  // Pagination Logic
-  updateTaskCategoryPage(): void {
-    const startIndex = (this.taskCategoryCurrentPage - 1) * this.taskCategoryItemsPerPage;
-    const endIndex = startIndex + this.taskCategoryItemsPerPage;
-    this.paginatedTaskCategories = this.filteredTaskCategories.slice(startIndex, endIndex);
-  }
-
-  changeTaskCategoryPage(page: number): void {
-    if (page >= 1 && page <= this.taskCategoryTotalPages) {
-      this.taskCategoryCurrentPage = page;
-      this.updateTaskCategoryPage();
-    }
-  }
-
-  get taskCategoryTotalPages(): number {
-    return Math.ceil(this.filteredTaskCategories.length / this.taskCategoryItemsPerPage);
-  }
-
-  getVisibleTaskCategoryPageNumbers(): number[] {
-    const totalPages = this.taskCategoryTotalPages;
-    const halfRange = Math.floor(this.taskCategoryMaxPageButtons / 2);
-
-    let startPage = Math.max(1, this.taskCategoryCurrentPage - halfRange);
-    let endPage = Math.min(totalPages, startPage + this.taskCategoryMaxPageButtons - 1);
-
-    if (endPage - startPage + 1 < this.taskCategoryMaxPageButtons) {
-      startPage = Math.max(1, endPage - this.taskCategoryMaxPageButtons + 1);
-    }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  }
-
-
-  submitTaskCategory(taskCategoryFormRef: NgForm): void {
-    if (taskCategoryFormRef.invalid) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Task Category Name is required!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
-    }
-
-    this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
+    this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
       (response) => {
-        console.log('Task category added successfully:', response);
-
-        // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
-          title: 'Task category added successfully!',
+          title: 'Project phase added successfully!',
           showConfirmButton: false,
           timer: 3000
         });
-
-        // Reset form field
-        taskCategoryFormRef.resetForm();
-        this.taskCategoryForm.task_category_name = '';
-        this.fetchTaskCategories();
+        this.fetchProjectPhases();
+        projectPhaseFormRef.resetForm();
       },
       (error) => {
-        console.error('Error adding task category:', error);
-
-        // Error Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'error',
-          title: 'Error adding task category!',
+          title: 'Error adding project phase!',
           showConfirmButton: false,
           timer: 3000
         });
@@ -813,10 +786,10 @@ getVisibleDeliverablePageNumbers(): number[] {
     );
   }
 
-  deleteTaskCategory(taskCatId: number): void {
+  deleteProjectPhase(phaseId: number): void {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'This task category will be deleted!',
+      text: 'This project phase will be deleted!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -824,31 +797,24 @@ getVisibleDeliverablePageNumbers(): number[] {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.dataService.deleteTaskCategory(taskCatId).subscribe(
+        this.dataService.deleteProjectPhase(phaseId).subscribe(
           (response) => {
-            console.log('Task category deleted successfully:', response);
-            this.fetchTaskCategories(); // Refresh the list
-
-            // Success Toast Notification
             Swal.fire({
               toast: true,
               position: 'top-end',
               icon: 'success',
-              title: 'Task category deleted successfully!',
+              title: 'Project phase deleted successfully!',
               showConfirmButton: false,
               timer: 3000
             });
-
+            this.fetchProjectPhases();
           },
           (error) => {
-            console.error('Error deleting task category:', error);
-
-            // Error Toast Notification
             Swal.fire({
               toast: true,
               position: 'top-end',
               icon: 'error',
-              title: 'Error deleting task category!',
+              title: 'Error deleting project phase!',
               showConfirmButton: false,
               timer: 3000
             });
@@ -857,6 +823,246 @@ getVisibleDeliverablePageNumbers(): number[] {
       }
     });
   }
+
+  applyPhaseFilters(): void {
+    this.filteredProjectPhases = this.projectPhases.filter(phase => {
+      return (
+        (this.phaseNameFilter ? phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()) : true) &&
+        (this.customerNameFilter ? phase.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
+        (this.projectNameFilter ? phase.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true)
+      );
+    });
+
+    this.phaseTotalItems = this.filteredProjectPhases.length;
+    this.phaseCurrentPage = 1;
+    this.updatePhasePage();
+  }
+
+  clearPhaseFilters(): void {
+    this.phaseNameFilter = '';
+    this.customerNameFilter = '';
+    this.projectNameFilter = '';
+    this.applyPhaseFilters();
+  }
+
+  clearPhaseFilter(filterName: string): void {
+    switch (filterName) {
+      case 'phaseNameFilter':
+        this.phaseNameFilter = '';
+        break;
+      case 'customerNameFilter':
+        this.customerNameFilter = '';
+        break;
+      case 'projectNameFilter':
+        this.projectNameFilter = '';
+        break;
+    }
+    this.applyPhaseFilters();
+  }
+
+  updatePhasePage(): void {
+    const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
+    const endIndex = startIndex + this.phaseItemsPerPage;
+    this.paginatedProjectPhases = this.filteredProjectPhases.slice(startIndex, endIndex);
+  }
+
+  changePhasePage(page: number): void {
+    if (page >= 1 && page <= this.phaseTotalPages) {
+      this.phaseCurrentPage = page;
+      this.updatePhasePage();
+    }
+  }
+
+  get phaseTotalPages(): number {
+    return Math.ceil(this.filteredProjectPhases.length / this.phaseItemsPerPage);
+  }
+
+  getVisiblePhasePageNumbers(): number[] {
+    const totalPages = this.phaseTotalPages;
+    const halfRange = Math.floor(this.phaseMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.phaseCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.phaseMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.phaseMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.phaseMaxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+
+  // ------------------Project task category ------------------------
+
+  // taskCategoryCurrentPage: number = 1;
+  // taskCategoryTotalItems: number = 0;
+  // taskCategoryItemsPerPage: number = 30; 
+  // taskCategoryMaxPageButtons: number = 5; 
+  // filteredTaskCategories: any[] = [];
+  // paginatedTaskCategories: any[] = [];
+  //   taskCategoryNameFilter: string = '';
+
+  // taskCategories: any[] = [];
+  // taskCategoryForm = { task_category_name: '' };
+
+  // fetchTaskCategories(): void {
+  //   this.dataService.getAllTaskCategories().subscribe(
+  //     (response) => {
+  //       this.taskCategories = response;
+  //       this.filteredTaskCategories = [...this.taskCategories];
+  //       this.taskCategoryTotalItems = this.filteredTaskCategories.length;
+  //       this.updateTaskCategoryPage();
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching task categories:', error);
+  //     }
+  //   );
+  // }
+  
+  // applyTaskCategoryFilters(): void {
+  //   this.filteredTaskCategories = this.taskCategories.filter(task => {
+  //     return (
+  //       (this.taskCategoryNameFilter ? task.task_category_name.toLowerCase().includes(this.taskCategoryNameFilter.toLowerCase()) : true)
+  //     );
+  //   });
+
+  //   this.taskCategoryTotalItems = this.filteredTaskCategories.length;
+  //   this.taskCategoryCurrentPage = 1;
+  //   this.updateTaskCategoryPage();
+  // }
+
+  // clearTaskCategoryFilters(): void {
+  //   this.taskCategoryNameFilter = '';
+  //   this.applyTaskCategoryFilters();
+  // }
+
+  // clearTaskCategoryFilter(filterName: string): void {
+  //   switch (filterName) {
+  //     case 'taskCategoryNameFilter':
+  //       this.taskCategoryNameFilter = '';
+  //       break;
+  //   }
+  //   this.applyTaskCategoryFilters(); 
+  // }
+
+  // updateTaskCategoryPage(): void {
+  //   const startIndex = (this.taskCategoryCurrentPage - 1) * this.taskCategoryItemsPerPage;
+  //   const endIndex = startIndex + this.taskCategoryItemsPerPage;
+  //   this.paginatedTaskCategories = this.filteredTaskCategories.slice(startIndex, endIndex);
+  // }
+
+  // changeTaskCategoryPage(page: number): void {
+  //   if (page >= 1 && page <= this.taskCategoryTotalPages) {
+  //     this.taskCategoryCurrentPage = page;
+  //     this.updateTaskCategoryPage();
+  //   }
+  // }
+
+  // get taskCategoryTotalPages(): number {
+  //   return Math.ceil(this.filteredTaskCategories.length / this.taskCategoryItemsPerPage);
+  // }
+
+  // getVisibleTaskCategoryPageNumbers(): number[] {
+  //   const totalPages = this.taskCategoryTotalPages;
+  //   const halfRange = Math.floor(this.taskCategoryMaxPageButtons / 2);
+
+  //   let startPage = Math.max(1, this.taskCategoryCurrentPage - halfRange);
+  //   let endPage = Math.min(totalPages, startPage + this.taskCategoryMaxPageButtons - 1);
+
+  //   if (endPage - startPage + 1 < this.taskCategoryMaxPageButtons) {
+  //     startPage = Math.max(1, endPage - this.taskCategoryMaxPageButtons + 1);
+  //   }
+
+  //   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  // }
+
+  // submitTaskCategory(taskCategoryFormRef: NgForm): void {
+  //   if (taskCategoryFormRef.invalid) {
+  //     Swal.fire({
+  //       toast: true,
+  //       position: 'top-end',
+  //       icon: 'warning',
+  //       title: 'Task Category Name is required!',
+  //       showConfirmButton: false,
+  //       timer: 3000
+  //     });
+  //     return;
+  //   }
+
+  //   this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
+  //     (response) => {
+  //       console.log('Task category added successfully:', response);
+
+  //       Swal.fire({
+  //         toast: true,
+  //         position: 'top-end',
+  //         icon: 'success',
+  //         title: 'Task category added successfully!',
+  //         showConfirmButton: false,
+  //         timer: 3000
+  //       });
+
+  //       taskCategoryFormRef.resetForm();
+  //       this.taskCategoryForm.task_category_name = '';
+  //       this.fetchTaskCategories();
+  //     },
+  //     (error) => {
+  //       console.error('Error adding task category:', error);
+
+  //       Swal.fire({
+  //         toast: true,
+  //         position: 'top-end',
+  //         icon: 'error',
+  //         title: 'Error adding task category!',
+  //         showConfirmButton: false,
+  //         timer: 3000
+  //       });
+  //     }
+  //   );
+  // }
+
+  // deleteTaskCategory(taskCatId: number): void {
+  //   Swal.fire({
+  //     title: 'Are you sure?',
+  //     text: 'This task category will be deleted!',
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Yes, delete it!'
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       this.dataService.deleteTaskCategory(taskCatId).subscribe(
+  //         (response) => {
+  //           console.log('Task category deleted successfully:', response);
+  //           this.fetchTaskCategories(); 
+
+  //           Swal.fire({
+  //             toast: true,
+  //             position: 'top-end',
+  //             icon: 'success',
+  //             title: 'Task category deleted successfully!',
+  //             showConfirmButton: false,
+  //             timer: 3000
+  //           });
+
+  //         },
+  //         (error) => {
+  //           console.error('Error deleting task category:', error);
+
+  //           Swal.fire({
+  //             toast: true,
+  //             position: 'top-end',
+  //             icon: 'error',
+  //             title: 'Error deleting task category!',
+  //             showConfirmButton: false,
+  //             timer: 3000
+  //           });
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
 
 
   // ------------------Toggle Section ------------------------

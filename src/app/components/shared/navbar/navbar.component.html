@@ -49,6 +49,7 @@
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Department
         </a>
+        
         <a (click)="navigateToEmployeeSection('designation')" [class.active-link]="isEmployeeSectionActive('designation')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Designation
@@ -118,16 +119,20 @@
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project
         </a>
+        <a (click)="navigateToProjectSection('projectPhases')" [class.active-link]="isProjectSectionActive('projectPhases')"
+      class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      Project Phases
+    </a>
         <a (click)="navigateToProjectSection('projectDeliverable')"
           [class.active-link]="isProjectSectionActive('projectDeliverable')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Deliverable
         </a>
-        <a (click)="navigateToProjectSection('taskCategory')"
+        <!-- <a (click)="navigateToProjectSection('taskCategory')"
           [class.active-link]="isProjectSectionActive('taskCategory')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Task Category
-        </a>
+        </a> -->
       </div>
     </div>
 

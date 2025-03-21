@@ -88,6 +88,11 @@ router.post('/project-deliverable', orgController.addProjectDeliverable);
 router.get('/project-deliverables', orgController.getProjectDeliverables);
 router.delete('/project-deliverables/:deliverableId', orgController.softDeleteProjectDeliverable);
 
+// ---- Project Phases --------
+router.post('/project-phase', orgController.addProjectPhase);
+router.get('/project-phases', orgController.getProjectPhases);
+router.delete('/project-phases/:phaseId', orgController.softDeleteProjectPhase);
+
 // ---- Task Category --------
 
 router.post('/task-category', orgController.addTaskCategory);
