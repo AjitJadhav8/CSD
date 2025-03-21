@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth-service/auth.service';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule],
+  imports: [CommonModule, RouterLink, RouterModule, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -109,7 +111,7 @@ export class NavbarComponent {
     this.loggedInUserName = firstName && lastName ? `${firstName} ${lastName}` : 'User';
   }
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     this.setLoggedInUser();
   }
 
@@ -147,5 +149,93 @@ export class NavbarComponent {
       });
     });
   }
+
+  showChangePasswordModal = false;
+  changePasswordData = {
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  };
+    // Open change password modal
+    openChangePasswordModal() {
+      this.showChangePasswordModal = true;
+      this.showDropdown = false; // Close dropdown when modal opens
+    }
+  
+    // Close change password modal
+    closeChangePasswordModal() {
+      this.showChangePasswordModal = false;
+      this.changePasswordData = { currentPassword: '', newPassword: '', confirmNewPassword: '' }; // Reset form
+    }
+// Handle change password form submission
+onChangePasswordSubmit(form: any) {
+  if (form.invalid) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Please fill all required fields correctly!',
+      toast: true,
+      position: 'top-end',
+      timer: 3000,
+      showConfirmButton: false
+    });
+    return;
+  }
+
+  if (this.changePasswordData.newPassword !== this.changePasswordData.confirmNewPassword) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'New Password and Confirm New Password do not match!',
+      toast: true,
+      position: 'top-end',
+      timer: 3000,
+      showConfirmButton: false
+    });
+    return;
+  }
+
+  const userId = localStorage.getItem('user_id'); // Get logged-in user ID
+  if (!userId) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'User not found!',
+      toast: true,
+      position: 'top-end',
+      timer: 3000,
+      showConfirmButton: false
+    });
+    return;
+  }
+
+  // Call AuthService to change password
+  this.authService.changePassword(userId, this.changePasswordData.currentPassword, this.changePasswordData.newPassword)
+    .subscribe(
+      (response) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Password changed successfully!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+        this.closeChangePasswordModal();
+      },
+      (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.error.message || 'Failed to change password!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
+    );
+}
 
 }

@@ -137,6 +137,46 @@ class AuthController {
     }
   }
   
+  async changePassword(req: Request, res: Response): Promise<void> {
+    const { userId, currentPassword, newPassword } = req.body;
+  
+    try {
+      // Fetch user from the database
+      const query = 'SELECT * FROM master_user WHERE user_id = ? AND is_deleted = 0';
+      db.query(query, [userId], (err, results: any[]) => {
+        if (err) {
+          res.status(500).json({ message: 'Server error' });
+          return;
+        }
+  
+        if (results.length === 0) {
+          res.status(404).json({ message: 'User not found' });
+          return;
+        }
+  
+        const user = results[0];
+  
+        // Verify current password
+        if (currentPassword !== user.user_password) {
+          res.status(401).json({ message: 'Current password is incorrect' });
+          return;
+        }
+  
+        // Update password
+        const updateQuery = 'UPDATE master_user SET user_password = ? WHERE user_id = ?';
+        db.query(updateQuery, [newPassword, userId], (err) => {
+          if (err) {
+            res.status(500).json({ message: 'Error updating password' });
+            return;
+          }
+  
+          res.status(200).json({ message: 'Password updated successfully' });
+        });
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
   
 
 

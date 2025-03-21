@@ -222,7 +222,7 @@
       <div *ngIf="showDropdown"
         class="absolute right-0 mt-2 w-52 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 z-10">
         <button class="flex items-center w-full text-base text-gray-700 hover:bg-gray-100 transition px-4 py-3"
-          (click)="showChangePasswordForm = !showChangePasswordForm">
+          (click)="showChangePasswordForm = !showChangePasswordForm" (click)="openChangePasswordModal()">
           <img src="change-password.png" alt="Change Password Icon" class="h-5 w-5 mr-2" />
           Change Password
         </button>
@@ -238,5 +238,50 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Custom Modal for Change Password -->
+<div *ngIf="showChangePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md">
+    <h2 class="text-xl font-semibold mb-4">Change Password</h2>
+    <form #changePasswordForm="ngForm" (ngSubmit)="onChangePasswordSubmit(changePasswordForm)">
+      <!-- Current Password -->
+      <div class="form-group mb-4">
+        <label class="block mb-2 font-semibold">Current Password*</label>
+        <input type="password" required class="border p-2 w-full rounded-md"
+          [(ngModel)]="changePasswordData.currentPassword" #currentPassword="ngModel" name="currentPassword">
+        <span class="text-red-500 text-sm" *ngIf="currentPassword.invalid && currentPassword.touched">
+          Current Password is required
+        </span>
+      </div>
+
+      <!-- New Password -->
+      <div class="form-group mb-4">
+        <label class="block mb-2 font-semibold">New Password*</label>
+        <input type="password" required class="border p-2 w-full rounded-md"
+          [(ngModel)]="changePasswordData.newPassword" #newPassword="ngModel" name="newPassword">
+        <span class="text-red-500 text-sm" *ngIf="newPassword.invalid && newPassword.touched">
+          New Password is required
+        </span>
+      </div>
+
+      <!-- Confirm New Password -->
+      <div class="form-group mb-4">
+        <label class="block mb-2 font-semibold">Confirm New Password*</label>
+        <input type="password" required class="border p-2 w-full rounded-md"
+          [(ngModel)]="changePasswordData.confirmNewPassword" #confirmNewPassword="ngModel" name="confirmNewPassword">
+        <span class="text-red-500 text-sm" *ngIf="confirmNewPassword.invalid && confirmNewPassword.touched">
+          Confirm New Password is required
+        </span>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end gap-4">
+        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded"
+          (click)="closeChangePasswordModal()">Cancel</button>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+      </div>
+    </form>
   </div>
 </div>
