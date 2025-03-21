@@ -95,8 +95,8 @@ router.delete('/project-phases/:phaseId', orgController.softDeleteProjectPhase);
 
 // ---- Task Category --------
 
-router.post('/task-category', orgController.addTaskCategory);
-router.get('/task-categories', orgController.getTaskCategories);
-router.delete('/task-categories/:taskCatId', orgController.softDeleteTaskCategory);
+// router.post('/task-category', orgController.addTaskCategory);
+// router.get('/task-categories', orgController.getTaskCategories);
+// router.delete('/task-categories/:taskCatId', orgController.softDeleteTaskCategory);
 
 export default router;

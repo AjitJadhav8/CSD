@@ -1969,80 +1969,80 @@ async addProjectDeliverable(req: Request, res: Response): Promise<void> {
 
     // ---- Task Category --------
 
-    async addTaskCategory(req: Request, res: Response): Promise<void> {
-        try {
-            const { task_category_name } = req.body;
+    // async addTaskCategory(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const { task_category_name } = req.body;
 
-            if (!task_category_name) {
-                res.status(400).json({ error: 'Task category name is required' });
-                return;
-            }
+    //         if (!task_category_name) {
+    //             res.status(400).json({ error: 'Task category name is required' });
+    //             return;
+    //         }
 
-            const query = `
-        INSERT INTO master_task_category (task_category_name, is_deleted) 
-        VALUES (?, 0)
-      `;
+    //         const query = `
+    //     INSERT INTO master_task_category (task_category_name, is_deleted) 
+    //     VALUES (?, 0)
+    //   `;
 
-            db.query(query, [task_category_name], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error adding task category:', err);
-                    res.status(500).json({ error: 'Error adding task category' });
-                    return;
-                }
-                res.status(201).json({ message: 'Task category added successfully', taskCategoryId: result.insertId });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //         db.query(query, [task_category_name], (err: any, result: any) => {
+    //             if (err) {
+    //                 console.error('Error adding task category:', err);
+    //                 res.status(500).json({ error: 'Error adding task category' });
+    //                 return;
+    //             }
+    //             res.status(201).json({ message: 'Task category added successfully', taskCategoryId: result.insertId });
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
-    async getTaskCategories(req: Request, res: Response): Promise<void> {
-        try {
-            const query = `
-        SELECT task_cat_id, task_category_name 
-        FROM master_task_category 
-        WHERE is_deleted = 0 
-        ORDER BY task_cat_id DESC
-      `;
+    // async getTaskCategories(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const query = `
+    //     SELECT task_cat_id, task_category_name 
+    //     FROM master_task_category 
+    //     WHERE is_deleted = 0 
+    //     ORDER BY task_cat_id DESC
+    //   `;
 
-            db.query(query, (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching task categories:', err);
-                    res.status(500).json({ error: 'Error fetching task categories' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //         db.query(query, (err: any, results: any) => {
+    //             if (err) {
+    //                 console.error('Error fetching task categories:', err);
+    //                 res.status(500).json({ error: 'Error fetching task categories' });
+    //                 return;
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
-    async softDeleteTaskCategory(req: Request, res: Response): Promise<void> {
-        try {
-            const { taskCatId } = req.params;
+    // async softDeleteTaskCategory(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const { taskCatId } = req.params;
 
-            const updateQuery = `UPDATE master_task_category SET is_deleted = 1 WHERE task_cat_id = ?`;
+    //         const updateQuery = `UPDATE master_task_category SET is_deleted = 1 WHERE task_cat_id = ?`;
 
-            db.query(updateQuery, [taskCatId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting task category:', err);
-                    return res.status(500).json({ error: 'Error deleting task category' });
-                }
+    //         db.query(updateQuery, [taskCatId], (err: any, result: any) => {
+    //             if (err) {
+    //                 console.error('Error deleting task category:', err);
+    //                 return res.status(500).json({ error: 'Error deleting task category' });
+    //             }
 
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Task category not found' });
-                }
+    //             if (result.affectedRows === 0) {
+    //                 return res.status(404).json({ error: 'Task category not found' });
+    //             }
 
-                res.status(200).json({ message: 'Task category soft deleted successfully' });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //             res.status(200).json({ message: 'Task category soft deleted successfully' });
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
 };
 
