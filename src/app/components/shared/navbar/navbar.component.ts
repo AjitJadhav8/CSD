@@ -77,7 +77,8 @@ export class NavbarComponent {
   showProjectDropdown = false;
   showEmployeeDropdown = false;
   showManagersHubDropdown = false;
-
+  isRM = false;
+  isPM = false;
 
   @ViewChild('customerDropdown') customerDropdown!: ElementRef;
   @ViewChild('projectDropdown') projectDropdown!: ElementRef;
@@ -141,6 +142,15 @@ export class NavbarComponent {
 
   constructor(private router: Router, private authService: AuthService) {
     this.setLoggedInUser();
+      // Check localStorage for RM/PM status when component initializes
+      if (typeof window !== 'undefined') {
+        this.isRM = localStorage.getItem('is_RM') === '1' || localStorage.getItem('is_RM') === 'true';
+        this.isPM = localStorage.getItem('is_PM') === '1' || localStorage.getItem('is_PM') === 'true';
+      }
+      console.log('Reporting ', this.isRM, 'Project ', this.isPM)
+  }
+  get shouldShowManagersHub(): boolean {
+    return this.isRM || this.isPM;
   }
 
   toggleDropdown() {
@@ -159,6 +169,7 @@ export class NavbarComponent {
     localStorage.removeItem('selectedProjectSection');
     localStorage.removeItem('selectedEmployeeSection');
     localStorage.removeItem('selectedManagersHubSection');
+    
 
 
     // Optionally, keep the remembered email if the user chose "Remember Me"

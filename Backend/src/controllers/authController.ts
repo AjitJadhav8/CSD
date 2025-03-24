@@ -17,6 +17,8 @@ class AuthController {
                 mu.user_last_name,
                 mu.user_email,
                 mu.user_password,
+                  mu.is_RM,
+        mu.is_PM,
                 tud.role_id
                 FROM master_user mu
             LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
@@ -54,9 +56,9 @@ class AuthController {
             user_id: user.user_id,
             first_name: user.user_first_name,
             last_name: user.user_last_name,
-            email: user.user_email,
-            role_id: user.role_id // Now fetched from trans_user_details
-
+            role_id: user.role_id,
+          is_RM: user.is_RM,
+          is_PM: user.is_PM
           }
         });
       });

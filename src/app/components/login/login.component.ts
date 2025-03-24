@@ -49,6 +49,8 @@
           localStorage.setItem('last_name', response.user.last_name);
           localStorage.setItem('role_id', response.user.role_id);
           localStorage.setItem('email', response.user.email);
+          localStorage.setItem('is_RM', response.user.is_RM);
+          localStorage.setItem('is_PM', response.user.is_PM);
         }
 
         Swal.fire({
