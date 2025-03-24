@@ -294,6 +294,55 @@ class RmgController {
         }
       }
 
+      // all teams timesheet
+
+        // Fetch all timesheet entries
+    async getAllTimesheets(req: Request, res: Response): Promise<void> {
+      try {
+          const query = `SELECT 
+    tt.timesheet_id,
+    tt.timesheet_date,
+    mu.user_id, 
+    CONCAT(mu.user_first_name, ' ', mu.user_last_name) AS user_name,
+    mpd.pd_id, 
+    mpd.project_deliverable_name,
+    tt.task_description,
+    tt.hours,
+    tt.minutes,
+    tt.task_status,
+    mpp.phase_id, 
+    mpp.project_phase_name,
+    mp.project_id,
+    mp.project_name,
+    mc.customer_id,
+    mc.customer_name,
+    pm.user_id AS project_manager_id,
+    CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS project_manager_name
+FROM trans_timesheet tt
+LEFT JOIN master_user mu ON tt.user_id = mu.user_id
+LEFT JOIN master_project_deliverables mpd ON tt.pd_id = mpd.pd_id
+LEFT JOIN master_project_phases mpp ON mpd.phase_id = mpp.phase_id
+LEFT JOIN master_project mp ON mpp.project_id = mp.project_id
+LEFT JOIN master_customer mc ON mp.customer_id = mc.customer_id
+LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id  -- Joining to get the project manager
+WHERE tt.is_deleted = 0
+ORDER BY tt.timesheet_id DESC`;
+
+          db.query(query, (error, results) => {
+              if (error) {
+                  console.error('Database Error:', error);
+                  res.status(500).json({ error: 'Database Error', details: error.message });
+                  return;
+              }
+              res.status(200).json(results);
+          });
+
+      } catch (error) {
+          console.error('Error fetching timesheets:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+      }
+  }
+
     
     
     

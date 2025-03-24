@@ -84,9 +84,17 @@ class OrgController {
   FROM master_project_phases WHERE is_deleted = 0
 `;
 
+const projectManagersQuery = `
+ SELECT 
+                user_id, user_code, user_first_name, user_middle_name, user_last_name
+            FROM master_user 
+            WHERE is_deleted = 0 AND is_PM = 1
+`;
+
+
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases, projectManagers] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -171,13 +179,21 @@ class OrgController {
                       resolve(results);
                     });
                   }),
+                  new Promise((resolve, reject) => {
+                    db.query(projectManagersQuery, (err: any, results: any) => {
+                      if (err) reject(err);
+                      resolve(results);
+                    });
+                  }),
+                
+
 
             ]);
 
             // Return roles, departments, and user info in the response
             res.status(200).json({
                 roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables,
-                taskCategories, projectRole, designation, masterCategory, phases
+                taskCategories, projectRole, designation, masterCategory, phases, projectManagers
             });
         } catch (error) {
             console.error('Error:', error);

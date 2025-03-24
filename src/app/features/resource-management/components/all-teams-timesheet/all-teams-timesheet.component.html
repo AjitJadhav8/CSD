@@ -1,1 +1,187 @@
-<p>all-teams-timesheet works!</p>
+<div class="p-4">
+
+
+    <div class="rounded-lg w-full overflow-x-auto">
+        <div class="min-w-max">
+            <div
+                class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+
+
+                <!-- Customer Filter -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="customerFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Customer</option>
+                        <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                            {{ customer.customer_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="customerFilter" (click)="clearFilter('customerFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Project Filter -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="projectFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Project</option>
+                        <option *ngFor="let project of optionProjects" [value]="project.project_id">
+                            {{ project.project_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="projectFilter" (click)="clearFilter('projectFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Employee Filter -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="userNameFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Employee</option>
+                        <option *ngFor="let employee of optionUsers" [value]="employee.user_id">
+                            {{ employee.user_first_name }} {{ employee.user_last_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="userNameFilter" (click)="clearFilter('userNameFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- project manager -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="projectManagerFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Project Manager</option>
+                        <option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
+                            {{ manager.user_first_name }} {{ manager.user_last_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="projectManagerFilter" (click)="clearFilter('projectManagerFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- project Phase -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="phasesFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Phase</option>
+                        <option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
+                            {{ phases.project_phase_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="phasesFilter" (click)="clearFilter('phasesFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Project Deliverable Filter -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="projectDeliverableFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Deliverable</option>
+                        <option *ngFor="let deliverable of optionProjectDeliverables" [value]="deliverable.pd_id">
+                            {{ deliverable.project_deliverable_name }}
+                        </option>
+                    </select>
+                    <button *ngIf="projectDeliverableFilter" (click)="clearFilter('projectDeliverableFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Timesheet Date Filter -->
+                <div class="relative flex-grow">
+                    <input type="date" [(ngModel)]="timesheetDateFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                    <button *ngIf="timesheetDateFilter" (click)="clearFilter('timesheetDateFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Task Status Filter -->
+                <div class="relative flex-grow">
+                    <select [(ngModel)]="taskStatusFilter" (change)="applyFilters()"
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                        <option value="">Select Task Status</option>
+                        <option value="1">Completed</option>
+                        <option value="0">Pending</option>
+                    </select>
+                    <button *ngIf="taskStatusFilter" (click)="clearFilter('taskStatusFilter')"
+                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+                        ×
+                    </button>
+                </div>
+
+                <!-- Clear All Filters -->
+                <button (click)="clearFilters()"
+                    class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
+                    All
+                    Filters</button>
+            </div>
+        </div>
+        <table class="w-full border-collapse border border-gray-300 mt-4">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">Sr No</th>
+                    <th class="border p-2">Customer Name</th>
+                    <th class="border p-2">Project Name</th>
+                    <th class="border p-2">Employee Name</th>
+                    <th class="border p-2">Project Manager</th>
+
+                    <th class="border p-2">Project Phase</th>
+                    <th class="border p-2">Project Deliverable</th>
+
+                    <th class="border p-2">Timesheet Date</th>
+                    <th class="border p-2">Task Description</th>
+                    <th class="border p-2">Hours</th>
+                    <th class="border p-2">Minutes</th>
+                    <th class="border p-2">Task Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let timesheet of paginatedTimesheets; let i = index" class="hover:bg-gray-50">
+                    <td class="border p-2">{{ i + 1 }}</td>
+                    <td class="border p-2">{{ timesheet.customer_name }}</td>
+                    <td class="border p-2">{{ timesheet.project_name }}</td>
+                    <td class="border p-2">{{ timesheet.user_name }}</td>
+                    <td class="border p-2">{{ timesheet.project_manager_name }}</td>
+
+                    <td class="border p-2">{{ timesheet.project_phase_name }}</td>
+                    <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
+
+
+                    <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                    <td class="border p-2">{{ timesheet.task_description }}</td>
+                    <td class="border p-2">{{ timesheet.hours }}</td>
+                    <td class="border p-2">{{ timesheet.minutes }}</td>
+                    <td class="border p-2">{{ timesheet.task_status ? 'Completed' : 'Pending' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex items-center justify-center mt-4 space-x-1">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+            class="px-3 py-1 border rounded-md">
+            Previous
+        </button>
+        <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+            [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+            {{ page }}
+        </button>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded-md">
+            Next
+        </button>
+    </div>
+</div>

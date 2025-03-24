@@ -31,11 +31,16 @@ export class RmgService {
       return this.http.get(`${this.apiUrl}/api/rmg/assignments`, { headers });
     }
 
-    
-    
     updateAssignTeam(projectTeamId: number, updateData: any): Observable<any> {
       const headers = this.getAuthHeaders();
       return this.http.put(`${this.apiUrl}/api/rmg/assignments/${projectTeamId}`, updateData, { headers });
+    }
+
+    //
+
+    getAllTimesheets(): Observable<any> {
+      const headers = this.getAuthHeaders();
+      return this.http.get(`${this.apiUrl}/api/rmg/timesheets`, { headers });
     }
 
 

@@ -7,8 +7,11 @@ import { protect } from '../middlewares/authMiddleware';
 router.post('/assign', protect, rmgController.assignProjectTeam.bind(rmgController));
 router.get('/assignments', protect, rmgController.getAllProjectTeams);
 router.delete('/assignments/:id', protect, rmgController.softDeleteProjectTeam);
-
 router.put('/assignments/:id', protect, rmgController.updateAssignTeam);
+
+
+router.get('/timesheets', protect, rmgController.getAllTimesheets);
+
 
 
 
