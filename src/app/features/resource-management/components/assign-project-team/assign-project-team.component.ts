@@ -190,46 +190,67 @@ percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 0 to 100 in
 
         },
         error: (error) => {
-            if (error.status === 400) {
-                if (error.error.error.includes('Employee is already assigned to this project')) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Employee is already assigned to this project!',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                } else if (error.error.error.includes('Only')) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: error.error.error, // Shows "Only X% allocation is remaining"
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                } else {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Failed to assign project team!',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                }
-            } else {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'Failed to assign project team!',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-            }
-        }
+          if (error.status === 400) {
+              const errorMessage = error.error.error;
+      
+              if (errorMessage.includes('Employee is already assigned to this project')) {
+                  Swal.fire({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'error',
+                      title: 'Employee is already assigned to this project!',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+              } else if (errorMessage.includes('Only')) {
+                  Swal.fire({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'error',
+                      title: errorMessage, // Shows "Only X% allocation is remaining"
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+              } else if (errorMessage.includes('start_date must be before or equal to end_date')) {
+                  Swal.fire({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'error',
+                      title: 'Start date must be before or equal to end date!',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+              } else if (errorMessage.includes('allocation_percentage must be a number between 0 and 100')) {
+                  Swal.fire({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'error',
+                      title: 'Allocation percentage must be between 0 and 100!',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+              } else {
+                  Swal.fire({
+                      toast: true,
+                      position: 'top-end',
+                      icon: 'error',
+                      title: 'Failed to assign project team!',
+                      showConfirmButton: false,
+                      timer: 3000
+                  });
+              }
+          } else {
+              Swal.fire({
+                  toast: true,
+                  position: 'top-end',
+                  icon: 'error',
+                  title: 'Failed to assign project team!',
+                  showConfirmButton: false,
+                  timer: 3000
+              });
+          }
+      }
+      
     });
 }
 onProjectChange(event: Event) {
