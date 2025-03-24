@@ -13,10 +13,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class NavbarComponent {
 
-    // Method to check if the current route is '/app-center'
-    isAppCenterRoute(): boolean {
-      return this.router.url === '/app-center';
-    }
+  // Method to check if the current route is '/app-center'
+  isAppCenterRoute(): boolean {
+    return this.router.url === '/app-center';
+  }
 
   isActive(route: string): boolean {
     return this.router.url === route;
@@ -101,10 +101,10 @@ export class NavbarComponent {
       this.showEmployeeDropdown = false;
     }
 
-      // Close Managers Hub Dropdown if clicked outside
-      if (this.managersHubDropdown && !this.managersHubDropdown.nativeElement.contains(event.target)) {
-        this.showManagersHubDropdown = false;
-      }
+    // Close Managers Hub Dropdown if clicked outside
+    if (this.managersHubDropdown && !this.managersHubDropdown.nativeElement.contains(event.target)) {
+      this.showManagersHubDropdown = false;
+    }
   }
 
   toggleCustomerDropdown() {
@@ -156,6 +156,10 @@ export class NavbarComponent {
     localStorage.removeItem('role_id');
     localStorage.removeItem('email');
     localStorage.removeItem('selectedCustomerSection');
+    localStorage.removeItem('selectedProjectSection');
+    localStorage.removeItem('selectedEmployeeSection');
+    localStorage.removeItem('selectedManagersHubSection');
+
 
     // Optionally, keep the remembered email if the user chose "Remember Me"
     const rememberedEmail = localStorage.getItem('rememberedEmail');
@@ -184,86 +188,86 @@ export class NavbarComponent {
     newPassword: '',
     confirmNewPassword: ''
   };
-    // Open change password modal
-    openChangePasswordModal() {
-      this.showChangePasswordModal = true;
-      this.showDropdown = false; // Close dropdown when modal opens
+  // Open change password modal
+  openChangePasswordModal() {
+    this.showChangePasswordModal = true;
+    this.showDropdown = false; // Close dropdown when modal opens
+  }
+
+  // Close change password modal
+  closeChangePasswordModal() {
+    this.showChangePasswordModal = false;
+    this.changePasswordData = { currentPassword: '', newPassword: '', confirmNewPassword: '' }; // Reset form
+  }
+  // Handle change password form submission
+  onChangePasswordSubmit(form: any) {
+    if (form.invalid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
     }
-  
-    // Close change password modal
-    closeChangePasswordModal() {
-      this.showChangePasswordModal = false;
-      this.changePasswordData = { currentPassword: '', newPassword: '', confirmNewPassword: '' }; // Reset form
+
+    if (this.changePasswordData.newPassword !== this.changePasswordData.confirmNewPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'New Password and Confirm New Password do not match!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
     }
-// Handle change password form submission
-onChangePasswordSubmit(form: any) {
-  if (form.invalid) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Please fill all required fields correctly!',
-      toast: true,
-      position: 'top-end',
-      timer: 3000,
-      showConfirmButton: false
-    });
-    return;
-  }
 
-  if (this.changePasswordData.newPassword !== this.changePasswordData.confirmNewPassword) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'New Password and Confirm New Password do not match!',
-      toast: true,
-      position: 'top-end',
-      timer: 3000,
-      showConfirmButton: false
-    });
-    return;
-  }
+    const userId = localStorage.getItem('user_id'); // Get logged-in user ID
+    if (!userId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'User not found!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
+    }
 
-  const userId = localStorage.getItem('user_id'); // Get logged-in user ID
-  if (!userId) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'User not found!',
-      toast: true,
-      position: 'top-end',
-      timer: 3000,
-      showConfirmButton: false
-    });
-    return;
+    // Call AuthService to change password
+    this.authService.changePassword(userId, this.changePasswordData.currentPassword, this.changePasswordData.newPassword)
+      .subscribe(
+        (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Password changed successfully!',
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+          });
+          this.closeChangePasswordModal();
+        },
+        (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.error.message || 'Failed to change password!',
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+          });
+        }
+      );
   }
-
-  // Call AuthService to change password
-  this.authService.changePassword(userId, this.changePasswordData.currentPassword, this.changePasswordData.newPassword)
-    .subscribe(
-      (response) => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Password changed successfully!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
-        });
-        this.closeChangePasswordModal();
-      },
-      (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.error.message || 'Failed to change password!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
-        });
-      }
-    );
-}
 
 }
