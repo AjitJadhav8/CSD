@@ -172,6 +172,34 @@
       class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
       Manager's Hub
     </a> -->
+    <!-- Updated Managers Hub Dropdown -->
+    <div class="relative" #managersHubDropdown>
+      <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
+        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+        Manager's Hub
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showManagersHubDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showManagersHubDropdown"
+        class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
+        <a (click)="navigateToManagersHubSection('projectPhases')" 
+           [class.active-link]="isManagersHubSectionActive('projectPhases')"
+           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Project Phases
+        </a>
+        <a (click)="navigateToManagersHubSection('projectDeliverable')" 
+           [class.active-link]="isManagersHubSectionActive('projectDeliverable')"
+           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Project Deliverable
+        </a>
+      </div>
+    </div>
   </div>
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->

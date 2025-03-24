@@ -57,6 +57,17 @@ export class NavbarComponent {
   isEmployeeSectionActive(section: string): boolean {
     return localStorage.getItem('selectedEmployeeSection') === section;
   }
+  navigateToManagersHubSection(section: string) {
+    localStorage.setItem('selectedManagersHubSection', section);
+    this.router.navigate(['/timesheet/managers-hub']).then(() => {
+      window.dispatchEvent(new Event('storage'));
+    });
+  }
+
+
+  isManagersHubSectionActive(section: string): boolean {
+    return localStorage.getItem('selectedManagersHubSection') === section;
+  }
 
   showDropdown = false;
   showChangePasswordForm = false;
@@ -65,10 +76,14 @@ export class NavbarComponent {
   showCustomerDropdown = false;
   showProjectDropdown = false;
   showEmployeeDropdown = false;
+  showManagersHubDropdown = false;
+
 
   @ViewChild('customerDropdown') customerDropdown!: ElementRef;
   @ViewChild('projectDropdown') projectDropdown!: ElementRef;
   @ViewChild('employeeDropdown') employeeDropdown!: ElementRef;
+  @ViewChild('managersHubDropdown') managersHubDropdown!: ElementRef;
+
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
     // Close Customer Dropdown if clicked outside
@@ -85,6 +100,11 @@ export class NavbarComponent {
     if (this.employeeDropdown && !this.employeeDropdown.nativeElement.contains(event.target)) {
       this.showEmployeeDropdown = false;
     }
+
+      // Close Managers Hub Dropdown if clicked outside
+      if (this.managersHubDropdown && !this.managersHubDropdown.nativeElement.contains(event.target)) {
+        this.showManagersHubDropdown = false;
+      }
   }
 
   toggleCustomerDropdown() {
@@ -104,6 +124,14 @@ export class NavbarComponent {
     this.showCustomerDropdown = false; // Close other dropdowns
     this.showProjectDropdown = false;
   }
+  toggleManagersHubDropdown() {
+    this.showManagersHubDropdown = !this.showManagersHubDropdown;
+    this.showCustomerDropdown = false;
+    this.showProjectDropdown = false;
+    this.showEmployeeDropdown = false;
+  }
+
+
 
   setLoggedInUser() {
     const firstName = localStorage.getItem('first_name') || '';

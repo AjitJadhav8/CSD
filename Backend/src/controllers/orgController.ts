@@ -91,10 +91,17 @@ const projectManagersQuery = `
             WHERE is_deleted = 0 AND is_PM = 1
 `;
 
+const reportingManagersQuery = `
+SELECT 
+    user_id, user_code, user_first_name, user_middle_name, user_last_name
+FROM master_user 
+WHERE is_deleted = 0 AND is_RM = 1
+`;
+
 
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases, projectManagers] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -185,6 +192,12 @@ const projectManagersQuery = `
                       resolve(results);
                     });
                   }),
+                  new Promise((resolve, reject) => {
+                    db.query(reportingManagersQuery, (err: any, results: any) => {
+                      if (err) reject(err);
+                      resolve(results);
+                    });
+                  }),
                 
 
 
@@ -193,7 +206,7 @@ const projectManagersQuery = `
             // Return roles, departments, and user info in the response
             res.status(200).json({
                 roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables,
-                taskCategories, projectRole, designation, masterCategory, phases, projectManagers
+                taskCategories, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers
             });
         } catch (error) {
             console.error('Error:', error);
