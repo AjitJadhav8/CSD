@@ -832,37 +832,63 @@ class OrgController {
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact, user_password
             } = req.body;
-
+    
             // Default password if not provided
             const password = user_password ? user_password : '123';
-
-            // SQL query to insert the new employee into the database
-            const query = `
-                INSERT INTO master_user (
-                    user_code, user_first_name, user_middle_name, user_last_name, 
-                    user_email, user_contact, user_password
-                ) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            `;
-
-            const values = [
-                user_code, user_first_name, user_middle_name, user_last_name,
-                user_email, user_contact, password
-            ];
-
-            // Insert the data into the database
-            db.query(query, values, (err: any, result: any) => {
+    
+            // Check for duplicate user_code and user_email separately
+            const checkQuery = `SELECT user_code, user_email 
+            FROM master_user 
+            WHERE (user_code = ? OR user_email = ?) 
+            AND is_deleted = 0`;
+            db.query(checkQuery, [user_code, user_email], (err: any, results: any) => {
                 if (err) {
-                    console.error('Error saving employee:', err);
-                    return res.status(500).json({ error: 'Error saving employee' });
+                    console.error('Error checking for duplicate:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
                 }
-                res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
+    
+                // Identify which field is duplicated
+                const duplicateFields: string[] = [];
+                results.forEach((user: any) => {
+                    if (user.user_code === user_code) duplicateFields.push('Employee Code');
+                    if (user.user_email === user_email) duplicateFields.push('Email');
+                });
+    
+                // If any duplicates exist, return an appropriate error message
+                if (duplicateFields.length > 0) {
+                    return res.status(400).json({ error: `${duplicateFields.join(' and ')} already exist` });
+                }
+    
+                // SQL query to insert the new employee into the database
+                const insertQuery = `
+                    INSERT INTO master_user (
+                    user_code, user_first_name, user_middle_name, user_last_name, 
+                    user_email, user_contact, user_password, is_deleted
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+                `;
+    
+                const values = [
+                    user_code, user_first_name, user_middle_name, user_last_name,
+                    user_email, user_contact, password
+                ];
+    
+                // Insert the data into the database
+                db.query(insertQuery, values, (insertErr: any, result: any) => {
+                    if (insertErr) {
+                        console.error('Error saving employee:', insertErr);
+                        return res.status(500).json({ error: 'Error saving employee' });
+                    }
+                    res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
+                });
             });
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+    
+    
     async assignDetails(req: Request, res: Response): Promise<void> {
         try {
             const {

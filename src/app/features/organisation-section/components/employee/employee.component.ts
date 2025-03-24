@@ -724,9 +724,34 @@ export class EmployeeComponent {
         });
         employeeForm.resetForm();
       },
-      (error) => {
-        console.error('Error saving employee:', error);
-      }
+
+
+
+
+        (error) => {
+            console.error('Error saving employee:', error);
+            if (error.status === 400) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplicate Entry',
+                    text: error.error.error, // Display error message from backend
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+        }
     );
   }
 
