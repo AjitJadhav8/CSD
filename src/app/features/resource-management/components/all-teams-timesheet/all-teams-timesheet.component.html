@@ -2,6 +2,43 @@
 
 
     <div class="rounded-lg w-full overflow-x-auto">
+        <!-- Filter Section -->
+        <div class="flex items-center gap-4 p-4 bg-white shadow-md rounded-lg">
+            <div class="flex items-center gap-2">
+              <label class="font-medium text-gray-700">From:</label>
+              <input
+                type="date"
+                [(ngModel)]="fromDate"
+                (change)="applyDateFilter()"
+                class="border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-300"
+              />
+            </div>
+          
+            <div class="flex items-center gap-2">
+              <label class="font-medium text-gray-700">To:</label>
+              <input
+                type="date"
+                [(ngModel)]="toDate"
+                (change)="applyDateFilter()"
+                class="border border-gray-300 p-2 rounded-lg focus:ring focus:ring-blue-300"
+              />
+            </div>
+          
+            <button
+              (click)="exportToExcel()"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow"
+            >
+              Export to Excel
+            </button>
+          
+            <button
+              (click)="clearDateFilter()"
+              class="bg-gray-500 hover:bg-gray-600 text-white font-medium px-4 py-2 rounded-lg shadow"
+            >
+              Clear Dates
+            </button>
+          </div>
+          
         <div class="min-w-max">
             <div
                 class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
