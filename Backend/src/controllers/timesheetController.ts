@@ -266,6 +266,125 @@ ORDER BY
     }
 }
 
+
+// Add to your TimesheetController
+async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
+    try {
+        const projectManagerId = parseInt(req.params.projectManagerId);
+        
+        if (!projectManagerId) {
+            res.status(400).json({ error: 'Project Manager ID is required' });
+            return;
+        }
+
+        const query = `
+            SELECT 
+                t.timesheet_id,
+                t.timesheet_date,
+                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+                p.project_name,
+                ph.project_phase_name,
+                pd.project_deliverable_name,
+                t.task_description,
+                t.hours,
+                t.minutes,
+                t.task_status,
+                t.user_id,
+                p.project_id,
+                ph.phase_id
+            FROM 
+                trans_timesheet t
+            JOIN 
+                master_user u ON t.user_id = u.user_id
+            JOIN 
+                master_project_deliverables pd ON t.pd_id = pd.pd_id
+            JOIN 
+                master_project_phases ph ON pd.phase_id = ph.phase_id
+            JOIN 
+                master_project p ON ph.project_id = p.project_id
+            JOIN 
+                trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
+            WHERE 
+                t.is_deleted = 0
+                AND pt.project_manager_id = ?
+                AND pt.is_deleted = 0
+            ORDER BY 
+                t.timesheet_date DESC, u.user_first_name
+        `;
+
+        db.query(query, [projectManagerId], (err, results) => {
+            if (err) {
+                console.error('Error fetching project team timesheets:', err);
+                return res.status(500).json({ error: 'Error fetching project team timesheets' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
+    try {
+        const reportingManagerId = parseInt(req.params.reportingManagerId);
+        
+        if (!reportingManagerId) {
+            res.status(400).json({ error: 'Reporting Manager ID is required' });
+            return;
+        }
+
+        const query = `
+            SELECT 
+                pt.project_team_id,
+                c.customer_name,
+                p.project_name,
+                CONCAT(rmu.user_first_name, ' ', rmu.user_last_name) AS reporting_manager_name,
+                CONCAT(eu.user_first_name, ' ', eu.user_last_name) AS employee_name,
+                pr.project_role_name,
+                pt.start_date,
+                pt.end_date,
+                pt.allocation_status,
+                pt.allocation_percentage,
+                pt.billed_status
+            FROM 
+                trans_project_team pt
+            JOIN 
+                master_customer c ON pt.customer_id = c.customer_id
+            JOIN 
+                master_project p ON pt.project_id = p.project_id
+            JOIN 
+                master_user eu ON pt.employee_id = eu.user_id
+            JOIN 
+                trans_user_details ud ON eu.user_id = ud.user_id
+            JOIN 
+                master_user rmu ON ud.reporting_manager_id = rmu.user_id
+            JOIN 
+                master_project_role pr ON pt.project_role_id = pr.project_role_id
+            WHERE 
+                pt.is_deleted = 0 
+                AND ud.is_deleted = 0
+                AND ud.reporting_manager_id = ?
+            ORDER BY 
+                p.project_name, eu.user_first_name
+        `;
+
+        db.query(query, [reportingManagerId], (err, results) => {
+            if (err) {
+                console.error('Error fetching reporting team:', err);
+                return res.status(500).json({ error: 'Error fetching reporting team' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
 }
 
 export default new TimesheetController();

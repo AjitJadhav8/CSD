@@ -62,5 +62,16 @@ export class TimesheetService {
   return this.http.get(`${this.apiUrl}/api/timesheet/team-by-manager/${projectManagerId}`, { headers });
 }
 
+// Add to your timesheet service
+getProjectTeamsTimesheet(projectManagerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/team-timesheets/${projectManagerId}`, { headers });
+}
+
+getReportingTeamByManager(reportingManagerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/team-by-reporting-manager/${reportingManagerId}`, { headers });
+}
+
 
 }

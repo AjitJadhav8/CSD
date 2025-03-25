@@ -31,6 +31,8 @@ export class ManagersHubComponent {
     this.fetchProjectDeliverables();
     this.fetchProjectPhases();
     this.fetchProjectTeamData();
+    this.fetchProjectTeamsTimesheet();
+    this.fetchReportingTeamData();
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -43,6 +45,7 @@ export class ManagersHubComponent {
         this.optionProject = response.projects;
         this.optionPhases = response.phases;
         this.optionProjectManagers = response.projectManagers;
+        this.optionReportingManagers = response.reportingManagers;
         this.optionProjectRole = response.projectRole;
         this.filteredProjects = [];
       },
@@ -123,6 +126,8 @@ export class ManagersHubComponent {
     // optionRoles:any;
     optionCustomers: any[] = [];
     optionProjectManagers: any[] = [];
+    optionReportingManagers: any[] = [];
+
 optionProjectRole: any[] = [];
 
 
@@ -533,7 +538,7 @@ clearPhaseFilters(): void {
 teamProjectFilter: string = '';
 teamEmployeeFilter: string = '';
 teamCurrentPage: number = 1;
-teamItemsPerPage: number = 10;
+teamItemsPerPage: number = 30;
 teamMaxPageButtons: number = 5;
 paginatedProjectTeamData: any[] = [];
 
@@ -662,6 +667,309 @@ getVisibleTeamPageNumbers(): number[] {
 
   if (endPage - startPage + 1 < this.teamMaxPageButtons) {
       startPage = Math.max(1, endPage - this.teamMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+
+
+               // For View My Project Teams Timesheet
+
+               timesheetData: any[] = [];
+               filteredTimesheetData: any[] = [];
+               paginatedTimesheetData: any[] = [];
+               timesheetCurrentPage: number = 1;
+               timesheetItemsPerPage: number = 30;
+               timesheetMaxPageButtons: number = 5;
+               
+               // Filters
+               timesheetEmployeeFilter: string = '';
+               timesheetProjectFilter: string = '';
+               timesheetPhaseFilter: string = '';
+               timesheetDateFrom: string = '';
+               timesheetDateTo: string = '';
+               timesheetStatusFilter: string = '';
+               
+               // Options
+               optionTeamMembers: any[] = [];
+               optionProjectsForTimesheet: any[] = [];
+               optionPhasesForTimesheet: any[] = [];
+// Add these methods
+fetchProjectTeamsTimesheet(): void {
+  const projectManagerId = Number(localStorage.getItem('user_id'));
+  if (!projectManagerId) return;
+
+  this.timesheetService.getProjectTeamsTimesheet(projectManagerId).subscribe(
+    (response) => {
+      this.timesheetData = response;
+      
+      // Process all filter options
+      this.optionTeamMembers = this.getUniqueTeamMembers(this.timesheetData);
+      this.optionProjectsForTimesheet = this.getUniqueSimpleItems(
+        this.timesheetData,
+        'project_name',
+        'project_id'
+      );
+      this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
+        this.timesheetData,
+        'project_phase_name',
+        'phase_id'
+      );
+      
+      console.log('Processed options:', {
+        teamMembers: this.optionTeamMembers,
+        projects: this.optionProjectsForTimesheet,
+        phases: this.optionPhasesForTimesheet
+      });
+      
+      this.filteredTimesheetData = [...this.timesheetData];
+      this.updateTimesheetPage();
+    },
+    (error) => console.error(error)
+  );
+}
+// For team members (needs name handling)
+private getUniqueTeamMembers(data: any[]): any[] {
+  const uniqueMap = new Map();
+  
+  data.forEach(item => {
+    if (item.user_id && item.employee_name) {
+      if (!uniqueMap.has(item.user_id)) {
+        uniqueMap.set(item.user_id, {
+          id: item.user_id,
+          fullName: item.employee_name
+        });
+      }
+    } else {
+      console.warn('Missing required fields in item:', item);
+    }
+  });
+  
+  return Array.from(uniqueMap.values());
+}
+
+private getUniqueSimpleItems(
+  data: any[],
+  displayField: string,
+  idField: string
+): any[] {
+  const uniqueMap = new Map();
+  data.forEach(item => {
+    if (item[idField] && item[displayField] && !uniqueMap.has(item[idField])) {
+      uniqueMap.set(item[idField], {
+        id: item[idField],
+        name: item[displayField]
+      });
+    }
+  });
+  return Array.from(uniqueMap.values());
+}
+
+applyTimesheetFilters(): void {
+  this.filteredTimesheetData = this.timesheetData.filter(timesheet => {
+      // Employee filter - compare by ID
+      const matchesEmployee = !this.timesheetEmployeeFilter || 
+      timesheet.user_id == this.timesheetEmployeeFilter;
+
+      const matchesProject = !this.timesheetProjectFilter || 
+                         timesheet.project_id == this.timesheetProjectFilter;
+    
+    // Phase filter - compare by ID
+    const matchesPhase = !this.timesheetPhaseFilter || 
+                       timesheet.phase_id == this.timesheetPhaseFilter;
+
+      
+      const matchesStatus = !this.timesheetStatusFilter || 
+          timesheet.task_status.toString() === this.timesheetStatusFilter;
+      
+      // Date filtering
+      let matchesDate = true;
+      if (this.timesheetDateFrom || this.timesheetDateTo) {
+          const timesheetDate = new Date(timesheet.timesheet_date);
+          const fromDate = this.timesheetDateFrom ? new Date(this.timesheetDateFrom) : null;
+          const toDate = this.timesheetDateTo ? new Date(this.timesheetDateTo) : null;
+          
+          if (fromDate && timesheetDate < fromDate) matchesDate = false;
+          if (toDate && timesheetDate > toDate) matchesDate = false;
+      }
+
+      return matchesEmployee && matchesProject && matchesPhase && 
+             matchesStatus && matchesDate;
+  });
+
+  this.timesheetCurrentPage = 1;
+  this.updateTimesheetPage();
+}
+
+clearTimesheetFilters(): void {
+  this.timesheetEmployeeFilter = '';
+  this.timesheetProjectFilter = '';
+  this.timesheetPhaseFilter = '';
+  this.timesheetDateFrom = '';
+  this.timesheetDateTo = '';
+  this.timesheetStatusFilter = '';
+  this.applyTimesheetFilters();
+}
+
+updateTimesheetPage(): void {
+  const startIndex = (this.timesheetCurrentPage - 1) * this.timesheetItemsPerPage;
+  const endIndex = startIndex + this.timesheetItemsPerPage;
+  this.paginatedTimesheetData = this.filteredTimesheetData.slice(startIndex, endIndex);
+}
+
+changeTimesheetPage(page: number): void {
+  if (page >= 1 && page <= this.timesheetTotalPages) {
+      this.timesheetCurrentPage = page;
+      this.updateTimesheetPage();
+  }
+}
+
+get timesheetTotalPages(): number {
+  return Math.ceil(this.filteredTimesheetData.length / this.timesheetItemsPerPage);
+}
+
+getVisibleTimesheetPageNumbers(): number[] {
+  const totalPages = this.timesheetTotalPages;
+  const halfRange = Math.floor(this.timesheetMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.timesheetCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.timesheetMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.timesheetMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.timesheetMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+             
+//reporting manager 
+// For View My Reporting Team section
+reportingTeamData: any[] = [];
+filteredReportingTeamData: any[] = [];
+paginatedReportingTeamData: any[] = [];
+
+// Pagination and Filters
+reportingCustomerFilter: string = '';
+reportingProjectFilter: string = '';
+reportingManagerFilter: string = '';
+reportingEmployeeFilter: string = '';
+reportingRoleFilter: string = '';
+reportingAllocationStatusFilter: string = '';
+reportingBilledStatusFilter: string = '';
+reportingStartDateFrom: string = '';
+reportingStartDateTo: string = '';
+reportingCurrentPage: number = 1;
+reportingItemsPerPage: number = 30;
+reportingMaxPageButtons: number = 5;
+
+// Fetch reporting team data
+fetchReportingTeamData(): void {
+  const reportingManagerId = Number(localStorage.getItem('user_id'));
+  if (!reportingManagerId) {
+      console.error('User ID not found in local storage.');
+      return;
+  }
+
+  this.timesheetService.getReportingTeamByManager(reportingManagerId).subscribe(
+      (response) => {
+        console.log('rm fetch data', response);
+          this.reportingTeamData = response;
+          this.filteredReportingTeamData = [...this.reportingTeamData];
+          this.updateReportingPage();
+      },
+      (error) => {
+          console.error('Error fetching reporting team data:', error);
+      }
+  );
+}
+
+// Filter methods
+applyReportingFilters(): void {
+  this.filteredReportingTeamData = this.reportingTeamData.filter(member => {
+      const matchesCustomer = !this.reportingCustomerFilter || 
+          member.customer_name === this.reportingCustomerFilter;
+      
+      const matchesProject = !this.reportingProjectFilter || 
+          member.project_name === this.reportingProjectFilter;
+      
+      const matchesManager = !this.reportingManagerFilter || 
+          member.reporting_manager_name === this.reportingManagerFilter;
+      
+      const matchesEmployee = !this.reportingEmployeeFilter || 
+          member.employee_name === this.reportingEmployeeFilter;
+      
+      const matchesRole = !this.reportingRoleFilter || 
+          member.project_role_name === this.reportingRoleFilter;
+      
+      // Updated allocation status filter to handle number values
+      const matchesAllocationStatus = !this.reportingAllocationStatusFilter || 
+          (this.reportingAllocationStatusFilter === 'true' ? member.allocation_status === 1 : member.allocation_status === 0);
+      
+      // Updated billed status filter to handle number values
+      const matchesBilledStatus = !this.reportingBilledStatusFilter || 
+          (this.reportingBilledStatusFilter === 'true' ? member.billed_status === 1 : member.billed_status === 0);
+      
+      // Date filtering
+      let matchesStartDate = true;
+      if (this.reportingStartDateFrom || this.reportingStartDateTo) {
+          const startDate = new Date(member.start_date);
+          const fromDate = this.reportingStartDateFrom ? new Date(this.reportingStartDateFrom) : null;
+          const toDate = this.reportingStartDateTo ? new Date(this.reportingStartDateTo) : null;
+          
+          if (fromDate && startDate < fromDate) matchesStartDate = false;
+          if (toDate && startDate > toDate) matchesStartDate = false;
+      }
+
+      return matchesCustomer && matchesProject && matchesManager && 
+             matchesEmployee && matchesRole && matchesAllocationStatus && 
+             matchesBilledStatus && matchesStartDate;
+  });
+
+  this.reportingCurrentPage = 1;
+  this.updateReportingPage();
+}
+
+clearReportingFilters(): void {
+  this.reportingCustomerFilter = '';
+  this.reportingProjectFilter = '';
+  this.reportingManagerFilter = '';
+  this.reportingEmployeeFilter = '';
+  this.reportingRoleFilter = '';
+  this.reportingAllocationStatusFilter = '';
+  this.reportingBilledStatusFilter = '';
+  this.reportingStartDateFrom = '';
+  this.reportingStartDateTo = '';
+  this.applyReportingFilters();
+}
+
+// Pagination methods
+updateReportingPage(): void {
+  const startIndex = (this.reportingCurrentPage - 1) * this.reportingItemsPerPage;
+  const endIndex = startIndex + this.reportingItemsPerPage;
+  this.paginatedReportingTeamData = this.filteredReportingTeamData.slice(startIndex, endIndex);
+}
+
+changeReportingPage(page: number): void {
+  if (page >= 1 && page <= this.reportingTotalPages) {
+      this.reportingCurrentPage = page;
+      this.updateReportingPage();
+  }
+}
+
+get reportingTotalPages(): number {
+  return Math.ceil(this.filteredReportingTeamData.length / this.reportingItemsPerPage);
+}
+
+getVisibleReportingPageNumbers(): number[] {
+  const totalPages = this.reportingTotalPages;
+  const halfRange = Math.floor(this.reportingMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.reportingCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.reportingMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.reportingMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.reportingMaxPageButtons + 1);
   }
 
   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);

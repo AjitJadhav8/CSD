@@ -18,4 +18,9 @@ router.get('/full-timesheet/:userId', protect, TimesheetController.getUserFullTi
 // In your backend routes file
 router.get('/team-by-manager/:projectManagerId', protect, TimesheetController.getProjectTeamByManager);
 
+// In your backend routes file
+router.get('/team-timesheets/:projectManagerId', protect, TimesheetController.getProjectTeamsTimesheet);
+
+router.get('/team-by-reporting-manager/:reportingManagerId', protect, TimesheetController.getReportingTeamByManager);
+
 export default router;

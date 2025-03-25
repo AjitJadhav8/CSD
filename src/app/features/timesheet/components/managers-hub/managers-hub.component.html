@@ -530,11 +530,297 @@
     </div>
 
     <div *ngIf="selectedSection === 'viewMyProjectTeamsTimesheet'">
-        <h1>View My Project Teams Timesheet</h1>
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="min-w-max">
+                <!-- Enhanced Filter Section -->
+                <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Employee</label>
+                        <select [(ngModel)]="timesheetEmployeeFilter" (change)="applyTimesheetFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                          <option value="">All Employees</option>
+                          <option *ngFor="let user of optionTeamMembers" 
+                                  [value]="user.id">
+                            {{ user.fullName }}
+                          </option>
+                        </select>
+                      </div>
+    
+                    <!-- Project Name Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Project</label>
+                       <!-- Project Dropdown -->
+<select [(ngModel)]="timesheetProjectFilter" class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" (change)="applyTimesheetFilters()">
+    <option value="">All Projects</option>
+    <option *ngFor="let project of optionProjectsForTimesheet" 
+            [value]="project.id">
+      {{ project.name }}
+    </option>
+  </select>
+                    </div>
+    
+                    <!-- Phase Name Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Phase</label>
+                        <select [(ngModel)]="timesheetPhaseFilter" class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" (change)="applyTimesheetFilters()">
+                            <option value="">All Phases</option>
+                            <option *ngFor="let phase of optionPhasesForTimesheet" 
+                                    [value]="phase.id">
+                              {{ phase.name }}
+                            </option>
+                          </select>
+                    </div>
+    
+                    <!-- Date Range Filters -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Date From</label>
+                        <input type="date" [(ngModel)]="timesheetDateFrom" (change)="applyTimesheetFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                    </div>
+    
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Date To</label>
+                        <input type="date" [(ngModel)]="timesheetDateTo" (change)="applyTimesheetFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                    </div>
+    
+                    <!-- Task Status Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Task Status</label>
+                        <select [(ngModel)]="timesheetStatusFilter" (change)="applyTimesheetFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Statuses</option>
+                            <option value="1">Completed</option>
+                            <option value="0">In Progress</option>
+                        </select>
+                    </div>
+    
+                    <!-- Action Buttons -->
+                
+                    <button (click)="clearTimesheetFilters()"
+                        class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+    
+            <!-- Timesheet Table -->
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">S.No.</th>
+                        <th class="border p-2">Employee Name</th>
+                        <th class="border p-2">Project Name</th>
+                        <th class="border p-2">Phase</th>
+                        <th class="border p-2">Deliverable</th>
+                        <th class="border p-2">Task Description</th>
+                        <th class="border p-2">Hours</th>
+                        <th class="border p-2">Minutes</th>
+                        <th class="border p-2">Status</th>
+                        <th class="border p-2">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let timesheet of paginatedTimesheetData; let i = index" class="hover:bg-gray-50">
+                        <td class="border p-2">{{ (timesheetCurrentPage - 1) * timesheetItemsPerPage + i + 1 }}</td>
+                        <td class="border p-2">{{ timesheet.employee_name }}</td>
+                        <td class="border p-2">{{ timesheet.project_name }}</td>
+                        <td class="border p-2">{{ timesheet.project_phase_name }}</td>
+                        <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
+                        <td class="border p-2">{{ timesheet.task_description }}</td>
+                        <td class="border p-2">{{ timesheet.hours }}</td>
+                        <td class="border p-2">{{ timesheet.minutes }}</td>
+                        <td class="border p-2">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td>
+                        <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <!-- Pagination Controls -->
+            <div class="flex items-center justify-center mt-4 space-x-1">
+                <button (click)="changeTimesheetPage(timesheetCurrentPage - 1)" [disabled]="timesheetCurrentPage === 1"
+                    class="px-3 py-1 border rounded-md">
+                    Previous
+                </button>
+                <button *ngIf="timesheetCurrentPage > 3" (click)="changeTimesheetPage(1)"
+                    class="px-3 py-1 border rounded-md">1</button>
+                <span *ngIf="timesheetCurrentPage > 4" class="px-2">...</span>
+                <button *ngFor="let page of getVisibleTimesheetPageNumbers()" (click)="changeTimesheetPage(page)"
+                    [class.bg-blue-500]="timesheetCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page }}</button>
+                <span *ngIf="timesheetCurrentPage < timesheetTotalPages - 3" class="px-2">...</span>
+                <button *ngIf="timesheetCurrentPage < timesheetTotalPages - 2" (click)="changeTimesheetPage(timesheetTotalPages)"
+                    class="px-3 py-1 border rounded-md">{{ timesheetTotalPages }}</button>
+                <button (click)="changeTimesheetPage(timesheetCurrentPage + 1)" [disabled]="timesheetCurrentPage === timesheetTotalPages"
+                    class="px-3 py-1 border rounded-md">Next</button>
+            </div>
+        </div>
     </div>
+    
     <div *ngIf="selectedSection === 'viewMyReportingTeam'">
-        <h1>View My Reporting Team</h1>
+        <div class="rounded-lg w-full overflow-x-auto">
+            <div class="min-w-max">
+                <!-- Enhanced Filter Section -->
+                <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
+                    <!-- Customer Name Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Customer</label>
+                        <select [(ngModel)]="reportingCustomerFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Customers</option>
+                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
+                                {{ customer.customer_name }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Project Name Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Project</label>
+                        <select [(ngModel)]="reportingProjectFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Projects</option>
+                            <option *ngFor="let project of optionProject" [value]="project.project_name">
+                                {{ project.project_name }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Reporting Manager Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Reporting Manager</label>
+                        <select [(ngModel)]="reportingManagerFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Managers</option>
+                            <option *ngFor="let manager of optionReportingManagers" 
+                                    [value]="manager.user_first_name + ' ' + manager.user_last_name">
+                                {{ manager.user_first_name }} {{ manager.user_last_name }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Employee Name Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Employee</label>
+                        <select [(ngModel)]="reportingEmployeeFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Employees</option>
+                            <option *ngFor="let user of optionUsers" 
+                                    [value]="user.user_first_name + ' ' + user.user_last_name">
+                                {{ user.user_first_name }} {{ user.user_last_name }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Project Role Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Project Role</label>
+                        <select [(ngModel)]="reportingRoleFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Roles</option>
+                            <option *ngFor="let role of optionProjectRole" [value]="role.project_role_name">
+                                {{ role.project_role_name }}
+                            </option>
+                        </select>
+                    </div>
+    
+                    <!-- Allocation Status Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Allocation Status</label>
+                        <select [(ngModel)]="reportingAllocationStatusFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Statuses</option>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+    
+                    <!-- Billed Status Dropdown Filter -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Billed Status</label>
+                        <select [(ngModel)]="reportingBilledStatusFilter" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                            <option value="">All Statuses</option>
+                            <option value="true">Billed</option>
+                            <option value="false">Not Billed</option>
+                        </select>
+                    </div>
+    
+                    <!-- Date Range Filters -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Start Date From</label>
+                        <input type="date" [(ngModel)]="reportingStartDateFrom" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                    </div>
+    
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Start Date To</label>
+                        <input type="date" [(ngModel)]="reportingStartDateTo" (change)="applyReportingFilters()"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
+                    </div>
+    
+                    <!-- Action Buttons -->
+                        <button (click)="clearReportingFilters()"
+                        class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">
+                            Clear All
+                        </button>
+                </div>
+            </div>
+    
+            <!-- Reporting Team Table -->
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">S.No.</th>
+                        <th class="border p-2">Customer Name</th>
+                        <th class="border p-2">Project Name</th>
+                        <th class="border p-2">Reporting Manager</th>
+                        <th class="border p-2">Employee Name</th>
+                        <th class="border p-2">Project Role</th>
+                        <th class="border p-2">Start Date</th>
+                        <th class="border p-2">Tentative End Date</th>
+                        <th class="border p-2">Allocation Status</th>
+                        <th class="border p-2">Allocation %</th>
+                        <th class="border p-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let member of paginatedReportingTeamData; let i = index" class="hover:bg-gray-50">
+                        <td class="border p-2">{{ (reportingCurrentPage - 1) * reportingItemsPerPage + i + 1 }}</td>
+                        <td class="border p-2">{{ member.customer_name }}</td>
+                        <td class="border p-2">{{ member.project_name }}</td>
+                        <td class="border p-2">{{ member.reporting_manager_name }}</td>
+                        <td class="border p-2">{{ member.employee_name }}</td>
+                        <td class="border p-2">{{ member.project_role_name }}</td>
+                        <td class="border p-2">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="border p-2">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="border p-2">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td>
+                        <td class="border p-2">{{ member.allocation_percentage }}%</td>
+                        <td class="border p-2">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <!-- Pagination Controls -->
+            <div class="flex items-center justify-center mt-4 space-x-1">
+                <button (click)="changeReportingPage(reportingCurrentPage - 1)" [disabled]="reportingCurrentPage === 1"
+                    class="px-3 py-1 border rounded-md">
+                    Previous
+                </button>
+                <button *ngIf="reportingCurrentPage > 3" (click)="changeReportingPage(1)"
+                    class="px-3 py-1 border rounded-md">1</button>
+                <span *ngIf="reportingCurrentPage > 4" class="px-2">...</span>
+                <button *ngFor="let page of getVisibleReportingPageNumbers()" (click)="changeReportingPage(page)"
+                    [class.bg-blue-500]="reportingCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page }}</button>
+                <span *ngIf="reportingCurrentPage < reportingTotalPages - 3" class="px-2">...</span>
+                <button *ngIf="reportingCurrentPage < reportingTotalPages - 2" (click)="changeReportingPage(reportingTotalPages)"
+                    class="px-3 py-1 border rounded-md">{{ reportingTotalPages }}</button>
+                <button (click)="changeReportingPage(reportingCurrentPage + 1)" [disabled]="reportingCurrentPage === reportingTotalPages"
+                    class="px-3 py-1 border rounded-md">Next</button>
+            </div>
+        </div>
     </div>
+
+    
     <div *ngIf="selectedSection === 'viewMyReportingTeamsTimesheet'">
         <h1>View My Reporting Teams Timesheet</h1>
     </div>
