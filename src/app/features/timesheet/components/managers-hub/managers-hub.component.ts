@@ -288,7 +288,9 @@ getVisibleDeliverablePageNumbers(): number[] {
         });
         projectDeliverableFormRef.resetForm();
 
-        
+          // Refresh both phases and deliverables
+      this.fetchProjectPhases();
+      this.fetchProjectDeliverables(); // Add this line
       },
       (error) => {
         console.error('Error adding project deliverable', error);
@@ -304,7 +306,6 @@ getVisibleDeliverablePageNumbers(): number[] {
     );
   }
 
-  
      deleteProjectDeliverable(deliverableId: number): void {
         Swal.fire({
           title: 'Are you sure?',

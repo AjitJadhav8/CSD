@@ -24,7 +24,6 @@ export class FillTimesheetComponent {
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
-    this.fetchTimesheets();
     // Fetch user ID from localStorage
     const storedUserId = localStorage.getItem('user_id'); // Fetch user_id from local storage
     console.log('Stored User ID:', storedUserId);
@@ -71,14 +70,14 @@ filterOptionPhases: any[] = [];
   selectedProject: number | null = null;
   selectedDeliverable: number | null = null;
   selectedHours: number | null = null;
-  selectedMinutes: number | null = null;
+  selectedMinutes: number = 0;     // Default to 0 minutes
   selectedTaskCategory: any;
   taskDescription: string = '';
   timesheetData: any;
 
   fetchTimesheets(): void {
     if (!this.userId) {
-      console.error('User ID not found');
+      console.error('User ID not found fetch');
       return;
     }
 
@@ -209,7 +208,7 @@ filterOptionPhases: any[] = [];
     this.selectedPhase = null;
     this.selectedDeliverable = null;
     this.selectedHours = null;
-    this.selectedMinutes = null;
+    this.selectedMinutes = 0;
     this.taskDescription = '';
     this.selectedTaskStatus = 0;
   
@@ -290,7 +289,7 @@ onPhaseChange() {
 
   // currentDate: Date = new Date();
   hoursList = Array.from({ length: 8 }, (_, i) => i + 1);
-  minutesList = [15, 30, 45];
+  minutesList = [0, 15, 30, 45];
   taskStatusList = [
     { value: 0, label: 'In Progress' },
     { value: 1, label: 'Completed' }
