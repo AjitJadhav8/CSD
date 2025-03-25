@@ -73,5 +73,11 @@ getReportingTeamByManager(reportingManagerId: number): Observable<any> {
   return this.http.get(`${this.apiUrl}/api/timesheet/team-by-reporting-manager/${reportingManagerId}`, { headers });
 }
 
+// Add to your timesheet service
+getReportingTeamsTimesheet(reportingManagerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/reporting-team-timesheets/${reportingManagerId}`, { headers });
+}
+
 
 }

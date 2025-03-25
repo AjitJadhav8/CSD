@@ -33,6 +33,7 @@ export class ManagersHubComponent {
     this.fetchProjectTeamData();
     this.fetchProjectTeamsTimesheet();
     this.fetchReportingTeamData();
+    this.fetchReportingTeamsTimesheet();
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -844,6 +845,8 @@ getVisibleTimesheetPageNumbers(): number[] {
 }
              
 //reporting manager 
+
+
 // For View My Reporting Team section
 reportingTeamData: any[] = [];
 filteredReportingTeamData: any[] = [];
@@ -974,5 +977,165 @@ getVisibleReportingPageNumbers(): number[] {
 
   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 }
+
+
+//Rm team 
+
+// Add these properties to your component class
+reportingTimesheetData: any[] = [];
+filteredReportingTimesheetData: any[] = [];
+paginatedReportingTimesheetData: any[] = [];
+
+// Filters
+reportingTimesheetEmployeeFilter: string = '';
+reportingTimesheetProjectFilter: string = '';
+reportingTimesheetPhaseFilter: string = '';
+reportingTimesheetDateFrom: string = '';
+reportingTimesheetDateTo: string = '';
+reportingTimesheetStatusFilter: string = '';
+
+// Pagination
+reportingTimesheetCurrentPage: number = 1;
+reportingTimesheetItemsPerPage: number = 30;
+reportingTimesheetMaxPageButtons: number = 5;
+
+// Dropdown options
+optionReportingTeamMembers: any[] = [];
+optionReportingProjects: any[] = [];
+optionReportingPhases: any[] = [];
+
+// Fetch reporting team timesheets
+fetchReportingTeamsTimesheet(): void {
+  const reportingManagerId = Number(localStorage.getItem('user_id'));
+  if (!reportingManagerId) {
+    console.error('User ID not found in local storage.');
+    return;
+  }
+
+  this.timesheetService.getReportingTeamsTimesheet(reportingManagerId).subscribe(
+    (response) => {
+      this.reportingTimesheetData = response;
+      this.filteredReportingTimesheetData = [...this.reportingTimesheetData];
+      this.updateReportingTimesheetPage();
+      this.extractDropdownOptions();
+    },
+    (error) => {
+      console.error('Error fetching reporting team timesheets:', error);
+    }
+  );
+}
+
+
+// Extract dropdown options from data
+extractDropdownOptions(): void {
+  // Employees
+  this.optionReportingTeamMembers = Array.from(
+    new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+      id: t.user_id,
+      fullName: t.employee_name
+    })))
+  ).map(item => JSON.parse(item))
+   .filter((item: {id: number, fullName: string}) => item.id && item.fullName);
+
+  // Projects
+  this.optionReportingProjects = Array.from(
+    new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+      id: t.project_id,
+      name: t.project_name
+    })))
+  ).map(item => JSON.parse(item))
+   .filter((item: {id: number, name: string}) => item.id && item.name);
+
+  // Phases
+  this.optionReportingPhases = Array.from(
+    new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+      id: t.phase_id,
+      name: t.project_phase_name
+    })))
+  ).map(item => JSON.parse(item))
+   .filter((item: {id: number, name: string}) => item.id && item.name);
+}
+
+
+
+// Filter methods
+applyReportingTimesheetFilters(): void {
+  this.filteredReportingTimesheetData = this.reportingTimesheetData.filter(timesheet => {
+      const matchesEmployee = !this.reportingTimesheetEmployeeFilter || 
+          timesheet.user_id.toString() === this.reportingTimesheetEmployeeFilter;
+      
+      const matchesProject = !this.reportingTimesheetProjectFilter || 
+          timesheet.project_id.toString() === this.reportingTimesheetProjectFilter;
+      
+      const matchesPhase = !this.reportingTimesheetPhaseFilter || 
+          timesheet.phase_id.toString() === this.reportingTimesheetPhaseFilter;
+      
+      const matchesStatus = !this.reportingTimesheetStatusFilter || 
+          timesheet.task_status.toString() === this.reportingTimesheetStatusFilter;
+      
+      // Date filtering
+      let matchesDate = true;
+      if (this.reportingTimesheetDateFrom || this.reportingTimesheetDateTo) {
+          const timesheetDate = new Date(timesheet.timesheet_date);
+          const fromDate = this.reportingTimesheetDateFrom ? new Date(this.reportingTimesheetDateFrom) : null;
+          const toDate = this.reportingTimesheetDateTo ? new Date(this.reportingTimesheetDateTo) : null;
+          
+          if (fromDate && timesheetDate < fromDate) matchesDate = false;
+          if (toDate && timesheetDate > toDate) matchesDate = false;
+      }
+
+      return matchesEmployee && matchesProject && matchesPhase && 
+             matchesStatus && matchesDate;
+  });
+
+  this.reportingTimesheetCurrentPage = 1;
+  this.updateReportingTimesheetPage();
+}
+
+clearReportingTimesheetFilters(): void {
+  this.reportingTimesheetEmployeeFilter = '';
+  this.reportingTimesheetProjectFilter = '';
+  this.reportingTimesheetPhaseFilter = '';
+  this.reportingTimesheetDateFrom = '';
+  this.reportingTimesheetDateTo = '';
+  this.reportingTimesheetStatusFilter = '';
+  this.applyReportingTimesheetFilters();
+}
+
+// Pagination methods
+updateReportingTimesheetPage(): void {
+  const startIndex = (this.reportingTimesheetCurrentPage - 1) * this.reportingTimesheetItemsPerPage;
+  const endIndex = startIndex + this.reportingTimesheetItemsPerPage;
+  this.paginatedReportingTimesheetData = this.filteredReportingTimesheetData.slice(startIndex, endIndex);
+}
+
+changeReportingTimesheetPage(page: number): void {
+  if (page >= 1 && page <= this.reportingTimesheetTotalPages) {
+      this.reportingTimesheetCurrentPage = page;
+      this.updateReportingTimesheetPage();
+  }
+}
+
+get reportingTimesheetTotalPages(): number {
+  return Math.ceil(this.filteredReportingTimesheetData.length / this.reportingTimesheetItemsPerPage);
+}
+
+getVisibleReportingTimesheetPageNumbers(): number[] {
+  const totalPages = this.reportingTimesheetTotalPages;
+  const halfRange = Math.floor(this.reportingTimesheetMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.reportingTimesheetCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.reportingTimesheetMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.reportingTimesheetMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.reportingTimesheetMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+
+
+
 
 }

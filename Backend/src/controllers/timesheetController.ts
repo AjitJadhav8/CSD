@@ -384,6 +384,65 @@ async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
 }
 
 
+// Add to your TimesheetController
+async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
+    try {
+        const reportingManagerId = parseInt(req.params.reportingManagerId);
+        
+        if (!reportingManagerId) {
+            res.status(400).json({ error: 'Reporting Manager ID is required' });
+            return;
+        }
+
+        const query = `
+            SELECT 
+                t.timesheet_id,
+                t.timesheet_date,
+                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+                p.project_name,
+                ph.project_phase_name,
+                pd.project_deliverable_name,
+                t.task_description,
+                t.hours,
+                t.minutes,
+                t.task_status,
+                t.user_id,
+                p.project_id,
+                ph.phase_id
+            FROM 
+                trans_timesheet t
+            JOIN 
+                master_user u ON t.user_id = u.user_id
+            JOIN 
+                master_project_deliverables pd ON t.pd_id = pd.pd_id
+            JOIN 
+                master_project_phases ph ON pd.phase_id = ph.phase_id
+            JOIN 
+                master_project p ON ph.project_id = p.project_id
+            JOIN 
+                trans_user_details ud ON u.user_id = ud.user_id
+            WHERE 
+                t.is_deleted = 0
+                AND ud.reporting_manager_id = ?
+                AND ud.is_deleted = 0
+            ORDER BY 
+                t.timesheet_date DESC, u.user_first_name
+        `;
+
+        db.query(query, [reportingManagerId], (err, results) => {
+            if (err) {
+                console.error('Error fetching reporting team timesheets:', err);
+                return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
 
 }
 
