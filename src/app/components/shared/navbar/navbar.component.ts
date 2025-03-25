@@ -84,6 +84,7 @@ export class NavbarComponent {
   @ViewChild('projectDropdown') projectDropdown!: ElementRef;
   @ViewChild('employeeDropdown') employeeDropdown!: ElementRef;
   @ViewChild('managersHubDropdown') managersHubDropdown!: ElementRef;
+  @ViewChild('userDropdown') userDropdown!: ElementRef;
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
@@ -105,6 +106,9 @@ export class NavbarComponent {
     // Close Managers Hub Dropdown if clicked outside
     if (this.managersHubDropdown && !this.managersHubDropdown.nativeElement.contains(event.target)) {
       this.showManagersHubDropdown = false;
+    }
+    if (this.userDropdown && !this.userDropdown.nativeElement.contains(event.target)) {
+      this.showDropdown = false;
     }
   }
 
