@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
@@ -24,6 +24,7 @@ export class FillTimesheetComponent {
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
+    this.fetchTimesheets();
     // Fetch user ID from localStorage
     const storedUserId = localStorage.getItem('user_id'); // Fetch user_id from local storage
     console.log('Stored User ID:', storedUserId);
@@ -97,37 +98,40 @@ filterOptionPhases: any[] = [];
   }
 
 
-  submitTimesheet() {
-    if (!this.userId || !this.selectedDeliverable || !this.selectedPhase || !this.taskDescription || this.selectedHours === undefined || this.selectedMinutes === undefined) {
-      console.error('Missing required fields');
-      // Show warning if required fields are missing
+  submitTimesheet(timesheetForm: NgForm) {  // Add NgForm parameter
+    if (!timesheetForm.valid) {
+      console.error('Form is invalid');
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'warning',
-        title: 'All fields are required!',
+        title: 'Please fill all required fields!',
         showConfirmButton: false,
         timer: 3000
       });
       return;
     }
-
+  
+    if (!this.userId) {
+      console.error('User ID not found');
+      return;
+    }
+  
     const timesheetData = {
-      timesheet_date: this.selectedDate, // Directly sending selected date
+      timesheet_date: this.selectedDate,
       user_id: this.userId,
       pd_id: this.selectedDeliverable,
-      phase_id: this.selectedPhase, // Include phase_id
+      phase_id: this.selectedPhase,
       hours: this.selectedHours,
       minutes: this.selectedMinutes,
       task_status: this.selectedTaskStatus,
       task_description: this.taskDescription,
     };
-
+  
     this.timesheetService.submitTimesheet(timesheetData).subscribe({
       next: (response) => {
         console.log('Timesheet Submitted:', response);
-        this.clearTimesheetForm();
-        // Success Toast Notification
+        this.clearTimesheetForm(timesheetForm);  // Pass the form reference
         Swal.fire({
           toast: true,
           position: 'top-end',
@@ -136,13 +140,10 @@ filterOptionPhases: any[] = [];
           showConfirmButton: false,
           timer: 3000
         });
-        
-        setTimeout(() => this.fetchTimesheets(), 100);
+        this.fetchTimesheets();
       },
       error: (error) => {
         console.error('Error submitting timesheet:', error);
-
-        // Error Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
@@ -201,16 +202,22 @@ filterOptionPhases: any[] = [];
     });
   }
 
-  clearTimesheetForm() {
+  clearTimesheetForm(form: NgForm) {
+    // Reset form values
     this.selectedCustomer = '';
     this.selectedProject = null;
+    this.selectedPhase = null;
     this.selectedDeliverable = null;
     this.selectedHours = null;
     this.selectedMinutes = null;
-    this.selectedTaskCategory = null;
     this.taskDescription = '';
+    this.selectedTaskStatus = 0;
+  
+    // Reset form state
+    form.resetForm();
+    
+    // Reset the date to today
   }
-
 
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
