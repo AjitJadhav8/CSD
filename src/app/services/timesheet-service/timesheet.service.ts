@@ -30,10 +30,6 @@ export class TimesheetService {
 
 
 
-
-
-
-
   submitTimesheet(timesheetData: any): Observable<any> {
     const headers = this.getAuthHeaders(); // Get headers with token
     return this.http.post(`${this.apiUrl}/api/timesheet/submit`, timesheetData, { headers });
@@ -59,6 +55,12 @@ export class TimesheetService {
     const headers = this.getAuthHeaders();
     return this.http.get(`${this.apiUrl}/api/timesheet/full-timesheet/${userId}`, { headers });
   }
+
+    // ----------------------- Managers Hub ---------------------------
+  getProjectTeamByManager(projectManagerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/team-by-manager/${projectManagerId}`, { headers });
+}
 
 
 }

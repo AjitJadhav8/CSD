@@ -13,6 +13,9 @@ router.delete('/timesheet/:timesheetId', protect, TimesheetController.softDelete
 // ------------------------------------------Export------------------------------------
 router.get('/full-timesheet/:userId', protect, TimesheetController.getUserFullTimesheet);
 
+    // ----------------------- Managers Hub ---------------------------
 
+// In your backend routes file
+router.get('/team-by-manager/:projectManagerId', protect, TimesheetController.getProjectTeamByManager);
 
 export default router;

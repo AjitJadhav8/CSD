@@ -210,6 +210,62 @@ ORDER BY t.timesheet_id DESC;
         }
     }
 
+    // ----------------------- Managers Hub ---------------------------
+    // project.controller.ts
+async getProjectTeamByManager(req: Request, res: Response): Promise<void> {
+    try {
+        const projectManagerId = parseInt(req.params.projectManagerId);
+        
+        if (!projectManagerId) {
+            res.status(400).json({ error: 'Project Manager ID is required' });
+            return;
+        }
+
+        const query = `
+            SELECT 
+    pt.project_team_id,
+    c.customer_name,
+    p.project_name,
+    CONCAT(pmu.user_first_name, ' ', pmu.user_last_name) AS project_manager_name,
+    CONCAT(eu.user_first_name, ' ', eu.user_last_name) AS employee_name,
+    pr.project_role_name,
+    pt.start_date,
+    pt.end_date,
+    pt.allocation_status,
+    pt.allocation_percentage,
+    pt.billed_status
+FROM 
+    trans_project_team pt
+JOIN 
+    master_customer c ON pt.customer_id = c.customer_id
+JOIN 
+    master_project p ON pt.project_id = p.project_id
+JOIN 
+    master_user pmu ON pt.project_manager_id = pmu.user_id
+JOIN 
+    master_user eu ON pt.employee_id = eu.user_id
+JOIN 
+    master_project_role pr ON pt.project_role_id = pr.project_role_id
+WHERE 
+    pt.is_deleted = 0 
+    AND pt.project_manager_id = ?
+ORDER BY 
+    p.project_name, eu.user_first_name
+        `;
+
+        db.query(query, [projectManagerId], (err, results) => {
+            if (err) {
+                console.error('Error fetching project team:', err);
+                return res.status(500).json({ error: 'Error fetching project team' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 }
 
 export default new TimesheetController();

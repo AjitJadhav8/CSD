@@ -198,6 +198,33 @@
            class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Deliverable
         </a>
+         <!-- Team Management Sections -->
+    <div class="border-t border-gray-200 my-1"></div>
+    <a (click)="navigateToManagersHubSection('viewMyProjectTeam')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeam')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Project Team
+    </a>
+    <a (click)="navigateToManagersHubSection('viewMyProjectTeamsTimesheet')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeamsTimesheet')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Projects Timesheet
+    </a>
+    
+    <!-- Reporting Sections -->
+    <div class="border-t border-gray-200 my-1"></div>
+    <a (click)="navigateToManagersHubSection('viewMyReportingTeam')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeam')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Reporting Team
+    </a>
+    <a (click)="navigateToManagersHubSection('viewMyReportingTeamsTimesheet')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeamsTimesheet')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Reporting Team's Timesheet
+    </a>
+  
+    
       </div>
     </div>
   </div>

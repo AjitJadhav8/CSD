@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
 
 @Component({
   selector: 'app-managers-hub',
@@ -14,7 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class ManagersHubComponent {
 
-  constructor(private dataService: DataService, private http: HttpClient) { }
+  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   
 
   selectedSection: string = 'projectPhases'; // Default section
@@ -29,6 +30,7 @@ export class ManagersHubComponent {
 
     this.fetchProjectDeliverables();
     this.fetchProjectPhases();
+    this.fetchProjectTeamData();
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -40,6 +42,8 @@ export class ManagersHubComponent {
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
         this.optionPhases = response.phases;
+        this.optionProjectManagers = response.projectManagers;
+        this.optionProjectRole = response.projectRole;
         this.filteredProjects = [];
       },
       (error) => {
@@ -118,6 +122,12 @@ export class ManagersHubComponent {
     // optionDepartments:any;
     // optionRoles:any;
     optionCustomers: any[] = [];
+    optionProjectManagers: any[] = [];
+optionProjectRole: any[] = [];
+
+
+
+
     deliverableCurrentPage: number = 1;
     deliverableTotalItems: number = 0;
     deliverableItemsPerPage: number = 30; // Adjust as needed
@@ -127,9 +137,13 @@ export class ManagersHubComponent {
     
     // Filters for Project Deliverables
     deliverableNameFilter: string = '';
-    customerNameFilter: string = '';
-    projectNameFilter: string = '';
-    phaseNameFiltered: string = ''; // New Filter
+    // customerNameFilter: string = '';
+    // projectNameFilter: string = '';
+    // phaseNameFiltered: string = ''; // New Filter
+
+    deliverableCustomerFilter: string = '';
+deliverableProjectFilter: string = '';
+deliverablePhaseFilter: string = '';
   
   
     projectDeliverableForm: any = {
@@ -171,49 +185,51 @@ export class ManagersHubComponent {
   // Apply Filters for Project Deliverables
   applyDeliverableFilters(): void {
     this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
-      return (
-        (this.deliverableNameFilter ? deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()) : true) &&
-        (this.customerNameFilter ? deliverable.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
-        (this.projectNameFilter ? deliverable.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true) &&
-        (this.phaseNameFiltered ? deliverable.project_phase_name.toLowerCase().includes(this.phaseNameFiltered.toLowerCase()) : true) // New Filter
-      
-      );
+        return (
+            (!this.deliverableCustomerFilter || deliverable.customer_name === this.deliverableCustomerFilter) &&
+            (!this.deliverableProjectFilter || deliverable.project_name === this.deliverableProjectFilter) &&
+            (!this.deliverablePhaseFilter || deliverable.project_phase_name === this.deliverablePhaseFilter) &&
+            (!this.deliverableNameFilter || 
+                deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()))
+        );
     });
-  
+
     this.deliverableTotalItems = this.filteredProjectDeliverables.length;
     this.deliverableCurrentPage = 1;
     this.updateDeliverablePage();
-  }
+}
+
   
   // Clear Filters for Project Deliverables
   
 // Clear Filters for Project Deliverables
+// Update clear method
 clearDeliverableFilters(): void {
+  this.deliverableCustomerFilter = '';
+  this.deliverableProjectFilter = '';
+  this.deliverablePhaseFilter = '';
   this.deliverableNameFilter = '';
-  this.customerNameFilter = '';
-  this.projectNameFilter = '';
-  this.phaseNameFiltered='';
   this.applyDeliverableFilters();
 }
 
 // Clear Individual Filter for Project Deliverables
-clearDeliverableFilter(filterName: string): void {
-  switch (filterName) {
-    case 'deliverableNameFilter':
-      this.deliverableNameFilter = '';
-      break;
-    case 'customerNameFilter':
-      this.customerNameFilter = '';
-      break;
-    case 'projectNameFilter':
-      this.projectNameFilter = '';
-      break;
-      case 'phaseNameFiltered': // New Case
-      this.phaseNameFiltered = '';
-      break;
-  }
-  this.applyDeliverableFilters(); // Reapply filters after clearing
-}
+// clearDeliverableFilter(filterName: string): void {
+//   switch (filterName) {
+//     case 'deliverableNameFilter':
+//       this.deliverableNameFilter = '';
+//       break;
+//     case 'customerNameFilter':
+//       this.customerNameFilter = '';
+//       break;
+//     case 'projectNameFilter':
+//       this.projectNameFilter = '';
+//       break;
+//       case 'phaseNameFiltered': // New Case
+//       this.phaseNameFiltered = '';
+//       break;
+//   }
+//   this.applyDeliverableFilters(); // Reapply filters after clearing
+// }
 
 
  
@@ -329,7 +345,7 @@ getVisibleDeliverablePageNumbers(): number[] {
       }
   
 
-      // Phases
+      // ----------------- Project Phasese -----------------------
   
 
       
@@ -353,6 +369,8 @@ getVisibleDeliverablePageNumbers(): number[] {
       
         // Filters for Project Phases
         phaseNameFilter: string = '';
+        phaseCustomerFilter: string = '';
+phaseProjectFilter: string = '';
       
         // Form Model
         projectPhaseForm: any = {
@@ -445,41 +463,31 @@ getVisibleDeliverablePageNumbers(): number[] {
           });
         }
       
-        applyPhaseFilters(): void {
-          this.filteredProjectPhases = this.projectPhases.filter(phase => {
-            return (
-              (this.phaseNameFilter ? phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()) : true) &&
-              (this.customerNameFilter ? phase.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
-              (this.projectNameFilter ? phase.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true)
-            );
-          });
+        // Update the filter method
+applyPhaseFilters(): void {
+    this.filteredProjectPhases = this.projectPhases.filter(phase => {
+        return (
+            (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
+            (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
+            (!this.phaseNameFilter || 
+                phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
+        );
+    });
+
+    this.phaseTotalItems = this.filteredProjectPhases.length;
+    this.phaseCurrentPage = 1;
+    this.updatePhasePage();
+}
       
-          this.phaseTotalItems = this.filteredProjectPhases.length;
-          this.phaseCurrentPage = 1;
-          this.updatePhasePage();
-        }
+        // Update clear method
+clearPhaseFilters(): void {
+  this.phaseCustomerFilter = '';
+  this.phaseProjectFilter = '';
+  this.phaseNameFilter = '';
+  this.applyPhaseFilters();
+}
       
-        clearPhaseFilters(): void {
-          this.phaseNameFilter = '';
-          this.customerNameFilter = '';
-          this.projectNameFilter = '';
-          this.applyPhaseFilters();
-        }
-      
-        clearPhaseFilter(filterName: string): void {
-          switch (filterName) {
-            case 'phaseNameFilter':
-              this.phaseNameFilter = '';
-              break;
-            case 'customerNameFilter':
-              this.customerNameFilter = '';
-              break;
-            case 'projectNameFilter':
-              this.projectNameFilter = '';
-              break;
-          }
-          this.applyPhaseFilters();
-        }
+        
       
         updatePhasePage(): void {
           const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
@@ -512,4 +520,151 @@ getVisibleDeliverablePageNumbers(): number[] {
           return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
         }
       
+
+    // ----------------------- Managers Hub ---------------------------
+
+               // For View My Project Team section
+  projectTeamData: any[] = [];
+  filteredProjectTeamData: any[] = [];
+  displayedProjectTeamData: any[] = [];
+  
+  // Pagination
+  teamCustomerFilter: string = '';
+teamProjectFilter: string = '';
+teamEmployeeFilter: string = '';
+teamCurrentPage: number = 1;
+teamItemsPerPage: number = 10;
+teamMaxPageButtons: number = 5;
+paginatedProjectTeamData: any[] = [];
+
+teamManagerFilter: string = '';
+teamRoleFilter: string = '';
+teamAllocationStatusFilter: string = '';
+teamBilledStatusFilter: string = '';
+teamStartDateFrom: string = '';
+teamStartDateTo: string = '';
+
+   // Project Team Methods
+   // Update the fetch method
+fetchProjectTeamData(): void {
+  const projectManagerId = Number(localStorage.getItem('user_id'));
+  if (!projectManagerId) {
+      console.error('User ID not found in local storage.');
+      return;
+  }
+
+  this.timesheetService.getProjectTeamByManager(projectManagerId).subscribe(
+      (response) => {
+          this.projectTeamData = response;
+          this.filteredProjectTeamData = [...this.projectTeamData];
+          this.updateTeamPage();
+      },
+      (error) => {
+          console.error('Error fetching project team data:', error);
+      }
+  );
+}
+// Add these methods
+// Enhance the applyTeamFilters method
+applyTeamFilters(): void {
+  this.filteredProjectTeamData = this.projectTeamData.filter(member => {
+      const matchesCustomer = !this.teamCustomerFilter || 
+          member.customer_name === this.teamCustomerFilter;
+      
+      const matchesProject = !this.teamProjectFilter || 
+          member.project_name === this.teamProjectFilter;
+      
+      const matchesManager = !this.teamManagerFilter || 
+          member.project_manager_name === this.teamManagerFilter;
+      
+      const matchesEmployee = !this.teamEmployeeFilter || 
+          member.employee_name === this.teamEmployeeFilter;
+      
+      const matchesRole = !this.teamRoleFilter || 
+          member.project_role_name === this.teamRoleFilter;
+      
+      const matchesAllocationStatus = !this.teamAllocationStatusFilter || 
+          member.allocation_status.toString() === this.teamAllocationStatusFilter;
+      
+      const matchesBilledStatus = !this.teamBilledStatusFilter || 
+          member.billed_status.toString() === this.teamBilledStatusFilter;
+      
+      // Date filtering
+      let matchesStartDate = true;
+      if (this.teamStartDateFrom || this.teamStartDateTo) {
+          const startDate = new Date(member.start_date);
+          const fromDate = this.teamStartDateFrom ? new Date(this.teamStartDateFrom) : null;
+          const toDate = this.teamStartDateTo ? new Date(this.teamStartDateTo) : null;
+          
+          if (fromDate && startDate < fromDate) matchesStartDate = false;
+          if (toDate && startDate > toDate) matchesStartDate = false;
+      }
+
+      return matchesCustomer && matchesProject && matchesManager && 
+             matchesEmployee && matchesRole && matchesAllocationStatus && 
+             matchesBilledStatus && matchesStartDate;
+  });
+
+  this.teamCurrentPage = 1;
+  this.updateTeamPage();
+}
+
+clearTeamFilters(): void {
+  this.teamCustomerFilter = '';
+  this.teamProjectFilter = '';
+  this.teamManagerFilter = '';
+  this.teamEmployeeFilter = '';
+  this.teamRoleFilter = '';
+  this.teamAllocationStatusFilter = '';
+  this.teamBilledStatusFilter = '';
+  this.teamStartDateFrom = '';
+  this.teamStartDateTo = '';
+  this.applyTeamFilters();
+}
+
+clearTeamFilter(filterName: string): void {
+  switch (filterName) {
+      case 'teamCustomerFilter':
+          this.teamCustomerFilter = '';
+          break;
+      case 'teamProjectFilter':
+          this.teamProjectFilter = '';
+          break;
+      case 'teamEmployeeFilter':
+          this.teamEmployeeFilter = '';
+          break;
+  }
+  this.applyTeamFilters();
+}
+updateTeamPage(): void {
+  const startIndex = (this.teamCurrentPage - 1) * this.teamItemsPerPage;
+  const endIndex = startIndex + this.teamItemsPerPage;
+  this.paginatedProjectTeamData = this.filteredProjectTeamData.slice(startIndex, endIndex);
+}
+
+changeTeamPage(page: number): void {
+  if (page >= 1 && page <= this.teamTotalPages) {
+      this.teamCurrentPage = page;
+      this.updateTeamPage();
+  }
+}
+
+get teamTotalPages(): number {
+  return Math.ceil(this.filteredProjectTeamData.length / this.teamItemsPerPage);
+}
+
+getVisibleTeamPageNumbers(): number[] {
+  const totalPages = this.teamTotalPages;
+  const halfRange = Math.floor(this.teamMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.teamCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.teamMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.teamMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.teamMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
 }
