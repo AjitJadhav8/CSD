@@ -7,7 +7,7 @@ class TimesheetController {
     async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
         try {
             const { employee_id } = req.params; // Assuming you pass the employee_id as a parameter
-    
+
             const assignedQuery = `
                 SELECT 
   tpt.customer_id, 
@@ -20,14 +20,14 @@ JOIN master_customer mc ON tpt.customer_id = mc.customer_id
 JOIN master_project mp ON tpt.project_id = mp.project_id
 WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             `;
-    
+
             db.query(assignedQuery, [employee_id], (err: any, results: any) => {
                 if (err) {
                     console.error('Error fetching assigned customers and projects:', err);
                     res.status(500).json({ error: 'Internal Server Error' });
                     return;
                 }
-    
+
                 const assignedData = results.reduce((acc: any, row: any) => {
                     if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
                         acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
@@ -37,7 +37,7 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
                     }
                     return acc;
                 }, { customers: [], projects: [] });
-    
+
                 res.status(200).json(assignedData);
             });
         } catch (error) {
@@ -50,27 +50,27 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
 
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
-          const { timesheet_date, phase_id, pd_id, task_description, hours, minutes, task_status } = req.body;
-          const user_id = (req as any).user?.user_id;
-      
-          // Validate required fields
-          if (!timesheet_date || !user_id || !phase_id || !pd_id || hours === undefined || minutes === undefined || task_status === undefined) {
-            res.status(400).json({ error: 'Missing required fields' });
-            return;
-          }
-      
-          const query = `
+            const { timesheet_date, phase_id, pd_id, task_description, hours, minutes, task_status } = req.body;
+            const user_id = (req as any).user?.user_id;
+
+            // Validate required fields
+            if (!timesheet_date || !user_id || !phase_id || !pd_id || hours === undefined || minutes === undefined || task_status === undefined) {
+                res.status(400).json({ error: 'Missing required fields' });
+                return;
+            }
+
+            const query = `
             INSERT INTO trans_timesheet (timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status, is_deleted, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
-      
-          db.query(query, [timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status]);
-      
-          res.status(201).json({ message: 'Timesheet entry submitted successfully' });
+
+            db.query(query, [timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status]);
+
+            res.status(201).json({ message: 'Timesheet entry submitted successfully' });
         } catch (error) {
-          console.error('Error submitting timesheet:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error submitting timesheet:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
 
 
     // fethch timesheet
@@ -178,18 +178,25 @@ ORDER BY t.timesheet_id DESC`;
     t.pd_id, 
     t.task_description,
     m.project_deliverable_name, 
+                    p.project_id,  
+
     p.project_name, 
+    c.customer_id,
     c.customer_name, 
+    ph.phase_id,
     ph.project_phase_name,  -- Added phase name instead of task category
     t.hours, 
     t.minutes, 
     t.task_status, 
-    t.timesheet_date
+    t.timesheet_date,
+     pm.user_id as project_manager_id, 
+      CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name 
 FROM trans_timesheet t
 LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
 LEFT JOIN master_project_phases ph ON m.phase_id = ph.phase_id  -- Linking deliverables to phases
 LEFT JOIN master_project p ON ph.project_id = p.project_id      -- Linking phases to projects
 LEFT JOIN master_customer c ON ph.customer_id = c.customer_id  -- Linking phases to customers
+ LEFT JOIN master_user pm ON p.project_manager_id = pm.user_id
 WHERE t.is_deleted = 0 
     AND t.user_id = ? 
 ORDER BY t.timesheet_id DESC;
@@ -212,16 +219,16 @@ ORDER BY t.timesheet_id DESC;
 
     // ----------------------- Managers Hub ---------------------------
     // project.controller.ts
-async getProjectTeamByManager(req: Request, res: Response): Promise<void> {
-    try {
-        const projectManagerId = parseInt(req.params.projectManagerId);
-        
-        if (!projectManagerId) {
-            res.status(400).json({ error: 'Project Manager ID is required' });
-            return;
-        }
+    async getProjectTeamByManager(req: Request, res: Response): Promise<void> {
+        try {
+            const projectManagerId = parseInt(req.params.projectManagerId);
 
-        const query = `
+            if (!projectManagerId) {
+                res.status(400).json({ error: 'Project Manager ID is required' });
+                return;
+            }
+
+            const query = `
             SELECT 
     pt.project_team_id,
     c.customer_name,
@@ -253,31 +260,31 @@ ORDER BY
     p.project_name, eu.user_first_name
         `;
 
-        db.query(query, [projectManagerId], (err, results) => {
-            if (err) {
-                console.error('Error fetching project team:', err);
-                return res.status(500).json({ error: 'Error fetching project team' });
-            }
-            res.status(200).json(results);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-
-
-// Add to your TimesheetController
-async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
-    try {
-        const projectManagerId = parseInt(req.params.projectManagerId);
-        
-        if (!projectManagerId) {
-            res.status(400).json({ error: 'Project Manager ID is required' });
-            return;
+            db.query(query, [projectManagerId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching project team:', err);
+                    return res.status(500).json({ error: 'Error fetching project team' });
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
 
-        const query = `
+
+    // Add to your TimesheetController
+    async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
+        try {
+            const projectManagerId = parseInt(req.params.projectManagerId);
+
+            if (!projectManagerId) {
+                res.status(400).json({ error: 'Project Manager ID is required' });
+                return;
+            }
+
+            const query = `
             SELECT 
                 t.timesheet_id,
                 t.timesheet_date,
@@ -312,30 +319,30 @@ async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
                 t.timesheet_date DESC, u.user_first_name
         `;
 
-        db.query(query, [projectManagerId], (err, results) => {
-            if (err) {
-                console.error('Error fetching project team timesheets:', err);
-                return res.status(500).json({ error: 'Error fetching project team timesheets' });
-            }
-            res.status(200).json(results);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-
-
-async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
-    try {
-        const reportingManagerId = parseInt(req.params.reportingManagerId);
-        
-        if (!reportingManagerId) {
-            res.status(400).json({ error: 'Reporting Manager ID is required' });
-            return;
+            db.query(query, [projectManagerId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching project team timesheets:', err);
+                    return res.status(500).json({ error: 'Error fetching project team timesheets' });
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
 
-        const query = `
+
+    async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
+        try {
+            const reportingManagerId = parseInt(req.params.reportingManagerId);
+
+            if (!reportingManagerId) {
+                res.status(400).json({ error: 'Reporting Manager ID is required' });
+                return;
+            }
+
+            const query = `
             SELECT 
                 pt.project_team_id,
                 c.customer_name,
@@ -370,31 +377,31 @@ async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
                 p.project_name, eu.user_first_name
         `;
 
-        db.query(query, [reportingManagerId], (err, results) => {
-            if (err) {
-                console.error('Error fetching reporting team:', err);
-                return res.status(500).json({ error: 'Error fetching reporting team' });
-            }
-            res.status(200).json(results);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
-
-
-// Add to your TimesheetController
-async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
-    try {
-        const reportingManagerId = parseInt(req.params.reportingManagerId);
-        
-        if (!reportingManagerId) {
-            res.status(400).json({ error: 'Reporting Manager ID is required' });
-            return;
+            db.query(query, [reportingManagerId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching reporting team:', err);
+                    return res.status(500).json({ error: 'Error fetching reporting team' });
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
 
-        const query = `
+
+    // Add to your TimesheetController
+    async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
+        try {
+            const reportingManagerId = parseInt(req.params.reportingManagerId);
+
+            if (!reportingManagerId) {
+                res.status(400).json({ error: 'Reporting Manager ID is required' });
+                return;
+            }
+
+            const query = `
             SELECT 
                 t.timesheet_id,
                 t.timesheet_date,
@@ -429,18 +436,18 @@ async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
                 t.timesheet_date DESC, u.user_first_name
         `;
 
-        db.query(query, [reportingManagerId], (err, results) => {
-            if (err) {
-                console.error('Error fetching reporting team timesheets:', err);
-                return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
-            }
-            res.status(200).json(results);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+            db.query(query, [reportingManagerId], (err, results) => {
+                if (err) {
+                    console.error('Error fetching reporting team timesheets:', err);
+                    return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
-}
 
 
 
