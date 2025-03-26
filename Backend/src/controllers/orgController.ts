@@ -1889,7 +1889,10 @@ async addProjectDeliverable(req: Request, res: Response): Promise<void> {
           mpd.pd_id, 
           mpd.project_deliverable_name,
           mc.customer_name,
+          mc.customer_id,
           mp.project_name,
+          mp.project_id,
+          mpp.phase_id,
           mpp.project_phase_name
         FROM master_project_deliverables mpd
         JOIN master_project_phases mpp ON mpd.phase_id = mpp.phase_id
@@ -1976,6 +1979,8 @@ async addProjectDeliverable(req: Request, res: Response): Promise<void> {
                   mp.phase_id, 
                   mp.project_phase_name,
                   mc.customer_name,
+                  mc.customer_id,
+                  p.project_id,
                   p.project_name
                 FROM master_project_phases mp
                 JOIN master_project p ON mp.project_id = p.project_id

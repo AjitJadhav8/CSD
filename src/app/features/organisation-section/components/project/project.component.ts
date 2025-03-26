@@ -73,6 +73,10 @@ export class ProjectComponent {
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
         this.optionPhases = response.phases;
+        this.optionProjectManagers = response.users;
+        this.optionProjectDeliverables = response.projectDeliverables;
+
+
         this.filteredProjects = []; // Initially empty
       },
       (error) => {
@@ -80,6 +84,8 @@ export class ProjectComponent {
       }
     );
   }
+  optionProjectManagers: any[] = [];
+  optionProjectDeliverables: any[] = [];
 
   ngOnDestroy() {
     window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
@@ -411,9 +417,9 @@ applyProjectFilters(): void {
 
   this.filteredProjects = this.projects.filter(project => {
     return (
-      (this.projectNameFilterOfProject ? project.project_name.toLowerCase().includes(this.projectNameFilterOfProject.toLowerCase()) : true) &&
-      (this.projectCustomerNameFilter ? project.customer_name.toLowerCase().includes(this.projectCustomerNameFilter.toLowerCase()) : true) &&
-      (this.projectManagerFilterOfProject ? project.project_manager.toLowerCase().includes(this.projectManagerFilterOfProject.toLowerCase()) : true) &&
+      (this.projectNameFilterOfProject ? project.project_id === +this.projectNameFilterOfProject : true) &&
+      (this.projectCustomerNameFilter ? project.customer_id === +this.projectCustomerNameFilter : true) &&
+      (this.projectManagerFilterOfProject ? project.project_manager_id === +this.projectManagerFilterOfProject : true) &&
       (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Use ID for filtering
       (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Use ID for filtering
       (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Use ID for filtering
@@ -673,10 +679,10 @@ getVisibleProjectPageNumbers(): number[] {
 applyDeliverableFilters(): void {
   this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
     return (
-      (this.deliverableNameFilter ? deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()) : true) &&
-      (this.customerNameFilter ? deliverable.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
-      (this.projectNameFilter ? deliverable.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true) &&
-      (this.phaseNameFiltered ? deliverable.project_phase_name.toLowerCase().includes(this.phaseNameFiltered.toLowerCase()) : true) // New Filter
+      (this.deliverableNameFilter ? deliverable.pd_id === +this.deliverableNameFilter : true) &&
+      (this.customerNameFilter ? deliverable.customer_id === +this.customerNameFilter : true) &&
+      (this.projectNameFilter ? deliverable.project_id === +this.projectNameFilter : true) &&
+      (this.phaseNameFiltered ? deliverable.phase_id === +this.phaseNameFiltered : true)
     
     );
   });
@@ -867,9 +873,9 @@ filterProjectsForPhases(): void {
   applyPhaseFilters(): void {
     this.filteredProjectPhases = this.projectPhases.filter(phase => {
       return (
-        (this.phaseNameFilter ? phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()) : true) &&
-        (this.customerNameFilter ? phase.customer_name.toLowerCase().includes(this.customerNameFilter.toLowerCase()) : true) &&
-        (this.projectNameFilter ? phase.project_name.toLowerCase().includes(this.projectNameFilter.toLowerCase()) : true)
+        (this.phaseNameFilter ? phase.phase_id === +this.phaseNameFilter : true) &&
+      (this.customerNameFilter ? phase.customer_id === +this.customerNameFilter : true) &&
+      (this.projectNameFilter ? phase.project_id === +this.projectNameFilter : true)
       );
     });
 
