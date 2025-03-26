@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 
@@ -597,15 +597,94 @@ getVisiblePageNumbers(): number[] {
 }
   // ------------------ Customer Category ------------------------
 
+  @ViewChild('sector') sector!: NgModel;
+@ViewChild('industry') industry!: NgModel;
+@ViewChild('domain') domain!: NgModel;
+@ViewChild('newSectorField') newSectorField!: NgModel;
+@ViewChild('newIndustryField') newIndustryField!: NgModel;
+@ViewChild('newDomainField') newDomainField!: NgModel;
+filteredIndustries: string[] = [];
+filteredDomains: string[] = [];
+
   sectors: string[] = [];
   industries: string[] = [];
+
   domains: string[] = [];
   selectedSector: string = '';
   selectedIndustry: string = '';
   selectedDomain: string = '';
   allCategories: any[] = [];
+  inputMode = {
+    sector: '',
+    industry: '',
+    domain: ''
+  };
+  newSector: string = '';
+  newIndustry: string = '';
+  newDomain: string = '';
+    // Rest of your existing methods...
 
 
+
+    // Filter industries based on selected sector
+filterIndustriesCat(): void {
+  if (!this.inputMode.sector || this.inputMode.sector === '__new__') {
+    this.filteredIndustries = [];
+    return;
+  }
+  
+  this.filteredIndustries = [
+    ...new Set(
+      this.allCategories
+        .filter(cat => cat.sector === this.inputMode.sector)
+        .map(cat => cat.industry)
+    )
+  ];
+}
+
+// Filter domains based on selected industry
+filterDomainsCat(): void {
+  if (!this.inputMode.industry || this.inputMode.industry === '__new__') {
+    this.filteredDomains = [];
+    return;
+  }
+  
+  this.filteredDomains = [
+    ...new Set(
+      this.allCategories
+        .filter(cat => cat.industry === this.inputMode.industry)
+        .map(cat => cat.domain)
+    )
+  ];
+}
+
+    // Handle sector change
+    onSectorChange(): void {
+      this.inputMode.industry = '';
+      this.inputMode.domain = '';
+      this.newIndustry = '';
+      this.newDomain = '';
+      
+      // If creating new sector, auto-set industry and domain to new
+      if (this.inputMode.sector === '__new__') {
+        this.inputMode.industry = '__new__';
+        this.inputMode.domain = '__new__';
+      } else {
+        this.filterIndustriesCat();
+      }
+    }
+  
+    onIndustryChange(): void {
+      this.inputMode.domain = '';
+      this.newDomain = '';
+      
+      // If creating new industry, auto-set domain to new
+      if (this.inputMode.industry === '__new__') {
+        this.inputMode.domain = '__new__';
+      } else {
+        this.filterDomainsCat();
+      }
+    }
   fetchMasterCategories(): void {
     this.dataService.getMasterCategories().subscribe(
       (data) => {
@@ -657,55 +736,71 @@ getVisiblePageNumbers(): number[] {
     });
   }
 
-  saveCategory(form: NgForm): void {
-    if (form.invalid) {
+ // Save category with proper validation
+
+ saveCategory(form: NgForm): void {
+  // Automatically set new values if in "new" mode
+  if (this.inputMode.sector === '__new__') {
+    this.inputMode.industry = '__new__';
+    this.inputMode.domain = '__new__';
+  } else if (this.inputMode.industry === '__new__') {
+    this.inputMode.domain = '__new__';
+  }
+
+  // Validate all fields
+  if (this.inputMode.sector === '__new__' && !this.newSector) {
+    this.newSectorField.control.markAsTouched();
+  }
+  if (this.inputMode.industry === '__new__' && !this.newIndustry) {
+    this.newIndustryField.control.markAsTouched();
+  }
+  if (this.inputMode.domain === '__new__' && !this.newDomain) {
+    this.newDomainField.control.markAsTouched();
+  }
+
+  if (form.invalid) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'warning',
+      title: 'Please fill all required fields!',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    return;
+  }
+
+  // Prepare category data
+  const category = {
+    sector: this.inputMode.sector === '__new__' ? this.newSector : this.inputMode.sector,
+    industry: this.inputMode.industry === '__new__' ? this.newIndustry : this.inputMode.industry,
+    domain: this.inputMode.domain === '__new__' ? this.newDomain : this.inputMode.domain
+  };
+
+  // Save category
+  this.dataService.addCategory(category).subscribe(
+    () => {
       Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'warning',
-          title: 'Please fill all required fields!',
-          showConfirmButton: false,
-          timer: 3000
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Category added successfully!',
+        showConfirmButton: false,
+        timer: 3000
       });
-      return;
-  }
-    const category = {
-      sector: this.newSector ? this.newSector : this.selectedSector,
-      industry: this.newIndustry ? this.newIndustry : this.selectedIndustry,
-      domain: this.newDomain ? this.newDomain : this.selectedDomain
-    };
-
-    
-
-    this.dataService.addCategory(category).subscribe(
-      () => {
-        console.log('Category added successfully');
-
-        // Success Toast Notification
-        Swal.fire({
-          toast: true,
-          position: 'top-end', // Change to 'bottom-end' if needed
-          icon: 'success',
-          title: 'Category added successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-
-        this.fetchMasterCategories(); // Refresh categories list
-        this.resetCategoryForm();
-        form.resetForm();
-      },
-      (error) => {
-        console.error('Error adding category:', error);
-      }
-    );
-  }
+      this.fetchMasterCategories();
+      this.resetCategoryForm();
+      form.resetForm();
+    },
+    (error) => {
+      console.error('Error adding category:', error);
+    }
+  );
+}
 
   
 
-  newSector: string = '';
-  newIndustry: string = '';
-  newDomain: string = '';
+ 
 
   enableIndustryField(): void {
     if (this.newSector) {

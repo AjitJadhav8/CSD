@@ -663,138 +663,98 @@
         <h3 class="text-xl font-semibold mb-4">Add New Category</h3>
 
         <!-- Form for Adding Category -->
+        <!-- Form for Adding Category -->
         <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
             <div class="grid grid-cols-6 gap-4">
-
-                <!-- <div class="form-group">
-    <label>Sector*</label>
-    <div class="flex flex-col">
-        <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector" #sector="ngModel"
-            name="sector" list="sectorList" (input)="filterIndustries()" required
-            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (categoryForm.submitted && sector.invalid)}"
-            placeholder="Select or type sector">
-        <datalist id="sectorList">
-            <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-        </datalist>
-        <span class="text-red-500 text-sm"
-            *ngIf="(sector.invalid && sector.touched) || (categoryForm.submitted && sector.invalid)">
-            Sector is required
-        </span>
-    </div>
-</div>
-
-<div class="form-group">
-    <label>Industry*</label>
-    <div class="flex flex-col">
-        <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" #industry="ngModel"
-            name="industry" list="industryList" (input)="filterDomains()" required
-            [disabled]="newIndustry || (!selectedSector && !newSector)"
-            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (categoryForm.submitted && industry.invalid)}"
-            placeholder="Select or type industry">
-        <datalist id="industryList">
-            <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
-        </datalist>
-        <span class="text-red-500 text-sm"
-            *ngIf="(industry.invalid && industry.touched) || (categoryForm.submitted && industry.invalid)">
-            Industry is required
-        </span>
-    </div>
-</div>
-
-<div class="form-group">
-    <label>Domain*</label>
-    <div class="flex flex-col">
-        <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" #domain="ngModel"
-            name="domain" list="domainList" required
-            [disabled]="newDomain || (!selectedIndustry && !newIndustry)"
-            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (categoryForm.submitted && domain.invalid)}"
-            placeholder="Select or type domain">
-        <datalist id="domainList">
-            <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
-        </datalist>
-        <span class="text-red-500 text-sm"
-            *ngIf="(domain.invalid && domain.touched) || (categoryForm.submitted && domain.invalid)">
-            Domain is required
-        </span>
-    </div>
-</div> -->
-
-
-                <!-- Sector Dropdown + Textbox -->
-                <div class="form-group">
+              
+                <!-- Sector Selection -->
+                <div class="form-group col-span-2">
                     <label>Sector*</label>
                     <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector" #sector="ngModel"
-                            name="sector" (change)="filterIndustries()" required
-                            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (categoryForm.submitted && sector.invalid)}">
+                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.sector" 
+                                name="sector" (change)="onSectorChange()" required
+                                #sector="ngModel"
+                                [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
                             <option value="" disabled selected>Select Sector</option>
                             <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+                            <option value="__new__">+ Add New Sector</option>
                         </select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="(sector.invalid && sector.touched) || (categoryForm.submitted && sector.invalid)">
+                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
                             Sector is required
                         </span>
                     </div>
                 </div>
-
-                <!-- New Sector Textbox -->
-                <div class="form-group">
-                    <label>Or Add New Sector</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" name="newSector"
-                        placeholder="Enter new sector" (input)="enableIndustryField()">
+            
+                <!-- New Sector Input -->
+                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__'">
+                    <label>New Sector Name*</label>
+                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" 
+                           name="newSector" #newSectorField="ngModel" placeholder="Enter new sector" required
+                           [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
+                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
+                        New sector name is required
+                    </span>
                 </div>
-
-                <!-- Industry Dropdown + Textbox -->
-                <div class="form-group">
+            
+                <!-- Industry Selection (only show dropdown if sector is not new) -->
+                <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
                     <label>Industry*</label>
                     <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" #industry="ngModel"
-                            name="industry" (change)="filterDomains()" required
-                            [disabled]="newIndustry || (!selectedSector && !newSector)"
-                            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (categoryForm.submitted && industry.invalid)}">
+                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.industry" 
+                                name="industry" (change)="onIndustryChange()" required
+                                #industry="ngModel"
+                                [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
                             <option value="" disabled selected>Select Industry</option>
-                            <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+                            <option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</option>
+                            <option value="__new__">+ Add New Industry</option>
                         </select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="(industry.invalid && industry.touched) || (categoryForm.submitted && industry.invalid)">
+                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
                             Industry is required
                         </span>
                     </div>
                 </div>
-
-                <!-- New Industry Textbox -->
-                <div class="form-group">
-                    <label>Or Add New Industry</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" name="newIndustry"
-                        placeholder="Enter new industry" (input)="enableDomainField()"
-                        [disabled]="!selectedSector && !newSector">
+            
+                <!-- New Industry Input (shown if sector is new OR industry is new) -->
+                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
+                    <label>New Industry Name*</label>
+                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" 
+                           name="newIndustry" #newIndustryField="ngModel" placeholder="Enter new industry" required
+                           [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
+                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
+                        New industry name is required
+                    </span>
                 </div>
-
-                <!-- Domain Dropdown + Textbox -->
-                <div class="form-group">
+            
+                <!-- Segment Selection (only show dropdown if industry is not new) -->
+                <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
                     <label>Segment*</label>
                     <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" #domain="ngModel"
-                            name="domain" required [disabled]="newDomain || (!selectedIndustry && !newIndustry)"
-                            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (categoryForm.submitted && domain.invalid)}">
+                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.domain" 
+                                name="domain" required
+                                #domain="ngModel"
+                                [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
                             <option value="" disabled selected>Select Segment</option>
-                            <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
+                            <option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</option>
+                            <option value="__new__">+ Add New Segment</option>
                         </select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="(domain.invalid && domain.touched) || (categoryForm.submitted && domain.invalid)">
+                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
                             Segment is required
                         </span>
                     </div>
                 </div>
-
-                <!-- New Domain Textbox -->
-                <div class="form-group">
-                    <label>Or Add New Segment</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" name="newDomain"
-                        placeholder="Enter new domain" [disabled]="!selectedIndustry && !newIndustry">
+            
+                <!-- New Segment Input (shown if sector or industry is new OR segment is new) -->
+                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
+                    <label>New Segment Name*</label>
+                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" 
+                           name="newDomain" #newDomainField="ngModel" placeholder="Enter new segment" required
+                           [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
+                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
+                        New segment name is required
+                    </span>
                 </div>
             </div>
-
+        
             <!-- Submit Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
