@@ -34,7 +34,30 @@ export class ManagersHubComponent {
     this.fetchProjectTeamsTimesheet();
     this.fetchReportingTeamData();
     this.fetchReportingTeamsTimesheet();
+    this.fetchOptions();
 
+    // this.dataService.getOptions().subscribe(
+    //   (response) => {
+    //     console.log('Roles, Departments, Users, and Customers:', response);
+    //     this.optionUsers = response.users;
+    //     this.optionCustomers = response.customers;
+    //     this.optionTypeOfEngagement = response.typeOfEngagement;
+    //     this.optionTypeOfProject = response.typeOfProject;
+    //     this.optionProjectStatus = response.projectStatus;
+    //     this.optionProject = response.projects;
+    //     this.optionPhases = response.phases;
+    //     this.optionProjectManagers = response.projectManagers;
+    //     this.optionReportingManagers = response.reportingManagers;
+    //     this.optionProjectRole = response.projectRole;
+    //     this.filteredProjects = [];
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching data', error);
+    //   }
+    // );
+  }
+
+  fetchOptions() {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles, Departments, Users, and Customers:', response);
@@ -55,6 +78,7 @@ export class ManagersHubComponent {
       }
     );
   }
+  
 
   
   ngOnDestroy() {
@@ -287,6 +311,8 @@ getVisibleDeliverablePageNumbers(): number[] {
           timer: 3000,
         });
         projectDeliverableFormRef.resetForm();
+        this.fetchOptions();
+
 
           // Refresh both phases and deliverables
       this.fetchProjectPhases();
@@ -418,6 +444,8 @@ phaseProjectFilter: string = '';
               });
               this.fetchProjectPhases();
               projectPhaseFormRef.resetForm();
+              this.fetchOptions();
+
             },
             (error) => {
               Swal.fire({
