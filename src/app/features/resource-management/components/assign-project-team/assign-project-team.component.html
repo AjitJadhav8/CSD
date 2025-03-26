@@ -90,7 +90,7 @@
         <div>
             <label class="block mb-2 font-semibold">Allocation Percentage*</label>
             <select [(ngModel)]="selectedAllocationPercentage" name="allocationPercentage"
-                class="border p-2 w-full rounded-md">
+                class="border p-2 w-full rounded-md"  [disabled]="selectedAllocationStatus === 0">
                 <option value="" disabled selected>Select Allocation Percentage</option>
                 <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
                     {{ percentage }}%
@@ -123,7 +123,7 @@
         <div>
             <label class="block mb-2 font-semibold">Billing Percentage*</label>
             <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
-                class="border p-2 w-full rounded-md">
+                class="border p-2 w-full rounded-md" [disabled]="selectedBilledStatus === 0">
                 <option value="" disabled selected>Select Billing Percentage</option>
                 <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
             </select>
