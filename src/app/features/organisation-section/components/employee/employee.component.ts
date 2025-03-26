@@ -30,6 +30,24 @@ export class EmployeeComponent {
     this.fetchSkills();
     this.fetchReportingManagerHistory();
     this.fetchDesignations();
+    this.fetchOptions(); // Call the new function instead of having the logic here
+
+    // this.dataService.getOptions().subscribe(
+    //   (response) => {
+    //     console.log('Roles and Departments:', response);
+    //     this.optioRoles = response.roles;
+    //     this.optionDepartments = response.departments;
+    //     this.optionUsers = response.users;  // Store user data
+    //     this.optionPositionName = response.projectRole;  // Store position data
+    //     this.optionDesignation = response.designation;  // Store designation data
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching roles and departments', error);
+    //   }
+    // );
+  }
+
+  fetchOptions(): void {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles and Departments:', response);
@@ -43,8 +61,10 @@ export class EmployeeComponent {
         console.error('Error fetching roles and departments', error);
       }
     );
-
   }
+
+
+
   ngOnDestroy() {
     window.removeEventListener('storage', this.updateSectionFromStorage.bind(this));
   }
@@ -114,6 +134,7 @@ export class EmployeeComponent {
 
         this.departmentName = ''; // Reset input field
         departmentForm.resetForm(); // Reset form validation
+        this.fetchOptions();
       },
       (error) => {
         console.error('Error adding department:', error);
@@ -399,6 +420,7 @@ export class EmployeeComponent {
 
         this.designationName = ''; // Reset input field
         designationForm.resetForm(); // Reset form validation
+        this.fetchOptions();
       },
       (error) => {
         console.error('Error adding designation:', error);
@@ -553,6 +575,7 @@ export class EmployeeComponent {
         this.skillCategory = '';
         this.skillDescription = '';
         skillForm.resetForm(); // Reset validation states
+        this.fetchOptions();
       },
       (error) => {
         console.error('Error adding skill:', error);
@@ -723,6 +746,7 @@ export class EmployeeComponent {
           timer: 3000
         });
         employeeForm.resetForm();
+        this.fetchOptions();
       },
 
 
@@ -834,6 +858,7 @@ export class EmployeeComponent {
         });
         this.showAssignDetailsModal = false;
         assignDetailsForm.resetForm();
+        this.fetchOptions();
       },
       (error) => {
         console.error('Error assigning details:', error);
@@ -1126,6 +1151,7 @@ export class EmployeeComponent {
         });
 
         reportingManagerForm.resetForm(); // Reset form fields & validation
+        this.fetchOptions();
       },
       (error) => {
         console.error('Error adding reporting manager history', error);
