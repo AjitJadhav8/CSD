@@ -202,7 +202,12 @@ filterOptionPhases: any[] = [];
   }
 
   clearTimesheetForm(form: NgForm) {
-    // Reset form values
+    // Reset form with default values
+    form.resetForm({
+      selectedDate: new Date().toISOString().split('T')[0], // Set to today's date
+    });
+  
+    // Reset other variables if they are not bound to the form
     this.selectedCustomer = '';
     this.selectedProject = null;
     this.selectedPhase = null;
@@ -211,12 +216,8 @@ filterOptionPhases: any[] = [];
     this.selectedMinutes = 0;
     this.taskDescription = '';
     this.selectedTaskStatus = 0;
-  
-    // Reset form state
-    form.resetForm();
-    
-    // Reset the date to today
   }
+  
 
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
@@ -288,7 +289,7 @@ onPhaseChange() {
 
 
   // currentDate: Date = new Date();
-  hoursList = Array.from({ length: 8 }, (_, i) => i + 1);
+  hoursList =  Array.from({ length: 9 }, (_, i) => i);
   minutesList = [0, 15, 30, 45];
   taskStatusList = [
     { value: 0, label: 'In Progress' },
