@@ -34,23 +34,46 @@ export class ProjectComponent {
     this.fetchProjects();
     this.fetchProjectDeliverables();
     this.fetchProjectPhases();
+    this.fetchOptions(); // Call the new function instead of having the logic here
+
+    // this.dataService.getOptions().subscribe(
+    //   (response) => {
+    //     console.log('Roles, Departments, Users, and Customers:', response);
+    //     // this.optionRoles = response.roles;
+    //     // this.optionDepartments = response.departments;
+    //     this.optionUsers = response.users;
+    //     this.optionCustomers = response.customers;  // Store customer data
+    //     this.optionTypeOfEngagement = response.typeOfEngagement;
+    //     this.optionTypeOfProject = response.typeOfProject;
+    //     this.optionProjectStatus = response.projectStatus;
+    //     this.optionProject = response.projects;
+    //     this.optionPhases = response.phases; // Store phases data
+
+
+    //     this.filteredProjects = []; // Initially empty
+
+
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching data', error);
+    //   }
+    // );
+  }
+
+  fetchOptions(): void {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles, Departments, Users, and Customers:', response);
-        // this.optionRoles = response.roles;
+                // this.optionRoles = response.roles;
         // this.optionDepartments = response.departments;
         this.optionUsers = response.users;
-        this.optionCustomers = response.customers;  // Store customer data
+        this.optionCustomers = response.customers;
         this.optionTypeOfEngagement = response.typeOfEngagement;
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
-        this.optionPhases = response.phases; // Store phases data
-
-
+        this.optionPhases = response.phases;
         this.filteredProjects = []; // Initially empty
-
-
       },
       (error) => {
         console.error('Error fetching data', error);
@@ -196,6 +219,7 @@ projectDescriptionFilter: string = '';
           showConfirmButton: false,
           timer: 3000
         });
+        this.fetchOptions();
 
       },
       (error) => {
@@ -582,6 +606,7 @@ getVisibleProjectPageNumbers(): number[] {
           timer: 3000,
         });
         projectDeliverableFormRef.resetForm();
+        this.fetchOptions();
 
         
       },
@@ -786,6 +811,7 @@ filterProjectsForPhases(): void {
         });
         this.fetchProjectPhases();
         projectPhaseFormRef.resetForm();
+        this.fetchOptions();
       },
       (error) => {
         Swal.fire({
