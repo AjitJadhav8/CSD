@@ -27,26 +27,49 @@ export class CustomerComponent {
   window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchMasterCategories();
     this.fetchCustomers();
+    this.fetchOptions();
 
-    this.dataService.getOptions().subscribe(
+
+    // this.dataService.getOptions().subscribe(
+    //   (response) => {
+    //     this.optionMasterCategory = response.masterCategory
+    //     this.optioRoles = response.roles;
+    //     this.optionDepartments = response.departments;
+    //     this.optionUsers = response.users;  // Store user data
+    //     this.optionPositionName = response.projectRole;  // Store position data
+    //     this.optionDesignation = response.designation;  // Store designation data
+    //     this.optionCustomers = response.customers;  // Store customer data
+    //     this.distinctSectors = this.getDistinctValues('sector');
+    //     this.distinctIndustries = this.getDistinctValues('industry');
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching roles and departments', error);
+    //   }
+    // );
+  }
+
+
+
+  // Create a separate function for fetching options
+fetchOptions(): void {
+  this.dataService.getOptions().subscribe(
       (response) => {
-        this.optionMasterCategory = response.masterCategory
-
-        console.log('Roles and Departments:', response);
-        this.optioRoles = response.roles;
-        this.optionDepartments = response.departments;
-        this.optionUsers = response.users;  // Store user data
-        this.optionPositionName = response.projectRole;  // Store position data
-        this.optionDesignation = response.designation;  // Store designation data
-        this.optionCustomers = response.customers;  // Store customer data
-        this.distinctSectors = this.getDistinctValues('sector');
-        this.distinctIndustries = this.getDistinctValues('industry');
+          this.optionMasterCategory = response.masterCategory;
+          console.log('Roles and Departments:', response);
+          this.optioRoles = response.roles;
+          this.optionDepartments = response.departments;
+          this.optionUsers = response.users;  // Store user data
+          this.optionPositionName = response.projectRole;  // Store position data
+          this.optionDesignation = response.designation;  // Store designation data
+          this.optionCustomers = response.customers;  // Store customer data
+          this.distinctSectors = this.getDistinctValues('sector');
+          this.distinctIndustries = this.getDistinctValues('industry');
       },
       (error) => {
-        console.error('Error fetching roles and departments', error);
+          console.error('Error fetching roles and departments', error);
       }
-    );
-  }
+  );
+}
     // Helper method to get distinct values for a specific field
     getDistinctValues(field: string): string[] {
       const values = this.optionMasterCategory.map((category) => category[field]);
@@ -315,6 +338,7 @@ export class CustomerComponent {
         this.fetchCustomers(); // Refresh the customer list
         this.resetCustomerForm(); // Reset form fields after successful submission
         form.resetForm();
+        this.fetchOptions();
 
       },
       error: (error) => console.error('Error adding customer:', error)
@@ -791,9 +815,30 @@ filterDomainsCat(): void {
       this.fetchMasterCategories();
       this.resetCategoryForm();
       form.resetForm();
+      this.fetchOptions();
+
     },
     (error) => {
-      console.error('Error adding category:', error);
+      if (error.error && error.error.error === 'Category already exists') {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'This category already exists!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      } else {
+        console.error('Error adding category:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding category!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
     }
   );
 }
