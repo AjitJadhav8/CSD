@@ -21,7 +21,7 @@
             </div>
 
             <!-- Second Row (Customer & Project) -->
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="block mb-2 font-semibold">Select Customer</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedCustomer" name="selectedCustomer"
                     #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required
@@ -35,9 +35,28 @@
                     *ngIf="(selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)">
                     Customer is required
                 </span>
-            </div>
-
+            </div> -->
             <div class="form-group">
+                <label class="block mb-2 font-semibold">Select Customer</label>
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="selectedCustomer"
+                          name="selectedCustomer"
+                          #selectedCustomerInput="ngModel"
+                          (change)="onCustomerChange()"
+                          required
+                          [ngClass]="{'border-red-500': (selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)}">
+                  <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                  <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                    {{ customer.customer_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm"
+                  *ngIf="(selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)">
+                  Customer is required
+                </span>
+              </div>
+
+            <!-- <div class="form-group">
                 <label class="block mb-2 font-semibold">Select Project</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedProject" name="selectedProject"
                     #selectedProjectInput="ngModel" [disabled]="!selectedCustomer" (change)="onProjectChange()" required
@@ -51,10 +70,30 @@
                     *ngIf="(selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)">
                     Project is required
                 </span>
-            </div>
+            </div> -->
+            <div class="form-group">
+                <label class="block mb-2 font-semibold">Select Project</label>
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="selectedProject"
+                          name="selectedProject"
+                          #selectedProjectInput="ngModel"
+                          [disabled]="!selectedCustomer"
+                          (change)="onProjectChange()"
+                          required
+                          [ngClass]="{'border-red-500': (selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)}">
+                  <ng-option [value]="" disabled selected>Select Project</ng-option>
+                  <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+                    {{ project.project_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm"
+                  *ngIf="(selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)">
+                  Project is required
+                </span>
+              </div>
 
             <!-- Third Row (Deliverable & Task Category) -->
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="block mb-2 font-semibold">Select Phase</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedPhase" name="selectedPhase"
                     #selectedPhaseInput="ngModel" [disabled]="!selectedProject" required (change)="onPhaseChange()"
@@ -68,9 +107,29 @@
                     *ngIf="(selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)">
                     Phase is required
                 </span>
-            </div>
-
+            </div> -->
             <div class="form-group">
+                <label class="block mb-2 font-semibold">Select Phase</label>
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="selectedPhase"
+                          name="selectedPhase"
+                          #selectedPhaseInput="ngModel"
+                          [disabled]="!selectedProject"
+                          required
+                          (change)="onPhaseChange()"
+                          [ngClass]="{'border-red-500': (selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)}">
+                  <ng-option [value]="" disabled selected>Select Phase</ng-option>
+                  <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
+                    {{ phase.project_phase_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm"
+                  *ngIf="(selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)">
+                  Phase is required
+                </span>
+              </div>
+
+            <!-- <div class="form-group">
                 <label class="block mb-2 font-semibold">Project Deliverable</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDeliverable"
                     name="selectedDeliverable" #selectedDeliverableInput="ngModel" [disabled]="!selectedPhase" required
@@ -84,7 +143,26 @@
                     *ngIf="(selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)">
                     Deliverable is required
                 </span>
-            </div>
+            </div> -->
+            <div class="form-group">
+                <label class="block mb-2 font-semibold">Project Deliverable</label>
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="selectedDeliverable"
+                          name="selectedDeliverable"
+                          #selectedDeliverableInput="ngModel"
+                          [disabled]="!selectedPhase"
+                          required
+                          [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
+                  <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                  <ng-option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
+                    {{ deliverable.project_deliverable_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm"
+                  *ngIf="(selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)">
+                  Deliverable is required
+                </span>
+              </div>
 
             <!-- Add Phase Dropdown -->
 

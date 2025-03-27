@@ -5,11 +5,13 @@ import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
 import Swal from 'sweetalert2';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @Component({
   selector: 'app-fill-timesheet',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './fill-timesheet.component.html',
   styleUrl: './fill-timesheet.component.css'
 })
