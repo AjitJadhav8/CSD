@@ -96,6 +96,7 @@
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Save Employee</button>
             </div>
         </form>
+        
         <div *ngIf="isEmployeeEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEmployeeEditModal()">
             <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
               <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
@@ -488,54 +489,65 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="form-group">
                                     <label>Reporting Manager</label>
-                                    <select [(ngModel)]="assignDetailsData.reporting_manager_id"
-                                        #reportingManager="ngModel" name="reporting_manager_id"
-                                        class="border p-2 w-full rounded-md">
-                                        <option value="" disabled selected>Select Reporting Manager</option>
-                                        <option *ngFor="let manager of optionUsers" [value]="manager.user_id">
-                                            {{ manager.user_first_name }} {{ manager.user_last_name }}
-                                        </option>
-                                    </select>
+                                    <ng-select [(ngModel)]="assignDetailsData.reporting_manager_id"
+                                               #reportingManager="ngModel"
+                                               name="reporting_manager_id"
+                                               [searchable]="true"
+                                               [clearable]="true"
+                                               class="custom-ng-select">
+                                      <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                                      <ng-option *ngFor="let manager of optionUsers" 
+                                                 [value]="manager.user_id">
+                                        {{ manager.user_first_name }} {{ manager.user_last_name }}
+                                      </ng-option>
+                                    </ng-select>
+                                  </div>
 
-                                </div>
-
-                                <div class="form-group">
+                                  <div class="form-group">
                                     <label>Designation</label>
-                                    <select [(ngModel)]="assignDetailsData.designation_id" #designation="ngModel"
-                                        name="designation_id" class="border p-2 w-full rounded-md">
-                                        <option value="" disabled selected>Select Designation</option>
-                                        <option *ngFor="let designation of optionDesignation"
-                                            [value]="designation.designation_id">
-                                            {{ designation.designation_name }}
-                                        </option>
-                                    </select>
+                                    <ng-select [(ngModel)]="assignDetailsData.designation_id"
+                                               #designation="ngModel"
+                                               name="designation_id"
+                                               [searchable]="true"
+                                               [clearable]="true"
+                                               class="custom-ng-select">
+                                      <ng-option [value]="" disabled selected>Select Designation</ng-option>
+                                      <ng-option *ngFor="let designation of optionDesignation"
+                                                 [value]="designation.designation_id">
+                                        {{ designation.designation_name }}
+                                      </ng-option>
+                                    </ng-select>
+                                  </div>
 
-                                </div>
-
-                                <div class="form-group">
+                                  <div class="form-group">
                                     <label>Timesheet Filling Required?</label>
-                                    <select [(ngModel)]="assignDetailsData.is_timesheet_required"
-                                        #timesheetRequired="ngModel" name="is_timesheet_required"
-                                        class="border p-2 w-full rounded-md">
-                                        <option value="" disabled selected>Select Option</option>
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
-                                    </select>
+                                    <ng-select [(ngModel)]="assignDetailsData.is_timesheet_required"
+                                               #timesheetRequired="ngModel"
+                                               name="is_timesheet_required"
+                                               [searchable]="false" 
+                                               [clearable]="true"
+                                               class="custom-ng-select">
+                                      <ng-option [value]="" disabled selected>Select Option</ng-option>
+                                      <ng-option [value]="1">Yes</ng-option>
+                                      <ng-option [value]="0">No</ng-option>
+                                    </ng-select>
+                                  </div>
 
-                                </div>
-
-                                <div class="form-group">
+                                  <div class="form-group">
                                     <label>Department</label>
-                                    <select [(ngModel)]="assignDetailsData.department_id" #department="ngModel"
-                                        name="department_id" class="border p-2 w-full rounded-md">
-                                        <option value="" disabled selected>Select Department</option>
-                                        <option *ngFor="let department of optionDepartments"
-                                            [value]="department.department_id">
-                                            {{ department.department_name }}
-                                        </option>
-                                    </select>
-
-                                </div>
+                                    <ng-select [(ngModel)]="assignDetailsData.department_id"
+                                               #department="ngModel"
+                                               name="department_id"
+                                               [searchable]="true"
+                                               [clearable]="true"
+                                               class="custom-ng-select">
+                                      <ng-option [value]="" disabled selected>Select Department</ng-option>
+                                      <ng-option *ngFor="let department of optionDepartments"
+                                                 [value]="department.department_id">
+                                        {{ department.department_name }}
+                                      </ng-option>
+                                    </ng-select>
+                                  </div>
                             </div>
                         </div>
 
@@ -967,40 +979,50 @@
             (ngSubmit)="onSubmitReportingManager(reportingManagerForm); $event.preventDefault();">
             <div class="grid grid-cols-6 gap-4">
                 <!-- Employee Name Dropdown -->
-                <!-- Employee Name Dropdown -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Employee Name*</label>
-                    <select [(ngModel)]="employee.selectedUserId" #employeeField="ngModel" name="user" required
-                        class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)}">
-                        <option value="" disabled selected>Select Employee</option>
-                        <option *ngFor="let user of optionUsers" [value]="user.user_id">
-                            {{ user.user_first_name }} {{ user.user_last_name }}
-                        </option>
-                    </select>
+                    <ng-select [(ngModel)]="employee.selectedUserId"
+                               #employeeField="ngModel"
+                               name="user"
+                               [searchable]="true"
+                               [clearable]="true"
+                               required
+                               [class.border-red-500]="(employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)"
+                               class="custom-ng-select border rounded-md">
+                      <ng-option [value]="" disabled selected>Select Employee</ng-option>
+                      <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                        {{ user.user_first_name }} {{ user.user_last_name }}
+                      </ng-option>
+                    </ng-select>
                     <span class="text-red-500 text-sm"
-                        *ngIf="employeeField.invalid && (employeeField.touched || reportingManagerForm.submitted)">
-                        Employee Name is required.
+                          *ngIf="employeeField.invalid && (employeeField.touched || reportingManagerForm.submitted)">
+                      Employee Name is required.
                     </span>
-                </div>
+                  </div>
+                  
 
                 <!-- Reporting Manager Dropdown -->
                 <!-- Reporting Manager Dropdown -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Reporting Manager*</label>
-                    <select [(ngModel)]="employee.selectedReportingManagerId" #managerField="ngModel"
-                        name="reporting_manager" required class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)}">
-                        <option value="" disabled selected>Select Reporting Manager</option>
-                        <option *ngFor="let user of optionUsers" [value]="user.user_id">
-                            {{ user.user_first_name }} {{ user.user_last_name }}
-                        </option>
-                    </select>
+                    <ng-select [(ngModel)]="employee.selectedReportingManagerId"
+                               #managerField="ngModel"
+                               name="reporting_manager"
+                               [searchable]="true"
+                               [clearable]="true"
+                               required
+                               [class.border-red-500]="(managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)"
+                               class="custom-ng-select border rounded-md">
+                      <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                      <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                        {{ user.user_first_name }} {{ user.user_last_name }}
+                      </ng-option>
+                    </ng-select>
                     <span class="text-red-500 text-sm"
-                        *ngIf="managerField.invalid && (managerField.touched || reportingManagerForm.submitted)">
-                        Reporting Manager is required.
+                          *ngIf="managerField.invalid && (managerField.touched || reportingManagerForm.submitted)">
+                      Reporting Manager is required.
                     </span>
-                </div>
+                  </div>
 
 
 
