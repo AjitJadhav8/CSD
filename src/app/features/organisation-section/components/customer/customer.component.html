@@ -79,7 +79,7 @@
 
                 <!-- Customer Status (Required) -->
                 <!-- Customer Status -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Customer Status*</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.status"
                         #status="ngModel" name="status" list="statusList" required
@@ -93,11 +93,32 @@
                         *ngIf="status.invalid && (status.touched || customerForm.submitted)">
                         Status is required
                     </span>
-                </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label>Customer Status*</label>
+                    <ng-select [(ngModel)]="customer.status"
+                      #status="ngModel"
+                      name="status"
+                      [items]="['Active', 'Inactive']"
+                      [searchable]="true"
+                      [clearable]="false"
+                      required
+                      [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
+                      class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select or type status</ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="status.invalid && (status.touched || customerForm.submitted)">
+                      Status is required
+                    </span>
+                  </div>
 
                 <!-- Customer Sector -->
                 <!-- Customer Sector -->
-                <div class="form-group">
+
+
+                <!-- <div class="form-group">
                     <label>Customer Sector*</label>
                     <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector"
                         #sector="ngModel" name="sector" list="sectorList" (input)="filterIndustries()" required
@@ -110,10 +131,30 @@
                         *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
                         Sector is required
                     </span>
-                </div>
+                </div> -->
+
+                <!-- Customer Sector -->
+<div class="form-group">
+    <label>Customer Sector*</label>
+    <ng-select [(ngModel)]="selectedSector"
+      #sector="ngModel"
+      name="sector"
+      [items]="sectors"
+      [searchable]="true"
+      (change)="filterIndustries()"
+      required
+      [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
+      class="custom-ng-select">
+      <ng-option [value]="" disabled selected>Select or type sector</ng-option>
+    </ng-select>
+    <span class="text-red-500 text-sm"
+      *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
+      Sector is required
+    </span>
+  </div>
 
                 <!-- Customer Industry -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Customer Industry*</label>
                     <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" #industry="ngModel"
                         name="industry" (change)="filterDomains()" required
@@ -126,10 +167,28 @@
                         *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
                         Industry is required
                     </span>
-                </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label>Customer Industry*</label>
+                    <ng-select [(ngModel)]="selectedIndustry"
+                      #industry="ngModel"
+                      name="industry"
+                      [items]="industries"
+                      (change)="filterDomains()"
+                      required
+                      [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
+                      class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Industry</ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
+                      Industry is required
+                    </span>
+                  </div>
 
                 <!-- Customer Domain -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Customer Segment*</label>
                     <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" #domain="ngModel"
                         name="domain" required
@@ -141,10 +200,26 @@
                         *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
                         Segment is required
                     </span>
-                </div>
+                </div> -->
+                <div class="form-group">
+                    <label>Customer Segment*</label>
+                    <ng-select [(ngModel)]="selectedDomain"
+                      #domain="ngModel"
+                      name="domain"
+                      [items]="domains"
+                      required
+                      [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
+                      class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Segment</ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
+                      Segment is required
+                    </span>
+                  </div>
 
                 <!-- Customer Type (Required) -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Customer Type*</label>
                     <select class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerType"
                         #customerType="ngModel" name="customerType" required
@@ -156,7 +231,24 @@
                     <span class="text-red-500 text-sm"
                         *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
                         Type is required</span>
-                </div>
+                </div> -->
+
+                <div class="form-group">
+  <label>Customer Type*</label>
+  <ng-select [(ngModel)]="customer.customerType"
+    #customerType="ngModel"
+    name="customerType"
+    [items]="['Existing', 'Potential']"
+    [clearable]="false"
+    required
+    [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
+    class="custom-ng-select">
+    <ng-option [value]="" disabled selected>Select Customer Type</ng-option>
+  </ng-select>
+  <span class="text-red-500 text-sm"
+    *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
+    Type is required</span>
+</div>
 
                 <div class="form-group">
                     <label>City</label>
@@ -269,7 +361,7 @@
           </div>
   
           <!-- Customer Status (Required) -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Customer Status*</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.status"
               #editStatus="ngModel" name="editStatus" list="statusList" required
@@ -283,10 +375,29 @@
               *ngIf="editStatus.invalid && (editStatus.touched || editCustomerForm.submitted)">
               Status is required
             </span>
-          </div>
+          </div> -->
   
-          <!-- Customer Sector -->
           <div class="form-group">
+            <label>Customer Status*</label>
+            <ng-select class="custom-ng-select"
+                      [(ngModel)]="editCustomer.status"
+                      name="editStatus"
+                      [items]="['Active', 'Inactive']"
+                      [searchable]="true"
+                      [clearable]="false"
+                      required
+                      #editStatus="ngModel"
+                      [ngClass]="{'border-red-500': (editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)}"
+                      >
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="editStatus.invalid && (editStatus.touched || editCustomerForm.submitted)">
+              Status is required
+            </span>
+          </div>
+
+          <!-- Customer Sector -->
+          <!-- <div class="form-group">
             <label>Customer Sector*</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedSector"
               #editSector="ngModel" name="editSector" list="sectorList" (input)="filterEditIndustries()" required
@@ -299,10 +410,28 @@
               *ngIf="editSector.invalid && (editSector.touched || editCustomerForm.submitted)">
               Sector is required
             </span>
+          </div> -->
+          <div class="form-group">
+            <label>Customer Sector*</label>
+            <ng-select class="custom-ng-select"
+                      [(ngModel)]="editSelectedSector"
+                      name="editSector"
+                      [items]="sectors"
+                      [searchable]="true"
+                      (change)="filterEditIndustries()"
+                      required
+                      #editSector="ngModel"
+                      [ngClass]="{'border-red-500': (editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)}"
+                     >
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="editSector.invalid && (editSector.touched || editCustomerForm.submitted)">
+              Sector is required
+            </span>
           </div>
   
           <!-- Customer Industry -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Customer Industry*</label>
             <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedIndustry" #editIndustry="ngModel"
               name="editIndustry" (change)="filterEditDomains()" required
@@ -314,10 +443,28 @@
               *ngIf="editIndustry.invalid && (editIndustry.touched || editCustomerForm.submitted)">
               Industry is required
             </span>
+          </div> -->
+          <div class="form-group">
+            <label>Customer Industry*</label>
+            <ng-select class="custom-ng-select"
+                      [(ngModel)]="editSelectedIndustry"
+                      name="editIndustry"
+                      [items]="industries"
+                      [searchable]="true"
+                      (change)="filterEditDomains()"
+                      required
+                      #editIndustry="ngModel"
+                      [ngClass]="{'border-red-500': (editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)}"
+                    >
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="editIndustry.invalid && (editIndustry.touched || editCustomerForm.submitted)">
+              Industry is required
+            </span>
           </div>
   
           <!-- Customer Domain -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Customer Segment*</label>
             <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedDomain" #editDomain="ngModel"
               name="editDomain" required
@@ -329,10 +476,27 @@
               *ngIf="editDomain.invalid && (editDomain.touched || editCustomerForm.submitted)">
               Segment is required
             </span>
+          </div> -->
+          <div class="form-group">
+            <label>Customer Segment*</label>
+            <ng-select class="custom-ng-select"
+                      [(ngModel)]="editSelectedDomain"
+                      name="editDomain"
+                      [items]="domains"
+                      [searchable]="true"
+                      required
+                      #editDomain="ngModel"
+                      [ngClass]="{'border-red-500': (editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)}"
+                      >
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="editDomain.invalid && (editDomain.touched || editCustomerForm.submitted)">
+              Segment is required
+            </span>
           </div>
   
           <!-- Customer Type (Required) -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Customer Type*</label>
             <select class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.customerType"
               #editCustomerType="ngModel" name="editCustomerType" required
@@ -344,6 +508,25 @@
             <span class="text-red-500 text-sm"
               *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">Customer
               Type is required</span>
+          </div> -->
+          <div class="form-group">
+            <label>Customer Type*</label>
+            <ng-select class="custom-ng-select"
+                      [(ngModel)]="editCustomer.customerType"
+                      name="editCustomerType"
+                      [items]="['Existing', 'Potential']"
+                      [searchable]="false"
+                      [clearable]="false"
+
+                      required
+                      #editCustomerType="ngModel"
+                      [ngClass]="{'border-red-500': (editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)}"
+                     >
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">
+              Customer Type is required
+            </span>
           </div>
   
           <!-- City -->
@@ -668,7 +851,7 @@
             <div class="grid grid-cols-6 gap-4">
               
                 <!-- Sector Selection -->
-                <div class="form-group col-span-2">
+                <!-- <div class="form-group col-span-2">
                     <label>Sector*</label>
                     <div class="flex flex-col">
                         <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.sector" 
@@ -679,6 +862,25 @@
                             <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
                             <option value="__new__">+ Add New Sector</option>
                         </select>
+                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
+                            Sector is required
+                        </span>
+                    </div>
+                </div> -->
+
+                <div class="form-group col-span-2">
+                    <label>Sector*</label>
+                    <div class="flex flex-col">
+                        <ng-select class="custom-ng-select"
+                                  [(ngModel)]="inputMode.sector"
+                                  name="sector"
+                                  (change)="onSectorChange()"
+                                  required
+                                  #sector="ngModel"
+                                  [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
+                                  <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
+                                  <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
+                        </ng-select>
                         <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
                             Sector is required
                         </span>
@@ -697,7 +899,7 @@
                 </div>
             
                 <!-- Industry Selection (only show dropdown if sector is not new) -->
-                <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
+                <!-- <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
                     <label>Industry*</label>
                     <div class="flex flex-col">
                         <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.industry" 
@@ -712,7 +914,27 @@
                             Industry is required
                         </span>
                     </div>
-                </div>
+                </div> -->
+
+                    <!-- Industry Selection -->
+        <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
+            <label>Industry*</label>
+            <div class="flex flex-col">
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="inputMode.industry"
+                          name="industry"
+                          (change)="onIndustryChange()"
+                          required
+                          #industry="ngModel"
+                          [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
+                          <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
+                          <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
+                    Industry is required
+                </span>
+            </div>
+        </div>
             
                 <!-- New Industry Input (shown if sector is new OR industry is new) -->
                 <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
@@ -726,7 +948,7 @@
                 </div>
             
                 <!-- Segment Selection (only show dropdown if industry is not new) -->
-                <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+                <!-- <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
                     <label>Segment*</label>
                     <div class="flex flex-col">
                         <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.domain" 
@@ -741,7 +963,27 @@
                             Segment is required
                         </span>
                     </div>
-                </div>
+                </div> -->
+
+                   <!-- Segment Selection -->
+        <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+            <label>Segment*</label>
+            <div class="flex flex-col">
+                <ng-select class="custom-ng-select"
+                          [(ngModel)]="inputMode.domain"
+                          name="domain"
+                          required
+                          #domain="ngModel"
+                          [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
+                          <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
+                          <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
+                    Segment is required
+                </span>
+            </div>
+        </div>
+    
             
                 <!-- New Segment Input (shown if sector or industry is new OR segment is new) -->
                 <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">

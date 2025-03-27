@@ -4,12 +4,14 @@ import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.css'
 })
