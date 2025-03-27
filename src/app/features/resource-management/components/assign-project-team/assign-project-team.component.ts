@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { DataService } from '../../../../services/data-service/data.service';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, NgSelectOption } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RmgService } from '../../../../services/rmg-service/rmg.service';
 import Swal from 'sweetalert2';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-assign-project-team',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, NgSelectModule],
   templateUrl: './assign-project-team.component.html',
   styleUrl: './assign-project-team.component.css'
 })
@@ -70,6 +71,23 @@ export class AssignProjectTeamComponent {
       this.selectedBillingPercentage = 0; // Set Billing Percentage to 0
     }
   }
+
+ // To this:
+ onEditAllocationStatusChange(status: number) {
+  this.editSelectedAllocationStatus = status;
+  
+  // If Shadow is selected (status = 0)
+  if (status === 0) {
+    // Set allocation percentage to 0 and disable field
+    this.editSelectedAllocationPercentage = 0;
+  } else {
+    // If Employee is selected, reset to null if you want to force selection
+    // Or keep the previous value if you prefer
+    if (this.editSelectedAllocationPercentage === 0) {
+      this.editSelectedAllocationPercentage = null;
+    }
+  }
+}
 
 
   selectedAllocationStatus: number = 0; // Default to Shadow (0)
@@ -290,13 +308,12 @@ export class AssignProjectTeamComponent {
     });
   }
 
-  onProjectChange(event: Event) {
-    const projectId = (event.target as HTMLSelectElement).value;
+  onProjectChange(projectId: any) {
     if (projectId) {
-      const selectedProject = this.optionProjects.find(project => project.project_id === +projectId);
+      const selectedProject = this.filteredProjects.find(project => project.project_id === +projectId);
       if (selectedProject) {
         this.selectedProjectManagerId = selectedProject.project_manager_id;
-
+  
         // Find the manager's name using the project_manager_id
         const selectedManager = this.optionProjectManagers.find(manager => manager.user_id === this.selectedProjectManagerId);
         this.selectedProjectManagerName = selectedManager ? `${selectedManager.user_first_name} ${selectedManager.user_last_name}` : 'Not Assigned';
@@ -310,6 +327,10 @@ export class AssignProjectTeamComponent {
   // Method to filter projects based on selected customer
   filterProjects(): void {
     const customerId = Number(this.selectedCustomerId); // Ensure it's a number
+
+    this.selectedProjectId = null;
+    this.selectedProjectManagerId = null;
+    this.selectedProjectManagerName = 'Not Assigned';
 
     if (customerId) {
       this.filteredProjects = this.optionProjects.filter(
