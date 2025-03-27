@@ -73,21 +73,7 @@ export class AssignProjectTeamComponent {
   }
 
  // To this:
- onEditAllocationStatusChange(status: number) {
-  this.editSelectedAllocationStatus = status;
-  
-  // If Shadow is selected (status = 0)
-  if (status === 0) {
-    // Set allocation percentage to 0 and disable field
-    this.editSelectedAllocationPercentage = 0;
-  } else {
-    // If Employee is selected, reset to null if you want to force selection
-    // Or keep the previous value if you prefer
-    if (this.editSelectedAllocationPercentage === 0) {
-      this.editSelectedAllocationPercentage = null;
-    }
-  }
-}
+
 
 
   selectedAllocationStatus: number = 0; // Default to Shadow (0)
@@ -359,18 +345,34 @@ export class AssignProjectTeamComponent {
   editProjectTeamId: number | null = null;
 
   updateAssignTeam(form: NgForm): void {
-    if (form.invalid || !this.editProjectTeamId) {
+    // Custom validation for allocation and billing percentages
+    const isAllocationValid = this.editSelectedAllocationStatus === 0 || 
+                           (this.editSelectedAllocationStatus === 1 && 
+                            this.editSelectedAllocationPercentage !== null &&
+                            this.editSelectedAllocationPercentage > 0);
+  
+    const isBillingValid = this.editSelectedBilledStatus === 0 ||
+                          (this.editSelectedBilledStatus === 1 && 
+                           this.editSelectedBillingPercentage !== null &&
+                           this.editSelectedBillingPercentage > 0);
+  
+    // Check if form is valid and has required project team ID
+    if (!this.editProjectTeamId || !isAllocationValid || !isBillingValid || 
+        !this.editSelectedCustomerId || !this.editSelectedProjectId || 
+        !this.editSelectedEmployeeId || !this.editSelectedProjectRoleId || 
+        !this.editStartDate) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'warning',
-        title: 'All fields are required!',
+        title: 'Please fill all required fields correctly!',
         showConfirmButton: false,
         timer: 3000
       });
       return;
     }
-
+  
+    // Prepare the update data
     const updateData = {
       customer_id: this.editSelectedCustomerId,
       project_id: this.editSelectedProjectId,
@@ -379,11 +381,14 @@ export class AssignProjectTeamComponent {
       start_date: this.formatDate(this.editStartDate),
       end_date: this.formatDate(this.editTentativeEndDate) || null,
       allocation_status: this.editSelectedAllocationStatus,
-      allocation_percentage: Number(this.editSelectedAllocationPercentage),
+      allocation_percentage: this.editSelectedAllocationStatus === 0 ? 0 : Number(this.editSelectedAllocationPercentage),
       billed_status: this.editSelectedBilledStatus,
-      billing_percentage: Number(this.editSelectedBillingPercentage)
+      billing_percentage: this.editSelectedBilledStatus === 0 ? 0 : Number(this.editSelectedBillingPercentage)
     };
+    console.log("Update Data: ", updateData); // Debugging
 
+  
+    // Call the service to update
     this.rmgService.updateAssignTeam(this.editProjectTeamId, updateData).subscribe({
       next: (response) => {
         Swal.fire({
@@ -394,7 +399,7 @@ export class AssignProjectTeamComponent {
           showConfirmButton: false,
           timer: 3000
         });
-
+  
         this.fetchAssignedProjectTeams(); // Refresh the list
         this.closeEditModal();
       },
@@ -412,7 +417,15 @@ export class AssignProjectTeamComponent {
     });
   }
 
-
+  onEditAllocationStatusChange(status: number) {
+    this.editSelectedAllocationStatus = status;
+    
+    if (status === 0) { // Shadow
+      this.editSelectedAllocationPercentage = 0;
+      this.editSelectedBilledStatus = 0;
+      this.editSelectedBillingPercentage = 0;
+    }
+  }
   // Open Edit Modal
   openEditModal(team: any): void {
     console.log('Team Data:', team);

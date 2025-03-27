@@ -336,9 +336,11 @@
                                 name="editAllocationPercentage"
                                 [disabled]="editSelectedAllocationStatus === 0"
                                 class="border p-2 w-full rounded-md" 
-                                required>
-                          <option value="" disabled selected>Select Allocation Percentage</option>
-                          <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
+                                [required]="editSelectedAllocationStatus === 1">
+                          <option *ngIf="editSelectedAllocationStatus === 1" value="" disabled selected>Select Allocation Percentage</option>
+                          <option *ngFor="let percentage of allocationPercentages" 
+                                  [value]="percentage"
+                                  [selected]="editSelectedAllocationStatus === 0 && percentage === 0">
                             {{ percentage }}%
                           </option>
                         </select>

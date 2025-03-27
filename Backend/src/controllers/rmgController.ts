@@ -212,7 +212,7 @@ class RmgController {
       console.log('Received Project ID:', project_id);
 
       // Validate required fields
-      if (!customer_id || !project_id || !employee_id || !project_role_id || !start_date || !allocation_status || allocation_percentage === undefined || billed_status === undefined || billing_percentage === undefined) {
+      if (!customer_id || !project_id || !employee_id || !project_role_id || !start_date || allocation_status=== undefined || allocation_percentage === undefined || billed_status === undefined || billing_percentage === undefined) {
         res.status(400).json({ error: 'Missing required fields' });
         return;
       }
