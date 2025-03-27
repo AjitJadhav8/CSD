@@ -42,7 +42,7 @@ export class AssignProjectTeamComponent {
       (response) => {
         console.log('Fetched Data:', response);
         this.optionEmployees = response.users;
-        this.optionProjectManagers = response.users;
+        this.optionProjectManagers = response.projectManagers;
         this.optionCustomers = response.customers;
         this.optionProjects = response.projects;
         this.optionProjectRoles = response.projectRole;
@@ -542,14 +542,14 @@ export class AssignProjectTeamComponent {
   applyFilters(): void {
     this.filteredAssignedProjectTeams = this.assignedProjectTeams.filter(team => {
       return (
-        (this.customerNameFilter ? team.customer_id.toString() === this.customerNameFilter : true) &&
-        (this.projectNameFilter ? team.project_id.toString() === this.projectNameFilter : true) &&
-        (this.employeeNameFilter ? team.employee_id.toString() === this.employeeNameFilter : true) &&
-        (this.projectRoleFilter ? team.project_role_id.toString() === this.projectRoleFilter : true) &&
-        (this.projectManagerFilter ? team.project_manager_id.toString() === this.projectManagerFilter : true) &&
+        (this.customerNameFilter ? team.customer_id === this.customerNameFilter : true) &&
+        (this.projectNameFilter ? team.project_id === this.projectNameFilter : true) &&
+        (this.employeeNameFilter ? team.employee_id === this.employeeNameFilter : true) &&
+        (this.projectRoleFilter ? team.project_role_id === this.projectRoleFilter : true) &&
+        (this.projectManagerFilter ? team.project_manager_id === this.projectManagerFilter : true) &&
         (this.startDateFilter ? this.formatDate(team.start_date) == this.startDateFilter : true) &&
         (this.endDateFilter ? this.formatDate(team.end_date) == this.endDateFilter : true) &&
-        (this.allocationStatusFilter ? team.allocation_status.toString() === this.allocationStatusFilter : true) &&
+        (this.allocationStatusFilter ? team.allocation_status === this.allocationStatusFilter : true) &&
         (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
         (this.billedStatusFilter ? team.billed_status.toString() === this.billedStatusFilter : true) &&
         (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
@@ -561,7 +561,10 @@ export class AssignProjectTeamComponent {
     this.updatePage();
   }
 
-
+  testNgSelect(event: any) {
+    console.log('Selected Customer:', event);
+  }
+  
   // Clear Filters
   // Clear Filters
   clearFilters(): void {
@@ -581,36 +584,18 @@ export class AssignProjectTeamComponent {
   // Clear Individual Filter
   clearFilter(filterName: string): void {
     switch (filterName) {
-      case 'customerNameFilter':
-        this.customerNameFilter = '';
-        break;
-      case 'projectNameFilter':
-        this.projectNameFilter = '';
-        break;
-      case 'employeeNameFilter':
-        this.employeeNameFilter = '';
-        break;
-      case 'projectRoleFilter':
-        this.projectRoleFilter = '';
-        break;
-      case 'projectManagerFilter':
-        this.projectManagerFilter = '';
-        break;
+
       case 'startDateFilter':
         this.startDateFilter = '';
         break;
       case 'endDateFilter':
         this.endDateFilter = '';
         break;
-      case 'allocationStatusFilter':
-        this.allocationStatusFilter = '';
-        break;
+ 
       case 'allocationPercentageFilter':
         this.allocationPercentageFilter = null;
         break;
-      case 'billedStatusFilter':
-        this.billedStatusFilter = '';
-        break;
+  
       case 'billingPercentageFilter':
         this.billingPercentageFilter = null;
         break;

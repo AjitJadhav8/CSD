@@ -39,3 +39,46 @@
   ::ng-deep .custom-ng-select {
     width: 100%;
   }
+
+  /* Add to your styles ---------------------------------------------------------- */
+/* Custom styles for .custom-ng-select-filter */
+::ng-deep .custom-ng-select-filter .ng-select-container {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-size: 0.75rem; /* text-xs */
+  min-height: auto;
+  padding: 0.25rem 0.5rem; /* px-1 py-1 */
+  min-width: 150px; /* Adjust the width */
+}
+
+::ng-deep .custom-ng-select-filter .ng-dropdown-panel {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-size: 0.75rem; /* text-xs */
+  margin-top: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  min-width: 150px;
+}
+
+::ng-deep .custom-ng-select-filter .ng-option {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+::ng-deep .custom-ng-select-filter .ng-option:hover {
+  background-color: #dbeafe;
+  color: #111827;
+}
+
+::ng-deep .custom-ng-select-filter .ng-option.ng-option--selected {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 500;
+}
+
+::ng-deep .custom-ng-select-filter .ng-option.ng-option--selected:hover {
+  background-color: #1d4ed8;
+}
