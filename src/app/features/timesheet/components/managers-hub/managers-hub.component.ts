@@ -5,11 +5,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @Component({
   selector: 'app-managers-hub',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './managers-hub.component.html',
   styleUrl: './managers-hub.component.css'
 })

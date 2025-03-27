@@ -7,7 +7,7 @@
         <form #projectDeliverableFormRef="ngForm" (ngSubmit)="submitProjectDeliverable(projectDeliverableFormRef)">
             <!-- Select Customer -->
             <div class="grid grid-cols-6 gap-4">
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
                     <select [(ngModel)]="selectedCustomerId" #customerField="ngModel" name="customer" required
                         class="border p-2 w-full rounded-md" (change)="filterProjectsByCustomer()"
@@ -21,10 +21,29 @@
                         *ngIf="customerField.invalid && (customerField.touched || projectDeliverableFormRef.submitted)">
                         Customer is required.
                     </span>
-                </div>
+                </div> -->
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Customer Name*</label>
+                    <ng-select [(ngModel)]="selectedCustomerId"
+                               #customerField="ngModel"
+                               name="customer"
+                               required
+                               (change)="filterProjectsByCustomer()"
+                               [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}"
+                               class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                      <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                        {{ customer.customer_name }}
+                      </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="customerField.invalid && (customerField.touched || projectDeliverableFormRef.submitted)">
+                      Customer is required.
+                    </span>
+                  </div>
 
                 <!-- Select Project -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Project*</label>
                     <select [(ngModel)]="selectedProjectId" #projectField="ngModel" name="project" required
                         class="border p-2 w-full rounded-md" (change)="filterPhasesByProject()"
@@ -38,10 +57,30 @@
                         *ngIf="projectField.invalid && (projectField.touched || projectDeliverableFormRef.submitted)">
                         Project is required.
                     </span>
-                </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Select Project*</label>
+                    <ng-select [(ngModel)]="selectedProjectId"
+                               #projectField="ngModel"
+                               name="project"
+                               required
+                               (change)="filterPhasesByProject()"
+                               [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}"
+                               class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Project</ng-option>
+                      <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                        {{ project.project_name }}
+                      </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="projectField.invalid && (projectField.touched || projectDeliverableFormRef.submitted)">
+                      Project is required.
+                    </span>
+                  </div>
 
                 <!-- Select Phase -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Phase*</label>
                     <select [(ngModel)]="projectDeliverableForm.phase_id" #phaseField="ngModel" name="phase" required
                         class="border p-2 w-full rounded-md"
@@ -55,7 +94,26 @@
                         *ngIf="phaseField.invalid && (phaseField.touched || projectDeliverableFormRef.submitted)">
                         Phase is required.
                     </span>
-                </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Select Phase*</label>
+                    <ng-select [(ngModel)]="projectDeliverableForm.phase_id"
+                               #phaseField="ngModel"
+                               name="phase"
+                               required
+                               [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectDeliverableFormRef.submitted && phaseField.invalid)}"
+                               class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Phase</ng-option>
+                      <ng-option *ngFor="let phase of filteredPhases" [value]="phase.phase_id">
+                        {{ phase.project_phase_name }}
+                      </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="phaseField.invalid && (phaseField.touched || projectDeliverableFormRef.submitted)">
+                      Phase is required.
+                    </span>
+                  </div>
 
                 <!-- Deliverable Name -->
                 <div class="form-group">
@@ -217,7 +275,7 @@
         <form #projectPhaseFormRef="ngForm" (ngSubmit)="submitProjectPhase(projectPhaseFormRef)">
             <!-- Select Customer -->
             <div class="grid grid-cols-6 gap-4">
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
                     <select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer" required
                         class="border p-2 w-full rounded-md" (change)="filterProjectsForPhases()"
@@ -231,10 +289,29 @@
                         *ngIf="customerField.invalid && (customerField.touched || projectPhaseFormRef.submitted)">
                         Customer is required.
                     </span>
-                </div>
+                </div> -->
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Customer Name*</label>
+                    <ng-select [(ngModel)]="projectPhaseForm.customer_id"
+                               #customerField="ngModel"
+                               name="customer"
+                               required
+                               (change)="filterProjectsForPhases()"
+                               [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}"
+                               class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                      <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                        {{ customer.customer_name }}
+                      </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="customerField.invalid && (customerField.touched || projectPhaseFormRef.submitted)">
+                      Customer is required.
+                    </span>
+                  </div>
 
                 <!-- Select Project -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Project*</label>
                     <select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project" required
                         class="border p-2 w-full rounded-md"
@@ -248,7 +325,25 @@
                         *ngIf="projectField.invalid && (projectField.touched || projectPhaseFormRef.submitted)">
                         Project is required.
                     </span>
-                </div>
+                </div> -->
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Select Project*</label>
+                    <ng-select [(ngModel)]="projectPhaseForm.project_id"
+                               #projectField="ngModel"
+                               name="project"
+                               required
+                               [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}"
+                               class="custom-ng-select">
+                      <ng-option [value]="" disabled selected>Select Project</ng-option>
+                      <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                        {{ project.project_name }}
+                      </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                      *ngIf="projectField.invalid && (projectField.touched || projectPhaseFormRef.submitted)">
+                      Project is required.
+                    </span>
+                  </div>
 
                 <!-- Phase Name -->
                 <div class="form-group">
