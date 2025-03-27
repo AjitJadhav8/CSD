@@ -292,6 +292,8 @@
                 class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
                 <!-- Customer Name Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
+
                     <select [(ngModel)]="customerNameFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="">Select Customer</option>
@@ -310,6 +312,8 @@
                 <!-- Project Name Filter -->
                 <!-- Project Name Dropdown -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Project</label>
+
                     <select [(ngModel)]="projectNameFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="">Select Project</option>
@@ -326,6 +330,8 @@
                 <!-- Employee Name Filter -->
                 <!-- Employee Name Dropdown -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Employee</label>
+
                     <select [(ngModel)]="employeeNameFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="">Select Employee</option>
@@ -341,6 +347,8 @@
 
                 <!-- Project Role Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Project Role</label>
+
                     <select [(ngModel)]="projectRoleFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="" disabled>Select Project Role</option>
@@ -356,6 +364,8 @@
 
                 <!-- Project Manager Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Project Manager</label>
+
                     <select [(ngModel)]="projectManagerFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="" disabled>Select Project Manager</option>
@@ -370,6 +380,8 @@
 
                 <!-- Start Date Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
+
                     <input type="date" [(ngModel)]="startDateFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
                     <button *ngIf="startDateFilter" (click)="clearFilter('startDateFilter')"
@@ -380,6 +392,8 @@
 
                 <!-- End Date Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
+
                     <input type="date" [(ngModel)]="endDateFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
                     <button *ngIf="endDateFilter" (click)="clearFilter('endDateFilter')"
@@ -390,6 +404,7 @@
 
                 <!-- Allocation Status Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Allocation Status</label>
                     <select [(ngModel)]="allocationStatusFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="" disabled>Select Allocation Status</option>
@@ -404,6 +419,8 @@
 
                 <!-- Allocation % Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Allocation %</label>
+
                     <input type="number" [(ngModel)]="allocationPercentageFilter" placeholder="Allocation %"
                         (input)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
@@ -416,6 +433,8 @@
 
                 <!-- Billed Status Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Billed Status</label>
+
                     <select [(ngModel)]="billedStatusFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="" disabled>Select Billed Status</option>
@@ -430,6 +449,8 @@
 
                 <!-- Billing % Filter -->
                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Billing %</label>
+
                     <input type="number" [(ngModel)]="billingPercentageFilter" placeholder="Billing %"
                         (input)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
