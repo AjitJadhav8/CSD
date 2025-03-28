@@ -519,7 +519,7 @@ export class AssignProjectTeamComponent {
   projectNameFilter: string = '';
   employeeNameFilter: string = '';
   allocationStatusFilter: string = '';
-  billedStatusFilter: string = '';
+  billedStatusFilter: number | null = null;
 
   // New filter properties
   projectRoleFilter: string = '';
@@ -551,8 +551,7 @@ export class AssignProjectTeamComponent {
         (this.endDateFilter ? this.formatDate(team.end_date) == this.endDateFilter : true) &&
         (this.allocationStatusFilter ? team.allocation_status === this.allocationStatusFilter : true) &&
         (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
-        (this.billedStatusFilter ? team.billed_status.toString() === this.billedStatusFilter : true) &&
-        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
+        (this.billedStatusFilter !== null ? team.billed_status === this.billedStatusFilter : true)&&        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
       );
     });
 
@@ -577,7 +576,7 @@ export class AssignProjectTeamComponent {
     this.endDateFilter = '';
     this.allocationStatusFilter = '';
     this.allocationPercentageFilter = null;
-    this.billedStatusFilter = '';
+    this.billedStatusFilter = null;
     this.billingPercentageFilter = null;
     this.applyFilters();
   }
