@@ -5,11 +5,13 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { DataService } from '../../../../services/data-service/data.service';
 import * as XLSX from 'xlsx'; // Import SheetJS
 import { saveAs } from 'file-saver';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @Component({
   selector: 'app-all-teams-timesheet',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,NgSelectModule],
   templateUrl: './all-teams-timesheet.component.html',
   styleUrl: './all-teams-timesheet.component.css'
 })
@@ -36,7 +38,7 @@ export class AllTeamsTimesheetComponent {
    customerFilter: string = '';
    projectFilter: string = '';
    projectDeliverableFilter: string = '';
-   taskStatusFilter: string = '';
+   taskStatusFilter: number | null = null; 
    projectManagerFilter: string = '';
    phasesFilter: string = '';
 
@@ -84,20 +86,40 @@ export class AllTeamsTimesheetComponent {
       }
     );
   }
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+  
+    // Convert UTC date to local timezone correctly
+    const date = new Date(dateString);
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  
+    // Format as YYYY-MM-DD
+    return localDate.toISOString().split('T')[0];
+  }
+  
 
     // Apply Filters
     applyFilters(): void {
       this.filteredTimesheets = this.timesheets.filter((timesheet) => {
         return (
-          (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
-          (!this.userNameFilter || timesheet.user_id?.toString() === this.userNameFilter.toString()) &&
-          (!this.customerFilter || timesheet.customer_id?.toString() === this.customerFilter.toString()) &&
-          (!this.projectFilter || timesheet.project_id?.toString() === this.projectFilter.toString()) &&
-          (!this.projectDeliverableFilter || timesheet.pd_id?.toString() === this.projectDeliverableFilter.toString()) &&
-          (!this.phasesFilter || timesheet.phase_id?.toString() === this.phasesFilter.toString()) &&
+          // (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
+          // (!this.userNameFilter || timesheet.user_id?.toString() === this.userNameFilter.toString()) &&
+          // (!this.customerFilter || timesheet.customer_id?.toString() === this.customerFilter.toString()) &&
+          // (!this.projectFilter || timesheet.project_id?.toString() === this.projectFilter.toString()) &&
+          // (!this.projectDeliverableFilter || timesheet.pd_id?.toString() === this.projectDeliverableFilter.toString()) &&
+          // (!this.phasesFilter || timesheet.phase_id?.toString() === this.phasesFilter.toString()) &&
 
-          (!this.taskStatusFilter || timesheet.task_status?.toString() === this.taskStatusFilter.toString())&&
-          (!this.projectManagerFilter || timesheet.project_manager_id?.toString() === this.projectManagerFilter.toString()) // New filter
+          // (!this.taskStatusFilter || timesheet.task_status?.toString() === this.taskStatusFilter.toString())&&
+          // (!this.projectManagerFilter || timesheet.project_manager_id?.toString() === this.projectManagerFilter.toString())
+          (!this.timesheetDateFilter || 
+            this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
+          (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
+          (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
+          (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
+          (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
+          (!this.phasesFilter || timesheet.phase_id == this.phasesFilter) &&
+          (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
+          (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
         );
       });
       this.currentPage = 1;
@@ -114,7 +136,7 @@ export class AllTeamsTimesheetComponent {
       this.customerFilter = '';
       this.projectFilter = '';
       this.projectDeliverableFilter = '';
-      this.taskStatusFilter = '';
+      this.taskStatusFilter = null;
       this.phasesFilter ='';
       this.applyFilters();
     }

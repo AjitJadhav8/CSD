@@ -532,10 +532,15 @@ export class AssignProjectTeamComponent {
 
 
   /** Convert date to 'YYYY-MM-DD' format */
-  formatDate(date: any): string {
-    if (!date) return ''; // Handle empty dates
-    const d = new Date(date);
-    return d.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+  
+    // Convert UTC date to local timezone correctly
+    const date = new Date(dateString);
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  
+    // Format as YYYY-MM-DD
+    return localDate.toISOString().split('T')[0];
   }
   // Apply Filters
   // Apply Filters
