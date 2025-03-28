@@ -576,10 +576,10 @@ paginatedProjectTeamData: any[] = [];
 
 teamManagerFilter: string = '';
 teamRoleFilter: string = '';
-teamAllocationStatusFilter: string = '';
-teamBilledStatusFilter: string = '';
+teamAllocationStatusFilter: boolean | null = null;
+teamBilledStatusFilter:  boolean | null = null;
 teamStartDateFrom: string = '';
-teamStartDateTo: string = '';
+teamEndDateTo: string = '';
 
    // Project Team Methods
    // Update the fetch method
@@ -620,30 +620,53 @@ applyTeamFilters(): void {
       const matchesRole = !this.teamRoleFilter || 
           member.project_role_name === this.teamRoleFilter;
       
-      const matchesAllocationStatus = !this.teamAllocationStatusFilter || 
-          member.allocation_status.toString() === this.teamAllocationStatusFilter;
-      
-      const matchesBilledStatus = !this.teamBilledStatusFilter || 
-          member.billed_status.toString() === this.teamBilledStatusFilter;
-      
-      // Date filtering
-      let matchesStartDate = true;
-      if (this.teamStartDateFrom || this.teamStartDateTo) {
-          const startDate = new Date(member.start_date);
-          const fromDate = this.teamStartDateFrom ? new Date(this.teamStartDateFrom) : null;
-          const toDate = this.teamStartDateTo ? new Date(this.teamStartDateTo) : null;
+          const matchesAllocationStatus = this.teamAllocationStatusFilter === null ||
+          (this.teamAllocationStatusFilter === true && member.allocation_status === 1) ||
+          (this.teamAllocationStatusFilter === false && member.allocation_status === 0);
           
-          if (fromDate && startDate < fromDate) matchesStartDate = false;
-          if (toDate && startDate > toDate) matchesStartDate = false;
-      }
+      
+          
+      
+          const matchesBilledStatus = this.teamBilledStatusFilter === null ||
+          (this.teamBilledStatusFilter === true && member.billed_status === 1) ||
+          (this.teamBilledStatusFilter === false && member.billed_status === 0);
+          const formatDate = (dateString: string) => {
+            if (!dateString) return '';
 
-      return matchesCustomer && matchesProject && matchesManager && 
-             matchesEmployee && matchesRole && matchesAllocationStatus && 
-             matchesBilledStatus && matchesStartDate;
+              // Convert UTC date to local timezone correctly
+              const date = new Date(dateString);
+              const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            
+              // Format as YYYY-MM-DD
+              return localDate.toISOString().split('T')[0];
+            }
+        
+        // Date filtering
+        // Apply date filtering with formatted dates
+        const matchesStartDate = !this.teamStartDateFrom || 
+        formatDate(member.start_date) === formatDate(this.teamStartDateFrom);
+
+  // End date exact match
+  const matchesEndDate = !this.teamEndDateTo || 
+      formatDate(member.end_date) === formatDate(this.teamEndDateTo);
+
+  return matchesCustomer && matchesProject && 
+  matchesStartDate && matchesEndDate;
+
   });
 
   this.teamCurrentPage = 1;
   this.updateTeamPage();
+}
+formatDate(dateString: string): string {
+  if (!dateString) return '';
+
+  // Convert UTC date to local timezone correctly
+  const date = new Date(dateString);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+  // Format as YYYY-MM-DD
+  return localDate.toISOString().split('T')[0];
 }
 
 clearTeamFilters(): void {
@@ -652,10 +675,10 @@ clearTeamFilters(): void {
   this.teamManagerFilter = '';
   this.teamEmployeeFilter = '';
   this.teamRoleFilter = '';
-  this.teamAllocationStatusFilter = '';
-  this.teamBilledStatusFilter = '';
+  this.teamAllocationStatusFilter = null;
+  this.teamBilledStatusFilter = null;
   this.teamStartDateFrom = '';
-  this.teamStartDateTo = '';
+  this.teamEndDateTo = '';
   this.applyTeamFilters();
 }
 
