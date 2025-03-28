@@ -197,7 +197,7 @@
 
                     <!-- Name Filter -->
                     <!-- Name Filter Dropdown -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="nameFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Name</option>
@@ -209,6 +209,18 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
+                    </div> -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Name</label>
+                        <ng-select [(ngModel)]="nameFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let emp of optionUsers" [value]="emp.user_id">
+                                {{ emp.user_first_name }} {{ emp.user_last_name }}
+                            </ng-option>
+                        </ng-select>
                     </div>
 
 
@@ -224,7 +236,7 @@
 
                     <!-- Department Filter -->
                     <!-- Department Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="departmentFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Department</option>
@@ -236,11 +248,24 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
+                    </div> -->
+
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Department</label>
+                        <ng-select [(ngModel)]="departmentFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                                {{ department.department_name }}
+                            </ng-option>
+                        </ng-select>
                     </div>
 
                     <!-- Designation Filter -->
                     <!-- Designation Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="designationFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Designation</option>
@@ -252,6 +277,19 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
+                    </div> -->
+
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Designation</label>
+                        <ng-select [(ngModel)]="designationFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                                {{ designation.designation_name }}
+                            </ng-option>
+                        </ng-select>
                     </div>
 
                     <div class="relative flex-grow">
@@ -264,7 +302,7 @@
                     </div>
 
                     <!-- Reporting Manager Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="reportingManagerFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Reporting Manager</option>
@@ -276,6 +314,18 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
+                    </div> -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Reporting Manager</label>
+                        <ng-select [(ngModel)]="reportingManagerFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let rm of optionUsers" [value]="rm.user_id">
+                                {{ rm.user_first_name }} {{ rm.user_last_name }}
+                            </ng-option>
+                        </ng-select>
                     </div>
 
                     <!-- Clear All Filters -->

@@ -609,7 +609,7 @@
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
                     <!-- Customer Name Filter -->
                     <!-- Customer Name Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300"
                             [(ngModel)]="customerNameFilter" (change)="applyFilters()" name="customerNameFilter">
@@ -622,7 +622,19 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                      <label class="block text-xs font-medium mb-1">Customer</label>
+                      <ng-select [(ngModel)]="customerNameFilter"
+                                (change)="applyFilters()"
+                                [clearable]="true"
+                                [searchable]="true"
+                                class="text-xs custom-ng-select-filter">
+                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                              {{ customer.customer_name }}
+                          </ng-option>
+                      </ng-select>
+                  </div>
 
                     <!-- Company Website Filter -->
                     <div class="relative flex-grow">
@@ -668,7 +680,7 @@
 
                     <!-- Status Filter -->
                     <!-- Customer Status Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="statusFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Status</option>
@@ -679,10 +691,20 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                      <label class="block text-xs font-medium mb-1">Status</label>
+                      <ng-select [(ngModel)]="statusFilter"
+                                (change)="applyFilters()"
+                                [clearable]="true"
+                                class="text-xs custom-ng-select-filter">
+                          <ng-option value="Active">Active</ng-option>
+                          <ng-option value="Inactive">Inactive</ng-option>
+                      </ng-select>
+                  </div>
 
                     <!-- Sector Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="sectorFilter" (change)="applyFilters()"
                           class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                           <option value="">Select Sector</option>
@@ -694,10 +716,23 @@
                           class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                           ×
                         </button>
-                      </div>
+                      </div> -->
+                      <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Sector</label>
+                        <ng-select [(ngModel)]="sectorFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let sector of distinctSectors" [value]="sector">
+                                {{ sector }}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+            
 
                      
-                      <div class="relative flex-grow">
+                      <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="industryFilter" (change)="applyFilters()"
                           class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                           <option value="">Select Industry</option>
@@ -709,10 +744,22 @@
                           class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                           ×
                         </button>
-                      </div>
+                      </div> -->
+                      <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Industry</label>
+                        <ng-select [(ngModel)]="industryFilter"
+                                  (change)="applyFilters()"
+                                  [clearable]="true"
+                                  [searchable]="true"
+                                  class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let industry of distinctIndustries" [value]="industry">
+                                {{ industry }}
+                            </ng-option>
+                        </ng-select>
+                    </div>
 
                     <!-- Domain Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="domainFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Segment</option>
@@ -724,11 +771,23 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                      <label class="block text-xs font-medium mb-1">Segment</label>
+                      <ng-select [(ngModel)]="domainFilter"
+                                (change)="applyFilters()"
+                                [clearable]="true"
+                                [searchable]="true"
+                                class="text-xs custom-ng-select-filter">
+                          <ng-option *ngFor="let category of optionMasterCategory" [value]="category.domain">
+                              {{ category.domain }}
+                          </ng-option>
+                      </ng-select>
+                  </div>
 
                     <!-- Customer Type Filter -->
                     <!-- Customer Type Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <select [(ngModel)]="customerTypeFilter" (change)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                             <option value="">Select Type</option>
@@ -739,7 +798,17 @@
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
                         </button>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                      <label class="block text-xs font-medium mb-1">Type</label>
+                      <ng-select [(ngModel)]="customerTypeFilter"
+                                (change)="applyFilters()"
+                                [clearable]="true"
+                                class="text-xs custom-ng-select-filter">
+                          <ng-option value="Existing">Existing</ng-option>
+                          <ng-option value="Potential">Potential</ng-option>
+                      </ng-select>
+                  </div>
 
                     <!-- City Filter -->
                     <div class="relative flex-grow">

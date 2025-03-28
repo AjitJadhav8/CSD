@@ -482,7 +482,7 @@ applyFilters(): void {
   this.filteredCustomers = this.customers.filter((customer) => {
     return (
       (this.customerNameFilter
-        ? customer.customer_id.toString() === this.customerNameFilter
+        ? customer.customer_id === this.customerNameFilter
         : true) &&
       (this.companyWebsiteFilter
         ? customer.customer_company_website?.toLowerCase().includes(this.companyWebsiteFilter.toLowerCase())

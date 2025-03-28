@@ -962,7 +962,6 @@ export class EmployeeComponent {
           employee.user_id?.toString() === this.nameFilter.toString()) &&
 
 
-
         (!this.emailFilter ||
           employee.user_email?.toLowerCase().includes(this.emailFilter.toLowerCase())) &&
         (!this.departmentFilter ||
