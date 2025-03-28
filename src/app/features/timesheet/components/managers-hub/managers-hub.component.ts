@@ -835,12 +835,6 @@ applyTimesheetFilters(): void {
   this.filteredTimesheetData = this.timesheetData.filter(timesheet => {
 
         // Debug status values first
-        console.log('Status check:', {
-          filterValue: this.timesheetStatusFilter,
-          taskStatus: timesheet.task_status, // or timesheet.status?
-          typeFilter: typeof this.timesheetStatusFilter,
-          typeTask: typeof timesheet.task_status
-        });
       // Employee filter - compare by ID
       const matchesEmployee = !this.timesheetEmployeeFilter || 
       timesheet.user_id == this.timesheetEmployeeFilter;
@@ -930,10 +924,10 @@ reportingProjectFilter: string = '';
 reportingManagerFilter: string = '';
 reportingEmployeeFilter: string = '';
 reportingRoleFilter: string = '';
-reportingAllocationStatusFilter: string = '';
-reportingBilledStatusFilter: string = '';
+reportingAllocationStatusFilter: boolean | null = null;
+reportingBilledStatusFilter: boolean | null = null;
 reportingStartDateFrom: string = '';
-reportingStartDateTo: string = '';
+reportingEndtDate: string = '';
 reportingCurrentPage: number = 1;
 reportingItemsPerPage: number = 30;
 reportingMaxPageButtons: number = 5;
@@ -978,27 +972,37 @@ applyReportingFilters(): void {
           member.project_role_name === this.reportingRoleFilter;
       
       // Updated allocation status filter to handle number values
-      const matchesAllocationStatus = !this.reportingAllocationStatusFilter || 
-          (this.reportingAllocationStatusFilter === 'true' ? member.allocation_status === 1 : member.allocation_status === 0);
+        // Allocation status filter (1=true=Active, 0=false=Inactive)
+        const matchesAllocationStatus = this.reportingAllocationStatusFilter === null ||
+        (this.reportingAllocationStatusFilter === true && member.allocation_status === 1) ||
+        (this.reportingAllocationStatusFilter === false && member.allocation_status === 0);
+
+// Billed status filter (1=true=Billed, 0=false=Not Billed)
+const matchesBilledStatus = this.reportingBilledStatusFilter === null ||
+    (this.reportingBilledStatusFilter === true && member.billed_status === 1) ||
+    (this.reportingBilledStatusFilter === false && member.billed_status === 0);
+
+    const formatDate = (dateString: string) => {
+      if (!dateString) return '';
+
+        // Convert UTC date to local timezone correctly
+        const date = new Date(dateString);
+        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
       
-      // Updated billed status filter to handle number values
-      const matchesBilledStatus = !this.reportingBilledStatusFilter || 
-          (this.reportingBilledStatusFilter === 'true' ? member.billed_status === 1 : member.billed_status === 0);
+        // Format as YYYY-MM-DD
+        return localDate.toISOString().split('T')[0];
+      }
       
       // Date filtering
-      let matchesStartDate = true;
-      if (this.reportingStartDateFrom || this.reportingStartDateTo) {
-          const startDate = new Date(member.start_date);
-          const fromDate = this.reportingStartDateFrom ? new Date(this.reportingStartDateFrom) : null;
-          const toDate = this.reportingStartDateTo ? new Date(this.reportingStartDateTo) : null;
-          
-          if (fromDate && startDate < fromDate) matchesStartDate = false;
-          if (toDate && startDate > toDate) matchesStartDate = false;
-      }
+      const matchesStartDate = !this.reportingStartDateFrom || 
+    formatDate(member.start_date) === formatDate(this.reportingStartDateFrom);
+
+    const matchesEndDate = !this.reportingEndtDate || 
+    formatDate(member.end_date) === formatDate(this.reportingEndtDate);
 
       return matchesCustomer && matchesProject && matchesManager && 
              matchesEmployee && matchesRole && matchesAllocationStatus && 
-             matchesBilledStatus && matchesStartDate;
+             matchesBilledStatus && matchesStartDate && matchesEndDate;
   });
 
   this.reportingCurrentPage = 1;
@@ -1011,10 +1015,10 @@ clearReportingFilters(): void {
   this.reportingManagerFilter = '';
   this.reportingEmployeeFilter = '';
   this.reportingRoleFilter = '';
-  this.reportingAllocationStatusFilter = '';
-  this.reportingBilledStatusFilter = '';
+  this.reportingAllocationStatusFilter = null;
+  this.reportingBilledStatusFilter = null;
   this.reportingStartDateFrom = '';
-  this.reportingStartDateTo = '';
+  this.reportingEndtDate = '';
   this.applyReportingFilters();
 }
 
@@ -1062,9 +1066,12 @@ paginatedReportingTimesheetData: any[] = [];
 reportingTimesheetEmployeeFilter: string = '';
 reportingTimesheetProjectFilter: string = '';
 reportingTimesheetPhaseFilter: string = '';
+reportingTimesheetDeliverableFilter: string='';
 reportingTimesheetDateFrom: string = '';
 reportingTimesheetDateTo: string = '';
-reportingTimesheetStatusFilter: string = '';
+reportingTimesheetDateFilter: string = '';
+reportingTimesheetStatusFilter: number | null = null;
+
 
 // Pagination
 reportingTimesheetCurrentPage: number = 1;
@@ -1075,6 +1082,7 @@ reportingTimesheetMaxPageButtons: number = 5;
 optionReportingTeamMembers: any[] = [];
 optionReportingProjects: any[] = [];
 optionReportingPhases: any[] = [];
+optionReportingDeliverables :any[]=[];
 
 // Fetch reporting team timesheets
 fetchReportingTeamsTimesheet(): void {
@@ -1126,37 +1134,53 @@ extractDropdownOptions(): void {
     })))
   ).map(item => JSON.parse(item))
    .filter((item: {id: number, name: string}) => item.id && item.name);
+   
+  // Deliverables
+  this.optionReportingDeliverables = Array.from(
+    new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+      id: t.pd_id,
+      name: t.project_deliverable_name
+    })))
+  ).map(item => JSON.parse(item))
+   .filter((item: {id: number, name: string}) => item.id && item.name);
 }
 
 
 
 // Filter methods
 applyReportingTimesheetFilters(): void {
+  console.log('Current Filters:', {
+    employee: this.reportingTimesheetEmployeeFilter,
+    project: this.reportingTimesheetProjectFilter,
+    phase: this.reportingTimesheetPhaseFilter,
+    status: this.reportingTimesheetStatusFilter,
+    deliverable: this.reportingTimesheetDeliverableFilter,
+    date: this.reportingTimesheetDateFilter
+  });
   this.filteredReportingTimesheetData = this.reportingTimesheetData.filter(timesheet => {
       const matchesEmployee = !this.reportingTimesheetEmployeeFilter || 
-          timesheet.user_id.toString() === this.reportingTimesheetEmployeeFilter;
+          timesheet.user_id === this.reportingTimesheetEmployeeFilter;
       
       const matchesProject = !this.reportingTimesheetProjectFilter || 
-          timesheet.project_id.toString() === this.reportingTimesheetProjectFilter;
+          timesheet.project_id === this.reportingTimesheetProjectFilter;
       
       const matchesPhase = !this.reportingTimesheetPhaseFilter || 
-          timesheet.phase_id.toString() === this.reportingTimesheetPhaseFilter;
+          timesheet.phase_id === this.reportingTimesheetPhaseFilter;
       
-      const matchesStatus = !this.reportingTimesheetStatusFilter || 
-          timesheet.task_status.toString() === this.reportingTimesheetStatusFilter;
+
+          const matchesStatus = this.reportingTimesheetStatusFilter === null ||
+                    timesheet.task_status === this.reportingTimesheetStatusFilter;
+      
+
+          const matchesDeliverable = !this.reportingTimesheetDeliverableFilter || 
+          timesheet.pd_id == this.reportingTimesheetDeliverableFilter;
       
       // Date filtering
-      let matchesDate = true;
-      if (this.reportingTimesheetDateFrom || this.reportingTimesheetDateTo) {
-          const timesheetDate = new Date(timesheet.timesheet_date);
-          const fromDate = this.reportingTimesheetDateFrom ? new Date(this.reportingTimesheetDateFrom) : null;
-          const toDate = this.reportingTimesheetDateTo ? new Date(this.reportingTimesheetDateTo) : null;
-          
-          if (fromDate && timesheetDate < fromDate) matchesDate = false;
-          if (toDate && timesheetDate > toDate) matchesDate = false;
-      }
+      const matchesDate = !this.reportingTimesheetDateFilter || 
+      this.formatDate(timesheet.timesheet_date) === 
+      this.formatDate(this.reportingTimesheetDateFilter);
 
-      return matchesEmployee && matchesProject && matchesPhase && 
+      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable&&
              matchesStatus && matchesDate;
   });
 
@@ -1170,7 +1194,8 @@ clearReportingTimesheetFilters(): void {
   this.reportingTimesheetPhaseFilter = '';
   this.reportingTimesheetDateFrom = '';
   this.reportingTimesheetDateTo = '';
-  this.reportingTimesheetStatusFilter = '';
+  this.reportingTimesheetDateFilter='';
+  this.reportingTimesheetStatusFilter = null;
   this.applyReportingTimesheetFilters();
 }
 
