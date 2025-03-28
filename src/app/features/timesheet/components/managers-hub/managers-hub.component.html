@@ -139,9 +139,8 @@
         <div class="rounded-lg w-full overflow-x-auto">
             <!-- Filter Section -->
             <div class="min-w-max">
-                <div
-                    class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <div class="relative flex-grow">
+                <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+                    <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <select [(ngModel)]="deliverableCustomerFilter" (change)="applyDeliverableFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
@@ -150,10 +149,23 @@
                                 {{ customer.customer_name }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Customer</label>
+                        <ng-select [(ngModel)]="deliverableCustomerFilter"
+                                  (change)="applyDeliverableFilters()"
+                                  class="text-xs custom-ng-select-filter"
+                                  [clearable]="true"
+                                  [searchable]="true">
+                          <ng-option [value]="">All Customers</ng-option>
+                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
+                            {{ customer.customer_name }}
+                          </ng-option>
+                        </ng-select>
+                      </div>
 
                     <!-- Project Name Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <select [(ngModel)]="deliverableProjectFilter" (change)="applyDeliverableFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
@@ -162,10 +174,25 @@
                                 {{ project.project_name }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
+
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Project</label>
+                        <ng-select [(ngModel)]="deliverableProjectFilter"
+                                  (change)="applyDeliverableFilters()"
+                                  class="text-xs custom-ng-select-filter"
+                                  [clearable]="true"
+                                  [searchable]="true">
+                          <ng-option [value]="">All Projects</ng-option>
+                          <ng-option *ngFor="let project of optionProject" [value]="project.project_name">
+                            {{ project.project_name }}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+
 
                     <!-- Phase Name Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Phase</label>
                         <select [(ngModel)]="deliverablePhaseFilter" (change)="applyDeliverableFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
@@ -174,7 +201,22 @@
                                 {{ phase.project_phase_name }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
+
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Phase</label>
+                        <ng-select [(ngModel)]="deliverablePhaseFilter"
+                                  (change)="applyDeliverableFilters()"
+                                  class="text-xs custom-ng-select-filter"
+                                  [clearable]="true"
+                                  [searchable]="true">
+                          <ng-option [value]="">All Phases</ng-option>
+                          <ng-option *ngFor="let phase of optionPhases" [value]="phase.project_phase_name">
+                            {{ phase.project_phase_name }}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+
                     <!-- Deliverable Name Filter -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Deliverable</label>
@@ -202,10 +244,7 @@
                             <th class="border p-2">Customer Name</th>
                             <th class="border p-2">Project Name</th>
                             <th class="border p-2">Phase Name</th>
-
                             <th class="border p-2">Deliverable Name</th>
-
-
                             <th class="border p-2">Action</th>
                         </tr>
                     </thead>
@@ -216,10 +255,7 @@
                             <td class="border p-2">{{ deliverable.customer_name }}</td>
                             <td class="border p-2">{{ deliverable.project_name }}</td>
                             <td class="border p-2">{{ deliverable.project_phase_name }}</td>
-
                             <td class="border p-2">{{ deliverable.project_deliverable_name }}</td>
-
-
                             <td class="border p-2">
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteProjectDeliverable(deliverable.pd_id)">Delete</button>
@@ -371,7 +407,7 @@
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
 
                     <!-- Customer Name Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <select [(ngModel)]="phaseCustomerFilter" (change)="applyPhaseFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
@@ -380,10 +416,23 @@
                                 {{ customer.customer_name }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
+                    <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Customer</label>
+                        <ng-select [(ngModel)]="phaseCustomerFilter"
+                                  (change)="applyPhaseFilters()"
+                                  class="text-xs custom-ng-select-filter"
+                                  [clearable]="true"
+                                  [searchable]="true">
+                          <ng-option [value]="">All Customers</ng-option>
+                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
+                            {{ customer.customer_name }}
+                          </ng-option>
+                        </ng-select>
+                      </div>
 
                     <!-- Project Name Filter -->
-                    <div class="relative flex-grow">
+                    <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <select [(ngModel)]="phaseProjectFilter" (change)="applyPhaseFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
@@ -392,7 +441,22 @@
                                 {{ project.project_name }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
+
+                    <!-- Project Name Filter -->
+<div class="relative flex-grow">
+    <label class="block text-xs font-medium mb-1">Project</label>
+    <ng-select [(ngModel)]="phaseProjectFilter"
+              (change)="applyPhaseFilters()"
+              class="text-xs custom-ng-select-filter"
+              [clearable]="true"
+              [searchable]="true">
+      <ng-option [value]="">All Projects</ng-option>
+      <ng-option *ngFor="let project of optionProject" [value]="project.project_name">
+        {{ project.project_name }}
+      </ng-option>
+    </ng-select>
+  </div>
 
                     <!-- Phase Name Filter -->
                     <div class="relative flex-grow">
