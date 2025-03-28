@@ -742,14 +742,16 @@ getVisibleTeamPageNumbers(): number[] {
                timesheetEmployeeFilter: string = '';
                timesheetProjectFilter: string = '';
                timesheetPhaseFilter: string = '';
-               timesheetDateFrom: string = '';
-               timesheetDateTo: string = '';
-               timesheetStatusFilter: string = '';
-               
+               timesheetDateFilter:string = '';
+               timesheetStatusFilter:  number | null = null;
+               timesheetDeliverableFilter: string = '';
+
                // Options
                optionTeamMembers: any[] = [];
                optionProjectsForTimesheet: any[] = [];
                optionPhasesForTimesheet: any[] = [];
+               optionDeliverablesForTimesheet: any[] = []; // Populate this with your deliverables data
+
 // Add these methods
 fetchProjectTeamsTimesheet(): void {
   const projectManagerId = Number(localStorage.getItem('user_id'));
@@ -771,11 +773,19 @@ fetchProjectTeamsTimesheet(): void {
         'project_phase_name',
         'phase_id'
       );
+        // Add deliverables filter options
+        this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
+          this.timesheetData,
+          'project_deliverable_name',
+          'pd_id' // or whatever your deliverable ID field is called
+        );
       
       console.log('Processed options:', {
         teamMembers: this.optionTeamMembers,
         projects: this.optionProjectsForTimesheet,
-        phases: this.optionPhasesForTimesheet
+        phases: this.optionPhasesForTimesheet,
+        deliverables: this.optionDeliverablesForTimesheet // Added deliverables to log
+
       });
       
       this.filteredTimesheetData = [...this.timesheetData];
@@ -823,6 +833,14 @@ private getUniqueSimpleItems(
 
 applyTimesheetFilters(): void {
   this.filteredTimesheetData = this.timesheetData.filter(timesheet => {
+
+        // Debug status values first
+        console.log('Status check:', {
+          filterValue: this.timesheetStatusFilter,
+          taskStatus: timesheet.task_status, // or timesheet.status?
+          typeFilter: typeof this.timesheetStatusFilter,
+          typeTask: typeof timesheet.task_status
+        });
       // Employee filter - compare by ID
       const matchesEmployee = !this.timesheetEmployeeFilter || 
       timesheet.user_id == this.timesheetEmployeeFilter;
@@ -834,22 +852,22 @@ applyTimesheetFilters(): void {
     const matchesPhase = !this.timesheetPhaseFilter || 
                        timesheet.phase_id == this.timesheetPhaseFilter;
 
-      
-      const matchesStatus = !this.timesheetStatusFilter || 
-          timesheet.task_status.toString() === this.timesheetStatusFilter;
+                        // New Deliverable filter
+    const matchesDeliverable = !this.timesheetDeliverableFilter || 
+    timesheet.pd_id == this.timesheetDeliverableFilter;
+
+
+
+    const matchesStatus = this.timesheetStatusFilter === null ||
+                    timesheet.task_status === this.timesheetStatusFilter;
       
       // Date filtering
-      let matchesDate = true;
-      if (this.timesheetDateFrom || this.timesheetDateTo) {
-          const timesheetDate = new Date(timesheet.timesheet_date);
-          const fromDate = this.timesheetDateFrom ? new Date(this.timesheetDateFrom) : null;
-          const toDate = this.timesheetDateTo ? new Date(this.timesheetDateTo) : null;
-          
-          if (fromDate && timesheetDate < fromDate) matchesDate = false;
-          if (toDate && timesheetDate > toDate) matchesDate = false;
-      }
+       // Single date filter (exact match)
+    const matchesDate = !this.timesheetDateFilter || 
+    this.formatDate(timesheet.timesheet_date) === 
+    this.formatDate(this.timesheetDateFilter);
 
-      return matchesEmployee && matchesProject && matchesPhase && 
+      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable&&
              matchesStatus && matchesDate;
   });
 
@@ -861,9 +879,9 @@ clearTimesheetFilters(): void {
   this.timesheetEmployeeFilter = '';
   this.timesheetProjectFilter = '';
   this.timesheetPhaseFilter = '';
-  this.timesheetDateFrom = '';
-  this.timesheetDateTo = '';
-  this.timesheetStatusFilter = '';
+  this.timesheetDeliverableFilter = '';
+  this.timesheetDateFilter='';
+  this.timesheetStatusFilter = null;
   this.applyTimesheetFilters();
 }
 

@@ -292,6 +292,7 @@ ORDER BY
                 p.project_name,
                 ph.project_phase_name,
                 pd.project_deliverable_name,
+                pd.pd_id,
                 t.task_description,
                 t.hours,
                 t.minutes,
