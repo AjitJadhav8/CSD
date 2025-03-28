@@ -549,8 +549,10 @@ export class AssignProjectTeamComponent {
         (this.projectManagerFilter ? team.project_manager_id === this.projectManagerFilter : true) &&
         (this.startDateFilter ? this.formatDate(team.start_date) == this.startDateFilter : true) &&
         (this.endDateFilter ? this.formatDate(team.end_date) == this.endDateFilter : true) &&
-        (this.allocationStatusFilter !== null ? team.allocation_status === this.allocationStatusFilter : true) &&        (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
-        (this.billedStatusFilter !== null ? team.billed_status === this.billedStatusFilter : true)&&        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
+        (this.allocationStatusFilter !== null ? team.allocation_status === this.allocationStatusFilter : true) &&        
+        (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
+        (this.billedStatusFilter !== null ? team.billed_status === this.billedStatusFilter : true)&&        
+        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
       );
     });
 
