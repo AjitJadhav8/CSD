@@ -19,7 +19,7 @@
         <div class="min-w-max">
             <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
                 <!-- Customer Filter -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
 
                     <select [(ngModel)]="customerFilter" (change)="applyFilters()"
@@ -33,12 +33,24 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
+                    <ng-select [(ngModel)]="customerFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true"
+                              [searchable]="true">
+                      <ng-option [value]="null">Select Customer</ng-option>
+                      <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                        {{ customer.customer_name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- Project Filter -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Project</label>
-
                     <select [(ngModel)]="projectFilter" (change)="applyFilters()"
                         class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                         <option value="">Select Project</option>
@@ -50,10 +62,23 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Project</label>
+                    <ng-select [(ngModel)]="projectFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true"
+                              [searchable]="true">
+                      <ng-option [value]="null">Select Project</ng-option>
+                      <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
+                        {{ project.project_name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- project manager -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Project Manager</label>
 
                     <select [(ngModel)]="projectManagerFilter" (change)="applyFilters()"
@@ -67,10 +92,23 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Project Manager</label>
+                    <ng-select [(ngModel)]="projectManagerFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true"
+                              [searchable]="true">
+                      <ng-option [value]="null">Select Project Manager</ng-option>
+                      <ng-option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
+                        {{ manager.user_first_name }} {{ manager.user_last_name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- project Phase -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Phase</label>
 
                     <select [(ngModel)]="phasesFilter" (change)="applyFilters()"
@@ -84,10 +122,23 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Phase</label>
+                    <ng-select [(ngModel)]="phasesFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true"
+                              [searchable]="true">
+                      <ng-option [value]="null">Select Phase</ng-option>
+                      <ng-option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
+                        {{ phases.project_phase_name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- Project Deliverable Filter -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Deliverable</label>
 
                     <select [(ngModel)]="projectDeliverableFilter" (change)="applyFilters()"
@@ -101,7 +152,20 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Deliverable</label>
+                    <ng-select [(ngModel)]="projectDeliverableFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true"
+                              [searchable]="true">
+                      <ng-option [value]="null">Select Deliverable</ng-option>
+                      <ng-option *ngFor="let deliverable of optionProjectDeliverables" [value]="deliverable.pd_id">
+                        {{ deliverable.project_deliverable_name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- Timesheet Date Filter -->
                 <div class="relative flex-grow">
@@ -115,7 +179,7 @@
                 </div>
 
                 <!-- Task Status Filter -->
-                <div class="relative flex-grow">
+                <!-- <div class="relative flex-grow">
                     <label class="block text-xs font-medium text-gray-700 mb-1">Task Status</label>
 
                     <select [(ngModel)]="taskStatusFilter" (change)="applyFilters()"
@@ -128,7 +192,19 @@
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
                     </button>
-                </div>
+                </div> -->
+
+                <div class="relative flex-grow">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Task Status</label>
+                    <ng-select [(ngModel)]="taskStatusFilter"
+                              (change)="applyFilters()"
+                              class="text-xs custom-ng-select-filter"
+                              [clearable]="true">
+                      <ng-option [value]="null">Select Task Status</ng-option>
+                      <ng-option [value]="1">Completed</ng-option>
+                      <ng-option [value]="0">In Progress</ng-option>
+                    </ng-select>
+                  </div>
 
                 <!-- Clear All Filters -->
                 <button (click)="clearFilters()"
@@ -147,7 +223,6 @@
                     <th class="border p-2">Customer Name</th>
                     <th class="border p-2">Phase</th>
                     <th class="border p-2">Project Manager</th>  <!-- Added this column -->
-
                     <th class="border p-2">Task Description</th>
                     <th class="border p-2">Hours</th>
                     <th class="border p-2">Minutes</th>

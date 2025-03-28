@@ -5,12 +5,14 @@ import { TimesheetService } from '../../../../services/timesheet-service/timeshe
 import * as XLSX from 'xlsx'; // Import SheetJS
 import { saveAs } from 'file-saver';
 import { DataService } from '../../../../services/data-service/data.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 
 @Component({
   selector: 'app-export-my-timesheet',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './export-my-timesheet.component.html',
   styleUrl: './export-my-timesheet.component.css'
 })
@@ -200,6 +202,18 @@ export class ExportMyTimesheetComponent {
     );
   }
 
+  // Date formatting function
+formatDateForComparison(dateString: string): string {
+  if (!dateString) return '';
+  
+  // Convert to local date correctly (handles timezone offset)
+  const date = new Date(dateString);
+  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  
+  // Format as YYYY-MM-DD
+  return localDate.toISOString().split('T')[0];
+}
+
     // Apply Filters
     applyFilters(): void {
       this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
@@ -216,13 +230,25 @@ export class ExportMyTimesheetComponent {
         
         // Other filters with null checks
         const otherFiltersMatch = 
-          (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
-          (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
+        (!this.timesheetDateFilter || 
+          this.formatDateForComparison(timesheet.timesheet_date) === this.formatDateForComparison(this.timesheetDateFilter))&&          (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
+          
           (!this.projectFilter || String(timesheet.project_id) === String(this.projectFilter)) &&
           (!this.projectDeliverableFilter || String(timesheet.pd_id) === String(this.projectDeliverableFilter)) &&
           (!this.phasesFilter || String(timesheet.phase_id) === String(this.phasesFilter)) &&
-          (!this.taskStatusFilter || String(timesheet.task_status) === String(this.taskStatusFilter)) &&
-          (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
+          (this.taskStatusFilter !== null ? timesheet.task_status === Number(this.taskStatusFilter) : true)&&            (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
+
+
+
+
+
+          // (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
+          // (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
+          // (!this.projectFilter || String(timesheet.project_id) === String(this.projectFilter)) &&
+          // (!this.projectDeliverableFilter || String(timesheet.pd_id) === String(this.projectDeliverableFilter)) &&
+          // (!this.phasesFilter || String(timesheet.phase_id) === String(this.phasesFilter)) &&
+          // (!this.taskStatusFilter || String(timesheet.task_status) === String(this.taskStatusFilter)) &&
+          // (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
         
         return dateInRange && otherFiltersMatch;
       });
