@@ -49,7 +49,7 @@ export class FillTimesheetComponent {
 
     
 
-    this.fetchTimesheets();
+    this.fetchTimesheets(this.selectedDate);
 
 
     this.dataService.getOptions().subscribe(
@@ -64,6 +64,230 @@ export class FillTimesheetComponent {
     );
   }
 
+
+  // Edit modal properties
+isEditModalOpen = false;
+editTimesheetId: number | null = null;
+editSelectedDate: string = '';
+editSelectedCustomer: number | string = '';
+editSelectedProject: number | null = null;
+editSelectedPhase: number | null = null;
+editSelectedDeliverable: number | null = null;
+editSelectedHours: number | null = null;
+editSelectedMinutes: number = 0;
+editSelectedTaskStatus: number = 0;
+editTaskDescription: string = '';
+
+
+// Open Edit Modal
+// Open Edit Modal
+openEditModal(timesheet: any): void {
+  console.log('Editing Timesheet:', timesheet);
+  this.editTimesheetId = timesheet.timesheet_id;
+  this.editSelectedDate = this.formatDate(timesheet.timesheet_date);
+  this.editSelectedCustomer = timesheet.customer_id;
+  this.editSelectedProject = timesheet.project_id;
+  this.editSelectedPhase = timesheet.phase_id;
+  this.editSelectedDeliverable = timesheet.pd_id;
+  this.editSelectedHours = timesheet.hours;
+  this.editSelectedMinutes = timesheet.minutes;
+  this.editSelectedTaskStatus = timesheet.task_status;
+  this.editTaskDescription = timesheet.task_description;
+  
+  // Initialize filtered lists based on the selected values
+  if (this.editSelectedCustomer) {
+    this.filterOptionProjects = this.optionProjects.filter(
+      (project: any) => project.customer_id == this.editSelectedCustomer
+    );
+  }
+
+  if (this.editSelectedProject) {
+    this.filterOptionPhases = this.optionPhases.filter(
+      (phase: any) => phase.project_id == this.editSelectedProject
+    );
+  }
+
+  if (this.editSelectedPhase) {
+    this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
+      (deliverable: any) => deliverable.phase_id == this.editSelectedPhase
+    );
+  }
+  
+  this.isEditModalOpen = true;
+}
+
+isTimesheetEditable(timesheetDate: string): boolean {
+  if (!timesheetDate) return false;
+  
+  // Parse the timesheet date
+  const timesheetDateTime = new Date(timesheetDate).getTime();
+  const now = new Date().getTime();
+  
+  // Calculate the difference in hours
+  const hoursDifference = (now - timesheetDateTime) / (1000 * 60 * 60);
+  
+  // Allow editing if within 24 hours
+  return hoursDifference <= 24;
+}
+
+// Close Edit Modal
+closeEditModal(): void {
+  this.isEditModalOpen = false;
+  this.editTimesheetId = null;
+  this.editSelectedDate = '';
+  this.editSelectedCustomer = '';
+  this.editSelectedProject = null;
+  this.editSelectedPhase = null;
+  this.editSelectedDeliverable = null;
+  this.editSelectedHours = null;
+  this.editSelectedMinutes = 0;
+  this.editSelectedTaskStatus = 0;
+  this.editTaskDescription = '';
+}
+
+// Update Timesheet
+updateTimesheet(form: NgForm): void {
+  if (!form.valid || !this.editTimesheetId) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please fill all required fields correctly!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
+  }
+
+  const timesheetData = {
+      timesheet_date: this.editSelectedDate,
+      user_id: this.userId,
+      pd_id: this.editSelectedDeliverable,
+      phase_id: this.editSelectedPhase,
+      hours: this.editSelectedHours,
+      minutes: this.editSelectedMinutes,
+      task_status: this.editSelectedTaskStatus,
+      task_description: this.editTaskDescription,
+  };
+
+  this.timesheetService.updateTimesheet(this.editTimesheetId, timesheetData).subscribe({
+      next: (response) => {
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Timesheet updated successfully!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+          this.fetchTimesheets(this.editSelectedDate);
+          this.closeEditModal();
+      },
+      error: (error) => {
+          console.error('Error updating timesheet:', error);
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Failed to update timesheet!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+      }
+  });
+}
+
+// Change handlers for edit modal
+// Change handlers for edit modal
+onEditCustomerChange(): void {
+  if (this.editSelectedCustomer) {
+    this.filterOptionProjects = this.optionProjects.filter(
+      (project: any) => project.customer_id == this.editSelectedCustomer
+    );
+    // Try to maintain the current project selection if it's still valid
+    if (this.editSelectedProject) {
+      const projectStillValid = this.filterOptionProjects.some(
+        (p: any) => p.project_id == this.editSelectedProject
+      );
+      if (!projectStillValid) {
+        this.editSelectedProject = null;
+        this.editSelectedPhase = null;
+        this.editSelectedDeliverable = null;
+      }
+    }
+  } else {
+    this.filterOptionProjects = [];
+    this.editSelectedProject = null;
+    this.editSelectedPhase = null;
+    this.editSelectedDeliverable = null;
+  }
+}
+
+
+onEditProjectChange(): void {
+  if (this.editSelectedProject) {
+    this.filterOptionPhases = this.optionPhases.filter(
+      (phase: any) => phase.project_id == this.editSelectedProject
+    );
+    // Try to maintain the current phase selection if it's still valid
+    if (this.editSelectedPhase) {
+      const phaseStillValid = this.filterOptionPhases.some(
+        (p: any) => p.phase_id == this.editSelectedPhase
+      );
+      if (!phaseStillValid) {
+        this.editSelectedPhase = null;
+        this.editSelectedDeliverable = null;
+      }
+    }
+  } else {
+    this.filterOptionPhases = [];
+    this.editSelectedPhase = null;
+    this.editSelectedDeliverable = null;
+  }
+}
+
+
+onEditPhaseChange(): void {
+  if (this.editSelectedPhase) {
+    this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
+      (deliverable: any) => deliverable.phase_id == this.editSelectedPhase
+    );
+    // Try to maintain the current deliverable selection if it's still valid
+    if (this.editSelectedDeliverable) {
+      const deliverableStillValid = this.filterOptionProjectDeliverables.some(
+        (d: any) => d.pd_id == this.editSelectedDeliverable
+      );
+      if (!deliverableStillValid) {
+        this.editSelectedDeliverable = null;
+      }
+    }
+  } else {
+    this.filterOptionProjectDeliverables = [];
+    this.editSelectedDeliverable = null;
+  }
+}
+onEditTaskStatusChange(status: number): void {
+  this.editSelectedTaskStatus = status ? 1 : 0;
+}
+
+
+// Helper method to format date
+formatDate(dateString: string): string {
+  if (!dateString) return '';
+
+  // Convert UTC date to local timezone correctly
+  const date = new Date(dateString);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+  // Format as YYYY-MM-DD
+  return localDate.toISOString().split('T')[0];
+}
+
+
+
+
+
+
   selectedPhase: number | null = null;
 filterOptionPhases: any[] = [];
 
@@ -77,13 +301,21 @@ filterOptionPhases: any[] = [];
   taskDescription: string = '';
   timesheetData: any;
 
-  fetchTimesheets(): void {
+  onDateChange(): void {
+    if (this.selectedDate) {
+        this.fetchTimesheets(this.selectedDate);
+    }
+}
+
+  fetchTimesheets(date?: string): void {
     if (!this.userId) {
       console.error('User ID not found fetch');
       return;
     }
 
-    this.timesheetService.getUserTimesheets(this.userId).subscribe(
+    const fetchDate = date || this.selectedDate;
+
+    this.timesheetService.getUserTimesheets(this.userId, fetchDate).subscribe(
       (response) => {
         console.log('User Timesheets Updated:', response);
         this.timesheetData = response; // Update the table data
@@ -141,7 +373,7 @@ filterOptionPhases: any[] = [];
           showConfirmButton: false,
           timer: 3000
         });
-        this.fetchTimesheets();
+        this.fetchTimesheets(this.selectedDate);
       },
       error: (error) => {
         console.error('Error submitting timesheet:', error);
@@ -173,7 +405,7 @@ filterOptionPhases: any[] = [];
           next: () => {
             console.log('Timesheet Deleted');
 
-            this.fetchTimesheets(); // Fetch updated timesheets
+            this.fetchTimesheets(this.selectedDate);
 
             // Success Toast Notification
             Swal.fire({

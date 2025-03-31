@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -36,11 +36,16 @@ export class TimesheetService {
   }
 
   // Fetch all timesheets
-  getUserTimesheets(userId: number): Observable<any> {
-    const headers = this.getAuthHeaders(); // Get headers with token
-    return this.http.get(`${this.apiUrl}/api/timesheet/timesheets/${userId}`, { headers });
-
-  }
+  getUserTimesheets(userId: number, date?: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    
+    if (date) {
+        params = params.set('date', date);
+    }
+    
+    return this.http.get(`${this.apiUrl}/api/timesheet/timesheets/${userId}`, { headers, params });
+}
 
   // Delete timesheet
   deleteTimesheet(timesheetId: number): Observable<any> {
@@ -77,6 +82,11 @@ getReportingTeamByManager(reportingManagerId: number): Observable<any> {
 getReportingTeamsTimesheet(reportingManagerId: number): Observable<any> {
   const headers = this.getAuthHeaders();
   return this.http.get(`${this.apiUrl}/api/timesheet/reporting-team-timesheets/${reportingManagerId}`, { headers });
+}
+
+updateTimesheet(timesheetId: number, timesheetData: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/api/timesheet/timesheets/${timesheetId}`, timesheetData, { headers });
 }
 
 

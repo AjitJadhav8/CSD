@@ -26,4 +26,6 @@ router.get('/team-by-reporting-manager/:reportingManagerId', protect, TimesheetC
 // Add to your backend routes file
 router.get('/reporting-team-timesheets/:reportingManagerId', protect, TimesheetController.getReportingTeamsTimesheet);
 
+router.put('/timesheets/:id', protect, TimesheetController.updateTimesheet);
+
 export default router;
