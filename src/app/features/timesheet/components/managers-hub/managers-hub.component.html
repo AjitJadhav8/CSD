@@ -9,14 +9,15 @@
             <div class="grid grid-cols-6 gap-4">
                 <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
-                    <select [(ngModel)]="selectedCustomerId" #customerField="ngModel" name="customer" required
-                        class="border p-2 w-full rounded-md" (change)="filterProjectsByCustomer()"
-                        [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}">
-                        <option value="" disabled selected>Select Customer</option>
-                        <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                    <ng-select [(ngModel)]="selectedCustomerId" #customerField="ngModel" name="customer" required
+                        (change)="filterProjectsByCustomer()"
+                        [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}"
+                        class="custom-ng-select">
+                        <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                        <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
                             {{ customer.customer_name }}
-                        </option>
-                    </select>
+                        </ng-option>
+                    </ng-select>
                     <span class="text-red-500 text-sm"
                         *ngIf="customerField.invalid && (customerField.touched || projectDeliverableFormRef.submitted)">
                         Customer is required.
@@ -24,8 +25,8 @@
                 </div> -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
-                    <ng-select [(ngModel)]="selectedCustomerId" #customerField="ngModel" name="customer" required
-                        (change)="filterProjectsByCustomer()"
+                    <ng-select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel" name="customer_id" required
+                        (change)="filterProjectsByCustomerForDeliverable()"
                         [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}"
                         class="custom-ng-select">
                         <ng-option [value]="" disabled selected>Select Customer</ng-option>
@@ -42,24 +43,24 @@
                 <!-- Select Project -->
                 <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Project*</label>
-                    <select [(ngModel)]="selectedProjectId" #projectField="ngModel" name="project" required
-                        class="border p-2 w-full rounded-md" (change)="filterPhasesByProject()"
-                        [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}">
-                        <option value="" disabled selected>Select Project</option>
-                        <option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                    <ng-select [(ngModel)]="selectedProjectId" #projectField="ngModel" name="project" required
+                        (change)="filterPhasesByProject()"
+                        [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}"
+                        class="custom-ng-select">
+                        <ng-option [value]="" disabled selected>Select Project</ng-option>
+                        <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
                             {{ project.project_name }}
-                        </option>
-                    </select>
+                        </ng-option>
+                    </ng-select>
                     <span class="text-red-500 text-sm"
                         *ngIf="projectField.invalid && (projectField.touched || projectDeliverableFormRef.submitted)">
                         Project is required.
                     </span>
                 </div> -->
-
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Project*</label>
-                    <ng-select [(ngModel)]="selectedProjectId" #projectField="ngModel" name="project" required
-                        (change)="filterPhasesByProject()"
+                    <ng-select [(ngModel)]="projectDeliverableForm.project_id" #projectField="ngModel" name="project_id" required
+                        [disabled]="!projectDeliverableForm.customer_id"
                         [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}"
                         class="custom-ng-select">
                         <ng-option [value]="" disabled selected>Select Project</ng-option>
@@ -76,22 +77,6 @@
                 <!-- Select Phase -->
                 <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Phase*</label>
-                    <select [(ngModel)]="projectDeliverableForm.phase_id" #phaseField="ngModel" name="phase" required
-                        class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectDeliverableFormRef.submitted && phaseField.invalid)}">
-                        <option value="" disabled selected>Select Phase</option>
-                        <option *ngFor="let phase of filteredPhases" [value]="phase.phase_id">
-                            {{ phase.project_phase_name }}
-                        </option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="phaseField.invalid && (phaseField.touched || projectDeliverableFormRef.submitted)">
-                        Phase is required.
-                    </span>
-                </div> -->
-
-                <div class="form-group">
-                    <label class="block mb-2 font-semibold">Select Phase*</label>
                     <ng-select [(ngModel)]="projectDeliverableForm.phase_id" #phaseField="ngModel" name="phase" required
                         [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectDeliverableFormRef.submitted && phaseField.invalid)}"
                         class="custom-ng-select">
@@ -104,10 +89,10 @@
                         *ngIf="phaseField.invalid && (phaseField.touched || projectDeliverableFormRef.submitted)">
                         Phase is required.
                     </span>
-                </div>
+                </div> -->
 
                 <!-- Deliverable Name -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Project Deliverable*</label>
                     <input type="text" [(ngModel)]="projectDeliverableForm.project_deliverable_name"
                         #deliverableField="ngModel" name="deliverable" required class="border p-2 w-full rounded-md"
@@ -117,7 +102,19 @@
                         *ngIf="deliverableField.invalid && (deliverableField.touched || projectDeliverableFormRef.submitted)">
                         Deliverable name is required.
                     </span>
-                </div>
+                </div> -->
+                  <!-- Deliverable Name -->
+    <div class="form-group">
+        <label class="block mb-2 font-semibold">Project Deliverable*</label>
+        <input type="text" [(ngModel)]="projectDeliverableForm.project_deliverable_name"
+            #deliverableField="ngModel" name="project_deliverable_name" required 
+            class="border p-2 w-full rounded-md" placeholder="Enter deliverable name"
+            [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectDeliverableFormRef.submitted && deliverableField.invalid)}" />
+        <span class="text-red-500 text-sm"
+            *ngIf="deliverableField.invalid && (deliverableField.touched || projectDeliverableFormRef.submitted)">
+            Deliverable name is required.
+        </span>
+    </div>
             </div>
 
             <!-- Save Button -->
@@ -132,16 +129,7 @@
             <div class="min-w-max">
                 <div
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Customer</label>
-                        <select [(ngModel)]="deliverableCustomerFilter" (change)="applyDeliverableFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Customers</option>
-                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
-                                {{ customer.customer_name }}
-                            </option>
-                        </select>
-                    </div> -->
+                 
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <ng-select [(ngModel)]="deliverableCustomerFilter" (change)="applyDeliverableFilters()"
@@ -154,17 +142,6 @@
                     </div>
 
                     <!-- Project Name Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="deliverableProjectFilter" (change)="applyDeliverableFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionProject" [value]="project.project_name">
-                                {{ project.project_name }}
-                            </option>
-                        </select>
-                    </div> -->
-
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="deliverableProjectFilter" (change)="applyDeliverableFilters()"
@@ -180,17 +157,6 @@
                     <!-- Phase Name Filter -->
                     <!-- <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Phase</label>
-                        <select [(ngModel)]="deliverablePhaseFilter" (change)="applyDeliverableFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Phases</option>
-                            <option *ngFor="let phase of optionPhases" [value]="phase.project_phase_name">
-                                {{ phase.project_phase_name }}
-                            </option>
-                        </select>
-                    </div> -->
-
-                    <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Phase</label>
                         <ng-select [(ngModel)]="deliverablePhaseFilter" (change)="applyDeliverableFilters()"
                             class="text-xs custom-ng-select-filter" [clearable]="true" [searchable]="true">
                             <ng-option [value]="">All Phases</ng-option>
@@ -198,7 +164,7 @@
                                 {{ phase.project_phase_name }}
                             </ng-option>
                         </ng-select>
-                    </div>
+                    </div> -->
 
                     <!-- Deliverable Name Filter -->
                     <div class="relative flex-grow">
@@ -226,7 +192,7 @@
                             <th class="border p-2">Sr No</th>
                             <th class="border p-2">Customer Name</th>
                             <th class="border p-2">Project Name</th>
-                            <th class="border p-2">Phase Name</th>
+                            <!-- <th class="border p-2">Phase Name</th> -->
                             <th class="border p-2">Deliverable Name</th>
                             <th class="border p-2">Action</th>
                         </tr>
@@ -237,7 +203,7 @@
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ deliverable.customer_name }}</td>
                             <td class="border p-2">{{ deliverable.project_name }}</td>
-                            <td class="border p-2">{{ deliverable.project_phase_name }}</td>
+                            <!-- <td class="border p-2">{{ deliverable.project_phase_name }}</td> -->
                             <td class="border p-2">{{ deliverable.project_deliverable_name }}</td>
                             <td class="border p-2">
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
@@ -296,14 +262,15 @@
             <div class="grid grid-cols-6 gap-4">
                 <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
-                    <select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer" required
-                        class="border p-2 w-full rounded-md" (change)="filterProjectsForPhases()"
-                        [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}">
-                        <option value="" disabled selected>Select Customer</option>
-                        <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                    <ng-select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer"
+                        required (change)="filterProjectsForPhases()"
+                        [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}"
+                        class="custom-ng-select">
+                        <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                        <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
                             {{ customer.customer_name }}
-                        </option>
-                    </select>
+                        </ng-option>
+                    </ng-select>
                     <span class="text-red-500 text-sm"
                         *ngIf="customerField.invalid && (customerField.touched || projectPhaseFormRef.submitted)">
                         Customer is required.
@@ -311,8 +278,8 @@
                 </div> -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Customer Name*</label>
-                    <ng-select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer"
-                        required (change)="filterProjectsForPhases()"
+                    <ng-select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer_id" required
+                        (change)="filterProjectsForPhases()"
                         [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}"
                         class="custom-ng-select">
                         <ng-option [value]="" disabled selected>Select Customer</ng-option>
@@ -329,21 +296,6 @@
                 <!-- Select Project -->
                 <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Select Project*</label>
-                    <select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project" required
-                        class="border p-2 w-full rounded-md"
-                        [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}">
-                        <option value="" disabled selected>Select Project</option>
-                        <option *ngFor="let project of filteredProjects" [value]="project.project_id">
-                            {{ project.project_name }}
-                        </option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="projectField.invalid && (projectField.touched || projectPhaseFormRef.submitted)">
-                        Project is required.
-                    </span>
-                </div> -->
-                <div class="form-group">
-                    <label class="block mb-2 font-semibold">Select Project*</label>
                     <ng-select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project" required
                         [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}"
                         class="custom-ng-select">
@@ -356,10 +308,30 @@
                         *ngIf="projectField.invalid && (projectField.touched || projectPhaseFormRef.submitted)">
                         Project is required.
                     </span>
-                </div>
+                </div> -->
+
+                <!-- Project Selection -->
+            <div class="form-group">
+                <label class="block mb-2 font-semibold">Project*</label>
+                <ng-select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project_id" required
+                    (change)="filterDeliverablesForPhases()"
+                    [disabled]="!projectPhaseForm.customer_id"
+                    [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}"
+                    class="custom-ng-select">
+                    <ng-option [value]="" disabled selected>Select Project</ng-option>
+                    <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                        {{ project.project_name }}
+                    </ng-option>
+                </ng-select>
+                <span class="text-red-500 text-sm"
+                    *ngIf="projectField.invalid && (projectField.touched || projectPhaseFormRef.submitted)">
+                    Project is required.
+                </span>
+            </div>
+    
 
                 <!-- Phase Name -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label class="block mb-2 font-semibold">Project Phase Name*</label>
                     <input type="text" [(ngModel)]="projectPhaseForm.project_phase_name" #phaseField="ngModel"
                         name="phase" required class="border p-2 w-full rounded-md" placeholder="Enter phase name"
@@ -368,7 +340,34 @@
                         *ngIf="phaseField.invalid && (phaseField.touched || projectPhaseFormRef.submitted)">
                         Phase name is required.
                     </span>
+                </div> -->
+                <div class="form-group">
+                    <label class="block mb-2 font-semibold">Deliverable*</label>
+                    <ng-select [(ngModel)]="projectPhaseForm.pd_id" #deliverableField="ngModel" name="pd_id" required
+                        [disabled]="!projectPhaseForm.project_id"
+                        [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectPhaseFormRef.submitted && deliverableField.invalid)}"
+                        class="custom-ng-select">
+                        <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                        <ng-option *ngFor="let deliverable of filteredDeliverables" [value]="deliverable.pd_id">
+                            {{ deliverable.project_deliverable_name }}
+                        </ng-option>
+                    </ng-select>
+                    <span class="text-red-500 text-sm"
+                        *ngIf="deliverableField.invalid && (deliverableField.touched || projectPhaseFormRef.submitted)">
+                        Deliverable is required.
+                    </span>
                 </div>
+                  <!-- Phase Name -->
+            <div class="form-group">
+                <label class="block mb-2 font-semibold">Phase Name*</label>
+                <input type="text" [(ngModel)]="projectPhaseForm.project_phase_name" #phaseField="ngModel"
+                    name="project_phase_name" required class="border p-2 w-full rounded-md" placeholder="Enter phase name"
+                    [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectPhaseFormRef.submitted && phaseField.invalid)}" />
+                <span class="text-red-500 text-sm"
+                    *ngIf="phaseField.invalid && (phaseField.touched || projectPhaseFormRef.submitted)">
+                    Phase name is required.
+                </span>
+            </div>
             </div>
 
             <!-- Save Button -->
@@ -384,16 +383,6 @@
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
 
                     <!-- Customer Name Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Customer</label>
-                        <select [(ngModel)]="phaseCustomerFilter" (change)="applyPhaseFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Customers</option>
-                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
-                                {{ customer.customer_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <ng-select [(ngModel)]="phaseCustomerFilter" (change)="applyPhaseFilters()"
@@ -404,18 +393,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Project Name Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="phaseProjectFilter" (change)="applyPhaseFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionProject" [value]="project.project_name">
-                                {{ project.project_name }}
-                            </option>
-                        </select>
-                    </div> -->
 
                     <!-- Project Name Filter -->
                     <div class="relative flex-grow">
@@ -429,13 +406,34 @@
                         </ng-select>
                     </div>
 
+                     <!-- Deliverable Filter -->
+                 <!-- Deliverable Filter -->
+                 <div class="relative flex-grow">
+                    <label class="block text-xs font-medium mb-1">Deliverable</label>
+                    <ng-select [(ngModel)]="phaseDeliverableFilter" (change)="applyPhaseFilters()"
+                        class="text-xs custom-ng-select-filter" [clearable]="true" [searchable]="true">
+                        <ng-option [value]="">All Deliverables</ng-option>
+                        <ng-option *ngFor="let deliverable of optionDeliverables" [value]="deliverable.project_deliverable_name">
+                            {{ deliverable.project_deliverable_name }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+
                     <!-- Phase Name Filter -->
+                    <!-- <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Phase</label>
+                        <input type="text" [(ngModel)]="phaseNameFilter" (input)="applyPhaseFilters()"
+                            placeholder="Search Phase"
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                    </div> -->
+
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Phase</label>
                         <input type="text" [(ngModel)]="phaseNameFilter" (input)="applyPhaseFilters()"
                             placeholder="Search Phase"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
                     </div>
+                    
 
 
 
@@ -454,6 +452,7 @@
                             <th class="border p-2">Sr No</th>
                             <th class="border p-2">Customer Name</th>
                             <th class="border p-2">Project Name</th>
+                            <th class="border p-2">Deliverable</th>
 
                             <th class="border p-2">Phase Name</th>
                             <th class="border p-2">Action</th>
@@ -464,6 +463,7 @@
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ phase.customer_name }}</td>
                             <td class="border p-2">{{ phase.project_name }}</td>
+                            <td class="border p-2">{{ phase.project_deliverable_name }}</td>
 
                             <td class="border p-2">{{ phase.project_phase_name }}</td>
                             <td class="border p-2">
