@@ -100,7 +100,7 @@ export class ManagersHubComponent {
         this.optionProjectManagers = response.projectManagers;
         this.optionReportingManagers = response.reportingManagers;
         this.optionProjectRole = response.projectRole;
-        this.optionDeliverables = response.projectDeliverables ; // Make sure your API returns deliverables
+        this.optionDeliverables = response.projectDeliverables; // Make sure your API returns deliverables
 
         this.filteredProjects = [];
         this.filteredDeliverables = [];
@@ -127,16 +127,16 @@ export class ManagersHubComponent {
 
 
   // Update the filter method
-filterProjectsByCustomerForDeliverable(): void {
-  if (this.projectDeliverableForm.customer_id) {
+  filterProjectsByCustomerForDeliverable(): void {
+    if (this.projectDeliverableForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(
-          project => project.customer_id == this.projectDeliverableForm.customer_id
+        project => project.customer_id == this.projectDeliverableForm.customer_id
       );
-  } else {
+    } else {
       this.filteredProjects = [];
       this.projectDeliverableForm.project_id = null; // Reset project selection
+    }
   }
-}
 
   filterPhasesByProject(): void {
     const selectedProjectId = Number(this.selectedProjectId);
@@ -201,7 +201,7 @@ filterProjectsByCustomerForDeliverable(): void {
     project_id: null, // Foreign key reference
     project_name: '',
     customer_id: null,
-    customer_name:'',
+    customer_name: '',
     project_deliverable_name: '',
     planned_start_date: '', // Format as 'YYYY-MM-DD' if needed
     actual_start_date: '', // Format as 'YYYY-MM-DD' if needed
@@ -267,43 +267,43 @@ filterProjectsByCustomerForDeliverable(): void {
 
     // Prepare the data to send
     const deliverableData = {
-        customer_id: this.projectDeliverableForm.customer_id,
-        project_id: this.projectDeliverableForm.project_id,
-        project_deliverable_name: this.projectDeliverableForm.project_deliverable_name
+      customer_id: this.projectDeliverableForm.customer_id,
+      project_id: this.projectDeliverableForm.project_id,
+      project_deliverable_name: this.projectDeliverableForm.project_deliverable_name
     };
 
     this.dataService.addProjectDeliverable(deliverableData).subscribe({
-        next: (response) => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Deliverable added successfully!',
-                showConfirmButton: false,
-                timer: 3000
-            });
-            form.resetForm();
-            this.projectDeliverableForm = {
-                customer_id: null,
-                project_id: null,
-                project_deliverable_name: ''
-            };
-            this.fetchProjectDeliverables();
-            this.fetchOptions();
-        },
-        error: (error) => {
-            console.error('Error adding deliverable:', error);
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'Error adding deliverable!',
-                showConfirmButton: false,
-                timer: 3000
-            });
-        }
+      next: (response) => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Deliverable added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        form.resetForm();
+        this.projectDeliverableForm = {
+          customer_id: null,
+          project_id: null,
+          project_deliverable_name: ''
+        };
+        this.fetchProjectDeliverables();
+        this.fetchOptions();
+      },
+      error: (error) => {
+        console.error('Error adding deliverable:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding deliverable!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
     });
-}
+  }
   // Apply Filters for Project Deliverables
   applyDeliverableFilters(): void {
     this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
@@ -368,7 +368,7 @@ filterProjectsByCustomerForDeliverable(): void {
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
 
- 
+
 
   deleteProjectDeliverable(deliverableId: number): void {
     Swal.fire({
@@ -423,26 +423,26 @@ filterProjectsByCustomerForDeliverable(): void {
   // For Project Phases
   filterProjectsForPhases(): void {
     if (this.projectPhaseForm.customer_id) {
-        this.filteredProjects = this.optionProject.filter(
-            project => project.customer_id == this.projectPhaseForm.customer_id
-        );
-    } else {
-        this.filteredProjects = [];
-        this.projectPhaseForm.project_id = null;
-        this.filteredDeliverables = [];
-        this.projectPhaseForm.pd_id = null;
-    }
-}
-filterDeliverablesForPhases(): void {
-  if (this.projectPhaseForm.project_id) {
-      this.filteredDeliverables = this.optionDeliverables.filter(
-          deliverable => deliverable.project_id == this.projectPhaseForm.project_id
+      this.filteredProjects = this.optionProject.filter(
+        project => project.customer_id == this.projectPhaseForm.customer_id
       );
-  } else {
+    } else {
+      this.filteredProjects = [];
+      this.projectPhaseForm.project_id = null;
       this.filteredDeliverables = [];
       this.projectPhaseForm.pd_id = null;
+    }
   }
-}
+  filterDeliverablesForPhases(): void {
+    if (this.projectPhaseForm.project_id) {
+      this.filteredDeliverables = this.optionDeliverables.filter(
+        deliverable => deliverable.project_id == this.projectPhaseForm.project_id
+      );
+    } else {
+      this.filteredDeliverables = [];
+      this.projectPhaseForm.pd_id = null;
+    }
+  }
   // Pagination and Filtering Variables
   phaseCurrentPage: number = 1;
   phaseTotalItems: number = 0;
@@ -455,15 +455,15 @@ filterDeliverablesForPhases(): void {
   phaseNameFilter: string = '';
   phaseCustomerFilter: string = '';
   phaseProjectFilter: string = '';
-  phaseDeliverableFilter:string = '';
+  phaseDeliverableFilter: string = '';
   filteredDeliverables: any[] = [];
-optionDeliverables: any[] = [];
+  optionDeliverables: any[] = [];
 
   // Form Model
   projectPhaseForm: any = {
     customer_id: null,
     project_id: null,
-        pd_id: null,
+    pd_id: null,
 
     project_phase_name: ''
   };
@@ -488,7 +488,7 @@ optionDeliverables: any[] = [];
   submitProjectPhase(projectPhaseFormRef: NgForm): void {
     if (projectPhaseFormRef.invalid) return;
 
-    
+
 
     this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
       (response) => {
@@ -562,6 +562,7 @@ optionDeliverables: any[] = [];
       return (
         (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
         (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
+        (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
         (!this.phaseNameFilter ||
           phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
       );
