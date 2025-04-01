@@ -24,10 +24,10 @@ export class FillTimesheetComponent {
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
     // Fetch user ID from localStorage
-    const storedUserId = localStorage.getItem('user_id'); // Fetch user_id from local storage
+    const storedUserId = localStorage.getItem('user_id'); 
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
-      this.userId = Number(storedUserId); // Convert to number
+      this.userId = Number(storedUserId); 
       console.log('User ID successfully set:', this.userId);
       this.timesheetService.getAssignedCustomersAndProjects(this.userId).subscribe(
         (response) => {
@@ -49,7 +49,7 @@ export class FillTimesheetComponent {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Fetched Data:', response);
-        this.optionProjectDeliverables = response.projectDeliverables; // Keep all deliverables intact
+        this.optionProjectDeliverables = response.projectDeliverables; 
         this.optionPhases = response.phases
       },
       (error) => {
@@ -58,7 +58,6 @@ export class FillTimesheetComponent {
     );
   }
 
-  // Edit modal properties
   isEditModalOpen = false;
   editTimesheetId: number | null = null;
   editSelectedDate: string = '';
@@ -145,7 +144,6 @@ export class FillTimesheetComponent {
     }
   }
 
-  // Change handlers for edit modal
   onEditCustomerChange(): void {
     if (this.editSelectedCustomer) {
       this.filterOptionProjects = this.optionProjects.filter(
@@ -165,7 +163,6 @@ export class FillTimesheetComponent {
     }
   }
 
-  // Update Timesheet
   updateTimesheet(form: NgForm): void {
     if (!form.valid || !this.editTimesheetId) {
       Swal.fire({
@@ -251,7 +248,6 @@ export class FillTimesheetComponent {
     return hoursDifference <= 24;
   }
 
-  // Helper method to format date
   formatDate(dateString: string): string {
     if (!dateString) return '';
 

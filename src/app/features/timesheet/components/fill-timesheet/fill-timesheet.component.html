@@ -2,12 +2,10 @@
     <!-- Button to open the modal -->
     <h3 class="text-xl font-semibold mb-4">Fill Timesheet</h3>
 
-    <!-- Scrollable Form -->
     <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(timesheetForm); $event.preventDefault()">
         <div class="grid grid-cols-5 gap-4">
-            <!-- First Row (Full Width) -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Filling Timesheet for</label>
+                <label class="block mb-2 font-semibold">Filling Timesheet for </label>
                 <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="selectedDate"
                     (change)="onDateChange()" [min]="minDate" [max]="maxDate" name="selectedDate"
                     #selectedDateInput="ngModel" required
@@ -18,9 +16,8 @@
                 </span>
             </div>
 
-            <!-- Second Row (Customer & Project) -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Customer</label>
+                <label class="block mb-2 font-semibold">Select Customer*</label>
                 <ng-select class="custom-ng-select" [(ngModel)]="selectedCustomer" name="selectedCustomer"
                     #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required
                     [ngClass]="{'border-red-500': (selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)}">
@@ -36,7 +33,7 @@
             </div>
 
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Project</label>
+                <label class="block mb-2 font-semibold">Select Project*</label>
                 <ng-select class="custom-ng-select" [(ngModel)]="selectedProject" name="selectedProject"
                     #selectedProjectInput="ngModel" [disabled]="!selectedCustomer" (change)="onProjectChange()" required
                     [ngClass]="{'border-red-500': (selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)}">
@@ -54,7 +51,7 @@
 
             <!-- Deliverable Selection -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Deliverable</label>
+                <label class="block mb-2 font-semibold">Select Deliverable*</label>
                 <ng-select class="custom-ng-select" [(ngModel)]="selectedDeliverable" name="selectedDeliverable"
                     #selectedDeliverableInput="ngModel" [disabled]="!selectedProject" (change)="onDeliverableChange()"
                     required
@@ -72,7 +69,7 @@
 
             <!-- Phase Selection -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Phase</label>
+                <label class="block mb-2 font-semibold">Select Phase*</label>
                 <ng-select class="custom-ng-select" [(ngModel)]="selectedPhase" name="selectedPhase"
                     #selectedPhaseInput="ngModel" [disabled]="!selectedDeliverable" required
                     [ngClass]="{'border-red-500': (selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)}">
@@ -90,7 +87,7 @@
 
             <!-- Fourth Row (Full Width - Task Description) -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Task Description</label>
+                <label class="block mb-2 font-semibold">Task Description*</label>
                 <textarea class="border p-2 w-full rounded-md" [(ngModel)]="taskDescription" name="taskDescription"
                     #taskDescriptionInput="ngModel" rows="3" required
                     [ngClass]="{'border-red-500': (taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)}"></textarea>
@@ -102,7 +99,7 @@
 
             <!-- Fifth Row (Hours & Minutes) -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Hours</label>
+                <label class="block mb-2 font-semibold">Hours*</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedHours" name="selectedHours"
                     #selectedHoursInput="ngModel" required
                     [ngClass]="{'border-red-500': (selectedHoursInput.invalid && selectedHoursInput.touched) || (timesheetForm.submitted && selectedHoursInput.invalid)}">
@@ -115,7 +112,7 @@
             </div>
 
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Minutes</label>
+                <label class="block mb-2 font-semibold">Minutes*</label>
                 <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedMinutes" name="selectedMinutes"
                     #selectedMinutesInput="ngModel" required
                     [ngClass]="{'border-red-500': (selectedMinutesInput.invalid && selectedMinutesInput.touched) || (timesheetForm.submitted && selectedMinutesInput.invalid)}">
@@ -129,7 +126,7 @@
 
             <!-- Sixth Row (Full Width - Task Status) -->
             <div class="form-group">
-                <label class="block mb-2 font-semibold">Task Status</label>
+                <label class="block mb-2 font-semibold">Task Status*</label>
                 <div class="flex items-center space-x-3">
                     <span class="text-sm font-medium" [class.text-gray-500]="selectedTaskStatus === 0"
                         [class.text-green-600]="selectedTaskStatus === 1">
