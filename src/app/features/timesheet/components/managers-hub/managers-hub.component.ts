@@ -64,26 +64,6 @@ export class ManagersHubComponent {
     this.fetchReportingTeamData();
     this.fetchReportingTeamsTimesheet();
     this.fetchOptions();
-
-    // this.dataService.getOptions().subscribe(
-    //   (response) => {
-    //     console.log('Roles, Departments, Users, and Customers:', response);
-    //     this.optionUsers = response.users;
-    //     this.optionCustomers = response.customers;
-    //     this.optionTypeOfEngagement = response.typeOfEngagement;
-    //     this.optionTypeOfProject = response.typeOfProject;
-    //     this.optionProjectStatus = response.projectStatus;
-    //     this.optionProject = response.projects;
-    //     this.optionPhases = response.phases;
-    //     this.optionProjectManagers = response.projectManagers;
-    //     this.optionReportingManagers = response.reportingManagers;
-    //     this.optionProjectRole = response.projectRole;
-    //     this.filteredProjects = [];
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching data', error);
-    //   }
-    // );
   }
 
   fetchOptions() {
@@ -112,21 +92,20 @@ export class ManagersHubComponent {
     );
   }
 
-  filterProjectsByCustomer(): void {
-    const selectedCustomerId = Number(this.selectedCustomerId);
-    if (selectedCustomerId) {
-      this.filteredProjects = this.optionProject.filter(
-        (project) => Number(project.customer_id) === selectedCustomerId
-      );
-    } else {
-      this.filteredProjects = []; // Reset if no customer is selected
-    }
-    this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
-  }
+  // filterProjectsByCustomer(): void {
+  //   const selectedCustomerId = Number(this.selectedCustomerId);
+  //   if (selectedCustomerId) {
+  //     this.filteredProjects = this.optionProject.filter(
+  //       (project) => Number(project.customer_id) === selectedCustomerId
+  //     );
+  //   } else {
+  //     this.filteredProjects = []; // Reset if no customer is selected
+  //   }
+  //   this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
+  // }
 
 
 
-  // Update the filter method
   filterProjectsByCustomerForDeliverable(): void {
     if (this.projectDeliverableForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(

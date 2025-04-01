@@ -19,9 +19,6 @@ export class ProjectComponent {
 
   constructor(private dataService: DataService, private http: HttpClient) { }
  
-
-
-
   ngOnInit(): void {
 
     this.selectedSection = 'project';
@@ -526,16 +523,16 @@ getVisibleProjectPageNumbers(): number[] {
 
   // ------------------Project Deliverable------------------------
   filterProjectsByCustomer(): void {
-    const selectedCustomerId = Number(this.selectedCustomerId);
-    if (selectedCustomerId) {
+    if (this.projectDeliverableForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(
-        (project) => Number(project.customer_id) === selectedCustomerId
+        project => project.customer_id == this.projectDeliverableForm.customer_id
       );
     } else {
-      this.filteredProjects = []; // Reset if no customer is selected
+      this.filteredProjects = [];
+      this.projectDeliverableForm.project_id = null;
     }
-    this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
   }
+
   filterPhasesByProject(): void {
     const selectedProjectId = Number(this.selectedProjectId);
     if (selectedProjectId) {
@@ -562,9 +559,11 @@ getVisibleProjectPageNumbers(): number[] {
 
 
   projectDeliverableForm: any = {
-    phase_id: '',
-    project_deliverable_name: '',
+    customer_id: null,
+    project_id: null,
+    project_deliverable_name: ''
   };
+  
   projectDeliverables: any[] = [];
   filteredPhases: any[] = [];
   selectedCustomerId: number | null = null;
@@ -598,38 +597,40 @@ getVisibleProjectPageNumbers(): number[] {
     );
   }
 
-  submitProjectDeliverable(projectDeliverableFormRef: NgForm): void {
-    if (projectDeliverableFormRef.invalid) return;
-  
-    this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
-      (response) => {
-        console.log('Project deliverable added successfully:', response);
-        this.fetchProjectDeliverables(); // Refresh the list
+submitProjectDeliverable(form: NgForm): void {
+    if (form.invalid) return;
+
+    this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe({
+      next: (response) => {
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
-          title: 'Project deliverable added successfully!',
+          title: 'Deliverable added successfully!',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 3000
         });
-        projectDeliverableFormRef.resetForm();
+        form.resetForm();
+        this.projectDeliverableForm = {
+          customer_id: null,
+          project_id: null,
+          project_deliverable_name: ''
+        };
+        this.fetchProjectDeliverables();
         this.fetchOptions();
-
-        
       },
-      (error) => {
-        console.error('Error adding project deliverable', error);
+      error: (error) => {
+        console.error('Error adding deliverable:', error);
         Swal.fire({
           toast: true,
           position: 'top-end',
           icon: 'error',
-          title: 'Error adding project deliverable!',
+          title: 'Error adding deliverable!',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 3000
         });
       }
-    );
+    });
   }
 
   deleteProjectDeliverable(deliverableId: number): void {
@@ -681,11 +682,10 @@ getVisibleProjectPageNumbers(): number[] {
 applyDeliverableFilters(): void {
   this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
     return (
-      (this.deliverableNameFilter ? deliverable.pd_id === +this.deliverableNameFilter : true) &&
+      (!this.deliverableNameFilter ||
+        deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()))&&
       (this.customerNameFilter ? deliverable.customer_id === +this.customerNameFilter : true) &&
-      (this.projectNameFilter ? deliverable.project_id === +this.projectNameFilter : true) &&
-      (this.phaseNameFiltered ? deliverable.phase_id === +this.phaseNameFiltered : true)
-    
+      (this.projectNameFilter ? deliverable.project_id === +this.projectNameFilter : true)     
     );
   });
 
