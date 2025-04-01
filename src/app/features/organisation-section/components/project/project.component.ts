@@ -18,7 +18,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 export class ProjectComponent {
 
   constructor(private dataService: DataService, private http: HttpClient) { }
- 
+
   ngOnInit(): void {
 
     this.selectedSection = 'project';
@@ -28,42 +28,19 @@ export class ProjectComponent {
 
     // Listen for changes (e.g., when clicking Project Deliverable)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
-    
+
     // this.fetchTaskCategories();
     this.fetchProjects();
     this.fetchProjectDeliverables();
     this.fetchProjectPhases();
-    this.fetchOptions(); // Call the new function instead of having the logic here
-
-    // this.dataService.getOptions().subscribe(
-    //   (response) => {
-    //     console.log('Roles, Departments, Users, and Customers:', response);
-    //     // this.optionRoles = response.roles;
-    //     // this.optionDepartments = response.departments;
-    //     this.optionUsers = response.users;
-    //     this.optionCustomers = response.customers;  // Store customer data
-    //     this.optionTypeOfEngagement = response.typeOfEngagement;
-    //     this.optionTypeOfProject = response.typeOfProject;
-    //     this.optionProjectStatus = response.projectStatus;
-    //     this.optionProject = response.projects;
-    //     this.optionPhases = response.phases; // Store phases data
-
-
-    //     this.filteredProjects = []; // Initially empty
-
-
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching data', error);
-    //   }
-    // );
+    this.fetchOptions();
   }
 
   fetchOptions(): void {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Roles, Departments, Users, and Customers:', response);
-                // this.optionRoles = response.roles;
+        // this.optionRoles = response.roles;
         // this.optionDepartments = response.departments;
         this.optionUsers = response.users;
         this.optionCustomers = response.customers;
@@ -78,7 +55,7 @@ export class ProjectComponent {
 
         this.optionDeliverables = response.projectDeliverables;
 
-            this.filteredDeliverables = [];
+        this.filteredDeliverables = [];
 
         this.filteredProjects = []; // Initially empty
       },
@@ -117,44 +94,44 @@ export class ProjectComponent {
   // ------------------Project------------------------
 
   projectCurrentPage: number = 1;
-projectTotalItems: number = 0;
-projectItemsPerPage: number = 30; // Adjust as needed
-projectMaxPageButtons: number = 5; // Show only 5 page numbers at a time
-paginatedProjects: any[] = [];
+  projectTotalItems: number = 0;
+  projectItemsPerPage: number = 30; 
+  projectMaxPageButtons: number = 5; // Show only 5 page numbers at a time
+  paginatedProjects: any[] = [];
 
-// Filters for Projects
-projectNameFilterOfProject: string = '';
-projectCustomerNameFilter: string = '';
-projectManagerFilterOfProject: string = '';
-typeOfProjectFilter: string = '';
-typeOfEngagementFilter: string = '';
-projectStatusFilter: string = '';
-plannedStartDateFilter: string = '';
-actualStartDateFilter: string = '';
-tentativeEndDateFilter: string = '';
-projectDescriptionFilter: string = '';
+  // Filters for Projects
+  projectNameFilterOfProject: string = '';
+  projectCustomerNameFilter: string = '';
+  projectManagerFilterOfProject: string = '';
+  typeOfProjectFilter: string = '';
+  typeOfEngagementFilter: string = '';
+  projectStatusFilter: string = '';
+  plannedStartDateFilter: string = '';
+  actualStartDateFilter: string = '';
+  tentativeEndDateFilter: string = '';
+  projectDescriptionFilter: string = '';
 
 
   project = {
-    project_id: null, // Primary key
+    project_id: null,
     project_name: '',
-    customer_id: 'null', // Foreign key reference
+    customer_id: 'null', 
     customer_name: '',
-    project_manager_id: null, // Foreign key reference
+    project_manager_id: null, 
     project_manager: '',
-    type_of_project_id: null, // Foreign key reference
+    type_of_project_id: null, 
     type_of_project: '',
-    type_of_engagement_id: null, // Foreign key reference
+    type_of_engagement_id: null, 
     type_of_engagement: '',
-    project_status_id: null, // Foreign key reference
+    project_status_id: null, 
     project_status: '',
-    planned_start_date: '', // Format as 'YYYY-MM-DD' if needed
-    actual_start_date: '', // Format as 'YYYY-MM-DD' if needed
-    tentative_end_date: '', // Format as 'YYYY-MM-DD' if needed
+    planned_start_date: '', 
+    actual_start_date: '', 
+    tentative_end_date: '', 
     project_description: '',
-    is_deleted: null, // For soft delete
-    created_at: '', // Optional: Track creation date
-    updated_at: '' // Optional: Track last update date
+    is_deleted: null, 
+    created_at: '', 
+    updated_at: '' 
   };
   projects: any[] = [];  // Store the project data
   // Define form object
@@ -177,8 +154,8 @@ projectDescriptionFilter: string = '';
         console.log('Projects Response:', response);
         this.projects = response;
         this.filteredProjects = [...this.projects];
-      this.projectTotalItems = this.filteredProjects.length
-      this.updateProjectPage();
+        this.projectTotalItems = this.filteredProjects.length
+        this.updateProjectPage();
       },
       (error) => {
         console.error('Error fetching projects:', error);
@@ -199,19 +176,19 @@ projectDescriptionFilter: string = '';
       });
       return; // Stop execution if form is invalid
     }
-      // Ensure tentative_end_date is after planned_start_date
-      if (this.projectForm.tentative_end_date && this.projectForm.planned_start_date &&
-        new Date(this.projectForm.tentative_end_date) < new Date(this.projectForm.planned_start_date)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Date Range',
-            text: 'Tentative End Date should be after Planned Start Date!',
-            toast: true,
-            position: 'top-end',
-            timer: 3000,
-            showConfirmButton: false
-        });
-        return;
+    // Ensure tentative_end_date is after planned_start_date
+    if (this.projectForm.tentative_end_date && this.projectForm.planned_start_date &&
+      new Date(this.projectForm.tentative_end_date) < new Date(this.projectForm.planned_start_date)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Date Range',
+        text: 'Tentative End Date should be after Planned Start Date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
     }
 
     this.dataService.addProject(this.projectForm).subscribe(
@@ -294,11 +271,11 @@ projectDescriptionFilter: string = '';
   }
   formatDate(dateString: string): string {
     if (!dateString) return '';
-  
+
     // Convert UTC date to local timezone correctly
     const date = new Date(dateString);
     const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  
+
     // Format as YYYY-MM-DD
     return localDate.toISOString().split('T')[0];
   }
@@ -336,7 +313,7 @@ projectDescriptionFilter: string = '';
     this.isEditProjectModalOpen = true;
     console.log('afsd', this.editProjectFormData)
   }
-  
+
 
   // Close Edit Modal
   closeEditProjectModal(): void {
@@ -393,137 +370,136 @@ projectDescriptionFilter: string = '';
 
 
 
-  filteredProjects: any[] = []; // Store filtered projects
+  filteredProjects: any[] = []; 
 
   // Method to filter projects based on selected customer
   filterProjects(): void {
-    const selectedCustomerId = Number(this.projectDeliverableForm.customer_id); 
-  
+    const selectedCustomerId = Number(this.projectDeliverableForm.customer_id);
+
     console.log("Selected Customer ID:", selectedCustomerId);
     console.log("Available Projects:", this.optionProject);
-  
+
     if (selectedCustomerId) {
       this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
       console.log("Filtered Projects:", this.filteredProjects);
     } else {
       this.filteredProjects = []; // No customer selected, show empty
     }
-  
-    // Trigger Angular Change Detection
-    this.filteredProjects = [...this.filteredProjects];  
+
+    this.filteredProjects = [...this.filteredProjects];
   }
-  
-  
-// Apply Filters for Projects
-// Apply Filters
-applyProjectFilters(): void {
 
-  this.filteredProjects = this.projects.filter(project => {
-    return (
-      (this.projectNameFilterOfProject ? project.project_id === +this.projectNameFilterOfProject : true) &&
-      (this.projectCustomerNameFilter ? project.customer_id === +this.projectCustomerNameFilter : true) &&
-      (this.projectManagerFilterOfProject ? project.project_manager_id === +this.projectManagerFilterOfProject : true) &&
-      (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Use ID for filtering
-      (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Use ID for filtering
-      (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Use ID for filtering
-      (this.plannedStartDateFilter ? this.formatDate(project.planned_start_date) === this.plannedStartDateFilter : true) &&
-      (this.actualStartDateFilter ? this.formatDate(project.actual_start_date) === this.actualStartDateFilter : true) &&
-      (this.tentativeEndDateFilter ? this.formatDate(project.tentative_end_date) === this.tentativeEndDateFilter : true) &&
-      (this.projectDescriptionFilter ? project.project_description?.toLowerCase().includes(this.projectDescriptionFilter.toLowerCase()) : true)
-    );
-  });
 
-  console.log('Filtered Projects:', this.filteredProjects);
-  this.projectTotalItems = this.filteredProjects.length;
-  this.projectCurrentPage = 1;
-  this.updateProjectPage();
-}
-// Clear Filters for Projects
-clearProjectFilters(): void {
-  this.projectNameFilterOfProject = '';
-  this.projectCustomerNameFilter = '';
-  this.projectManagerFilterOfProject = '';
-  this.typeOfProjectFilter = '';
-  this.typeOfEngagementFilter = '';
-  this.projectStatusFilter = '';
-  this.plannedStartDateFilter = '';
-  this.actualStartDateFilter = '';
-  this.tentativeEndDateFilter = '';
-  this.projectDescriptionFilter = '';
-  this.applyProjectFilters();
-}
+  // Apply Filters for Projects
+  // Apply Filters
+  applyProjectFilters(): void {
 
-// Clear Individual Filter for Projects
-// Clear Individual Filter
-clearProjectFilter(filterName: string): void {
-  switch (filterName) {
-    case 'projectNameFilterOfProject':
-      this.projectNameFilterOfProject = '';
-      break;
-    case 'projectCustomerNameFilter':
-      this.projectCustomerNameFilter = '';
-      break;
-    case 'projectManagerFilterOfProject':
-      this.projectManagerFilterOfProject = '';
-      break;
-    case 'typeOfProjectFilter':
-      this.typeOfProjectFilter = '';
-      break;
-    case 'typeOfEngagementFilter':
-      this.typeOfEngagementFilter = '';
-      break;
-    case 'projectStatusFilter':
-      this.projectStatusFilter = '';
-      break;
-    case 'plannedStartDateFilter':
-      this.plannedStartDateFilter = '';
-      break;
-    case 'actualStartDateFilter':
-      this.actualStartDateFilter = '';
-      break;
-    case 'tentativeEndDateFilter':
-      this.tentativeEndDateFilter = '';
-      break;
-    case 'projectDescriptionFilter':
-      this.projectDescriptionFilter = '';
-      break;
-  }
-  this.applyProjectFilters(); // Reapply filters after clearing
-}
+    this.filteredProjects = this.projects.filter(project => {
+      return (
+        (this.projectNameFilterOfProject ? project.project_id === +this.projectNameFilterOfProject : true) &&
+        (this.projectCustomerNameFilter ? project.customer_id === +this.projectCustomerNameFilter : true) &&
+        (this.projectManagerFilterOfProject ? project.project_manager_id === +this.projectManagerFilterOfProject : true) &&
+        (this.typeOfProjectFilter ? project.type_of_project_id === +this.typeOfProjectFilter : true) && // Use ID for filtering
+        (this.typeOfEngagementFilter ? project.type_of_engagement_id === +this.typeOfEngagementFilter : true) && // Use ID for filtering
+        (this.projectStatusFilter ? project.project_status_id === +this.projectStatusFilter : true) && // Use ID for filtering
+        (this.plannedStartDateFilter ? this.formatDate(project.planned_start_date) === this.plannedStartDateFilter : true) &&
+        (this.actualStartDateFilter ? this.formatDate(project.actual_start_date) === this.actualStartDateFilter : true) &&
+        (this.tentativeEndDateFilter ? this.formatDate(project.tentative_end_date) === this.tentativeEndDateFilter : true) &&
+        (this.projectDescriptionFilter ? project.project_description?.toLowerCase().includes(this.projectDescriptionFilter.toLowerCase()) : true)
+      );
+    });
 
-// Pagination Logic for Projects
-updateProjectPage(): void {
-  const startIndex = (this.projectCurrentPage - 1) * this.projectItemsPerPage;
-  const endIndex = startIndex + this.projectItemsPerPage;
-  this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
-  console.log('Paginated Projects:', this.paginatedProjects); // <-- Add this line
-}
-
-changeProjectPage(page: number): void {
-  if (page >= 1 && page <= this.projectTotalPages) {
-    this.projectCurrentPage = page;
+    console.log('Filtered Projects:', this.filteredProjects);
+    this.projectTotalItems = this.filteredProjects.length;
+    this.projectCurrentPage = 1;
     this.updateProjectPage();
   }
-}
-
-get projectTotalPages(): number {
-  return Math.ceil(this.filteredProjects.length / this.projectItemsPerPage);
-}
-
-getVisibleProjectPageNumbers(): number[] {
-  const totalPages = this.projectTotalPages;
-  const halfRange = Math.floor(this.projectMaxPageButtons / 2);
-
-  let startPage = Math.max(1, this.projectCurrentPage - halfRange);
-  let endPage = Math.min(totalPages, startPage + this.projectMaxPageButtons - 1);
-
-  if (endPage - startPage + 1 < this.projectMaxPageButtons) {
-    startPage = Math.max(1, endPage - this.projectMaxPageButtons + 1);
+  // Clear Filters for Projects
+  clearProjectFilters(): void {
+    this.projectNameFilterOfProject = '';
+    this.projectCustomerNameFilter = '';
+    this.projectManagerFilterOfProject = '';
+    this.typeOfProjectFilter = '';
+    this.typeOfEngagementFilter = '';
+    this.projectStatusFilter = '';
+    this.plannedStartDateFilter = '';
+    this.actualStartDateFilter = '';
+    this.tentativeEndDateFilter = '';
+    this.projectDescriptionFilter = '';
+    this.applyProjectFilters();
   }
 
-  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-}
- 
+  // Clear Individual Filter for Projects
+  // Clear Individual Filter
+  clearProjectFilter(filterName: string): void {
+    switch (filterName) {
+      case 'projectNameFilterOfProject':
+        this.projectNameFilterOfProject = '';
+        break;
+      case 'projectCustomerNameFilter':
+        this.projectCustomerNameFilter = '';
+        break;
+      case 'projectManagerFilterOfProject':
+        this.projectManagerFilterOfProject = '';
+        break;
+      case 'typeOfProjectFilter':
+        this.typeOfProjectFilter = '';
+        break;
+      case 'typeOfEngagementFilter':
+        this.typeOfEngagementFilter = '';
+        break;
+      case 'projectStatusFilter':
+        this.projectStatusFilter = '';
+        break;
+      case 'plannedStartDateFilter':
+        this.plannedStartDateFilter = '';
+        break;
+      case 'actualStartDateFilter':
+        this.actualStartDateFilter = '';
+        break;
+      case 'tentativeEndDateFilter':
+        this.tentativeEndDateFilter = '';
+        break;
+      case 'projectDescriptionFilter':
+        this.projectDescriptionFilter = '';
+        break;
+    }
+    this.applyProjectFilters(); // Reapply filters after clearing
+  }
+
+  // Pagination Logic for Projects
+  updateProjectPage(): void {
+    const startIndex = (this.projectCurrentPage - 1) * this.projectItemsPerPage;
+    const endIndex = startIndex + this.projectItemsPerPage;
+    this.paginatedProjects = this.filteredProjects.slice(startIndex, endIndex);
+    console.log('Paginated Projects:', this.paginatedProjects); // <-- Add this line
+  }
+
+  changeProjectPage(page: number): void {
+    if (page >= 1 && page <= this.projectTotalPages) {
+      this.projectCurrentPage = page;
+      this.updateProjectPage();
+    }
+  }
+
+  get projectTotalPages(): number {
+    return Math.ceil(this.filteredProjects.length / this.projectItemsPerPage);
+  }
+
+  getVisibleProjectPageNumbers(): number[] {
+    const totalPages = this.projectTotalPages;
+    const halfRange = Math.floor(this.projectMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.projectCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.projectMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.projectMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.projectMaxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
 
   // ------------------Project Deliverable------------------------
   filterProjectsByCustomer(): void {
@@ -554,7 +530,7 @@ getVisibleProjectPageNumbers(): number[] {
   deliverableMaxPageButtons: number = 5; // Show only 5 page numbers at a time
   filteredProjectDeliverables: any[] = [];
   paginatedProjectDeliverables: any[] = [];
-  
+
   // Filters for Project Deliverables
   deliverableNameFilter: string = '';
   customerNameFilter: string = '';
@@ -571,12 +547,12 @@ getVisibleProjectPageNumbers(): number[] {
     project_id: null,
     project_deliverable_name: ''
   };
-  
+
   projectDeliverables: any[] = [];
   filteredPhases: any[] = [];
   selectedCustomerId: number | null = null;
-  selectedProjectId: number | null = null; 
-  
+  selectedProjectId: number | null = null;
+
   projectDeliverable = {
     pd_id: null, // Primary key
     project_id: null, // Foreign key reference
@@ -605,7 +581,7 @@ getVisibleProjectPageNumbers(): number[] {
     );
   }
 
-submitProjectDeliverable(form: NgForm): void {
+  submitProjectDeliverable(form: NgForm): void {
     if (form.invalid) return;
 
     this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe({
@@ -685,117 +661,117 @@ submitProjectDeliverable(form: NgForm): void {
       }
     });
   }
-  
-// Apply Filters for Project Deliverables
-applyDeliverableFilters(): void {
-  this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
-    return (
-      (!this.deliverableNameFilter ||
-        deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase()))&&
-      (this.customerNameFilter ? deliverable.customer_id === +this.customerNameFilter : true) &&
-      (this.projectNameFilter ? deliverable.project_id === +this.projectNameFilter : true)     
-    );
-  });
 
-  this.deliverableTotalItems = this.filteredProjectDeliverables.length;
-  this.deliverableCurrentPage = 1;
-  this.updateDeliverablePage();
-}
+  // Apply Filters for Project Deliverables
+  applyDeliverableFilters(): void {
+    this.filteredProjectDeliverables = this.projectDeliverables.filter(deliverable => {
+      return (
+        (!this.deliverableNameFilter ||
+          deliverable.project_deliverable_name.toLowerCase().includes(this.deliverableNameFilter.toLowerCase())) &&
+        (this.customerNameFilter ? deliverable.customer_id === +this.customerNameFilter : true) &&
+        (this.projectNameFilter ? deliverable.project_id === +this.projectNameFilter : true)
+      );
+    });
 
-// Clear Filters for Project Deliverables
-clearDeliverableFilters(): void {
-  this.deliverableNameFilter = '';
-  this.customerNameFilter = '';
-  this.projectNameFilter = '';
-  this.phaseNameFiltered='';
-  this.applyDeliverableFilters();
-}
-
-// Clear Individual Filter for Project Deliverables
-clearDeliverableFilter(filterName: string): void {
-  switch (filterName) {
-    case 'deliverableNameFilter':
-      this.deliverableNameFilter = '';
-      break;
-    case 'customerNameFilter':
-      this.customerNameFilter = '';
-      break;
-    case 'projectNameFilter':
-      this.projectNameFilter = '';
-      break;
-      case 'phaseNameFiltered': // New Case
-      this.phaseNameFiltered = '';
-      break;
-  }
-  this.applyDeliverableFilters(); // Reapply filters after clearing
-}
-
-// Pagination Logic for Project Deliverables
-updateDeliverablePage(): void {
-  const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
-  const endIndex = startIndex + this.deliverableItemsPerPage;
-  this.paginatedProjectDeliverables = this.filteredProjectDeliverables.slice(startIndex, endIndex);
-}
-
-changeDeliverablePage(page: number): void {
-  if (page >= 1 && page <= this.deliverableTotalPages) {
-    this.deliverableCurrentPage = page;
+    this.deliverableTotalItems = this.filteredProjectDeliverables.length;
+    this.deliverableCurrentPage = 1;
     this.updateDeliverablePage();
   }
-}
 
-get deliverableTotalPages(): number {
-  return Math.ceil(this.filteredProjectDeliverables.length / this.deliverableItemsPerPage);
-}
-
-getVisibleDeliverablePageNumbers(): number[] {
-  const totalPages = this.deliverableTotalPages;
-  const halfRange = Math.floor(this.deliverableMaxPageButtons / 2);
-
-  let startPage = Math.max(1, this.deliverableCurrentPage - halfRange);
-  let endPage = Math.min(totalPages, startPage + this.deliverableMaxPageButtons - 1);
-
-  if (endPage - startPage + 1 < this.deliverableMaxPageButtons) {
-    startPage = Math.max(1, endPage - this.deliverableMaxPageButtons + 1);
+  // Clear Filters for Project Deliverables
+  clearDeliverableFilters(): void {
+    this.deliverableNameFilter = '';
+    this.customerNameFilter = '';
+    this.projectNameFilter = '';
+    this.phaseNameFiltered = '';
+    this.applyDeliverableFilters();
   }
 
-  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-}
+  // Clear Individual Filter for Project Deliverables
+  clearDeliverableFilter(filterName: string): void {
+    switch (filterName) {
+      case 'deliverableNameFilter':
+        this.deliverableNameFilter = '';
+        break;
+      case 'customerNameFilter':
+        this.customerNameFilter = '';
+        break;
+      case 'projectNameFilter':
+        this.projectNameFilter = '';
+        break;
+      case 'phaseNameFiltered': // New Case
+        this.phaseNameFiltered = '';
+        break;
+    }
+    this.applyDeliverableFilters(); // Reapply filters after clearing
+  }
 
-  
+  // Pagination Logic for Project Deliverables
+  updateDeliverablePage(): void {
+    const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
+    const endIndex = startIndex + this.deliverableItemsPerPage;
+    this.paginatedProjectDeliverables = this.filteredProjectDeliverables.slice(startIndex, endIndex);
+  }
+
+  changeDeliverablePage(page: number): void {
+    if (page >= 1 && page <= this.deliverableTotalPages) {
+      this.deliverableCurrentPage = page;
+      this.updateDeliverablePage();
+    }
+  }
+
+  get deliverableTotalPages(): number {
+    return Math.ceil(this.filteredProjectDeliverables.length / this.deliverableItemsPerPage);
+  }
+
+  getVisibleDeliverablePageNumbers(): number[] {
+    const totalPages = this.deliverableTotalPages;
+    const halfRange = Math.floor(this.deliverableMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.deliverableCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.deliverableMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.deliverableMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.deliverableMaxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+
 
 
   // ----------- project Phase ------------------
 
   // Add these to your component class
-filteredDeliverables: any[] = [];
-optionDeliverables: any[] = [];
+  filteredDeliverables: any[] = [];
+  optionDeliverables: any[] = [];
 
 
-// For Project Phases
-filterProjectsForPhases(): void {
-  if (this.projectPhaseForm.customer_id) {
+  // For Project Phases
+  filterProjectsForPhases(): void {
+    if (this.projectPhaseForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(
-          project => project.customer_id == this.projectPhaseForm.customer_id
+        project => project.customer_id == this.projectPhaseForm.customer_id
       );
-  } else {
+    } else {
       this.filteredProjects = [];
       this.projectPhaseForm.project_id = null;
       this.filteredDeliverables = [];
       this.projectPhaseForm.pd_id = null;
+    }
   }
-}
 
-filterDeliverablesForPhases(): void {
-  if (this.projectPhaseForm.project_id) {
+  filterDeliverablesForPhases(): void {
+    if (this.projectPhaseForm.project_id) {
       this.filteredDeliverables = this.optionDeliverables.filter(
-          deliverable => deliverable.project_id == this.projectPhaseForm.project_id
+        deliverable => deliverable.project_id == this.projectPhaseForm.project_id
       );
-  } else {
+    } else {
       this.filteredDeliverables = [];
       this.projectPhaseForm.pd_id = null;
+    }
   }
-}
   // Pagination and Filtering Variables
   phaseCurrentPage: number = 1;
   phaseTotalItems: number = 0;
@@ -968,180 +944,6 @@ filterDeliverablesForPhases(): void {
 
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
-
-
-  // ------------------Project task category ------------------------
-
-  // taskCategoryCurrentPage: number = 1;
-  // taskCategoryTotalItems: number = 0;
-  // taskCategoryItemsPerPage: number = 30; 
-  // taskCategoryMaxPageButtons: number = 5; 
-  // filteredTaskCategories: any[] = [];
-  // paginatedTaskCategories: any[] = [];
-  //   taskCategoryNameFilter: string = '';
-
-  // taskCategories: any[] = [];
-  // taskCategoryForm = { task_category_name: '' };
-
-  // fetchTaskCategories(): void {
-  //   this.dataService.getAllTaskCategories().subscribe(
-  //     (response) => {
-  //       this.taskCategories = response;
-  //       this.filteredTaskCategories = [...this.taskCategories];
-  //       this.taskCategoryTotalItems = this.filteredTaskCategories.length;
-  //       this.updateTaskCategoryPage();
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching task categories:', error);
-  //     }
-  //   );
-  // }
-  
-  // applyTaskCategoryFilters(): void {
-  //   this.filteredTaskCategories = this.taskCategories.filter(task => {
-  //     return (
-  //       (this.taskCategoryNameFilter ? task.task_category_name.toLowerCase().includes(this.taskCategoryNameFilter.toLowerCase()) : true)
-  //     );
-  //   });
-
-  //   this.taskCategoryTotalItems = this.filteredTaskCategories.length;
-  //   this.taskCategoryCurrentPage = 1;
-  //   this.updateTaskCategoryPage();
-  // }
-
-  // clearTaskCategoryFilters(): void {
-  //   this.taskCategoryNameFilter = '';
-  //   this.applyTaskCategoryFilters();
-  // }
-
-  // clearTaskCategoryFilter(filterName: string): void {
-  //   switch (filterName) {
-  //     case 'taskCategoryNameFilter':
-  //       this.taskCategoryNameFilter = '';
-  //       break;
-  //   }
-  //   this.applyTaskCategoryFilters(); 
-  // }
-
-  // updateTaskCategoryPage(): void {
-  //   const startIndex = (this.taskCategoryCurrentPage - 1) * this.taskCategoryItemsPerPage;
-  //   const endIndex = startIndex + this.taskCategoryItemsPerPage;
-  //   this.paginatedTaskCategories = this.filteredTaskCategories.slice(startIndex, endIndex);
-  // }
-
-  // changeTaskCategoryPage(page: number): void {
-  //   if (page >= 1 && page <= this.taskCategoryTotalPages) {
-  //     this.taskCategoryCurrentPage = page;
-  //     this.updateTaskCategoryPage();
-  //   }
-  // }
-
-  // get taskCategoryTotalPages(): number {
-  //   return Math.ceil(this.filteredTaskCategories.length / this.taskCategoryItemsPerPage);
-  // }
-
-  // getVisibleTaskCategoryPageNumbers(): number[] {
-  //   const totalPages = this.taskCategoryTotalPages;
-  //   const halfRange = Math.floor(this.taskCategoryMaxPageButtons / 2);
-
-  //   let startPage = Math.max(1, this.taskCategoryCurrentPage - halfRange);
-  //   let endPage = Math.min(totalPages, startPage + this.taskCategoryMaxPageButtons - 1);
-
-  //   if (endPage - startPage + 1 < this.taskCategoryMaxPageButtons) {
-  //     startPage = Math.max(1, endPage - this.taskCategoryMaxPageButtons + 1);
-  //   }
-
-  //   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  // }
-
-  // submitTaskCategory(taskCategoryFormRef: NgForm): void {
-  //   if (taskCategoryFormRef.invalid) {
-  //     Swal.fire({
-  //       toast: true,
-  //       position: 'top-end',
-  //       icon: 'warning',
-  //       title: 'Task Category Name is required!',
-  //       showConfirmButton: false,
-  //       timer: 3000
-  //     });
-  //     return;
-  //   }
-
-  //   this.dataService.addTaskCategory(this.taskCategoryForm).subscribe(
-  //     (response) => {
-  //       console.log('Task category added successfully:', response);
-
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'success',
-  //         title: 'Task category added successfully!',
-  //         showConfirmButton: false,
-  //         timer: 3000
-  //       });
-
-  //       taskCategoryFormRef.resetForm();
-  //       this.taskCategoryForm.task_category_name = '';
-  //       this.fetchTaskCategories();
-  //     },
-  //     (error) => {
-  //       console.error('Error adding task category:', error);
-
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'error',
-  //         title: 'Error adding task category!',
-  //         showConfirmButton: false,
-  //         timer: 3000
-  //       });
-  //     }
-  //   );
-  // }
-
-  // deleteTaskCategory(taskCatId: number): void {
-  //   Swal.fire({
-  //     title: 'Are you sure?',
-  //     text: 'This task category will be deleted!',
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Yes, delete it!'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       this.dataService.deleteTaskCategory(taskCatId).subscribe(
-  //         (response) => {
-  //           console.log('Task category deleted successfully:', response);
-  //           this.fetchTaskCategories(); 
-
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'success',
-  //             title: 'Task category deleted successfully!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-
-  //         },
-  //         (error) => {
-  //           console.error('Error deleting task category:', error);
-
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: 'Error deleting task category!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         }
-  //       );
-  //     }
-  //   });
-  // }
-
 
   // ------------------Toggle Section ------------------------
 
