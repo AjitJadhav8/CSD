@@ -22,64 +22,45 @@ export class CustomerComponent {
   ngOnInit(): void {
     this.selectedSection = 'customer';
     localStorage.setItem('selectedCustomerSection', 'customer');
-  // Load section from localStorage
-  this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
+    // Load section from localStorage
+    this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
 
-  // Listen for changes (e.g., when clicking Customer Categories)
-  window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
+    // Listen for changes (e.g., when clicking Customer Categories)
+    window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchMasterCategories();
     this.fetchCustomers();
     this.fetchOptions();
-
-
-    // this.dataService.getOptions().subscribe(
-    //   (response) => {
-    //     this.optionMasterCategory = response.masterCategory
-    //     this.optioRoles = response.roles;
-    //     this.optionDepartments = response.departments;
-    //     this.optionUsers = response.users;  // Store user data
-    //     this.optionPositionName = response.projectRole;  // Store position data
-    //     this.optionDesignation = response.designation;  // Store designation data
-    //     this.optionCustomers = response.customers;  // Store customer data
-    //     this.distinctSectors = this.getDistinctValues('sector');
-    //     this.distinctIndustries = this.getDistinctValues('industry');
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching roles and departments', error);
-    //   }
-    // );
   }
 
 
 
-  // Create a separate function for fetching options
-fetchOptions(): void {
-  this.dataService.getOptions().subscribe(
+
+  fetchOptions(): void {
+    this.dataService.getOptions().subscribe(
       (response) => {
-          this.optionMasterCategory = response.masterCategory;
-          console.log('Roles and Departments:', response);
-          this.optioRoles = response.roles;
-          this.optionDepartments = response.departments;
-          this.optionUsers = response.users;  // Store user data
-          this.optionPositionName = response.projectRole;  // Store position data
-          this.optionDesignation = response.designation;  // Store designation data
-          this.optionCustomers = response.customers;  // Store customer data
-          this.distinctSectors = this.getDistinctValues('sector');
-          this.distinctIndustries = this.getDistinctValues('industry');
+        this.optionMasterCategory = response.masterCategory;
+        console.log('Roles and Departments:', response);
+        this.optioRoles = response.roles;
+        this.optionDepartments = response.departments;
+        this.optionUsers = response.users;
+        this.optionPositionName = response.projectRole; 
+        this.optionDesignation = response.designation;
+        this.optionCustomers = response.customers;  
+        this.distinctSectors = this.getDistinctValues('sector');
+        this.distinctIndustries = this.getDistinctValues('industry');
       },
       (error) => {
-          console.error('Error fetching roles and departments', error);
+        console.error('Error fetching roles and departments', error);
       }
-  );
-}
-    // Helper method to get distinct values for a specific field
-    getDistinctValues(field: string): string[] {
-      const values = this.optionMasterCategory.map((category) => category[field]);
-      return [...new Set(values)]; // Use Set to remove duplicates
-    }
-    distinctSectors: string[] = [];
-    distinctIndustries: string[] = [];
-  optionMasterCategory : any[] = [];
+    );
+  }
+  getDistinctValues(field: string): string[] {
+    const values = this.optionMasterCategory.map((category) => category[field]);
+    return [...new Set(values)]; // Use Set to remove duplicates
+  }
+  distinctSectors: string[] = [];
+  distinctIndustries: string[] = [];
+  optionMasterCategory: any[] = [];
   optionCustomers: any[] = [];
   optioRoles: any[] = [];
   optionUsers: any[] = [];
@@ -165,19 +146,19 @@ fetchOptions(): void {
       country: customer.customer_country,
       description: customer.customer_description
     };
-  
+
     // Set the selected sector, industry, and domain for dropdowns
     this.editSelectedSector = customer.sector;
     this.editSelectedIndustry = customer.industry;
     this.editSelectedDomain = customer.domain;
-  
+
     // Trigger filtering for industries and domains
     this.filterEditIndustries();
     this.filterEditDomains();
-  
+
     // Set the customer ID for the update operation
     this.editCustomerId = customer.customer_id;
-  
+
     // Open the edit modal
     this.isCustomerModalOpen = true;
   }
@@ -450,7 +431,7 @@ fetchOptions(): void {
 
     this.selectedDomain = ''; // Reset domain
   }
-  
+
   // Function to reset form fields
   filteredCustomers: any[] = [];
   paginatedCustomers: any[] = [];
@@ -477,160 +458,160 @@ fetchOptions(): void {
   itemsPerPage: number = 30;
   maxPageButtons: number = 5;
 
-// Apply Filters
-applyFilters(): void {
-  this.filteredCustomers = this.customers.filter((customer) => {
-    return (
-      (this.customerNameFilter
-        ? customer.customer_id === this.customerNameFilter
-        : true) &&
-      (this.companyWebsiteFilter
-        ? customer.customer_company_website?.toLowerCase().includes(this.companyWebsiteFilter.toLowerCase())
-        : true) &&
-      (this.emailFilter
-        ? customer.customer_email?.toLowerCase().includes(this.emailFilter.toLowerCase())
-        : true) &&
-      (this.phoneFilter
-        ? customer.customer_phone?.includes(this.phoneFilter)
-        : true) &&
-      (this.alternatePhoneFilter
-        ? customer.customer_alternate_phone?.includes(this.alternatePhoneFilter)
-        : true) &&
+  // Apply Filters
+  applyFilters(): void {
+    this.filteredCustomers = this.customers.filter((customer) => {
+      return (
+        (this.customerNameFilter
+          ? customer.customer_id === this.customerNameFilter
+          : true) &&
+        (this.companyWebsiteFilter
+          ? customer.customer_company_website?.toLowerCase().includes(this.companyWebsiteFilter.toLowerCase())
+          : true) &&
+        (this.emailFilter
+          ? customer.customer_email?.toLowerCase().includes(this.emailFilter.toLowerCase())
+          : true) &&
+        (this.phoneFilter
+          ? customer.customer_phone?.includes(this.phoneFilter)
+          : true) &&
+        (this.alternatePhoneFilter
+          ? customer.customer_alternate_phone?.includes(this.alternatePhoneFilter)
+          : true) &&
         (this.statusFilter
           ? (customer.is_active ? 'Active' : 'Inactive') === this.statusFilter
           : true) &&
-          (this.sectorFilter
-            ? customer.sector === this.sectorFilter
-            : true) &&
-          (this.industryFilter
-            ? customer.industry === this.industryFilter
-            : true) &&
-          (this.domainFilter
-            ? customer.domain === this.domainFilter
-            : true) &&
+        (this.sectorFilter
+          ? customer.sector === this.sectorFilter
+          : true) &&
+        (this.industryFilter
+          ? customer.industry === this.industryFilter
+          : true) &&
+        (this.domainFilter
+          ? customer.domain === this.domainFilter
+          : true) &&
         (this.customerTypeFilter
           ? (customer.is_new ? 'Potential' : 'Existing') === this.customerTypeFilter
           : true) &&
-      (this.cityFilter
-        ? customer.customer_city?.toLowerCase().includes(this.cityFilter.toLowerCase())
-        : true) &&
-      (this.stateFilter
-        ? customer.customer_state?.toLowerCase().includes(this.stateFilter.toLowerCase())
-        : true) &&
-      (this.pincodeFilter
-        ? customer.customer_pincode?.includes(this.pincodeFilter)
-        : true) &&
-      (this.countryFilter
-        ? customer.customer_country?.toLowerCase().includes(this.countryFilter.toLowerCase())
-        : true) &&
-      (this.descriptionFilter
-        ? customer.customer_description?.toLowerCase().includes(this.descriptionFilter.toLowerCase())
-        : true)
-    );
-  });
-  this.currentPage = 1;
-  this.updatePage();
-}
-// Clear Filters
-clearFilters(): void {
-  this.customerNameFilter = '';
-  this.customerTypeFilter = '';
-  this.applyFilters();
-}
-
-// Clear Individual Filter
-clearFilter(filterName: string): void {
-  switch (filterName) {
-    case 'customerNameFilter':
-      this.customerNameFilter = '';
-      break;
-    case 'companyWebsiteFilter':
-      this.companyWebsiteFilter = '';
-      break;
-    case 'emailFilter':
-      this.emailFilter = '';
-      break;
-    case 'phoneFilter':
-      this.phoneFilter = '';
-      break;
-    case 'alternatePhoneFilter':
-      this.alternatePhoneFilter = '';
-      break;
-    case 'statusFilter':
-      this.statusFilter = '';
-      break;
-    case 'sectorFilter':
-      this.sectorFilter = '';
-      break;
-    case 'industryFilter':
-      this.industryFilter = '';
-      break;
-    case 'domainFilter':
-      this.domainFilter = '';
-      break;
-    case 'customerTypeFilter':
-      this.customerTypeFilter = '';
-      break;
-    case 'cityFilter':
-      this.cityFilter = '';
-      break;
-    case 'stateFilter':
-      this.stateFilter = '';
-      break;
-    case 'pincodeFilter':
-      this.pincodeFilter = '';
-      break;
-    case 'countryFilter':
-      this.countryFilter = '';
-      break;
-    case 'descriptionFilter':
-      this.descriptionFilter = '';
-      break;
-  }
-  this.applyFilters(); // Reapply filters after clearing
-}
-
-// Pagination
-updatePage(): void {
-  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-  const endIndex = startIndex + this.itemsPerPage;
-  this.paginatedCustomers = this.filteredCustomers.slice(startIndex, endIndex);
-}
-
-changePage(page: number): void {
-  if (page >= 1 && page <= this.totalPages) {
-    this.currentPage = page;
+        (this.cityFilter
+          ? customer.customer_city?.toLowerCase().includes(this.cityFilter.toLowerCase())
+          : true) &&
+        (this.stateFilter
+          ? customer.customer_state?.toLowerCase().includes(this.stateFilter.toLowerCase())
+          : true) &&
+        (this.pincodeFilter
+          ? customer.customer_pincode?.includes(this.pincodeFilter)
+          : true) &&
+        (this.countryFilter
+          ? customer.customer_country?.toLowerCase().includes(this.countryFilter.toLowerCase())
+          : true) &&
+        (this.descriptionFilter
+          ? customer.customer_description?.toLowerCase().includes(this.descriptionFilter.toLowerCase())
+          : true)
+      );
+    });
+    this.currentPage = 1;
     this.updatePage();
   }
-}
-
-get totalPages(): number {
-  return Math.ceil(this.filteredCustomers.length / this.itemsPerPage);
-}
-
-getVisiblePageNumbers(): number[] {
-  const totalPages = this.totalPages;
-  const halfRange = Math.floor(this.maxPageButtons / 2);
-
-  let startPage = Math.max(1, this.currentPage - halfRange);
-  let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
-
-  if (endPage - startPage + 1 < this.maxPageButtons) {
-    startPage = Math.max(1, endPage - this.maxPageButtons + 1);
+  // Clear Filters
+  clearFilters(): void {
+    this.customerNameFilter = '';
+    this.customerTypeFilter = '';
+    this.applyFilters();
   }
 
-  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-}
+  // Clear Individual Filter
+  clearFilter(filterName: string): void {
+    switch (filterName) {
+      case 'customerNameFilter':
+        this.customerNameFilter = '';
+        break;
+      case 'companyWebsiteFilter':
+        this.companyWebsiteFilter = '';
+        break;
+      case 'emailFilter':
+        this.emailFilter = '';
+        break;
+      case 'phoneFilter':
+        this.phoneFilter = '';
+        break;
+      case 'alternatePhoneFilter':
+        this.alternatePhoneFilter = '';
+        break;
+      case 'statusFilter':
+        this.statusFilter = '';
+        break;
+      case 'sectorFilter':
+        this.sectorFilter = '';
+        break;
+      case 'industryFilter':
+        this.industryFilter = '';
+        break;
+      case 'domainFilter':
+        this.domainFilter = '';
+        break;
+      case 'customerTypeFilter':
+        this.customerTypeFilter = '';
+        break;
+      case 'cityFilter':
+        this.cityFilter = '';
+        break;
+      case 'stateFilter':
+        this.stateFilter = '';
+        break;
+      case 'pincodeFilter':
+        this.pincodeFilter = '';
+        break;
+      case 'countryFilter':
+        this.countryFilter = '';
+        break;
+      case 'descriptionFilter':
+        this.descriptionFilter = '';
+        break;
+    }
+    this.applyFilters(); // Reapply filters after clearing
+  }
+
+  // Pagination
+  updatePage(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedCustomers = this.filteredCustomers.slice(startIndex, endIndex);
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePage();
+    }
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredCustomers.length / this.itemsPerPage);
+  }
+
+  getVisiblePageNumbers(): number[] {
+    const totalPages = this.totalPages;
+    const halfRange = Math.floor(this.maxPageButtons / 2);
+
+    let startPage = Math.max(1, this.currentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.maxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.maxPageButtons) {
+      startPage = Math.max(1, endPage - this.maxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
   // ------------------ Customer Category ------------------------
 
   @ViewChild('sector') sector!: NgModel;
-@ViewChild('industry') industry!: NgModel;
-@ViewChild('domain') domain!: NgModel;
-@ViewChild('newSectorField') newSectorField!: NgModel;
-@ViewChild('newIndustryField') newIndustryField!: NgModel;
-@ViewChild('newDomainField') newDomainField!: NgModel;
-filteredIndustries: string[] = [];
-filteredDomains: string[] = [];
+  @ViewChild('industry') industry!: NgModel;
+  @ViewChild('domain') domain!: NgModel;
+  @ViewChild('newSectorField') newSectorField!: NgModel;
+  @ViewChild('newIndustryField') newIndustryField!: NgModel;
+  @ViewChild('newDomainField') newDomainField!: NgModel;
+  filteredIndustries: string[] = [];
+  filteredDomains: string[] = [];
 
   sectors: string[] = [];
   industries: string[] = [];
@@ -648,69 +629,69 @@ filteredDomains: string[] = [];
   newSector: string = '';
   newIndustry: string = '';
   newDomain: string = '';
-    // Rest of your existing methods...
+  // Rest of your existing methods...
 
 
 
-    // Filter industries based on selected sector
-filterIndustriesCat(): void {
-  if (!this.inputMode.sector || this.inputMode.sector === '__new__') {
-    this.filteredIndustries = [];
-    return;
-  }
-  
-  this.filteredIndustries = [
-    ...new Set(
-      this.allCategories
-        .filter(cat => cat.sector === this.inputMode.sector)
-        .map(cat => cat.industry)
-    )
-  ];
-}
-
-// Filter domains based on selected industry
-filterDomainsCat(): void {
-  if (!this.inputMode.industry || this.inputMode.industry === '__new__') {
-    this.filteredDomains = [];
-    return;
-  }
-  
-  this.filteredDomains = [
-    ...new Set(
-      this.allCategories
-        .filter(cat => cat.industry === this.inputMode.industry)
-        .map(cat => cat.domain)
-    )
-  ];
-}
-
-    // Handle sector change
-    onSectorChange(): void {
-      this.inputMode.industry = '';
-      this.inputMode.domain = '';
-      this.newIndustry = '';
-      this.newDomain = '';
-      
-      // If creating new sector, auto-set industry and domain to new
-      if (this.inputMode.sector === '__new__') {
-        this.inputMode.industry = '__new__';
-        this.inputMode.domain = '__new__';
-      } else {
-        this.filterIndustriesCat();
-      }
+  // Filter industries based on selected sector
+  filterIndustriesCat(): void {
+    if (!this.inputMode.sector || this.inputMode.sector === '__new__') {
+      this.filteredIndustries = [];
+      return;
     }
-  
-    onIndustryChange(): void {
-      this.inputMode.domain = '';
-      this.newDomain = '';
-      
-      // If creating new industry, auto-set domain to new
-      if (this.inputMode.industry === '__new__') {
-        this.inputMode.domain = '__new__';
-      } else {
-        this.filterDomainsCat();
-      }
+
+    this.filteredIndustries = [
+      ...new Set(
+        this.allCategories
+          .filter(cat => cat.sector === this.inputMode.sector)
+          .map(cat => cat.industry)
+      )
+    ];
+  }
+
+  // Filter domains based on selected industry
+  filterDomainsCat(): void {
+    if (!this.inputMode.industry || this.inputMode.industry === '__new__') {
+      this.filteredDomains = [];
+      return;
     }
+
+    this.filteredDomains = [
+      ...new Set(
+        this.allCategories
+          .filter(cat => cat.industry === this.inputMode.industry)
+          .map(cat => cat.domain)
+      )
+    ];
+  }
+
+  // Handle sector change
+  onSectorChange(): void {
+    this.inputMode.industry = '';
+    this.inputMode.domain = '';
+    this.newIndustry = '';
+    this.newDomain = '';
+
+    // If creating new sector, auto-set industry and domain to new
+    if (this.inputMode.sector === '__new__') {
+      this.inputMode.industry = '__new__';
+      this.inputMode.domain = '__new__';
+    } else {
+      this.filterIndustriesCat();
+    }
+  }
+
+  onIndustryChange(): void {
+    this.inputMode.domain = '';
+    this.newDomain = '';
+
+    // If creating new industry, auto-set domain to new
+    if (this.inputMode.industry === '__new__') {
+      this.inputMode.domain = '__new__';
+    } else {
+      this.filterDomainsCat();
+    }
+  }
   fetchMasterCategories(): void {
     this.dataService.getMasterCategories().subscribe(
       (data) => {
@@ -762,92 +743,92 @@ filterDomainsCat(): void {
     });
   }
 
- // Save category with proper validation
+  // Save category with proper validation
 
- saveCategory(form: NgForm): void {
-  // Automatically set new values if in "new" mode
-  if (this.inputMode.sector === '__new__') {
-    this.inputMode.industry = '__new__';
-    this.inputMode.domain = '__new__';
-  } else if (this.inputMode.industry === '__new__') {
-    this.inputMode.domain = '__new__';
-  }
+  saveCategory(form: NgForm): void {
+    // Automatically set new values if in "new" mode
+    if (this.inputMode.sector === '__new__') {
+      this.inputMode.industry = '__new__';
+      this.inputMode.domain = '__new__';
+    } else if (this.inputMode.industry === '__new__') {
+      this.inputMode.domain = '__new__';
+    }
 
-  // Validate all fields
-  if (this.inputMode.sector === '__new__' && !this.newSector) {
-    this.newSectorField.control.markAsTouched();
-  }
-  if (this.inputMode.industry === '__new__' && !this.newIndustry) {
-    this.newIndustryField.control.markAsTouched();
-  }
-  if (this.inputMode.domain === '__new__' && !this.newDomain) {
-    this.newDomainField.control.markAsTouched();
-  }
+    // Validate all fields
+    if (this.inputMode.sector === '__new__' && !this.newSector) {
+      this.newSectorField.control.markAsTouched();
+    }
+    if (this.inputMode.industry === '__new__' && !this.newIndustry) {
+      this.newIndustryField.control.markAsTouched();
+    }
+    if (this.inputMode.domain === '__new__' && !this.newDomain) {
+      this.newDomainField.control.markAsTouched();
+    }
 
-  if (form.invalid) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'warning',
-      title: 'Please fill all required fields!',
-      showConfirmButton: false,
-      timer: 3000
-    });
-    return;
-  }
-
-  // Prepare category data
-  const category = {
-    sector: this.inputMode.sector === '__new__' ? this.newSector : this.inputMode.sector,
-    industry: this.inputMode.industry === '__new__' ? this.newIndustry : this.inputMode.industry,
-    domain: this.inputMode.domain === '__new__' ? this.newDomain : this.inputMode.domain
-  };
-
-  // Save category
-  this.dataService.addCategory(category).subscribe(
-    () => {
+    if (form.invalid) {
       Swal.fire({
         toast: true,
         position: 'top-end',
-        icon: 'success',
-        title: 'Category added successfully!',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
         showConfirmButton: false,
         timer: 3000
       });
-      this.fetchMasterCategories();
-      this.resetCategoryForm();
-      form.resetForm();
-      this.fetchOptions();
-
-    },
-    (error) => {
-      if (error.error && error.error.error === 'Category already exists') {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'This category already exists!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      } else {
-        console.error('Error adding category:', error);
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Error adding category!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
+      return;
     }
-  );
-}
 
-  
+    // Prepare category data
+    const category = {
+      sector: this.inputMode.sector === '__new__' ? this.newSector : this.inputMode.sector,
+      industry: this.inputMode.industry === '__new__' ? this.newIndustry : this.inputMode.industry,
+      domain: this.inputMode.domain === '__new__' ? this.newDomain : this.inputMode.domain
+    };
 
- 
+    // Save category
+    this.dataService.addCategory(category).subscribe(
+      () => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Category added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchMasterCategories();
+        this.resetCategoryForm();
+        form.resetForm();
+        this.fetchOptions();
+
+      },
+      (error) => {
+        if (error.error && error.error.error === 'Category already exists') {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'This category already exists!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        } else {
+          console.error('Error adding category:', error);
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error adding category!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      }
+    );
+  }
+
+
+
+
 
   enableIndustryField(): void {
     if (this.newSector) {

@@ -1,1111 +1,732 @@
 <div class="p-2">
-    <!-- Top Buttons -->
-    <!-- <div class="flex space-x-4 mb-4">
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-          (click)="changeSection('customer')">Customer</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-          (click)="changeSection('customerCategory')">Customer Categories</button>
-      </div> -->
-
-    <!-- Customer Section -->
-    <div *ngIf="selectedSection === 'customer'" class="p-2">
-        <h3 class="text-xl font-semibold mb-4">Add New Customer</h3>
+  <!-- Customer Section -->
+  <div *ngIf="selectedSection === 'customer'" class="p-2">
+    <h3 class="text-xl font-semibold mb-4">Add New Customer</h3>
 
 
-        <form class="mt-4" #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm)">
-            <div class="grid grid-cols-6 gap-4">
-                <!-- Customer Name (Required) -->
-                <div class="form-group">
-                    <label>Customer Name*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerName"
-                        #customerName="ngModel" name="customerName" required
-                        [ngClass]="{'border-red-500': customerName.invalid && customerName.touched || (customerForm.submitted && customerName.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">Customer
-                        Name is required</span>
-                </div>
-
-                <div class="form-group">
-                    <label>Company Website</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.companyWebsite"
-                        name="companyWebsite">
-                </div>
-
-                <!-- Email (Required & Valid Email) -->
-                <!-- <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email"
-                        #email="ngModel" name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
-                </div> -->
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email" #email="ngModel"
-                        name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="email.touched && email.value && email.invalid">
-                        Enter a valid email address
-                    </span>
-                </div>
-
-
-                <!-- <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone"
-                        #phone="ngModel" name="phone" pattern="^\d{10}$"
-                        [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
-
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
-                        Enter a valid 10-digit phone number
-                    </span>
-                </div> -->
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone" #phone="ngModel"
-                        name="phone" pattern="^\d{10}$"
-                        [ngClass]="{'border-red-500': (phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
-                        Enter a valid 10-digit phone number
-                    </span>
-                </div>
-
-
-                <div class="form-group">
-                    <label>Alternate Phone Number</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.alternatePhone"
-                        name="alternatePhone">
-                </div>
-
-                <!-- Customer Status (Required) -->
-                <!-- Customer Status -->
-                <!-- <div class="form-group">
-                    <label>Customer Status*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.status"
-                        #status="ngModel" name="status" list="statusList" required
-                        [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
-                        placeholder="Select or type status">
-                    <datalist id="statusList">
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </datalist>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="status.invalid && (status.touched || customerForm.submitted)">
-                        Status is required
-                    </span>
-                </div> -->
-
-                <div class="form-group">
-                    <label>Customer Status*</label>
-                    <ng-select [(ngModel)]="customer.status"
-                      #status="ngModel"
-                      name="status"
-                      [items]="['Active', 'Inactive']"
-                      [searchable]="true"
-                      [clearable]="false"
-                      required
-                      [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
-                      class="custom-ng-select">
-                      <ng-option [value]="" disabled selected>Select or type status</ng-option>
-                    </ng-select>
-                    <span class="text-red-500 text-sm"
-                      *ngIf="status.invalid && (status.touched || customerForm.submitted)">
-                      Status is required
-                    </span>
-                  </div>
-
-                <!-- Customer Sector -->
-                <!-- Customer Sector -->
-
-
-                <!-- <div class="form-group">
-                    <label>Customer Sector*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="selectedSector"
-                        #sector="ngModel" name="sector" list="sectorList" (input)="filterIndustries()" required
-                        [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
-                        placeholder="Select or type sector">
-                    <datalist id="sectorList">
-                        <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-                    </datalist>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
-                        Sector is required
-                    </span>
-                </div> -->
-
-                <!-- Customer Sector -->
-<div class="form-group">
-    <label>Customer Sector*</label>
-    <ng-select [(ngModel)]="selectedSector"
-      #sector="ngModel"
-      name="sector"
-      [items]="sectors"
-      [searchable]="true"
-      (change)="filterIndustries()"
-      required
-      [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
-      class="custom-ng-select">
-      <ng-option [value]="" disabled selected>Select or type sector</ng-option>
-    </ng-select>
-    <span class="text-red-500 text-sm"
-      *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
-      Sector is required
-    </span>
-  </div>
-
-                <!-- Customer Industry -->
-                <!-- <div class="form-group">
-                    <label>Customer Industry*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedIndustry" #industry="ngModel"
-                        name="industry" (change)="filterDomains()" required
-                        [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}">
-                        <option value="" disabled selected>Select Industry</option>
-                        <option *ngFor="let industry of industries" [value]="industry">{{ industry }}
-                        </option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
-                        Industry is required
-                    </span>
-                </div> -->
-
-                <div class="form-group">
-                    <label>Customer Industry*</label>
-                    <ng-select [(ngModel)]="selectedIndustry"
-                      #industry="ngModel"
-                      name="industry"
-                      [items]="industries"
-                      (change)="filterDomains()"
-                      required
-                      [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
-                      class="custom-ng-select">
-                      <ng-option [value]="" disabled selected>Select Industry</ng-option>
-                    </ng-select>
-                    <span class="text-red-500 text-sm"
-                      *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
-                      Industry is required
-                    </span>
-                  </div>
-
-                <!-- Customer Domain -->
-                <!-- <div class="form-group">
-                    <label>Customer Segment*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedDomain" #domain="ngModel"
-                        name="domain" required
-                        [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}">
-                        <option value="" disabled selected>Select Segment</option>
-                        <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
-                        Segment is required
-                    </span>
-                </div> -->
-                <div class="form-group">
-                    <label>Customer Segment*</label>
-                    <ng-select [(ngModel)]="selectedDomain"
-                      #domain="ngModel"
-                      name="domain"
-                      [items]="domains"
-                      required
-                      [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
-                      class="custom-ng-select">
-                      <ng-option [value]="" disabled selected>Select Segment</ng-option>
-                    </ng-select>
-                    <span class="text-red-500 text-sm"
-                      *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
-                      Segment is required
-                    </span>
-                  </div>
-
-                <!-- Customer Type (Required) -->
-                <!-- <div class="form-group">
-                    <label>Customer Type*</label>
-                    <select class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerType"
-                        #customerType="ngModel" name="customerType" required
-                        [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}">
-                        <option value="" disabled selected>Select Customer Type</option>
-                        <option value="Existing">Existing</option>
-                        <option value="Potential">Potential</option>
-                    </select>
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
-                        Type is required</span>
-                </div> -->
-
-                <div class="form-group">
-  <label>Customer Type*</label>
-  <ng-select [(ngModel)]="customer.customerType"
-    #customerType="ngModel"
-    name="customerType"
-    [items]="['Existing', 'Potential']"
-    [clearable]="false"
-    required
-    [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
-    class="custom-ng-select">
-    <ng-option [value]="" disabled selected>Select Customer Type</ng-option>
-  </ng-select>
-  <span class="text-red-500 text-sm"
-    *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
-    Type is required</span>
-</div>
-
-                <div class="form-group">
-                    <label>City</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city" #city="ngModel"
-                        name="city"
-                        [ngClass]="{'border-red-500': (city.touched && city.invalid) || (customerForm.submitted && city.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(city.touched && city.invalid) || (customerForm.submitted && city.invalid)">
-                        Enter a valid city
-                    </span>
-                </div>
-                <div class="form-group">
-                    <label>State</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.state"
-                        #state="ngModel" name="state"
-                        [ngClass]="{'border-red-500': (state.touched && state.invalid) || (customerForm.submitted && state.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(state.touched && state.invalid) || (customerForm.submitted && state.invalid)">
-                        Enter a valid state
-                    </span>
-                </div>
-
-
-                <div class="form-group">
-                    <label>Pincode</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.pincode"
-                        #pincode="ngModel" name="pincode" pattern="^[0-9]{6}$"
-                        [ngClass]="{'border-red-500': (pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)">
-                        Enter a valid 6-digit pincode
-                    </span>
-                </div>
-
-                <!-- Country (Required) -->
-                <div class="form-group">
-                    <label>Country</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.country"
-                        #country="ngModel" name="country"
-                        [ngClass]="{'border-red-500': (country.touched && country.invalid) || (customerForm.submitted && country.invalid)}">
-                    <span class="text-red-500 text-sm"
-                        *ngIf="(country.touched && country.invalid) || (customerForm.submitted && country.invalid)">
-                        Enter a valid country
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Customer Description</label>
-                    <textarea class="border p-2 w-full rounded-md" [(ngModel)]="customer.description" name="description"
-                        rows="3"></textarea>
-                </div>
-
-            </div>
-
-            <!-- Submit Button -->
-            <div class="mt-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-                    Create Customer
-                </button>
-            </div>
-        </form>
-        <!-- Edit Modal -->
-<div *ngIf="isCustomerModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeCustomerModule()">
-    <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
-      <h3 class="text-xl font-semibold mb-4">Edit Customer</h3>
-      <form #editCustomerForm="ngForm" (ngSubmit)="updateCustomer(editCustomerForm); $event.preventDefault()">
-        <div class="grid grid-cols-5 gap-4">
-          <!-- Customer Name (Required) -->
-          <div class="form-group">
-            <label>Customer Name*</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.customerName"
-              #editCustomerName="ngModel" name="editCustomerName" required
-              [ngClass]="{'border-red-500': editCustomerName.invalid && editCustomerName.touched || (editCustomerForm.submitted && editCustomerName.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editCustomerName.invalid && editCustomerName.touched) || (editCustomerForm.submitted && editCustomerName.invalid)">Customer
-              Name is required</span>
-          </div>
-  
-          <!-- Company Website -->
-          <div class="form-group">
-            <label>Company Website</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.companyWebsite"
-              name="editCompanyWebsite">
-          </div>
-  
-          <!-- Email (Required & Valid Email) -->
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.email"
-              #editEmail="ngModel" name="editEmail" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
-          </div>
-  
-          <!-- Phone Number -->
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.phone"
-              #editPhone="ngModel" name="editPhone" pattern="^\d{10}$"
-              [ngClass]="{'border-red-500': (editPhone.invalid && editPhone.touched) || (editCustomerForm.submitted && editPhone.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editPhone.touched && editPhone.value && editPhone.invalid) || (editCustomerForm.submitted && editPhone.value && editPhone.invalid)">
-              Enter a valid 10-digit phone number
-            </span>
-          </div>
-  
-          <!-- Alternate Phone Number -->
-          <div class="form-group">
-            <label>Alternate Phone Number</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.alternatePhone"
-              name="editAlternatePhone">
-          </div>
-  
-          <!-- Customer Status (Required) -->
-          <!-- <div class="form-group">
-            <label>Customer Status*</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.status"
-              #editStatus="ngModel" name="editStatus" list="statusList" required
-              [ngClass]="{'border-red-500': (editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)}"
-              placeholder="Select or type status">
-            <datalist id="statusList">
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </datalist>
-            <span class="text-red-500 text-sm"
-              *ngIf="editStatus.invalid && (editStatus.touched || editCustomerForm.submitted)">
-              Status is required
-            </span>
-          </div> -->
-  
-          <div class="form-group">
-            <label>Customer Status*</label>
-            <ng-select class="custom-ng-select"
-                      [(ngModel)]="editCustomer.status"
-                      name="editStatus"
-                      [items]="['Active', 'Inactive']"
-                      [searchable]="true"
-                      [clearable]="false"
-                      required
-                      #editStatus="ngModel"
-                      [ngClass]="{'border-red-500': (editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)}"
-                      >
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editStatus.invalid && (editStatus.touched || editCustomerForm.submitted)">
-              Status is required
-            </span>
-          </div>
-
-          <!-- Customer Sector -->
-          <!-- <div class="form-group">
-            <label>Customer Sector*</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedSector"
-              #editSector="ngModel" name="editSector" list="sectorList" (input)="filterEditIndustries()" required
-              [ngClass]="{'border-red-500': (editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)}"
-              placeholder="Select or type sector">
-            <datalist id="sectorList">
-              <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-            </datalist>
-            <span class="text-red-500 text-sm"
-              *ngIf="editSector.invalid && (editSector.touched || editCustomerForm.submitted)">
-              Sector is required
-            </span>
-          </div> -->
-          <div class="form-group">
-            <label>Customer Sector*</label>
-            <ng-select class="custom-ng-select"
-                      [(ngModel)]="editSelectedSector"
-                      name="editSector"
-                      [items]="sectors"
-                      [searchable]="true"
-                      (change)="filterEditIndustries()"
-                      required
-                      #editSector="ngModel"
-                      [ngClass]="{'border-red-500': (editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)}"
-                     >
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editSector.invalid && (editSector.touched || editCustomerForm.submitted)">
-              Sector is required
-            </span>
-          </div>
-  
-          <!-- Customer Industry -->
-          <!-- <div class="form-group">
-            <label>Customer Industry*</label>
-            <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedIndustry" #editIndustry="ngModel"
-              name="editIndustry" (change)="filterEditDomains()" required
-              [ngClass]="{'border-red-500': (editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)}">
-              <option value="" disabled selected>Select Industry</option>
-              <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
-            </select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editIndustry.invalid && (editIndustry.touched || editCustomerForm.submitted)">
-              Industry is required
-            </span>
-          </div> -->
-          <div class="form-group">
-            <label>Customer Industry*</label>
-            <ng-select class="custom-ng-select"
-                      [(ngModel)]="editSelectedIndustry"
-                      name="editIndustry"
-                      [items]="industries"
-                      [searchable]="true"
-                      (change)="filterEditDomains()"
-                      required
-                      #editIndustry="ngModel"
-                      [ngClass]="{'border-red-500': (editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)}"
-                    >
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editIndustry.invalid && (editIndustry.touched || editCustomerForm.submitted)">
-              Industry is required
-            </span>
-          </div>
-  
-          <!-- Customer Domain -->
-          <!-- <div class="form-group">
-            <label>Customer Segment*</label>
-            <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedDomain" #editDomain="ngModel"
-              name="editDomain" required
-              [ngClass]="{'border-red-500': (editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)}">
-              <option value="" disabled selected>Select Segment</option>
-              <option *ngFor="let domain of domains" [value]="domain">{{ domain }}</option>
-            </select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editDomain.invalid && (editDomain.touched || editCustomerForm.submitted)">
-              Segment is required
-            </span>
-          </div> -->
-          <div class="form-group">
-            <label>Customer Segment*</label>
-            <ng-select class="custom-ng-select"
-                      [(ngModel)]="editSelectedDomain"
-                      name="editDomain"
-                      [items]="domains"
-                      [searchable]="true"
-                      required
-                      #editDomain="ngModel"
-                      [ngClass]="{'border-red-500': (editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)}"
-                      >
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="editDomain.invalid && (editDomain.touched || editCustomerForm.submitted)">
-              Segment is required
-            </span>
-          </div>
-  
-          <!-- Customer Type (Required) -->
-          <!-- <div class="form-group">
-            <label>Customer Type*</label>
-            <select class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.customerType"
-              #editCustomerType="ngModel" name="editCustomerType" required
-              [ngClass]="{'border-red-500': (editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)}">
-              <option value="" disabled selected>Select Customer Type</option>
-              <option value="Existing">Existing</option>
-              <option value="Potential">Potential</option>
-            </select>
-            <span class="text-red-500 text-sm"
-              *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">Customer
-              Type is required</span>
-          </div> -->
-          <div class="form-group">
-            <label>Customer Type*</label>
-            <ng-select class="custom-ng-select"
-                      [(ngModel)]="editCustomer.customerType"
-                      name="editCustomerType"
-                      [items]="['Existing', 'Potential']"
-                      [searchable]="false"
-                      [clearable]="false"
-
-                      required
-                      #editCustomerType="ngModel"
-                      [ngClass]="{'border-red-500': (editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)}"
-                     >
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">
-              Customer Type is required
-            </span>
-          </div>
-  
-          <!-- City -->
-          <div class="form-group">
-            <label>City</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.city" #editCity="ngModel"
-              name="editCity"
-              [ngClass]="{'border-red-500': (editCity.touched && editCity.invalid) || (editCustomerForm.submitted && editCity.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editCity.touched && editCity.invalid) || (editCustomerForm.submitted && editCity.invalid)">
-              Enter a valid city
-            </span>
-          </div>
-  
-          <!-- State -->
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.state"
-              #editState="ngModel" name="editState"
-              [ngClass]="{'border-red-500': (editState.touched && editState.invalid) || (editCustomerForm.submitted && editState.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editState.touched && editState.invalid) || (editCustomerForm.submitted && editState.invalid)">
-              Enter a valid state
-            </span>
-          </div>
-  
-          <!-- Pincode -->
-          <div class="form-group">
-            <label>Pincode</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.pincode"
-              #editPincode="ngModel" name="editPincode" pattern="^[0-9]{6}$"
-              [ngClass]="{'border-red-500': (editPincode.touched && editPincode.value && editPincode.invalid) || (editCustomerForm.submitted && editPincode.value && editPincode.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editPincode.touched && editPincode.value && editPincode.invalid) || (editCustomerForm.submitted && editPincode.value && editPincode.invalid)">
-              Enter a valid 6-digit pincode
-            </span>
-          </div>
-  
-          <!-- Country -->
-          <div class="form-group">
-            <label>Country</label>
-            <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.country"
-              #editCountry="ngModel" name="editCountry"
-              [ngClass]="{'border-red-500': (editCountry.touched && editCountry.invalid) || (editCustomerForm.submitted && editCountry.invalid)}">
-            <span class="text-red-500 text-sm"
-              *ngIf="(editCountry.touched && editCountry.invalid) || (editCustomerForm.submitted && editCountry.invalid)">
-              Enter a valid country
-            </span>
-          </div>
-  
-          <!-- Customer Description -->
-          <div class="form-group">
-            <label>Customer Description</label>
-            <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.description" name="editDescription"
-              rows="3"></textarea>
-          </div>
+    <form class="mt-4" #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm)">
+      <div class="grid grid-cols-6 gap-4">
+        <!-- Customer Name (Required) -->
+        <div class="form-group">
+          <label>Customer Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerName"
+            #customerName="ngModel" name="customerName" required
+            [ngClass]="{'border-red-500': customerName.invalid && customerName.touched || (customerForm.submitted && customerName.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">Customer
+            Name is required</span>
         </div>
-  
-        <!-- Submit Button -->
-        <div class="mt-4 flex justify-end space-x-2">
-            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" (click)="closeCustomerModule()">
+
+        <div class="form-group">
+          <label>Company Website</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.companyWebsite"
+            name="companyWebsite">
+        </div>
+
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email" #email="ngModel"
+            name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+          <span class="text-red-500 text-sm" *ngIf="email.touched && email.value && email.invalid">
+            Enter a valid email address
+          </span>
+        </div>
+
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone" #phone="ngModel"
+            name="phone" pattern="^\d{10}$"
+            [ngClass]="{'border-red-500': (phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
+            Enter a valid 10-digit phone number
+          </span>
+        </div>
+
+
+        <div class="form-group">
+          <label>Alternate Phone Number</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.alternatePhone"
+            name="alternatePhone">
+        </div>
+
+        <!-- Customer Status (Required) -->
+        <div class="form-group">
+          <label>Customer Status*</label>
+          <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
+            [searchable]="true" [clearable]="false" required
+            [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
+            class="custom-ng-select">
+            <ng-option [value]="" disabled selected>Select or type status</ng-option>
+          </ng-select>
+          <span class="text-red-500 text-sm" *ngIf="status.invalid && (status.touched || customerForm.submitted)">
+            Status is required
+          </span>
+        </div>
+
+        <!-- Customer Sector -->
+        <div class="form-group">
+          <label>Customer Sector*</label>
+          <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors" [searchable]="true"
+            (change)="filterIndustries()" required
+            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
+            class="custom-ng-select">
+            <ng-option [value]="" disabled selected>Select or type sector</ng-option>
+          </ng-select>
+          <span class="text-red-500 text-sm" *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
+            Sector is required
+          </span>
+        </div>
+
+        <!-- Customer Industry -->
+
+        <div class="form-group">
+          <label>Customer Industry*</label>
+          <ng-select [(ngModel)]="selectedIndustry" #industry="ngModel" name="industry" [items]="industries"
+            (change)="filterDomains()" required
+            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
+            class="custom-ng-select">
+            <ng-option [value]="" disabled selected>Select Industry</ng-option>
+          </ng-select>
+          <span class="text-red-500 text-sm" *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
+            Industry is required
+          </span>
+        </div>
+
+        <!-- Customer Domain -->
+        <div class="form-group">
+          <label>Customer Segment*</label>
+          <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
+            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
+            class="custom-ng-select">
+            <ng-option [value]="" disabled selected>Select Segment</ng-option>
+          </ng-select>
+          <span class="text-red-500 text-sm" *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
+            Segment is required
+          </span>
+        </div>
+
+        <!-- Customer Type (Required) -->
+        <div class="form-group">
+          <label>Customer Type*</label>
+          <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
+            [items]="['Existing', 'Potential']" [clearable]="false" required
+            [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
+            class="custom-ng-select">
+            <ng-option [value]="" disabled selected>Select Customer Type</ng-option>
+          </ng-select>
+          <span class="text-red-500 text-sm"
+            *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
+            Type is required</span>
+        </div>
+
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city" #city="ngModel"
+            name="city"
+            [ngClass]="{'border-red-500': (city.touched && city.invalid) || (customerForm.submitted && city.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(city.touched && city.invalid) || (customerForm.submitted && city.invalid)">
+            Enter a valid city
+          </span>
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.state" #state="ngModel"
+            name="state"
+            [ngClass]="{'border-red-500': (state.touched && state.invalid) || (customerForm.submitted && state.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(state.touched && state.invalid) || (customerForm.submitted && state.invalid)">
+            Enter a valid state
+          </span>
+        </div>
+
+
+        <div class="form-group">
+          <label>Pincode</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.pincode" #pincode="ngModel"
+            name="pincode" pattern="^[0-9]{6}$"
+            [ngClass]="{'border-red-500': (pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)">
+            Enter a valid 6-digit pincode
+          </span>
+        </div>
+
+        <!-- Country (Required) -->
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.country" #country="ngModel"
+            name="country"
+            [ngClass]="{'border-red-500': (country.touched && country.invalid) || (customerForm.submitted && country.invalid)}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(country.touched && country.invalid) || (customerForm.submitted && country.invalid)">
+            Enter a valid country
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Customer Description</label>
+          <textarea class="border p-2 w-full rounded-md" [(ngModel)]="customer.description" name="description"
+            rows="3"></textarea>
+        </div>
+
+      </div>
+
+      <!-- Submit Button -->
+      <div class="mt-4">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
+          Create Customer
+        </button>
+      </div>
+    </form>
+    <!-- Edit Modal -->
+    <div *ngIf="isCustomerModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+      (click)="closeCustomerModule()">
+      <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
+        <h3 class="text-xl font-semibold mb-4">Edit Customer</h3>
+        <form #editCustomerForm="ngForm" (ngSubmit)="updateCustomer(editCustomerForm); $event.preventDefault()">
+          <div class="grid grid-cols-5 gap-4">
+            <!-- Customer Name (Required) -->
+            <div class="form-group">
+              <label>Customer Name*</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.customerName"
+                #editCustomerName="ngModel" name="editCustomerName" required
+                [ngClass]="{'border-red-500': editCustomerName.invalid && editCustomerName.touched || (editCustomerForm.submitted && editCustomerName.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editCustomerName.invalid && editCustomerName.touched) || (editCustomerForm.submitted && editCustomerName.invalid)">Customer
+                Name is required</span>
+            </div>
+
+            <!-- Company Website -->
+            <div class="form-group">
+              <label>Company Website</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.companyWebsite"
+                name="editCompanyWebsite">
+            </div>
+
+            <!-- Email (Required & Valid Email) -->
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.email"
+                #editEmail="ngModel" name="editEmail" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.phone"
+                #editPhone="ngModel" name="editPhone" pattern="^\d{10}$"
+                [ngClass]="{'border-red-500': (editPhone.invalid && editPhone.touched) || (editCustomerForm.submitted && editPhone.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editPhone.touched && editPhone.value && editPhone.invalid) || (editCustomerForm.submitted && editPhone.value && editPhone.invalid)">
+                Enter a valid 10-digit phone number
+              </span>
+            </div>
+
+            <!-- Alternate Phone Number -->
+            <div class="form-group">
+              <label>Alternate Phone Number</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.alternatePhone"
+                name="editAlternatePhone">
+            </div>
+
+            <!-- Customer Status (Required) -->
+            <div class="form-group">
+              <label>Customer Status*</label>
+              <ng-select class="custom-ng-select" [(ngModel)]="editCustomer.status" name="editStatus"
+                [items]="['Active', 'Inactive']" [searchable]="true" [clearable]="false" required #editStatus="ngModel"
+                [ngClass]="{'border-red-500': (editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)}">
+              </ng-select>
+              <span class="text-red-500 text-sm"
+                *ngIf="editStatus.invalid && (editStatus.touched || editCustomerForm.submitted)">
+                Status is required
+              </span>
+            </div>
+
+            <!-- Customer Sector -->
+            <div class="form-group">
+              <label>Customer Sector*</label>
+              <ng-select class="custom-ng-select" [(ngModel)]="editSelectedSector" name="editSector" [items]="sectors"
+                [searchable]="true" (change)="filterEditIndustries()" required #editSector="ngModel"
+                [ngClass]="{'border-red-500': (editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)}">
+              </ng-select>
+              <span class="text-red-500 text-sm"
+                *ngIf="editSector.invalid && (editSector.touched || editCustomerForm.submitted)">
+                Sector is required
+              </span>
+            </div>
+
+            <!-- Customer Industry -->
+            <div class="form-group">
+              <label>Customer Industry*</label>
+              <ng-select class="custom-ng-select" [(ngModel)]="editSelectedIndustry" name="editIndustry"
+                [items]="industries" [searchable]="true" (change)="filterEditDomains()" required #editIndustry="ngModel"
+                [ngClass]="{'border-red-500': (editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)}">
+              </ng-select>
+              <span class="text-red-500 text-sm"
+                *ngIf="editIndustry.invalid && (editIndustry.touched || editCustomerForm.submitted)">
+                Industry is required
+              </span>
+            </div>
+
+            <!-- Customer Domain -->
+            <div class="form-group">
+              <label>Customer Segment*</label>
+              <ng-select class="custom-ng-select" [(ngModel)]="editSelectedDomain" name="editDomain" [items]="domains"
+                [searchable]="true" required #editDomain="ngModel"
+                [ngClass]="{'border-red-500': (editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)}">
+              </ng-select>
+              <span class="text-red-500 text-sm"
+                *ngIf="editDomain.invalid && (editDomain.touched || editCustomerForm.submitted)">
+                Segment is required
+              </span>
+            </div>
+
+            <!-- Customer Type (Required) -->
+            <div class="form-group">
+              <label>Customer Type*</label>
+              <ng-select class="custom-ng-select" [(ngModel)]="editCustomer.customerType" name="editCustomerType"
+                [items]="['Existing', 'Potential']" [searchable]="false" [clearable]="false" required
+                #editCustomerType="ngModel"
+                [ngClass]="{'border-red-500': (editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)}">
+              </ng-select>
+              <span class="text-red-500 text-sm"
+                *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">
+                Customer Type is required
+              </span>
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.city"
+                #editCity="ngModel" name="editCity"
+                [ngClass]="{'border-red-500': (editCity.touched && editCity.invalid) || (editCustomerForm.submitted && editCity.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editCity.touched && editCity.invalid) || (editCustomerForm.submitted && editCity.invalid)">
+                Enter a valid city
+              </span>
+            </div>
+
+            <!-- State -->
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.state"
+                #editState="ngModel" name="editState"
+                [ngClass]="{'border-red-500': (editState.touched && editState.invalid) || (editCustomerForm.submitted && editState.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editState.touched && editState.invalid) || (editCustomerForm.submitted && editState.invalid)">
+                Enter a valid state
+              </span>
+            </div>
+
+            <!-- Pincode -->
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.pincode"
+                #editPincode="ngModel" name="editPincode" pattern="^[0-9]{6}$"
+                [ngClass]="{'border-red-500': (editPincode.touched && editPincode.value && editPincode.invalid) || (editCustomerForm.submitted && editPincode.value && editPincode.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editPincode.touched && editPincode.value && editPincode.invalid) || (editCustomerForm.submitted && editPincode.value && editPincode.invalid)">
+                Enter a valid 6-digit pincode
+              </span>
+            </div>
+
+            <!-- Country -->
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.country"
+                #editCountry="ngModel" name="editCountry"
+                [ngClass]="{'border-red-500': (editCountry.touched && editCountry.invalid) || (editCustomerForm.submitted && editCountry.invalid)}">
+              <span class="text-red-500 text-sm"
+                *ngIf="(editCountry.touched && editCountry.invalid) || (editCustomerForm.submitted && editCountry.invalid)">
+                Enter a valid country
+              </span>
+            </div>
+
+            <!-- Customer Description -->
+            <div class="form-group">
+              <label>Customer Description</label>
+              <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.description"
+                name="editDescription" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mt-4 flex justify-end space-x-2">
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              (click)="closeCustomerModule()">
               Cancel
             </button>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
               Update
             </button>
           </div>
-      </form>
+        </form>
+      </div>
+    </div>
+
+    <!-- Customer Table -->
+    <h3 class="mt-6 font-bold">Customer List</h3>
+
+    <div class="rounded-lg w-full overflow-x-auto p-2">
+      <!-- Filters -->
+      <div class="min-w-max">
+        <div
+          class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+          <!-- Customer Name Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Customer</label>
+            <ng-select [(ngModel)]="customerNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                {{ customer.customer_name }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <!-- Company Website Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Company Website</label>
+
+            <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+          <!-- Email Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Customer Email</label>
+
+            <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+          <!-- Phone Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Phone</label>
+
+            <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="phoneFilter" (click)="clearFilter('phoneFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+          <!-- Alternate Phone Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Alternate Phone</label>
+
+            <input type="text" [(ngModel)]="alternatePhoneFilter" placeholder="Alternate Phone" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="alternatePhoneFilter" (click)="clearFilter('alternatePhoneFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Status</label>
+            <ng-select [(ngModel)]="statusFilter" (change)="applyFilters()" [clearable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option value="Active">Active</ng-option>
+              <ng-option value="Inactive">Inactive</ng-option>
+            </ng-select>
+          </div>
+
+          <!-- Sector Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Sector</label>
+            <ng-select [(ngModel)]="sectorFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option *ngFor="let sector of distinctSectors" [value]="sector">
+                {{ sector }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+
+
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Industry</label>
+            <ng-select [(ngModel)]="industryFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option *ngFor="let industry of distinctIndustries" [value]="industry">
+                {{ industry }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <!-- Domain Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Segment</label>
+            <ng-select [(ngModel)]="domainFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option *ngFor="let category of optionMasterCategory" [value]="category.domain">
+                {{ category.domain }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <!-- Customer Type Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Type</label>
+            <ng-select [(ngModel)]="customerTypeFilter" (change)="applyFilters()" [clearable]="true"
+              class="text-xs custom-ng-select-filter">
+              <ng-option value="Existing">Existing</ng-option>
+              <ng-option value="Potential">Potential</ng-option>
+            </ng-select>
+          </div>
+
+          <!-- City Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">City</label>
+            <input type="text" [(ngModel)]="cityFilter" placeholder="City" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="cityFilter" (click)="clearFilter('cityFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+
+          <!-- Description Filter -->
+          <div class="relative flex-grow">
+            <label class="block text-xs font-medium mb-1">Description</label>
+            <input type="text" [(ngModel)]="descriptionFilter" placeholder="Description" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+            <button *ngIf="descriptionFilter" (click)="clearFilter('descriptionFilter')"
+              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
+
+          <!-- Clear All Filters -->
+          <button (click)="clearFilters()"
+            class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
+            All
+            Filters</button>
+        </div>
+      </div>
+
+
+      <div class="rounded-lg w-full inline-block whitespace-nowrap">
+
+        <table class="w-full border-collapse border border-gray-300 mt-4">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2">S.No.</th>
+              <th class="border p-2">Customer Name</th>
+              <th class="border p-2">Company Website</th>
+              <th class="border p-2">Email Address</th>
+              <th class="border p-2">Phone Number</th>
+              <th class="border p-2">Alternate Phone Number</th>
+              <th class="border p-2">Customer Status</th>
+              <th class="border p-2">Customer Sector</th>
+              <th class="border p-2">Customer Industry</th>
+              <th class="border p-2">Customer Segment</th>
+              <th class="border p-2">Customer Type</th>
+              <th class="border p-2">City</th>
+              <th class="border p-2">State</th>
+              <th class="border p-2">Pincode</th>
+              <th class="border p-2">Country</th>
+              <th class="border p-2">Customer Description</th>
+              <th class="border p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
+              <td class="border p-2">{{ i + 1 }}</td>
+              <td class="border p-2">{{ customer.customer_name }}</td>
+              <td class="border p-2">{{ customer.customer_company_website || '-'}}</td>
+              <td class="border p-2">{{ customer.customer_email || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_phone || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_alternate_phone || '-' }}</td>
+              <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+              <td class="border p-2">{{ customer.sector || '-' }}</td>
+              <td class="border p-2">{{ customer.industry || '-' }}</td>
+              <td class="border p-2">{{ customer.domain || '-' }}</td>
+              <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+              <td class="border p-2">{{ customer.customer_city || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_state || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_pincode || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_country || '-' }}</td>
+              <td class="border p-2">{{ customer.customer_description || '-' }}</td>
+              <td class="border p-2">
+                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                  (click)="editCustomerModule(customer)">Edit</button>
+                <button class="bg-red-500 text-white px-2 py-1 rounded"
+                  (click)="deleteCustomer(customer.customer_id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="flex items-center justify-center mt-4 space-x-1">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+          class="px-3 py-1 border rounded-md">
+          Previous
+        </button>
+        <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+          [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+          {{ page }}
+        </button>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+          class="px-3 py-1 border rounded-md">
+          Next
+        </button>
+      </div>
     </div>
   </div>
 
-        <!-- Customer Table -->
-        <h3 class="mt-6 font-bold">Customer List</h3>
+  <!-- Customer Domain Section -->
+  <div *ngIf="selectedSection === 'customerCategory'" class="p-2">
+    <h3 class="text-xl font-semibold mb-4">Add New Category</h3>
 
-        <div class="rounded-lg w-full overflow-x-auto p-2">
-            <!-- Filters -->
-            <!-- Filters -->
-            <div class="min-w-max">
-                <div
-                    class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- Customer Name Filter -->
-                    <!-- Customer Name Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300"
-                            [(ngModel)]="customerNameFilter" (change)="applyFilters()" name="customerNameFilter">
-                            <option value="" disabled selected>Select Customer</option>
-                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                                {{ customer.customer_name }}
-                            </option>
-                        </select>
-                        <button *ngIf="customerNameFilter" (click)="clearFilter('customerNameFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-                    <div class="relative flex-grow">
-                      <label class="block text-xs font-medium mb-1">Customer</label>
-                      <ng-select [(ngModel)]="customerNameFilter"
-                                (change)="applyFilters()"
-                                [clearable]="true"
-                                [searchable]="true"
-                                class="text-xs custom-ng-select-filter">
-                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                              {{ customer.customer_name }}
-                          </ng-option>
-                      </ng-select>
-                  </div>
+    <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
+      <div class="grid grid-cols-6 gap-4">
 
-                    <!-- Company Website Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website"
-                            (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
+        <!-- Sector Selection -->
 
-                    <!-- Email Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
-
-                    <!-- Phone Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="phoneFilter" (click)="clearFilter('phoneFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
-
-                    <!-- Alternate Phone Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="alternatePhoneFilter" placeholder="Alternate Phone"
-                            (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="alternatePhoneFilter" (click)="clearFilter('alternatePhoneFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
-
-                    <!-- Status Filter -->
-                    <!-- Customer Status Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="statusFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                        <button *ngIf="statusFilter" (click)="clearFilter('statusFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-                    <div class="relative flex-grow">
-                      <label class="block text-xs font-medium mb-1">Status</label>
-                      <ng-select [(ngModel)]="statusFilter"
-                                (change)="applyFilters()"
-                                [clearable]="true"
-                                class="text-xs custom-ng-select-filter">
-                          <ng-option value="Active">Active</ng-option>
-                          <ng-option value="Inactive">Inactive</ng-option>
-                      </ng-select>
-                  </div>
-
-                    <!-- Sector Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="sectorFilter" (change)="applyFilters()"
-                          class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                          <option value="">Select Sector</option>
-                          <option *ngFor="let sector of distinctSectors" [value]="sector">
-                            {{ sector }}
-                          </option>
-                        </select>
-                        <button *ngIf="sectorFilter" (click)="clearFilter('sectorFilter')"
-                          class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                          ×
-                        </button>
-                      </div> -->
-                      <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Sector</label>
-                        <ng-select [(ngModel)]="sectorFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
-                            <ng-option *ngFor="let sector of distinctSectors" [value]="sector">
-                                {{ sector }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-            
-
-                     
-                      <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="industryFilter" (change)="applyFilters()"
-                          class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                          <option value="">Select Industry</option>
-                          <option *ngFor="let industry of distinctIndustries" [value]="industry">
-                            {{ industry }}
-                          </option>
-                        </select>
-                        <button *ngIf="industryFilter" (click)="clearFilter('industryFilter')"
-                          class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                          ×
-                        </button>
-                      </div> -->
-                      <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Industry</label>
-                        <ng-select [(ngModel)]="industryFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
-                            <ng-option *ngFor="let industry of distinctIndustries" [value]="industry">
-                                {{ industry }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-
-                    <!-- Domain Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="domainFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Segment</option>
-                            <option *ngFor="let category of optionMasterCategory" [value]="category.domain">
-                                {{ category.domain }}
-                            </option>
-                        </select>
-                        <button *ngIf="domainFilter" (click)="clearFilter('domainFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-                    <div class="relative flex-grow">
-                      <label class="block text-xs font-medium mb-1">Segment</label>
-                      <ng-select [(ngModel)]="domainFilter"
-                                (change)="applyFilters()"
-                                [clearable]="true"
-                                [searchable]="true"
-                                class="text-xs custom-ng-select-filter">
-                          <ng-option *ngFor="let category of optionMasterCategory" [value]="category.domain">
-                              {{ category.domain }}
-                          </ng-option>
-                      </ng-select>
-                  </div>
-
-                    <!-- Customer Type Filter -->
-                    <!-- Customer Type Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="customerTypeFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Type</option>
-                            <option value="Existing">Existing</option>
-                            <option value="Potential">Potential</option>
-                        </select>
-                        <button *ngIf="customerTypeFilter" (click)="clearFilter('customerTypeFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-                    <div class="relative flex-grow">
-                      <label class="block text-xs font-medium mb-1">Type</label>
-                      <ng-select [(ngModel)]="customerTypeFilter"
-                                (change)="applyFilters()"
-                                [clearable]="true"
-                                class="text-xs custom-ng-select-filter">
-                          <ng-option value="Existing">Existing</ng-option>
-                          <ng-option value="Potential">Potential</ng-option>
-                      </ng-select>
-                  </div>
-
-                    <!-- City Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="cityFilter" placeholder="City" (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="cityFilter" (click)="clearFilter('cityFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
-
-
-                    <!-- Description Filter -->
-                    <div class="relative flex-grow">
-                        <input type="text" [(ngModel)]="descriptionFilter" placeholder="Description"
-                            (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                        <button *ngIf="descriptionFilter" (click)="clearFilter('descriptionFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div>
-
-                    <!-- Clear All Filters -->
-                    <button (click)="clearFilters()"
-                        class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
-                        All
-                        Filters</button>
-                </div>
-            </div>
-
-
-            <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-                <table class="w-full border-collapse border border-gray-300 mt-4">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Customer Name</th>
-                            <th class="border p-2">Company Website</th>
-                            <th class="border p-2">Email Address</th>
-                            <th class="border p-2">Phone Number</th>
-                            <th class="border p-2">Alternate Phone Number</th>
-                            <th class="border p-2">Customer Status</th>
-                            <th class="border p-2">Customer Sector</th>
-                            <th class="border p-2">Customer Industry</th>
-                            <th class="border p-2">Customer Segment</th>
-                            <th class="border p-2">Customer Type</th>
-                            <th class="border p-2">City</th>
-                            <th class="border p-2">State</th>
-                            <th class="border p-2">Pincode</th>
-                            <th class="border p-2">Country</th>
-                            <th class="border p-2">Customer Description</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-                            <td class="border p-2">{{ customer.customer_name }}</td>
-                            <td class="border p-2">{{ customer.customer_company_website || '-'}}</td>
-                            <td class="border p-2">{{ customer.customer_email || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_phone || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_alternate_phone || '-' }}</td>
-                            <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
-                            <td class="border p-2">{{ customer.sector || '-' }}</td>
-                            <td class="border p-2">{{ customer.industry || '-' }}</td>
-                            <td class="border p-2">{{ customer.domain || '-' }}</td>
-                            <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
-                            <td class="border p-2">{{ customer.customer_city || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_state || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_pincode || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_country || '-' }}</td>
-                            <td class="border p-2">{{ customer.customer_description || '-' }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" (click)="editCustomerModule(customer)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteCustomer(customer.customer_id)">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- Pagination -->
-            <div class="flex items-center justify-center mt-4 space-x-1">
-                <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
-                    class="px-3 py-1 border rounded-md">
-                    Previous
-                </button>
-                <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
-                    [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
-                    {{ page }}
-                </button>
-                <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
-                    class="px-3 py-1 border rounded-md">
-                    Next
-                </button>
-            </div>
+        <div class="form-group col-span-2">
+          <label>Sector*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.sector" name="sector" (change)="onSectorChange()"
+              required #sector="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
+              <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
+              Sector is required
+            </span>
+          </div>
         </div>
-    </div>
 
-    <!-- Customer Domain Section -->
-    <div *ngIf="selectedSection === 'customerCategory'" class="p-2">
-        <h3 class="text-xl font-semibold mb-4">Add New Category</h3>
-
-        <!-- Form for Adding Category -->
-        <!-- Form for Adding Category -->
-        <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
-            <div class="grid grid-cols-6 gap-4">
-              
-                <!-- Sector Selection -->
-                <!-- <div class="form-group col-span-2">
-                    <label>Sector*</label>
-                    <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.sector" 
-                                name="sector" (change)="onSectorChange()" required
-                                #sector="ngModel"
-                                [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
-                            <option value="" disabled selected>Select Sector</option>
-                            <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
-                            <option value="__new__">+ Add New Sector</option>
-                        </select>
-                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
-                            Sector is required
-                        </span>
-                    </div>
-                </div> -->
-
-                <div class="form-group col-span-2">
-                    <label>Sector*</label>
-                    <div class="flex flex-col">
-                        <ng-select class="custom-ng-select"
-                                  [(ngModel)]="inputMode.sector"
-                                  name="sector"
-                                  (change)="onSectorChange()"
-                                  required
-                                  #sector="ngModel"
-                                  [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
-                                  <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
-                                  <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
-                        </ng-select>
-                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
-                            Sector is required
-                        </span>
-                    </div>
-                </div>
-            
-                <!-- New Sector Input -->
-                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__'">
-                    <label>New Sector Name*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" 
-                           name="newSector" #newSectorField="ngModel" placeholder="Enter new sector" required
-                           [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
-                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
-                        New sector name is required
-                    </span>
-                </div>
-            
-                <!-- Industry Selection (only show dropdown if sector is not new) -->
-                <!-- <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
-                    <label>Industry*</label>
-                    <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.industry" 
-                                name="industry" (change)="onIndustryChange()" required
-                                #industry="ngModel"
-                                [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
-                            <option value="" disabled selected>Select Industry</option>
-                            <option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</option>
-                            <option value="__new__">+ Add New Industry</option>
-                        </select>
-                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
-                            Industry is required
-                        </span>
-                    </div>
-                </div> -->
-
-                    <!-- Industry Selection -->
+        <!-- New Sector Input -->
+        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__'">
+          <label>New Sector Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" name="newSector"
+            #newSectorField="ngModel" placeholder="Enter new sector" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
+            New sector name is required
+          </span>
+        </div>
+        <!-- Industry Selection -->
         <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
-            <label>Industry*</label>
-            <div class="flex flex-col">
-                <ng-select class="custom-ng-select"
-                          [(ngModel)]="inputMode.industry"
-                          name="industry"
-                          (change)="onIndustryChange()"
-                          required
-                          #industry="ngModel"
-                          [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
-                          <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
-                          <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
-                    Industry is required
-                </span>
-            </div>
+          <label>Industry*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
+              (change)="onIndustryChange()" required #industry="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
+              <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
+              Industry is required
+            </span>
+          </div>
         </div>
-            
-                <!-- New Industry Input (shown if sector is new OR industry is new) -->
-                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
-                    <label>New Industry Name*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" 
-                           name="newIndustry" #newIndustryField="ngModel" placeholder="Enter new industry" required
-                           [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
-                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
-                        New industry name is required
-                    </span>
-                </div>
-            
-                <!-- Segment Selection (only show dropdown if industry is not new) -->
-                <!-- <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
-                    <label>Segment*</label>
-                    <div class="flex flex-col">
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="inputMode.domain" 
-                                name="domain" required
-                                #domain="ngModel"
-                                [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
-                            <option value="" disabled selected>Select Segment</option>
-                            <option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</option>
-                            <option value="__new__">+ Add New Segment</option>
-                        </select>
-                        <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
-                            Segment is required
-                        </span>
-                    </div>
-                </div> -->
 
-                   <!-- Segment Selection -->
-        <div class="form-group col-span-2" *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
-            <label>Segment*</label>
-            <div class="flex flex-col">
-                <ng-select class="custom-ng-select"
-                          [(ngModel)]="inputMode.domain"
-                          name="domain"
-                          required
-                          #domain="ngModel"
-                          [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
-                          <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
-                          <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
-                    Segment is required
-                </span>
-            </div>
+        <!-- New Industry Input (shown if sector is new OR industry is new) -->
+        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
+          <label>New Industry Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" name="newIndustry"
+            #newIndustryField="ngModel" placeholder="Enter new industry" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
+            New industry name is required
+          </span>
         </div>
-    
-            
-                <!-- New Segment Input (shown if sector or industry is new OR segment is new) -->
-                <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
-                    <label>New Segment Name*</label>
-                    <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" 
-                           name="newDomain" #newDomainField="ngModel" placeholder="Enter new segment" required
-                           [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
-                    <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
-                        New segment name is required
-                    </span>
-                </div>
-            </div>
-        
-            <!-- Submit Button -->
-            <div class="mt-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-                    Save
+
+        <!-- Segment Selection -->
+        <div class="form-group col-span-2"
+          *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+          <label>Segment*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required #domain="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
+              <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
+              Segment is required
+            </span>
+          </div>
+        </div>
+
+
+        <!-- New Segment Input (shown if sector or industry is new OR segment is new) -->
+        <div class="form-group col-span-2"
+          *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
+          <label>New Segment Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" name="newDomain"
+            #newDomainField="ngModel" placeholder="Enter new segment" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
+            New segment name is required
+          </span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="mt-4">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
+          Save
+        </button>
+      </div>
+    </form>
+
+    <!-- Category Table -->
+    <h3 class="mt-6 font-bold">Category List</h3>
+    <div class="rounded-lg w-full overflow-x-auto">
+      <div class="rounded-lg w-full inline-block whitespace-nowrap">
+
+        <table class="w-full border-collapse border border-gray-300 mt-4">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2">S.No.</th>
+              <th class="border p-2">Sector</th>
+              <th class="border p-2">Industry</th>
+              <th class="border p-2">Segment</th>
+              <th class="border p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
+              <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
+              <td class="border p-2">{{ category.sector }}</td>
+              <td class="border p-2">{{ category.industry }}</td>
+              <td class="border p-2">{{ category.domain }}</td>
+              <td class="border p-2">
+                <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteCategory(category.category_id)">
+                  Delete
                 </button>
-            </div>
-        </form>
-
-        <!-- Category Table -->
-        <h3 class="mt-6 font-bold">Category List</h3>
-        <div class="rounded-lg w-full overflow-x-auto">
-            <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-                <table class="w-full border-collapse border border-gray-300 mt-4">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Sector</th>
-                            <th class="border p-2">Industry</th>
-                            <th class="border p-2">Segment</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-                            <td class="border p-2">{{ category.sector }}</td>
-                            <td class="border p-2">{{ category.industry }}</td>
-                            <td class="border p-2">{{ category.domain }}</td>
-                            <td class="border p-2">
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteCategory(category.category_id)">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
 </div>
