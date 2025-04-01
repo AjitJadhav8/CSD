@@ -41,12 +41,10 @@ export class ExportMyTimesheetComponent {
 
   displayedTimesheetData: any[] = [];
 
-  // Pagination Variables
   currentPage: number = 1;
   itemsPerPage: number = 30;
-  maxPageButtons: number = 5; // Show only 5 page numbers at a time
+  maxPageButtons: number = 5; 
 
-    // Filters
     timesheetDateFilter: string = '';
     customerFilter: string = '';
     projectFilter: string = '';
@@ -76,25 +74,6 @@ export class ExportMyTimesheetComponent {
       );
     }
 
-
-  // applyDateFilter(): void {
-  //   this.filteredTimesheetData = this.fullTimesheetData.filter(item => {
-  //     const itemDate = new Date(item.timesheet_date);
-
-  //     const from = this.fromDate ? new Date(this.fromDate) : null;
-  //     if (from) from.setHours(0, 0, 0, 0);
-
-  //     const to = this.toDate ? new Date(this.toDate) : null;
-  //     if (to) to.setHours(23, 59, 59, 999);
-
-  //     return (!from || itemDate >= from) && (!to || itemDate <= to);
-  //   });
-
-  //   this.currentPage = 1; // Reset to first page after filtering
-  //   this.updateDisplayedData();
-  // }
-
-  
   clearDateFilter(): void {
     this.fromDate = '';
     this.toDate = '';
@@ -119,7 +98,6 @@ export class ExportMyTimesheetComponent {
     return Math.ceil(this.filteredTimesheetData.length / this.itemsPerPage);
   }
 
-  // Compute the visible page numbers
   getVisiblePageNumbers(): number[] {
     const totalPages = this.totalPages();
     const halfRange = Math.floor(this.maxPageButtons / 2);
@@ -206,20 +184,16 @@ export class ExportMyTimesheetComponent {
 formatDateForComparison(dateString: string): string {
   if (!dateString) return '';
   
-  // Convert to local date correctly (handles timezone offset)
   const date = new Date(dateString);
   const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
   
-  // Format as YYYY-MM-DD
   return localDate.toISOString().split('T')[0];
 }
 
-    // Apply Filters
     applyFilters(): void {
       this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
         const itemDate = new Date(timesheet.timesheet_date);
         
-        // Date range filter
         const from = this.fromDate ? new Date(this.fromDate) : null;
         if (from) from.setHours(0, 0, 0, 0);
         
@@ -228,7 +202,6 @@ formatDateForComparison(dateString: string): string {
         
         const dateInRange = (!from || itemDate >= from) && (!to || itemDate <= to);
         
-        // Other filters with null checks
         const otherFiltersMatch = 
         (!this.timesheetDateFilter || 
           this.formatDateForComparison(timesheet.timesheet_date) === this.formatDateForComparison(this.timesheetDateFilter))&&          (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
@@ -238,18 +211,6 @@ formatDateForComparison(dateString: string): string {
           (!this.phasesFilter || String(timesheet.phase_id) === String(this.phasesFilter)) &&
           (this.taskStatusFilter !== null ? timesheet.task_status === Number(this.taskStatusFilter) : true)&&            (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
 
-
-
-
-
-          // (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
-          // (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
-          // (!this.projectFilter || String(timesheet.project_id) === String(this.projectFilter)) &&
-          // (!this.projectDeliverableFilter || String(timesheet.pd_id) === String(this.projectDeliverableFilter)) &&
-          // (!this.phasesFilter || String(timesheet.phase_id) === String(this.phasesFilter)) &&
-          // (!this.taskStatusFilter || String(timesheet.task_status) === String(this.taskStatusFilter)) &&
-          // (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
-        
         return dateInRange && otherFiltersMatch;
       });
       

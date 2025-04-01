@@ -46,8 +46,6 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
         }
     }
 
-
-
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
             const { timesheet_date, phase_id, pd_id, task_description, hours, minutes, task_status } = req.body;
@@ -72,63 +70,6 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
         }
     }
 
-    // async getUserTimesheets(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const userId = (req as any).user?.user_id;
-    //         const date = req.query.date;
-
-    //         console.log('Fetching timesheets for user:', userId, 'with date:', date);
-
-    //         if (!userId) {
-    //             res.status(400).json({ error: 'User ID is required' });
-    //             return;
-    //         }
-
-    //         const query = `
-    //             SELECT 
-    //                 t.timesheet_id, 
-    //                 t.user_id, 
-    //                 t.pd_id, 
-    //                 t.task_description,
-    //                 m.project_deliverable_name, 
-    //                 m.pd_id,
-    //                 p.project_name, 
-    //                 p.project_id,
-    //                 c.customer_name,
-    //                 c.customer_id,
-    //                 ph.project_phase_name, 
-    //                 ph.phase_id,
-    //                 t.hours, 
-    //                 t.minutes, 
-    //                 t.task_status, 
-    //                 t.timesheet_date
-    //             FROM trans_timesheet t
-    //             LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
-    //             LEFT JOIN master_project_phases ph ON m.phase_id = ph.phase_id
-    //             LEFT JOIN master_project p ON ph.project_id = p.project_id
-    //             LEFT JOIN master_customer c ON p.customer_id = c.customer_id
-    //             WHERE t.is_deleted = 0 AND t.user_id = ? 
-    //             ${date ? 'AND DATE(t.timesheet_date) = ?' : 'AND DATE(t.timesheet_date) = CURDATE()'}
-    //             ORDER BY t.timesheet_id DESC`;
-
-    //         const queryParams = date ? [userId, date] : [userId];
-
-    //         console.log('Executing query:', query);
-    //         console.log('With params:', queryParams);
-
-    //         db.query(query, queryParams, (err, results) => {
-    //             if (err) {
-    //                 console.error('Error fetching timesheets:', err);
-    //                 return res.status(500).json({ error: 'Error fetching timesheets' });
-    //             }
-    //             console.log('Query results:', results);
-    //             res.status(200).json(results);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
     async getUserTimesheets(req: Request, res: Response): Promise<void> {
         try {
             const userId = (req as any).user?.user_id;
@@ -291,81 +232,42 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
     // Fetch full timesheet data
     async getUserFullTimesheet(req: Request, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.user_id; // Use "as any" to access req.user
-
+            const userId = (req as any).user?.user_id;
+    
             if (!userId) {
                 res.status(400).json({ error: 'User ID is required' });
                 return;
             }
-
-            //             const query = `
-            //     SELECT 
-            //     t.timesheet_id, 
-            //     t.user_id, 
-            //     t.pd_id, 
-            //     t.task_description,
-            //     m.project_deliverable_name, 
-            //                     p.project_id,  
-
-            //     p.project_name, 
-            //     c.customer_id,
-            //     c.customer_name, 
-            //     ph.phase_id,
-            //     ph.project_phase_name,  -- Added phase name instead of task category
-            //     t.hours, 
-            //     t.minutes, 
-            //     t.task_status, 
-            //     t.timesheet_date,
-            //      pm.user_id as project_manager_id, 
-            //       CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name 
-            // FROM trans_timesheet t
-            // LEFT JOIN master_project_deliverables m ON t.pd_id = m.pd_id
-            // LEFT JOIN master_project_phases ph ON m.phase_id = ph.phase_id  -- Linking deliverables to phases
-            // LEFT JOIN master_project p ON ph.project_id = p.project_id      -- Linking phases to projects
-            // LEFT JOIN master_customer c ON ph.customer_id = c.customer_id  -- Linking phases to customers
-            //  LEFT JOIN master_user pm ON p.project_manager_id = pm.user_id
-            // WHERE t.is_deleted = 0 
-            //     AND t.user_id = ? 
-            // ORDER BY t.timesheet_id DESC;
-
-            // `;
+    
             const query = `
- SELECT 
-    t.timesheet_id,
-    t.timesheet_date,
-    CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-    p.project_name,
-    ph.project_phase_name,
-    pd.project_deliverable_name,
-    pd.pd_id,
-    t.task_description,
-    t.hours,
-    t.minutes,
-    t.task_status,
-    t.user_id,
-    p.project_id,
-    ph.phase_id
-FROM 
-    trans_timesheet t
-JOIN 
-    master_user u ON t.user_id = u.user_id
-JOIN 
-    master_project_deliverables pd ON t.pd_id = pd.pd_id
-JOIN 
-    master_project_phases ph ON pd.pd_id = ph.pd_id  -- Changed this join
-JOIN 
-    master_project p ON pd.project_id = p.project_id  -- Join via deliverables
-JOIN 
-    trans_user_details ud ON u.user_id = ud.user_id
-WHERE 
-    t.is_deleted = 0
-    AND ud.reporting_manager_id = ?
-    AND ud.is_deleted = 0
-ORDER BY 
-    t.timesheet_date DESC, u.user_first_name
-
- `;
-
+            SELECT 
+                t.timesheet_id, 
+                t.user_id, 
+                t.pd_id, 
+                t.task_description,
+                mpd.project_deliverable_name, 
+                mp.project_id,  
+                mp.project_name, 
+                mc.customer_id,
+                mc.customer_name, 
+                mpp.phase_id,
+                mpp.project_phase_name,
+                t.hours, 
+                t.minutes, 
+                t.task_status, 
+                t.timesheet_date,
+                pm.user_id as project_manager_id, 
+                CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name 
+            FROM trans_timesheet t
+            LEFT JOIN master_project_deliverables mpd ON t.pd_id = mpd.pd_id
+            LEFT JOIN master_project_phases mpp ON mpd.pd_id = mpp.pd_id  /* Changed to join on pd_id */
+            LEFT JOIN master_project mp ON mpd.project_id = mp.project_id  /* Changed to join through deliverables */
+            LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id  /* Changed to join through deliverables */
+            LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id
+            WHERE t.is_deleted = 0 
+                AND t.user_id = ? 
+            ORDER BY t.timesheet_id DESC`;
+    
             db.query(query, [userId], (err, results) => {
                 if (err) {
                     console.error('Error fetching full timesheet:', err);
@@ -437,63 +339,6 @@ ORDER BY
 
 
     // Add to your TimesheetController
-    // async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const projectManagerId = parseInt(req.params.projectManagerId);
-
-    //         if (!projectManagerId) {
-    //             res.status(400).json({ error: 'Project Manager ID is required' });
-    //             return;
-    //         }
-
-    //         const query = `
-    //         SELECT 
-    //             t.timesheet_id,
-    //             t.timesheet_date,
-    //             CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-    //             p.project_name,
-    //             ph.project_phase_name,
-    //             pd.project_deliverable_name,
-    //             pd.pd_id,
-    //             t.task_description,
-    //             t.hours,
-    //             t.minutes,
-    //             t.task_status,
-    //             t.user_id,
-    //             p.project_id,
-    //             ph.phase_id
-    //         FROM 
-    //             trans_timesheet t
-    //         JOIN 
-    //             master_user u ON t.user_id = u.user_id
-    //         JOIN 
-    //             master_project_deliverables pd ON t.pd_id = pd.pd_id
-    //         JOIN 
-    //             master_project_phases ph ON pd.phase_id = ph.phase_id
-    //         JOIN 
-    //             master_project p ON ph.project_id = p.project_id
-    //         JOIN 
-    //             trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
-    //         WHERE 
-    //             t.is_deleted = 0
-    //             AND pt.project_manager_id = ?
-    //             AND pt.is_deleted = 0
-    //         ORDER BY 
-    //             t.timesheet_date DESC, u.user_first_name
-    //     `;
-
-    //         db.query(query, [projectManagerId], (err, results) => {
-    //             if (err) {
-    //                 console.error('Error fetching project team timesheets:', err);
-    //                 return res.status(500).json({ error: 'Error fetching project team timesheets' });
-    //             }
-    //             res.status(200).json(results);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
 
     async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
         try {
@@ -611,65 +456,6 @@ ORDER BY
         }
     }
 
-
-    // Add to your TimesheetController
-    // async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const reportingManagerId = parseInt(req.params.reportingManagerId);
-
-    //         if (!reportingManagerId) {
-    //             res.status(400).json({ error: 'Reporting Manager ID is required' });
-    //             return;
-    //         }
-
-    //         const query = `
-    //         SELECT 
-    //             t.timesheet_id,
-    //             t.timesheet_date,
-    //             CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-    //             p.project_name,
-    //             ph.project_phase_name,
-    //             pd.project_deliverable_name,
-    //             pd.pd_id,
-    //             t.task_description,
-    //             t.hours,
-    //             t.minutes,
-    //             t.task_status,
-    //             t.user_id,
-    //             p.project_id,
-    //             ph.phase_id
-    //         FROM 
-    //             trans_timesheet t
-    //         JOIN 
-    //             master_user u ON t.user_id = u.user_id
-    //         JOIN 
-    //             master_project_deliverables pd ON t.pd_id = pd.pd_id
-    //         JOIN 
-    //             master_project_phases ph ON pd.phase_id = ph.phase_id
-    //         JOIN 
-    //             master_project p ON ph.project_id = p.project_id
-    //         JOIN 
-    //             trans_user_details ud ON u.user_id = ud.user_id
-    //         WHERE 
-    //             t.is_deleted = 0
-    //             AND ud.reporting_manager_id = ?
-    //             AND ud.is_deleted = 0
-    //         ORDER BY 
-    //             t.timesheet_date DESC, u.user_first_name
-    //     `;
-
-    //         db.query(query, [reportingManagerId], (err, results) => {
-    //             if (err) {
-    //                 console.error('Error fetching reporting team timesheets:', err);
-    //                 return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
-    //             }
-    //             res.status(200).json(results);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
 
     async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
         try {
