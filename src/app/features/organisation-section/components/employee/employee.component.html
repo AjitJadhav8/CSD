@@ -1,19 +1,4 @@
 <div class="p-4">
-    <!-- Section Selection Buttons -->
-    <!-- <div class="flex space-x-4 mb-4">
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="changeSection('employee')">Employee</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="changeSection('department')">Department</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="changeSection('position')">Position</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="changeSection('skills')">Skills</button>
-        <button class="bg-gray-200 hover:bg-gray-300 text-gray-900 py-2 px-4 rounded-md"
-            (click)="changeSection('reportingManagerHistory')">Reporting Manager History</button>
-    </div> -->
-
-
     <!-- Employee Section -->
     <div *ngIf="selectedSection === 'employee'">
         <h3 class="text-xl font-semibold mb-4">Add New Employee</h3>
@@ -21,7 +6,7 @@
         <!-- Scrollable Form -->
         <form #employeeForm="ngForm" (ngSubmit)="submitEmployee(employeeForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
-        
+
                 <!-- Employee Code -->
                 <div class="form-group">
                     <label>Employee Code*</label>
@@ -33,7 +18,7 @@
                         Employee Code is required
                     </span>
                 </div>
-        
+
                 <!-- First Name -->
                 <div class="form-group">
                     <label>First Name*</label>
@@ -45,14 +30,14 @@
                         First Name is required
                     </span>
                 </div>
-        
+
                 <!-- Middle Name -->
                 <div class="form-group">
                     <label>Middle Name</label>
                     <input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name"
                         class="border p-2 w-full rounded-md">
                 </div>
-        
+
                 <!-- Last Name -->
                 <div class="form-group">
                     <label>Last Name*</label>
@@ -64,7 +49,7 @@
                         Last Name is required
                     </span>
                 </div>
-        
+
                 <!-- Email ID -->
                 <div class="form-group">
                     <label>Email ID*</label>
@@ -77,7 +62,7 @@
                         Valid Email is required
                     </span>
                 </div>
-        
+
                 <!-- Contact Number -->
                 <div class="form-group">
                     <label>Contact Number*</label>
@@ -89,94 +74,98 @@
                         Enter a valid 10-digit phone number
                     </span>
                 </div>
-        
+
             </div>
             <!-- Submit Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Save Employee</button>
             </div>
         </form>
-        
-        <div *ngIf="isEmployeeEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEmployeeEditModal()">
+
+        <div *ngIf="isEmployeeEditModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+            (click)="closeEmployeeEditModal()">
             <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
-              <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
-              <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
-                <div class="grid grid-cols-3 gap-4">
-                  <!-- Employee Code -->
-                  <div class="form-group">
-                    <label>Employee Code*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel" name="editUserCode" required
-                      class="border p-2 w-full rounded-md"
-                      [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
-                    <span class="text-red-500 text-sm"
-                      *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
-                      Employee Code is required
-                    </span>
-                  </div>
-          
-                  <!-- First Name -->
-                  <div class="form-group">
-                    <label>First Name*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
-                      name="editUserFirstName" required class="border p-2 w-full rounded-md"
-                      [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
-                    <span class="text-red-500 text-sm"
-                      *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
-                      First Name is required
-                    </span>
-                  </div>
-          
-                  <!-- Middle Name -->
-                  <div class="form-group">
-                    <label>Middle Name</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
-                      class="border p-2 w-full rounded-md">
-                  </div>
-          
-                  <!-- Last Name -->
-                  <div class="form-group">
-                    <label>Last Name*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
-                      name="editUserLastName" required class="border p-2 w-full rounded-md"
-                      [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
-                    <span class="text-red-500 text-sm"
-                      *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
-                      Last Name is required
-                    </span>
-                  </div>
-          
-                  <!-- Email ID -->
-                  <div class="form-group">
-                    <label>Email ID*</label>
-                    <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel" name="editUserEmail"
-                      required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                      class="border p-2 w-full rounded-md"
-                      [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
-                    <span class="text-red-500 text-sm"
-                      *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
-                      Valid Email is required
-                    </span>
-                  </div>
-          
-                  <!-- Contact Number -->
-                  <div class="form-group">
-                    <label>Contact Number*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel" name="editUserContact"
-                      required pattern="^[0-9]{10}$" class="border p-2 w-full rounded-md"
-                      [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
-                    <span class="text-red-500 text-sm"
-                      *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
-                      Enter a valid 10-digit phone number
-                    </span>
-                  </div>
-                </div>
-                <div class="mt-4 flex justify-end">
-                  <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" (click)="closeEmployeeEditModal()">Cancel</button>
-                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-                </div>
-              </form>
+                <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
+                <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- Employee Code -->
+                        <div class="form-group">
+                            <label>Employee Code*</label>
+                            <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel"
+                                name="editUserCode" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
+                                Employee Code is required
+                            </span>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="form-group">
+                            <label>First Name*</label>
+                            <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
+                                name="editUserFirstName" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
+                                First Name is required
+                            </span>
+                        </div>
+
+                        <!-- Middle Name -->
+                        <div class="form-group">
+                            <label>Middle Name</label>
+                            <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
+                                class="border p-2 w-full rounded-md">
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="form-group">
+                            <label>Last Name*</label>
+                            <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
+                                name="editUserLastName" required class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
+                                Last Name is required
+                            </span>
+                        </div>
+
+                        <!-- Email ID -->
+                        <div class="form-group">
+                            <label>Email ID*</label>
+                            <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel"
+                                name="editUserEmail" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
+                                Valid Email is required
+                            </span>
+                        </div>
+
+                        <!-- Contact Number -->
+                        <div class="form-group">
+                            <label>Contact Number*</label>
+                            <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel"
+                                name="editUserContact" required pattern="^[0-9]{10}$"
+                                class="border p-2 w-full rounded-md"
+                                [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
+                                Enter a valid 10-digit phone number
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeEmployeeEditModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+                    </div>
+                </form>
             </div>
-          </div>
+        </div>
 
         <div class="rounded-lg w-full overflow-x-auto p-2">
 
@@ -186,6 +175,8 @@
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
                     <!-- Employee Code Filter -->
                     <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Employee Code</label>
+
                         <input type="text" [(ngModel)]="employeeCodeFilter" placeholder="Employee Code"
                             (input)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
@@ -196,27 +187,11 @@
                     </div>
 
                     <!-- Name Filter -->
-                    <!-- Name Filter Dropdown -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="nameFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Name</option>
-                            <option *ngFor="let emp of optionUsers" [value]="emp.user_id">
-                                {{ emp.user_first_name }} {{ emp.user_last_name }}
-                            </option>
-                        </select>
-                        <button *ngIf="nameFilter" (click)="clearFilter('nameFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
+
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Name</label>
-                        <ng-select [(ngModel)]="nameFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
+                        <ng-select [(ngModel)]="nameFilter" (change)="applyFilters()" [clearable]="true"
+                            [searchable]="true" class="text-xs custom-ng-select-filter">
                             <ng-option *ngFor="let emp of optionUsers" [value]="emp.user_id">
                                 {{ emp.user_first_name }} {{ emp.user_last_name }}
                             </ng-option>
@@ -226,6 +201,7 @@
 
                     <!-- Email Filter -->
                     <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Email</label>
                         <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
                         <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
@@ -235,28 +211,10 @@
                     </div>
 
                     <!-- Department Filter -->
-                    <!-- Department Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="departmentFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Department</option>
-                            <option *ngFor="let department of optionDepartments" [value]="department.department_id">
-                                {{ department.department_name }}
-                            </option>
-                        </select>
-                        <button *ngIf="departmentFilter" (click)="clearFilter('departmentFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Department</label>
-                        <ng-select [(ngModel)]="departmentFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
+                        <ng-select [(ngModel)]="departmentFilter" (change)="applyFilters()" [clearable]="true"
+                            [searchable]="true" class="text-xs custom-ng-select-filter">
                             <ng-option *ngFor="let department of optionDepartments" [value]="department.department_id">
                                 {{ department.department_name }}
                             </ng-option>
@@ -264,35 +222,20 @@
                     </div>
 
                     <!-- Designation Filter -->
-                    <!-- Designation Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="designationFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Designation</option>
-                            <option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
-                                {{ designation.designation_name }}
-                            </option>
-                        </select>
-                        <button *ngIf="designationFilter" (click)="clearFilter('designationFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
-
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Designation</label>
-                        <ng-select [(ngModel)]="designationFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
-                            <ng-option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                        <ng-select [(ngModel)]="designationFilter" (change)="applyFilters()" [clearable]="true"
+                            [searchable]="true" class="text-xs custom-ng-select-filter">
+                            <ng-option *ngFor="let designation of optionDesignation"
+                                [value]="designation.designation_id">
                                 {{ designation.designation_name }}
                             </ng-option>
                         </ng-select>
                     </div>
 
                     <div class="relative flex-grow">
+                        <label class="block text-xs font-medium mb-1">Address</label>
+
                         <input type="text" [(ngModel)]="addressFilter" placeholder="Address" (input)="applyFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
                         <button *ngIf="addressFilter" (click)="clearFilter('addressFilter')"
@@ -302,26 +245,10 @@
                     </div>
 
                     <!-- Reporting Manager Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <select [(ngModel)]="reportingManagerFilter" (change)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">Select Reporting Manager</option>
-                            <option *ngFor="let rm of optionUsers" [value]="rm.user_id">
-                                {{ rm.user_first_name }} {{ rm.user_last_name }}
-                            </option>
-                        </select>
-                        <button *ngIf="reportingManagerFilter" (click)="clearFilter('reportingManagerFilter')"
-                            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                            ×
-                        </button>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Reporting Manager</label>
-                        <ng-select [(ngModel)]="reportingManagerFilter"
-                                  (change)="applyFilters()"
-                                  [clearable]="true"
-                                  [searchable]="true"
-                                  class="text-xs custom-ng-select-filter">
+                        <ng-select [(ngModel)]="reportingManagerFilter" (change)="applyFilters()" [clearable]="true"
+                            [searchable]="true" class="text-xs custom-ng-select-filter">
                             <ng-option *ngFor="let rm of optionUsers" [value]="rm.user_id">
                                 {{ rm.user_first_name }} {{ rm.user_last_name }}
                             </ng-option>
@@ -370,7 +297,8 @@
                             <td class="border p-2">
                                 <button class="bg-blue-500 text-white px-2 py-1 rounded m-2"
                                     (click)="assignDetails(employee)">Assign Details</button>
-                                    <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" (click)="openEmployeeEditModal(employee)">Edit</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                                    (click)="openEmployeeEditModal(employee)">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded"
                                     (click)="deleteEmployee(employee.user_id)">Delete</button>
                             </td>
@@ -394,24 +322,8 @@
                     Next
                 </button>
             </div>
-            <!-- Edit Modal -->
-
         </div>
-        <!-- <th class="border p-2">Emergency Contact</th>
-                    <th class="border p-2">Role</th> -->
 
-        <!-- <th class="border p-2">Passport</th>
-                    <th class="border p-2">Passport Validity</th>
-                    <th class="border p-2">Date of Birth</th>
-                    <th class="border p-2">Blood Group</th> -->
-        <!-- <td class="border p-2">{{ employee.user_emergency_contact }}</td>
-                    <td class="border p-2">{{ employee.role_name }}</td> -->
-        <!-- <td class="border p-2">{{ employee.is_passport ? 'Yes' : 'No' }}</td>
-                    <td class="border p-2">  {{ employee.passport_validity ? (employee.passport_validity | date:'dd-MMM-yyyy') : 'NA' }} </td>
-                    <td class="border p-2">{{ employee.user_DOB | date:'dd-MMM-yyyy' }}</td>
-                    <td class="border p-2">{{ employee.user_blood_group }}</td> -->
-
-        <!-- Assign Details Modal -->
         <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
             <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto"
@@ -540,64 +452,51 @@
                                 <div class="form-group">
                                     <label>Reporting Manager</label>
                                     <ng-select [(ngModel)]="assignDetailsData.reporting_manager_id"
-                                               #reportingManager="ngModel"
-                                               name="reporting_manager_id"
-                                               [searchable]="true"
-                                               [clearable]="true"
-                                               class="custom-ng-select">
-                                      <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
-                                      <ng-option *ngFor="let manager of optionUsers" 
-                                                 [value]="manager.user_id">
-                                        {{ manager.user_first_name }} {{ manager.user_last_name }}
-                                      </ng-option>
+                                        #reportingManager="ngModel" name="reporting_manager_id" [searchable]="true"
+                                        [clearable]="true" class="custom-ng-select">
+                                        <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                                        <ng-option *ngFor="let manager of optionUsers" [value]="manager.user_id">
+                                            {{ manager.user_first_name }} {{ manager.user_last_name }}
+                                        </ng-option>
                                     </ng-select>
-                                  </div>
+                                </div>
 
-                                  <div class="form-group">
+                                <div class="form-group">
                                     <label>Designation</label>
-                                    <ng-select [(ngModel)]="assignDetailsData.designation_id"
-                                               #designation="ngModel"
-                                               name="designation_id"
-                                               [searchable]="true"
-                                               [clearable]="true"
-                                               class="custom-ng-select">
-                                      <ng-option [value]="" disabled selected>Select Designation</ng-option>
-                                      <ng-option *ngFor="let designation of optionDesignation"
-                                                 [value]="designation.designation_id">
-                                        {{ designation.designation_name }}
-                                      </ng-option>
+                                    <ng-select [(ngModel)]="assignDetailsData.designation_id" #designation="ngModel"
+                                        name="designation_id" [searchable]="true" [clearable]="true"
+                                        class="custom-ng-select">
+                                        <ng-option [value]="" disabled selected>Select Designation</ng-option>
+                                        <ng-option *ngFor="let designation of optionDesignation"
+                                            [value]="designation.designation_id">
+                                            {{ designation.designation_name }}
+                                        </ng-option>
                                     </ng-select>
-                                  </div>
+                                </div>
 
-                                  <div class="form-group">
+                                <div class="form-group">
                                     <label>Timesheet Filling Required?</label>
                                     <ng-select [(ngModel)]="assignDetailsData.is_timesheet_required"
-                                               #timesheetRequired="ngModel"
-                                               name="is_timesheet_required"
-                                               [searchable]="false" 
-                                               [clearable]="true"
-                                               class="custom-ng-select">
-                                      <ng-option [value]="" disabled selected>Select Option</ng-option>
-                                      <ng-option [value]="1">Yes</ng-option>
-                                      <ng-option [value]="0">No</ng-option>
+                                        #timesheetRequired="ngModel" name="is_timesheet_required" [searchable]="false"
+                                        [clearable]="true" class="custom-ng-select">
+                                        <ng-option [value]="" disabled selected>Select Option</ng-option>
+                                        <ng-option [value]="1">Yes</ng-option>
+                                        <ng-option [value]="0">No</ng-option>
                                     </ng-select>
-                                  </div>
+                                </div>
 
-                                  <div class="form-group">
+                                <div class="form-group">
                                     <label>Department</label>
-                                    <ng-select [(ngModel)]="assignDetailsData.department_id"
-                                               #department="ngModel"
-                                               name="department_id"
-                                               [searchable]="true"
-                                               [clearable]="true"
-                                               class="custom-ng-select">
-                                      <ng-option [value]="" disabled selected>Select Department</ng-option>
-                                      <ng-option *ngFor="let department of optionDepartments"
-                                                 [value]="department.department_id">
-                                        {{ department.department_name }}
-                                      </ng-option>
+                                    <ng-select [(ngModel)]="assignDetailsData.department_id" #department="ngModel"
+                                        name="department_id" [searchable]="true" [clearable]="true"
+                                        class="custom-ng-select">
+                                        <ng-option [value]="" disabled selected>Select Department</ng-option>
+                                        <ng-option *ngFor="let department of optionDepartments"
+                                            [value]="department.department_id">
+                                            {{ department.department_name }}
+                                        </ng-option>
                                     </ng-select>
-                                  </div>
+                                </div>
                             </div>
                         </div>
 
@@ -635,8 +534,6 @@
     <div *ngIf="selectedSection === 'department'">
         <h3 class="text-xl font-semibold mb-4">Add New Department</h3>
 
-
-
         <!-- Department Form -->
         <form #departmentForm="ngForm" (submit)="submitDepartment(departmentForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
@@ -670,7 +567,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let department of optionDepartments; let i = index" class="hover:bg-gray-50">
+                        <tr *ngFor="let department of departments; let i = index" class="hover:bg-gray-50">
                             <td class="border p-2">{{ i + 1 }}</td>
                             <td class="border p-2">{{ department.department_name }}</td>
                             <td class="border p-2">
@@ -686,8 +583,8 @@
         </div>
         <!-- Add this modal for editing department -->
         <div *ngIf="isEditDepartmentModalOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" >
-            <div class="bg-white p-6 rounded-lg w-1/3" >
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+            <div class="bg-white p-6 rounded-lg w-1/3">
                 <h3 class="text-xl font-semibold mb-4">Edit Department</h3>
                 <form #editDepartmentForm="ngForm"
                     (submit)="updateDepartment(editDepartmentForm); $event.preventDefault()">
@@ -894,7 +791,7 @@
                 </div>
 
                 <!-- Skill Category -->
-                <!-- Skill Category -->
+
                 <div class="form-group">
                     <label>Skill Category*</label>
                     <select [(ngModel)]="skillCategory" #skillCategoryField="ngModel" name="skillCategory" required
@@ -961,9 +858,10 @@
         </div>
 
         <!-- Edit Modal -->
-        <div *ngIf="isSkillModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+        <div *ngIf="isSkillModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeSkillModal()">
-            <div class="bg-white p-6 rounded-lg w-1/4" (click)="$event.stopPropagation()">
+            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Skill</h3>
                 <form #editSkillForm="ngForm" (submit)="updateSkill(editSkillForm); $event.preventDefault()">
                     <div class="grid grid-cols-3 gap-4">
@@ -1031,48 +929,40 @@
                 <!-- Employee Name Dropdown -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Employee Name*</label>
-                    <ng-select [(ngModel)]="employee.selectedUserId"
-                               #employeeField="ngModel"
-                               name="user"
-                               [searchable]="true"
-                               [clearable]="true"
-                               required
-                               [class.border-red-500]="(employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)"
-                               class="custom-ng-select border rounded-md">
-                      <ng-option [value]="" disabled selected>Select Employee</ng-option>
-                      <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
-                        {{ user.user_first_name }} {{ user.user_last_name }}
-                      </ng-option>
+                    <ng-select [(ngModel)]="employee.selectedUserId" #employeeField="ngModel" name="user"
+                        [searchable]="true" [clearable]="true" required
+                        [class.border-red-500]="(employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)"
+                        class="custom-ng-select border rounded-md">
+                        <ng-option [value]="" disabled selected>Select Employee</ng-option>
+                        <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                            {{ user.user_first_name }} {{ user.user_last_name }}
+                        </ng-option>
                     </ng-select>
                     <span class="text-red-500 text-sm"
-                          *ngIf="employeeField.invalid && (employeeField.touched || reportingManagerForm.submitted)">
-                      Employee Name is required.
+                        *ngIf="employeeField.invalid && (employeeField.touched || reportingManagerForm.submitted)">
+                        Employee Name is required.
                     </span>
-                  </div>
-                  
+                </div>
+
 
                 <!-- Reporting Manager Dropdown -->
                 <!-- Reporting Manager Dropdown -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Reporting Manager*</label>
-                    <ng-select [(ngModel)]="employee.selectedReportingManagerId"
-                               #managerField="ngModel"
-                               name="reporting_manager"
-                               [searchable]="true"
-                               [clearable]="true"
-                               required
-                               [class.border-red-500]="(managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)"
-                               class="custom-ng-select border rounded-md">
-                      <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
-                      <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
-                        {{ user.user_first_name }} {{ user.user_last_name }}
-                      </ng-option>
+                    <ng-select [(ngModel)]="employee.selectedReportingManagerId" #managerField="ngModel"
+                        name="reporting_manager" [searchable]="true" [clearable]="true" required
+                        [class.border-red-500]="(managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)"
+                        class="custom-ng-select border rounded-md">
+                        <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                        <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                            {{ user.user_first_name }} {{ user.user_last_name }}
+                        </ng-option>
                     </ng-select>
                     <span class="text-red-500 text-sm"
-                          *ngIf="managerField.invalid && (managerField.touched || reportingManagerForm.submitted)">
-                      Reporting Manager is required.
+                        *ngIf="managerField.invalid && (managerField.touched || reportingManagerForm.submitted)">
+                        Reporting Manager is required.
                     </span>
-                  </div>
+                </div>
 
 
 
@@ -1144,7 +1034,8 @@
             </div>
         </div>
         <!-- Edit Modal -->
-        <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+        <div *ngIf="isEditModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
             (click)="closeEditModal()">
             <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
                 <h3 class="text-xl font-semibold mb-4">Edit Reporting Manager History</h3>

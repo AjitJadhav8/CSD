@@ -20,11 +20,8 @@ export class EmployeeComponent {
   ngOnInit(): void {
     this.selectedSection = 'employee';
     localStorage.setItem('selectedEmployeeSection', 'employee');
-
-    // Load section from localStorage
     this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
 
-    // Listen for changes (e.g., when clicking Department)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchEmployees();
     this.fetchDepartments();
@@ -32,21 +29,7 @@ export class EmployeeComponent {
     this.fetchSkills();
     this.fetchReportingManagerHistory();
     this.fetchDesignations();
-    this.fetchOptions(); // Call the new function instead of having the logic here
-
-    // this.dataService.getOptions().subscribe(
-    //   (response) => {
-    //     console.log('Roles and Departments:', response);
-    //     this.optioRoles = response.roles;
-    //     this.optionDepartments = response.departments;
-    //     this.optionUsers = response.users;  // Store user data
-    //     this.optionPositionName = response.projectRole;  // Store position data
-    //     this.optionDesignation = response.designation;  // Store designation data
-    //   },
-    //   (error) => {
-    //     console.error('Error fetching roles and departments', error);
-    //   }
-    // );
+    this.fetchOptions();
   }
 
   fetchOptions(): void {
@@ -55,16 +38,15 @@ export class EmployeeComponent {
         console.log('Roles and Departments:', response);
         this.optioRoles = response.roles;
         this.optionDepartments = response.departments;
-        this.optionUsers = response.users;  // Store user data
-        this.optionPositionName = response.projectRole;  // Store position data
-        this.optionDesignation = response.designation;  // Store designation data
+        this.optionUsers = response.users;
+        this.optionPositionName = response.projectRole;
+        this.optionDesignation = response.designation;
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
       }
     );
   }
-
 
 
   ngOnDestroy() {
@@ -90,14 +72,14 @@ export class EmployeeComponent {
   // ------------------ Department ------------------------
 
   departmentName = '';
+  departments: any[] = [];
 
   // Fetch departments data from the backend
   fetchDepartments(): void {
     this.dataService.getAllDepartments().subscribe(
       (response) => {
         console.log('Departments Response:', response); // Log the response
-
-        this.optionDepartments = response;  // Assuming the response contains the departments data
+        this.departments = response;  // Assuming the response contains the departments data
       },
       (error) => {
         console.error('Error fetching departments:', error);
@@ -121,7 +103,6 @@ export class EmployeeComponent {
 
     this.dataService.addDepartment(this.departmentName).subscribe(
       (response) => {
-        this.fetchDepartments();
         console.log('Department added:', response);
 
         // Success Toast Notification
@@ -133,8 +114,7 @@ export class EmployeeComponent {
           showConfirmButton: false,
           timer: 3000
         });
-
-        this.departmentName = ''; // Reset input field
+        this.fetchDepartments();
         departmentForm.resetForm(); // Reset form validation
         this.fetchOptions();
       },
@@ -288,7 +268,6 @@ export class EmployeeComponent {
     );
   }
 
-
   deleteProjectRole(projectRoleId: number): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -332,14 +311,12 @@ export class EmployeeComponent {
     this.isProjectRoleEditModalOpen = true;
   }
 
-  // Close Edit Modal
   closeProjectRoleEditModal(): void {
     this.isProjectRoleEditModalOpen = false;
     this.editProjectRoleName = '';
     this.editProjectRoleId = null;
   }
 
-  // Update Project Role
   updateProjectRole(editProjectRoleForm: NgForm): void {
     if (editProjectRoleForm.invalid || !this.editProjectRoleId) {
       Swal.fire({
@@ -754,30 +731,30 @@ export class EmployeeComponent {
 
 
 
-        (error) => {
-            console.error('Error saving employee:', error);
-            if (error.status === 400) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Duplicate Entry',
-                    text: error.error.error, // Display error message from backend
-                    toast: true,
-                    position: 'top-end',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!',
-                    toast: true,
-                    position: 'top-end',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            }
+      (error) => {
+        console.error('Error saving employee:', error);
+        if (error.status === 400) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Duplicate Entry',
+            text: error.error.error, // Display error message from backend
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            toast: true,
+            position: 'top-end',
+            timer: 3000,
+            showConfirmButton: false
+          });
         }
+      }
     );
   }
 
@@ -1040,8 +1017,8 @@ export class EmployeeComponent {
     user_code: '',
   };
   isEmployeeEditModalOpen = false;
-   // Open Edit Modal
-   openEmployeeEditModal(employee: any): void {
+  // Open Edit Modal
+  openEmployeeEditModal(employee: any): void {
     this.editEmployee = { ...employee };
     this.isEmployeeEditModalOpen = true;
   }
@@ -1060,42 +1037,42 @@ export class EmployeeComponent {
     };
   }
 
-    // Update Employee
-    updateEmployee(editEmployeeForm: NgForm): void {
-      if (editEmployeeForm.invalid || !this.editEmployee.user_id) {
+  // Update Employee
+  updateEmployee(editEmployeeForm: NgForm): void {
+    if (editEmployeeForm.invalid || !this.editEmployee.user_id) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'All required fields must be filled!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    this.dataService.updateEmployee(this.editEmployee.user_id, this.editEmployee).subscribe(
+      (response) => {
+        console.log('Employee updated successfully');
+        this.fetchEmployees(); // Refresh the list after update
+
+        // Success Toast Notification
         Swal.fire({
           toast: true,
           position: 'top-end',
-          icon: 'warning',
-          title: 'All required fields must be filled!',
+          icon: 'success',
+          title: 'Employee updated successfully!',
           showConfirmButton: false,
           timer: 3000
         });
-        return;
+
+        this.closeEmployeeEditModal();
+      },
+      (error) => {
+        console.error('Error updating employee:', error);
       }
-  
-      this.dataService.updateEmployee(this.editEmployee.user_id, this.editEmployee).subscribe(
-        (response) => {
-          console.log('Employee updated successfully');
-          this.fetchEmployees(); // Refresh the list after update
-  
-          // Success Toast Notification
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Employee updated successfully!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-  
-          this.closeEmployeeEditModal();
-        },
-        (error) => {
-          console.error('Error updating employee:', error);
-        }
-      );
-    }
+    );
+  }
 
   // ------------------ Reporting Manager  ------------------------
 
