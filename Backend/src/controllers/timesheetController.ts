@@ -146,24 +146,23 @@ async getUserTimesheets(req: Request, res: Response): Promise<void> {
                 t.timesheet_id, 
                 t.user_id, 
                 t.pd_id, 
+                t.phase_id,
                 t.task_description,
                 pd.project_deliverable_name, 
-                pd.pd_id,
                 p.project_name, 
                 p.project_id,
                 c.customer_name,
                 c.customer_id,
-                ph.project_phase_name, 
-                ph.phase_id,
+                ph.project_phase_name,
                 t.hours, 
                 t.minutes, 
                 t.task_status, 
                 t.timesheet_date
             FROM trans_timesheet t
             LEFT JOIN master_project_deliverables pd ON t.pd_id = pd.pd_id
-            LEFT JOIN master_project_phases ph ON pd.pd_id = ph.pd_id  /* Changed join */
-            LEFT JOIN master_project p ON pd.project_id = p.project_id  /* Changed join */
-            LEFT JOIN master_customer c ON pd.customer_id = c.customer_id  /* Changed join */
+            LEFT JOIN master_project p ON pd.project_id = p.project_id
+            LEFT JOIN master_customer c ON p.customer_id = c.customer_id
+            LEFT JOIN master_project_phases ph ON t.phase_id = ph.phase_id
             WHERE t.is_deleted = 0 AND t.user_id = ? 
             ${date ? 'AND DATE(t.timesheet_date) = ?' : 'AND DATE(t.timesheet_date) = CURDATE()'}
             ORDER BY t.timesheet_id DESC`;
