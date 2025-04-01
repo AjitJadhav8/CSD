@@ -73,8 +73,12 @@ export class ProjectComponent {
         this.optionProject = response.projects;
         this.optionPhases = response.phases;
         this.optionProjectManagers = response.users;
-        this.optionProjectDeliverables = response.projectDeliverables;
+        this.optionProjectDeliverables = response.projectDeliverables; // Make sure your API returns deliverables
 
+
+        this.optionDeliverables = response.projectDeliverables;
+
+            this.filteredDeliverables = [];
 
         this.filteredProjects = []; // Initially empty
       },
@@ -557,6 +561,10 @@ getVisibleProjectPageNumbers(): number[] {
   projectNameFilter: string = '';
   phaseNameFiltered: string = ''; // New Filter
 
+  phaseCustomerFilter: string = '';
+  phaseProjectFilter: string = '';
+  phaseDeliverableFilter: string = '';
+
 
   projectDeliverableForm: any = {
     customer_id: null,
@@ -759,15 +767,34 @@ getVisibleDeliverablePageNumbers(): number[] {
 
   // ----------- project Phase ------------------
 
+  // Add these to your component class
+filteredDeliverables: any[] = [];
+optionDeliverables: any[] = [];
+
+
 // For Project Phases
 filterProjectsForPhases(): void {
-  const selectedCustomerId = Number(this.projectPhaseForm.customer_id);
-  if (selectedCustomerId) {
-    this.filteredProjects = this.optionProject.filter(project => Number(project.customer_id) === selectedCustomerId);
+  if (this.projectPhaseForm.customer_id) {
+      this.filteredProjects = this.optionProject.filter(
+          project => project.customer_id == this.projectPhaseForm.customer_id
+      );
   } else {
-    this.filteredProjects = [];
+      this.filteredProjects = [];
+      this.projectPhaseForm.project_id = null;
+      this.filteredDeliverables = [];
+      this.projectPhaseForm.pd_id = null;
   }
-  this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
+}
+
+filterDeliverablesForPhases(): void {
+  if (this.projectPhaseForm.project_id) {
+      this.filteredDeliverables = this.optionDeliverables.filter(
+          deliverable => deliverable.project_id == this.projectPhaseForm.project_id
+      );
+  } else {
+      this.filteredDeliverables = [];
+      this.projectPhaseForm.pd_id = null;
+  }
 }
   // Pagination and Filtering Variables
   phaseCurrentPage: number = 1;
@@ -782,8 +809,9 @@ filterProjectsForPhases(): void {
 
   // Form Model
   projectPhaseForm: any = {
-    customer_id: '',
-    project_id: '',
+    customer_id: null,
+    project_id: null,
+    pd_id: null,
     project_phase_name: ''
   };
 
@@ -875,9 +903,11 @@ filterProjectsForPhases(): void {
   applyPhaseFilters(): void {
     this.filteredProjectPhases = this.projectPhases.filter(phase => {
       return (
-        (this.phaseNameFilter ? phase.phase_id === +this.phaseNameFilter : true) &&
-      (this.customerNameFilter ? phase.customer_id === +this.customerNameFilter : true) &&
-      (this.projectNameFilter ? phase.project_id === +this.projectNameFilter : true)
+        (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
+        (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
+        (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
+        (!this.phaseNameFilter ||
+          phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
       );
     });
 
