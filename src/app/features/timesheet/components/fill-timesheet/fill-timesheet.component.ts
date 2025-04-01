@@ -21,9 +21,6 @@ export class FillTimesheetComponent {
   maxDate: string = new Date().toISOString().split('T')[0]; // Today's date
   minDate: string = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]; // 7 days before today
 
-
-
-
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
     // Fetch user ID from localStorage
@@ -47,10 +44,7 @@ export class FillTimesheetComponent {
       console.error('User ID not found in local storage. Ensure login process stores it.');
     }
 
-
-
     this.fetchTimesheets(this.selectedDate);
-
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -63,7 +57,6 @@ export class FillTimesheetComponent {
       }
     );
   }
-
 
   // Edit modal properties
   isEditModalOpen = false;
@@ -80,42 +73,6 @@ export class FillTimesheetComponent {
 
 
   // Open Edit Modal
-  // Open Edit Modal
-  // openEditModal(timesheet: any): void {
-  //   console.log('Editing Timesheet:', timesheet);
-  //   this.editTimesheetId = timesheet.timesheet_id;
-  //   this.editSelectedDate = this.formatDate(timesheet.timesheet_date);
-  //   this.editSelectedCustomer = timesheet.customer_id;
-  //   this.editSelectedProject = timesheet.project_id;
-  //   this.editSelectedPhase = timesheet.phase_id;
-  //   this.editSelectedDeliverable = timesheet.pd_id;
-  //   this.editSelectedHours = timesheet.hours;
-  //   this.editSelectedMinutes = timesheet.minutes;
-  //   this.editSelectedTaskStatus = timesheet.task_status;
-  //   this.editTaskDescription = timesheet.task_description;
-
-  //   // Initialize filtered lists based on the selected values
-  //   if (this.editSelectedCustomer) {
-  //     this.filterOptionProjects = this.optionProjects.filter(
-  //       (project: any) => project.customer_id == this.editSelectedCustomer
-  //     );
-  //   }
-
-  //   if (this.editSelectedProject) {
-  //     this.filterOptionPhases = this.optionPhases.filter(
-  //       (phase: any) => phase.project_id == this.editSelectedProject
-  //     );
-  //   }
-
-  //   if (this.editSelectedPhase) {
-  //     this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
-  //       (deliverable: any) => deliverable.phase_id == this.editSelectedPhase
-  //     );
-  //   }
-
-  //   this.isEditModalOpen = true;
-  // }
-
   openEditModal(timesheet: any): void {
     console.log('Editing Timesheet:', timesheet);
     this.editTimesheetId = timesheet.timesheet_id;
@@ -152,6 +109,20 @@ export class FillTimesheetComponent {
 
     this.isEditModalOpen = true;
   }
+  // Close Edit Modal
+  closeEditModal(): void {
+    this.isEditModalOpen = false;
+    this.editTimesheetId = null;
+    this.editSelectedDate = '';
+    this.editSelectedCustomer = '';
+    this.editSelectedProject = null;
+    this.editSelectedPhase = null;
+    this.editSelectedDeliverable = null;
+    this.editSelectedHours = null;
+    this.editSelectedMinutes = 0;
+    this.editSelectedTaskStatus = 0;
+    this.editTaskDescription = '';
+  }
 
   onEditDeliverableChange(): void {
     if (this.editSelectedDeliverable) {
@@ -173,33 +144,25 @@ export class FillTimesheetComponent {
       this.editSelectedPhase = null;
     }
   }
-  isTimesheetEditable(timesheetDate: string): boolean {
-    if (!timesheetDate) return false;
 
-    // Parse the timesheet date
-    const timesheetDateTime = new Date(timesheetDate).getTime();
-    const now = new Date().getTime();
-
-    // Calculate the difference in hours
-    const hoursDifference = (now - timesheetDateTime) / (1000 * 60 * 60);
-
-    // Allow editing if within 24 hours
-    return hoursDifference <= 24;
-  }
-
-  // Close Edit Modal
-  closeEditModal(): void {
-    this.isEditModalOpen = false;
-    this.editTimesheetId = null;
-    this.editSelectedDate = '';
-    this.editSelectedCustomer = '';
-    this.editSelectedProject = null;
-    this.editSelectedPhase = null;
-    this.editSelectedDeliverable = null;
-    this.editSelectedHours = null;
-    this.editSelectedMinutes = 0;
-    this.editSelectedTaskStatus = 0;
-    this.editTaskDescription = '';
+  // Change handlers for edit modal
+  onEditCustomerChange(): void {
+    if (this.editSelectedCustomer) {
+      this.filterOptionProjects = this.optionProjects.filter(
+        (project: any) => project.customer_id == this.editSelectedCustomer
+      );
+      // Reset dependent fields
+      this.editSelectedProject = null;
+      this.editSelectedDeliverable = null;
+      this.editSelectedPhase = null;
+      this.filterOptionProjectDeliverables = [];
+      this.filterOptionPhases = [];
+    } else {
+      this.filterOptionProjects = [];
+      this.editSelectedProject = null;
+      this.editSelectedDeliverable = null;
+      this.editSelectedPhase = null;
+    }
   }
 
   // Update Timesheet
@@ -254,29 +217,6 @@ export class FillTimesheetComponent {
     });
   }
 
-  // Change handlers for edit modal
-  // Change handlers for edit modal
-  onEditCustomerChange(): void {
-    if (this.editSelectedCustomer) {
-      this.filterOptionProjects = this.optionProjects.filter(
-        (project: any) => project.customer_id == this.editSelectedCustomer
-      );
-      // Reset dependent fields
-      this.editSelectedProject = null;
-      this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
-      this.filterOptionProjectDeliverables = [];
-      this.filterOptionPhases = [];
-    } else {
-      this.filterOptionProjects = [];
-      this.editSelectedProject = null;
-      this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
-    }
-  }
-
-
-
   onEditProjectChange(): void {
     if (this.editSelectedProject) {
       // Filter deliverables by selected project
@@ -294,31 +234,22 @@ export class FillTimesheetComponent {
     }
   }
 
-
-
-  // onEditPhaseChange(): void {
-  //   if (this.editSelectedPhase) {
-  //     this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
-  //       (deliverable: any) => deliverable.phase_id == this.editSelectedPhase
-  //     );
-  //     // Try to maintain the current deliverable selection if it's still valid
-  //     if (this.editSelectedDeliverable) {
-  //       const deliverableStillValid = this.filterOptionProjectDeliverables.some(
-  //         (d: any) => d.pd_id == this.editSelectedDeliverable
-  //       );
-  //       if (!deliverableStillValid) {
-  //         this.editSelectedDeliverable = null;
-  //       }
-  //     }
-  //   } else {
-  //     this.filterOptionProjectDeliverables = [];
-  //     this.editSelectedDeliverable = null;
-  //   }
-  // }
   onEditTaskStatusChange(status: number): void {
     this.editSelectedTaskStatus = status ? 1 : 0;
   }
+  isTimesheetEditable(timesheetDate: string): boolean {
+    if (!timesheetDate) return false;
 
+    // Parse the timesheet date
+    const timesheetDateTime = new Date(timesheetDate).getTime();
+    const now = new Date().getTime();
+
+    // Calculate the difference in hours
+    const hoursDifference = (now - timesheetDateTime) / (1000 * 60 * 60);
+
+    // Allow editing if within 24 hours
+    return hoursDifference <= 24;
+  }
 
   // Helper method to format date
   formatDate(dateString: string): string {
@@ -332,12 +263,8 @@ export class FillTimesheetComponent {
     return localDate.toISOString().split('T')[0];
   }
 
-
-
   selectedPhase: number | null = null;
   filterOptionPhases: any[] = [];
-
-
   selectedCustomer: number | string = '';
   selectedProject: number | null = null;
   selectedDeliverable: number | null = null;
@@ -371,11 +298,6 @@ export class FillTimesheetComponent {
       }
     );
   }
-  getTaskStatusLabel(status: number): string {
-    const statusObj = this.taskStatusList.find(s => s.value === status);
-    return statusObj ? statusObj.label : 'Unknown';
-  }
-
 
   submitTimesheet(timesheetForm: NgForm) {  // Add NgForm parameter
     if (!timesheetForm.valid) {
@@ -435,7 +357,6 @@ export class FillTimesheetComponent {
     });
   }
 
-
   deleteTimesheet(timesheet_id: number) {
     Swal.fire({
       title: 'Are you sure?',
@@ -481,6 +402,11 @@ export class FillTimesheetComponent {
     });
   }
 
+  getTaskStatusLabel(status: number): string {
+    const statusObj = this.taskStatusList.find(s => s.value === status);
+    return statusObj ? statusObj.label : 'Unknown';
+  }
+
   clearTimesheetForm(form: NgForm) {
     // Reset form with default values
     form.resetForm({
@@ -501,13 +427,11 @@ export class FillTimesheetComponent {
 
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
-  filterOptionProjects: any[] = [];  // Stores filtered projects based on selected customer
+  filterOptionProjects: any[] = [];
   optionProjectDeliverables: any[] = [];
   filterOptionProjectDeliverables: any[] = [];
   optionTaskCategories: any[] = [];
   optionPhases: any[] = [];
-
-
 
   onCustomerChange() {
     console.log('Selected Customer:', this.selectedCustomer);
@@ -528,25 +452,6 @@ export class FillTimesheetComponent {
 
   }
 
-  //   onProjectChange() {
-  //     console.log('Selected Project:', this.selectedProject);
-
-  //     const projectId = Number(this.selectedProject);
-  //     console.log('Converted Project ID:', projectId);
-
-  //     console.log('All Phases:', this.optionPhases);
-
-  //       this.filterOptionPhases = this.optionPhases.filter(
-  //       (phase) => phase.project_id === projectId
-  //     );
-
-  //     console.log('Filtered Phases:', this.filterOptionPhases);
-
-  //     this.selectedPhase = null;
-  //     this.selectedDeliverable = null;
-  //     this.filterOptionProjectDeliverables = []; 
-  // }
-
   onProjectChange() {
     console.log('Selected Project:', this.selectedProject);
     const projectId = Number(this.selectedProject);
@@ -562,26 +467,6 @@ export class FillTimesheetComponent {
     this.filterOptionPhases = [];
   }
 
-  // onPhaseChange() {
-  //     console.log('Selected Phase:', this.selectedPhase);
-
-  //     const phaseId = Number(this.selectedPhase);
-  //     console.log('Converted Phase ID:', phaseId);
-
-  //     // Ensure optionProjectDeliverables is populated
-  //     console.log('All Deliverables:', this.optionProjectDeliverables);
-
-  //     // Filter deliverables based on the selected phase
-  //     this.filterOptionProjectDeliverables = this.optionProjectDeliverables.filter(
-  //       (deliverable) => deliverable.phase_id === phaseId
-  //     );
-
-  //     console.log('Filtered Deliverables:', this.filterOptionProjectDeliverables);
-
-  //     // Reset deliverable selection
-  //     this.selectedDeliverable = null;
-  // }
-
   onDeliverableChange() {
     console.log('Selected Deliverable:', this.selectedDeliverable);
     const deliverableId = Number(this.selectedDeliverable);
@@ -595,7 +480,6 @@ export class FillTimesheetComponent {
     this.selectedPhase = null;
   }
 
-
   // currentDate: Date = new Date();
   hoursList = Array.from({ length: 9 }, (_, i) => i);
   minutesList = [0, 15, 30, 45];
@@ -605,7 +489,6 @@ export class FillTimesheetComponent {
   ];
 
   selectedTaskStatus: number = 0; // Default to "In Progress"
-
   toggleTaskStatus() {
     this.selectedTaskStatus = this.selectedTaskStatus === 1 ? 0 : 1;
   }
