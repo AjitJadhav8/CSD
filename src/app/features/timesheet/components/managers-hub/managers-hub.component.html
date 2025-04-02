@@ -504,17 +504,7 @@
                 <!-- Enhanced Filter Section -->
                 <div
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- Customer Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Customer</label>
-                        <select [(ngModel)]="teamCustomerFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Customers</option>
-                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
-                                {{ customer.customer_name }}
-                            </option>
-                        </select>
-                    </div> -->
+
 
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
@@ -527,17 +517,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="teamProjectFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionProject" [value]="project.project_name">
-                                {{ project.project_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="teamProjectFilter" (change)="applyTeamFilters()"
@@ -549,18 +528,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Manager Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project Manager</label>
-                        <select [(ngModel)]="teamManagerFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Managers</option>
-                            <option *ngFor="let manager of optionProjectManagers" 
-                                    [value]="manager.user_first_name + ' ' + manager.user_last_name">
-                                {{ manager.user_first_name }} {{ manager.user_last_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project Manager</label>
                         <ng-select [(ngModel)]="teamManagerFilter" (change)="applyTeamFilters()"
@@ -573,19 +540,6 @@
                         </ng-select>
                     </div>
 
-
-                    <!-- Employee Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Employee</label>
-                        <select [(ngModel)]="teamEmployeeFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Employees</option>
-                            <option *ngFor="let user of optionUsers" 
-                                    [value]="user.user_first_name + ' ' + user.user_last_name">
-                                {{ user.user_first_name }} {{ user.user_last_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="teamEmployeeFilter" (change)="applyTeamFilters()"
@@ -598,17 +552,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Role Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project Role</label>
-                        <select [(ngModel)]="teamRoleFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Roles</option>
-                            <option *ngFor="let role of optionProjectRole" [value]="role.project_role_name">
-                                {{ role.project_role_name }}
-                            </option>
-                        </select>
-                    </div> -->
 
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project Role</label>
@@ -621,16 +564,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Allocation Status Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Allocation Status</label>
-                        <select [(ngModel)]="teamAllocationStatusFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Allocation Status</label>
                         <ng-select [(ngModel)]="teamAllocationStatusFilter" (change)="applyTeamFilters()"
@@ -641,17 +574,6 @@
                         </ng-select>
                     </div>
 
-
-                    <!-- Billed Status Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Billed Status</label>
-                        <select [(ngModel)]="teamBilledStatusFilter" (change)="applyTeamFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="true">Billed</option>
-                            <option value="false">Not Billed</option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Billed Status</label>
                         <ng-select [(ngModel)]="teamBilledStatusFilter" (change)="applyTeamFilters()"
@@ -694,11 +616,12 @@
                         <th class="border p-2">Project Manager</th>
                         <th class="border p-2">Employee Name</th>
                         <th class="border p-2">Project Role</th>
-                        <th class="border p-2">Start Date</th>
-                        <th class="border p-2">Tentative End Date</th>
+
                         <th class="border p-2">Allocation Status</th>
                         <th class="border p-2">Allocation %</th>
                         <th class="border p-2">Status</th>
+                        <th class="border p-2">Start Date</th>
+                        <th class="border p-2">Tentative End Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -709,11 +632,12 @@
                         <td class="border p-2">{{ member.project_manager_name }}</td>
                         <td class="border p-2">{{ member.employee_name }}</td>
                         <td class="border p-2">{{ member.project_role_name }}</td>
-                        <td class="border p-2">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="border p-2">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
+
                         <td class="border p-2">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td>
                         <td class="border p-2">{{ member.allocation_percentage }}%</td>
                         <td class="border p-2">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td>
+                        <td class="border p-2">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="border p-2">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -744,19 +668,8 @@
 
         <div class="rounded-lg w-full overflow-x-auto">
             <div class="min-w-max">
-                <!-- Enhanced Filter Section -->
                 <div
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Employee</label>
-                        <select [(ngModel)]="timesheetEmployeeFilter" (change)="applyTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Employees</option>
-                            <option *ngFor="let user of optionTeamMembers" [value]="user.id">
-                                {{ user.fullName }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="timesheetEmployeeFilter" (change)="applyTimesheetFilters()"
@@ -767,21 +680,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Project Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="timesheetProjectFilter"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300"
-                            (change)="applyTimesheetFilters()">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionProjectsForTimesheet" [value]="project.id">
-                                {{ project.name }}
-                            </option>
-                        </select>
-                    </div> -->
-
-                    <!-- Project Filter -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="timesheetProjectFilter" (change)="applyTimesheetFilters()"
@@ -792,19 +690,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Phase Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Phase</label>
-                        <select [(ngModel)]="timesheetPhaseFilter"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300"
-                            (change)="applyTimesheetFilters()">
-                            <option value="">All Phases</option>
-                            <option *ngFor="let phase of optionPhasesForTimesheet" [value]="phase.id">
-                                {{ phase.name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Phase</label>
                         <ng-select [(ngModel)]="timesheetPhaseFilter" (change)="applyTimesheetFilters()"
@@ -834,17 +719,6 @@
                         <input type="date" [(ngModel)]="timesheetDateFilter" (change)="applyTimesheetFilters()"
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                     </div>
-
-                    <!-- Task Status Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Task Status</label>
-                        <select [(ngModel)]="timesheetStatusFilter" (change)="applyTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="1">Completed</option>
-                            <option value="0">In Progress</option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Task Status</label>
                         <ng-select [(ngModel)]="timesheetStatusFilter" (change)="applyTimesheetFilters()"
@@ -927,17 +801,7 @@
                 <!-- Enhanced Filter Section -->
                 <div
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- Customer Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Customer</label>
-                        <select [(ngModel)]="reportingCustomerFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Customers</option>
-                            <option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
-                                {{ customer.customer_name }}
-                            </option>
-                        </select>
-                    </div> -->
+
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <ng-select [(ngModel)]="reportingCustomerFilter" (change)="applyReportingFilters()"
@@ -949,17 +813,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="reportingProjectFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionProject" [value]="project.project_name">
-                                {{ project.project_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="reportingProjectFilter" (change)="applyReportingFilters()"
@@ -971,19 +824,7 @@
                         </ng-select>
                     </div>
 
-                    <!-- Reporting Manager Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Reporting Manager</label>
-                        <select [(ngModel)]="reportingManagerFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Managers</option>
-                            <option *ngFor="let manager of optionReportingManagers"
-                                [value]="manager.user_first_name + ' ' + manager.user_last_name">
-                                {{ manager.user_first_name }} {{ manager.user_last_name }}
-                            </option>
-                        </select>
-                    </div> -->
-                    <!-- Reporting Manager Filter -->
+
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Reporting Manager</label>
                         <ng-select [(ngModel)]="reportingManagerFilter" (change)="applyReportingFilters()"
@@ -995,19 +836,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Employee Name Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Employee</label>
-                        <select [(ngModel)]="reportingEmployeeFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Employees</option>
-                            <option *ngFor="let user of optionUsers"
-                                [value]="user.user_first_name + ' ' + user.user_last_name">
-                                {{ user.user_first_name }} {{ user.user_last_name }}
-                            </option>
-                        </select>
-                    </div> -->
 
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Employee</label>
@@ -1021,17 +849,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Role Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project Role</label>
-                        <select [(ngModel)]="reportingRoleFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Roles</option>
-                            <option *ngFor="let role of optionProjectRole" [value]="role.project_role_name">
-                                {{ role.project_role_name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project Role</label>
                         <ng-select [(ngModel)]="reportingRoleFilter" (change)="applyReportingFilters()"
@@ -1043,16 +860,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Allocation Status Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Allocation Status</label>
-                        <select [(ngModel)]="reportingAllocationStatusFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Allocation Status</label>
                         <ng-select [(ngModel)]="reportingAllocationStatusFilter" (change)="applyReportingFilters()"
@@ -1063,16 +870,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Billed Status Dropdown Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Billed Status</label>
-                        <select [(ngModel)]="reportingBilledStatusFilter" (change)="applyReportingFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="true">Billed</option>
-                            <option value="false">Not Billed</option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Billed Status</label>
                         <ng-select [(ngModel)]="reportingBilledStatusFilter" (change)="applyReportingFilters()"
@@ -1115,11 +912,12 @@
                         <th class="border p-2">Reporting Manager</th>
                         <th class="border p-2">Employee Name</th>
                         <th class="border p-2">Project Role</th>
-                        <th class="border p-2">Start Date</th>
-                        <th class="border p-2">Tentative End Date</th>
+
                         <th class="border p-2">Allocation Status</th>
                         <th class="border p-2">Allocation %</th>
                         <th class="border p-2">Status</th>
+                        <th class="border p-2">Start Date</th>
+                        <th class="border p-2">Tentative End Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1130,16 +928,15 @@
                         <td class="border p-2">{{ member.reporting_manager_name }}</td>
                         <td class="border p-2">{{ member.employee_name }}</td>
                         <td class="border p-2">{{ member.project_role_name }}</td>
-                        <td class="border p-2">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="border p-2">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="border p-2">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td>
                         <td class="border p-2">{{ member.allocation_percentage }}%</td>
                         <td class="border p-2">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td>
+                        <td class="border p-2">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="border p-2">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Pagination Controls -->
             <div class="flex items-center justify-center mt-4 space-x-1">
                 <button (click)="changeReportingPage(reportingCurrentPage - 1)" [disabled]="reportingCurrentPage === 1"
                     class="px-3 py-1 border rounded-md">
@@ -1171,18 +968,7 @@
                 <!-- Enhanced Filter Section -->
                 <div
                     class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 px-2 py-2 bg-gray-50 rounded shadow-sm w-full">
-                    <!-- Employee Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Employee</label>
-                        <select [(ngModel)]="reportingTimesheetEmployeeFilter"
-                            (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Employees</option>
-                            <option *ngFor="let user of optionReportingTeamMembers" [value]="user.id">
-                                {{ user.fullName }}
-                            </option>
-                        </select>
-                    </div> -->
+
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="reportingTimesheetEmployeeFilter"
@@ -1195,18 +981,6 @@
                         </ng-select>
                     </div>
 
-                    <!-- Project Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Project</label>
-                        <select [(ngModel)]="reportingTimesheetProjectFilter"
-                            (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Projects</option>
-                            <option *ngFor="let project of optionReportingProjects" [value]="project.id">
-                                {{ project.name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="reportingTimesheetProjectFilter"
@@ -1218,18 +992,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Phase Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Phase</label>
-                        <select [(ngModel)]="reportingTimesheetPhaseFilter" (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Phases</option>
-                            <option *ngFor="let phase of optionReportingPhases" [value]="phase.id">
-                                {{ phase.name }}
-                            </option>
-                        </select>
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Phase</label>
                         <ng-select [(ngModel)]="reportingTimesheetPhaseFilter"
@@ -1241,19 +1003,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Deliverable</label>
-                        <ng-select [(ngModel)]="reportingTimesheetDeliverableFilter"
-                                  (change)="applyReportingTimesheetFilters()"
-                                  class="text-xs custom-ng-select-filter"
-                                  [clearable]="true"
-                                  [searchable]="true">
-                            <ng-option [value]="">All Deliverables</ng-option>
-                            <ng-option *ngFor="let deliverable of optionReportingDeliverables" [value]="deliverable.id">
-                                {{ deliverable.name }}
-                            </ng-option>
-                        </ng-select>
-                    </div>          -->
 
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Deliverable</label>
@@ -1266,21 +1015,6 @@
                             </ng-option>
                         </ng-select>
                     </div>
-
-                    <!-- Date Range Filters -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Date From</label>
-                        <input type="date" [(ngModel)]="reportingTimesheetDateFrom"
-                            (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                    </div>
-
-                    <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Date To</label>
-                        <input type="date" [(ngModel)]="reportingTimesheetDateTo"
-                            (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                    </div> -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Date</label>
                         <input type="date" [(ngModel)]="reportingTimesheetDateFilter"
@@ -1288,17 +1022,6 @@
                             class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
                     </div>
 
-                    <!-- Status Filter -->
-                    <!-- <div class="relative flex-grow">
-                        <label class="block text-xs font-medium mb-1">Task Status</label>
-                        <select [(ngModel)]="reportingTimesheetStatusFilter" (change)="applyReportingTimesheetFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300">
-                            <option value="">All Statuses</option>
-                            <option value="1">Completed</option>
-                            <option value="0">In Progress</option>
-                        </select>
-                    </div> -->
-                    <!-- Status Filter -->
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Task Status</label>
                         <ng-select [(ngModel)]="reportingTimesheetStatusFilter"

@@ -42,19 +42,16 @@ export class ManagersHubComponent {
   changeSection(section: string) {
     this.selectedSection = section;
     localStorage.setItem('selectedManagersHubSection', section);
-    // Dispatch event to notify other components
     window.dispatchEvent(new Event('storage'));
   }
 
 
-  selectedSection: string = 'projectPhases'; // Default section
+  selectedSection: string = 'projectPhases';
   ngOnInit(): void {
-    // Listen for storage events to detect section changes
-    // Initialize with default or saved section
+ 
     this.selectedSection = localStorage.getItem('selectedManagersHubSection') || 'projectPhases';
     localStorage.setItem('selectedManagersHubSection', this.selectedSection);
 
-    // Listen for changes (e.g., when clicking Project Deliverable)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
 
     this.fetchProjectDeliverables();
@@ -80,8 +77,7 @@ export class ManagersHubComponent {
         this.optionProjectManagers = response.projectManagers;
         this.optionReportingManagers = response.reportingManagers;
         this.optionProjectRole = response.projectRole;
-        this.optionDeliverables = response.projectDeliverables; // Make sure your API returns deliverables
-
+        this.optionDeliverables = response.projectDeliverables; 
         this.filteredProjects = [];
         this.filteredDeliverables = [];
 
@@ -92,20 +88,6 @@ export class ManagersHubComponent {
     );
   }
 
-  // filterProjectsByCustomer(): void {
-  //   const selectedCustomerId = Number(this.selectedCustomerId);
-  //   if (selectedCustomerId) {
-  //     this.filteredProjects = this.optionProject.filter(
-  //       (project) => Number(project.customer_id) === selectedCustomerId
-  //     );
-  //   } else {
-  //     this.filteredProjects = []; // Reset if no customer is selected
-  //   }
-  //   this.filteredProjects = [...this.filteredProjects]; // Trigger change detection
-  // }
-
-
-
   filterProjectsByCustomerForDeliverable(): void {
     if (this.projectDeliverableForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(
@@ -113,7 +95,7 @@ export class ManagersHubComponent {
       );
     } else {
       this.filteredProjects = [];
-      this.projectDeliverableForm.project_id = null; // Reset project selection
+      this.projectDeliverableForm.project_id = null; 
     }
   }
 
@@ -124,15 +106,13 @@ export class ManagersHubComponent {
         (phase) => Number(phase.project_id) === selectedProjectId
       );
     } else {
-      this.filteredPhases = []; // Reset if no project is selected
+      this.filteredPhases = []; 
     }
-    this.filteredPhases = [...this.filteredPhases]; // Trigger change detection
+    this.filteredPhases = [...this.filteredPhases]; 
   }
 
-  filteredProjects: any[] = []; // Store filtered projects
+  filteredProjects: any[] = [];
 
-  // Function to filter projects based on selected customer
-  // Method to filter projects based on selected customer
   filterProjects(): void {
     const selectedCustomerId = Number(this.projectDeliverableForm.customer_id);
 
@@ -142,7 +122,7 @@ export class ManagersHubComponent {
         project => Number(project.customer_id) === selectedCustomerId
       );
     } else {
-      this.filteredProjects = []; // No customer selected, show empty
+      this.filteredProjects = []; 
     }
 
     console.log("Filtered Projects:", this.filteredProjects);
@@ -152,12 +132,11 @@ export class ManagersHubComponent {
 
   deliverableCurrentPage: number = 1;
   deliverableTotalItems: number = 0;
-  deliverableItemsPerPage: number = 30; // Adjust as needed
-  deliverableMaxPageButtons: number = 5; // Show only 5 page numbers at a time
+  deliverableItemsPerPage: number = 30;
+  deliverableMaxPageButtons: number = 5; 
   filteredProjectDeliverables: any[] = [];
   paginatedProjectDeliverables: any[] = [];
 
-  // Filters for Project Deliverables
   deliverableNameFilter: string = '';
   deliverableCustomerFilter: string = '';
   deliverableProjectFilter: string = '';
@@ -204,42 +183,7 @@ export class ManagersHubComponent {
       }
     );
   }
-  // submitProjectDeliverable(projectDeliverableFormRef: NgForm): void {
-  //   if (projectDeliverableFormRef.invalid) return;
 
-  //   this.dataService.addProjectDeliverable(this.projectDeliverableForm).subscribe(
-  //     (response) => {
-  //       console.log('Project deliverable added successfully:', response);
-  //       this.fetchProjectDeliverables(); // Refresh the list
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'success',
-  //         title: 'Project deliverable added successfully!',
-  //         showConfirmButton: false,
-  //         timer: 3000,
-  //       });
-  //       projectDeliverableFormRef.resetForm();
-  //       this.fetchOptions();
-
-
-  //       // Refresh both phases and deliverables
-  //       this.fetchProjectPhases();
-  //       this.fetchProjectDeliverables(); // Add this line
-  //     },
-  //     (error) => {
-  //       console.error('Error adding project deliverable', error);
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'error',
-  //         title: 'Error adding project deliverable!',
-  //         showConfirmButton: false,
-  //         timer: 3000,
-  //       });
-  //     }
-  //   );
-  // }
 
   submitProjectDeliverable(form: NgForm): void {
     if (form.invalid) return;
@@ -300,10 +244,6 @@ export class ManagersHubComponent {
     this.updateDeliverablePage();
   }
 
-
-  // Clear Filters for Project Deliverables
-
-  // Clear Filters for Project Deliverables
   // Update clear method
   clearDeliverableFilters(): void {
     this.deliverableCustomerFilter = '';
@@ -314,8 +254,6 @@ export class ManagersHubComponent {
   }
 
 
-
-  // Pagination Logic for Project Deliverables
   updateDeliverablePage(): void {
     const startIndex = (this.deliverableCurrentPage - 1) * this.deliverableItemsPerPage;
     const endIndex = startIndex + this.deliverableItemsPerPage;
@@ -399,7 +337,6 @@ export class ManagersHubComponent {
 
 
 
-  // For Project Phases
   filterProjectsForPhases(): void {
     if (this.projectPhaseForm.customer_id) {
       this.filteredProjects = this.optionProject.filter(
@@ -422,7 +359,6 @@ export class ManagersHubComponent {
       this.projectPhaseForm.pd_id = null;
     }
   }
-  // Pagination and Filtering Variables
   phaseCurrentPage: number = 1;
   phaseTotalItems: number = 0;
   phaseItemsPerPage: number = 30;
@@ -637,10 +573,10 @@ export class ManagersHubComponent {
       }
     );
   }
-  // Add these methods
-  // Enhance the applyTeamFilters method
   applyTeamFilters(): void {
     this.filteredProjectTeamData = this.projectTeamData.filter(member => {
+
+
       const matchesCustomer = !this.teamCustomerFilter ||
         member.customer_name === this.teamCustomerFilter;
 
@@ -659,8 +595,6 @@ export class ManagersHubComponent {
       const matchesAllocationStatus = this.teamAllocationStatusFilter === null ||
         (this.teamAllocationStatusFilter === true && member.allocation_status === 1) ||
         (this.teamAllocationStatusFilter === false && member.allocation_status === 0);
-
-
 
 
       const matchesBilledStatus = this.teamBilledStatusFilter === null ||
@@ -686,8 +620,16 @@ export class ManagersHubComponent {
       const matchesEndDate = !this.teamEndDateTo ||
         formatDate(member.end_date) === formatDate(this.teamEndDateTo);
 
-      return matchesCustomer && matchesProject &&
-        matchesStartDate && matchesEndDate;
+      // Combine all conditions
+      return matchesCustomer &&
+        matchesProject &&
+        matchesManager &&
+        matchesEmployee &&
+        matchesRole &&
+        matchesAllocationStatus &&
+        matchesBilledStatus &&
+        matchesStartDate &&
+        matchesEndDate;
 
     });
 
@@ -697,11 +639,9 @@ export class ManagersHubComponent {
   formatDate(dateString: string): string {
     if (!dateString) return '';
 
-    // Convert UTC date to local timezone correctly
     const date = new Date(dateString);
     const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
-    // Format as YYYY-MM-DD
     return localDate.toISOString().split('T')[0];
   }
 
