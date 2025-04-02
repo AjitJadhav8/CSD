@@ -1,8 +1,9 @@
 <!-- NAVBAR -->
 <div class="flex flex-col sm:flex-row items-center sm:justify-between p-2 bg-white">
-  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7" />
+  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7"
+     />
 
-  <!-- Home Button (Same Style as Other Navigation Buttons) -->
+    <!-- Home Button (Same Style as Other Navigation Buttons) -->
   <div *ngIf="!isAppCenterRoute()" class="flex gap-2 p-1 rounded-md">
     <a [routerLink]="['/app-center']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
@@ -48,18 +49,16 @@
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Department
         </a>
-
-        <a (click)="navigateToEmployeeSection('designation')"
-          [class.active-link]="isEmployeeSectionActive('designation')"
+        
+        <a (click)="navigateToEmployeeSection('designation')" [class.active-link]="isEmployeeSectionActive('designation')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Designation
         </a>
-        <a (click)="navigateToEmployeeSection('project_role')"
-          [class.active-link]="isEmployeeSectionActive('project_role')"
+        <a (click)="navigateToEmployeeSection('project_role')" [class.active-link]="isEmployeeSectionActive('project_role')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Role
         </a>
-
+        
         <a (click)="navigateToEmployeeSection('skills')" [class.active-link]="isEmployeeSectionActive('skills')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Skills
@@ -127,12 +126,11 @@
           Project Deliverable
         </a>
 
-        <a (click)="navigateToProjectSection('projectPhases')"
-          [class.active-link]="isProjectSectionActive('projectPhases')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          Project Phases
-        </a>
-
+        <a (click)="navigateToProjectSection('projectPhases')" [class.active-link]="isProjectSectionActive('projectPhases')"
+      class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      Project Phases
+    </a>
+        
         <!-- <a (click)="navigateToProjectSection('taskCategory')"
           [class.active-link]="isProjectSectionActive('taskCategory')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
@@ -179,8 +177,7 @@
     </a> -->
     <!-- Updated Managers Hub Dropdown -->
     <div *ngIf="shouldShowManagersHub" class="relative" #managersHubDropdown>
-      <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']"
-        routerLinkActive="active-link"
+      <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
         Manager's Hub
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -195,45 +192,45 @@
       <div *ngIf="showManagersHubDropdown"
         class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
 
-        <a (click)="navigateToManagersHubSection('projectDeliverable')"
-          [class.active-link]="isManagersHubSectionActive('projectDeliverable')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <a (click)="navigateToManagersHubSection('projectDeliverable')" 
+           [class.active-link]="isManagersHubSectionActive('projectDeliverable')"
+           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Deliverable
         </a>
 
-        <a (click)="navigateToManagersHubSection('projectPhases')"
-          [class.active-link]="isManagersHubSectionActive('projectPhases')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <a (click)="navigateToManagersHubSection('projectPhases')" 
+           [class.active-link]="isManagersHubSectionActive('projectPhases')"
+           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Phases
         </a>
-
-        <!-- Team Management Sections -->
-        <div class="border-t border-gray-200 my-1"></div>
-        <a (click)="navigateToManagersHubSection('viewMyProjectTeam')"
-          [class.active-link]="isManagersHubSectionActive('viewMyProjectTeam')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          View My Project Team
-        </a>
-        <a (click)="navigateToManagersHubSection('viewMyProjectTeamsTimesheet')"
-          [class.active-link]="isManagersHubSectionActive('viewMyProjectTeamsTimesheet')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          View My Projects Timesheet
-        </a>
-
-        <!-- Reporting Sections -->
-        <div class="border-t border-gray-200 my-1"></div>
-        <a (click)="navigateToManagersHubSection('viewMyReportingTeam')"
-          [class.active-link]="isManagersHubSectionActive('viewMyReportingTeam')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          View My Reporting Team
-        </a>
-        <a (click)="navigateToManagersHubSection('viewMyReportingTeamsTimesheet')"
-          [class.active-link]="isManagersHubSectionActive('viewMyReportingTeamsTimesheet')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          View My Reporting Team's Timesheet
-        </a>
-
-
+        
+         <!-- Team Management Sections -->
+    <div class="border-t border-gray-200 my-1"></div>
+    <a (click)="navigateToManagersHubSection('viewMyProjectTeam')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeam')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Project Team
+    </a>
+    <a (click)="navigateToManagersHubSection('viewMyProjectTeamsTimesheet')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeamsTimesheet')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Projects Timesheet
+    </a>
+    
+    <!-- Reporting Sections -->
+    <div class="border-t border-gray-200 my-1"></div>
+    <a (click)="navigateToManagersHubSection('viewMyReportingTeam')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeam')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Reporting Team
+    </a>
+    <a (click)="navigateToManagersHubSection('viewMyReportingTeamsTimesheet')" 
+       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeamsTimesheet')"
+       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+      View My Reporting Team's Timesheet
+    </a>
+  
+    
       </div>
     </div>
   </div>
