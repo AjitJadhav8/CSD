@@ -18,7 +18,6 @@ export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
             <table width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
               <tr>
                 <td style="padding: 20px; text-align: center; background-color: #0071AC; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                  <img src="/public/credenca-logo.png" alt="Credenca Logo" style="width: 150px; margin-bottom: 10px;">
                 </td>
               </tr>
               <tr>
