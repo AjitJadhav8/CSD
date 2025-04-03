@@ -593,14 +593,67 @@
     </div>
   </div>
 
+  <!-- Edit Modal -->
+
   <!-- Customer Domain Section -->
   <div *ngIf="selectedSection === 'customerCategory'" class="p-2">
     <h3 class="text-xl font-semibold mb-4">Add New Category</h3>
 
+    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditModal()">
+      <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
+          <h3 class="text-xl font-semibold mb-4">Edit Category</h3>
+          <form #editCategoryForm="ngForm" (ngSubmit)="updateCategory(editCategoryForm); $event.preventDefault()">
+              <div class="grid grid-cols-6 gap-4">
+                  <!-- Sector Field -->
+                  <div class="form-group col-span-2">
+                      <label>Sector*</label>
+                      <input type="text" class="border p-2 w-full rounded-md" 
+                             [(ngModel)]="editSector" name="editSector" #editSectorField="ngModel" 
+                             required [disabled]="true"
+                             [ngClass]="{'border-red-500': (editCategoryForm.submitted || editSectorField?.touched) && editSectorField?.invalid}">
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editCategoryForm.submitted || editSectorField?.touched) && editSectorField?.invalid">
+                          Sector is required
+                      </span>
+                  </div>
+  
+                  <!-- Industry Field -->
+                  <div class="form-group col-span-2">
+                      <label>Industry*</label>
+                      <input type="text" class="border p-2 w-full rounded-md" 
+                             [(ngModel)]="editIndustry" name="editIndustry" #editIndustryField="ngModel" 
+                             required [disabled]="true"
+                             [ngClass]="{'border-red-500': (editCategoryForm.submitted || editIndustryField?.touched) && editIndustryField?.invalid}">
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editCategoryForm.submitted || editIndustryField?.touched) && editIndustryField?.invalid">
+                          Industry is required
+                      </span>
+                  </div>
+  
+                  <!-- Domain Field -->
+                  <div class="form-group col-span-2">
+                      <label>Segment*</label>
+                      <input type="text" class="border p-2 w-full rounded-md" 
+                             [(ngModel)]="editDomain" name="editDomain" #editDomainField="ngModel" 
+                             required
+                             [ngClass]="{'border-red-500': (editCategoryForm.submitted || editDomainField?.touched) && editDomainField?.invalid}">
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editCategoryForm.submitted || editDomainField?.touched) && editDomainField?.invalid">
+                          Segment is required
+                      </span>
+                  </div>
+              </div>
+              <div class="mt-4 flex justify-end">
+                  <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" 
+                          (click)="closeEditModal()">Cancel</button>
+                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  
     <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
       <div class="grid grid-cols-6 gap-4">
-
-        <!-- Sector Selection -->
 
         <div class="form-group col-span-2">
           <label>Sector*</label>
@@ -690,6 +743,7 @@
 
       <!-- Submit Button -->
       <div class="mt-4">
+       
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
           Save
         </button>
@@ -718,6 +772,10 @@
               <td class="border p-2">{{ category.industry }}</td>
               <td class="border p-2">{{ category.domain }}</td>
               <td class="border p-2">
+                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" 
+                (click)="openEditModal(category)">
+            Edit
+        </button>
                 <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteCategory(category.category_id)">
                   Delete
                 </button>

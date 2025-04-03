@@ -864,6 +864,78 @@ export class CustomerComponent {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
+  // Edit related properties
+isEditModalOpen = false;
+editCategoryId: number | null = null;
+editSector: string = '';
+editIndustry: string = '';
+editDomain: string = '';
+
+// Open edit modal with category data
+openEditModal(category: any): void {
+  this.editCategoryId = category.category_id;
+  this.editSector = category.sector;
+  this.editIndustry = category.industry;
+  this.editDomain = category.domain;
+  this.isEditModalOpen = true;
+}
+
+// Close edit modal
+closeEditModal(): void {
+  this.isEditModalOpen = false;
+  this.editCategoryId = null;
+  this.editSector = '';
+  this.editIndustry = '';
+  this.editDomain = '';
+}
+
+// Update category
+updateCategory(form: NgForm): void {
+  if (form.invalid || !this.editCategoryId) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please fill all required fields!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
+  }
+
+  const payload = {
+      sector: this.editSector,
+      industry: this.editIndustry,
+      domain: this.editDomain
+  };
+
+  this.dataService.updateCategory(this.editCategoryId, payload).subscribe(
+      () => {
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Category updated successfully!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+          this.fetchMasterCategories();
+          this.closeEditModal();
+      },
+      (error) => {
+          console.error('Error updating category:', error);
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error updating category!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+      }
+  );
+}
+
 
   // ------------------ Other ------------------------
 

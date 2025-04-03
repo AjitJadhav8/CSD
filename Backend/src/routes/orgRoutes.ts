@@ -17,10 +17,9 @@ router.put('/customer/:customerId', orgController.updateCustomer);
 
 
 router.post('/category', orgController.addCategory);
-
 router.get('/master/categories', orgController.getMasterCategories);
-
 router.delete('/customer/category/:categoryId', orgController.softDeleteCategory);
+router.put('/category/:categoryId', orgController.updateCategory);
 
 
 // ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
@@ -87,11 +86,13 @@ router.put('/project/:projectId', orgController.updateProject);
 router.post('/project-deliverable', orgController.addProjectDeliverable);
 router.get('/project-deliverables', orgController.getProjectDeliverables);
 router.delete('/project-deliverables/:deliverableId', orgController.softDeleteProjectDeliverable);
+router.put('/project-deliverables/:deliverableId', orgController.updateProjectDeliverable);
 
 // ---- Project Phases --------
 router.post('/project-phase', orgController.addProjectPhase);
 router.get('/project-phases', orgController.getProjectPhases);
 router.delete('/project-phases/:phaseId', orgController.softDeleteProjectPhase);
+router.put('/project-phases/:phaseId', orgController.updateProjectPhase);
 
 // ---- Task Category --------
 

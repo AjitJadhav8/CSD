@@ -45,6 +45,9 @@ export class DataService {
   deleteCategory(categoryId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/customer/category/${categoryId}`);
   }
+  updateCategory(categoryId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/category/${categoryId}`, payload);
+}
 
   // ------------------ Department ------------------------
 
@@ -193,6 +196,10 @@ export class DataService {
     return this.http.delete(`${this.apiUrl}/api/project-deliverables/${deliverableId}`);
   }
 
+  updateProjectDeliverable(deliverableId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
+}
+
 
 
     // ------------------ Project Phases ------------------------
@@ -209,6 +216,9 @@ export class DataService {
   deleteProjectPhase(phaseId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`);
   }
+  updateProjectPhase(phaseId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload);
+}
 
   // ------------------ Task Category ------------------------
 

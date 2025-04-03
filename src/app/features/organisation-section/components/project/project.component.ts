@@ -737,213 +737,428 @@ export class ProjectComponent {
 
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
+// Edit deliverable related properties
+isEditDeliverableModalOpen = false;
+editDeliverableData: any = {
+    pd_id: null,
+    customer_name: '',
+    project_name: '',
+    project_deliverable_name: '',
+    customer_id: null,
+    project_id: null
+};
+// Open edit modal with deliverable data
+openEditDeliverableModal(deliverable: any): void {
+  this.editDeliverableData = {
+      pd_id: deliverable.pd_id,
+      customer_id: deliverable.customer_id,
+      project_id: deliverable.project_id,
+      project_deliverable_name: deliverable.project_deliverable_name,
+      customer_name: deliverable.customer_name,
+      project_name: deliverable.project_name
+  };
+  
+  // Filter projects for the current customer
+  this.filteredEditProjects = this.optionProject.filter(
+      project => project.customer_id == this.editDeliverableData.customer_id
+  );
+  
+  this.isEditDeliverableModalOpen = true;
+}
 
+
+// Close edit modal
+closeEditDeliverableModal(): void {
+  this.isEditDeliverableModalOpen = false;
+  this.editDeliverableData = {
+      pd_id: null,
+      customer_name: '',
+      project_name: '',
+      project_deliverable_name: '',
+      customer_id: null,
+      project_id: null
+  };
+}
+
+// Update project deliverable
+updateProjectDeliverable(form: NgForm): void {
+  if (form.invalid || !this.editDeliverableData.pd_id) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please fill all required fields!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
+  }
+
+  const payload = {
+      customer_id: this.editDeliverableData.customer_id,
+      project_id: this.editDeliverableData.project_id,
+      project_deliverable_name: this.editDeliverableData.project_deliverable_name
+  };
+
+  this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
+      () => {
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Project deliverable updated successfully!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+          this.fetchProjectDeliverables();
+          this.closeEditDeliverableModal();
+      },
+      (error) => {
+          console.error('Error updating project deliverable:', error);
+          Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error updating project deliverable!',
+              showConfirmButton: false,
+              timer: 3000
+          });
+      }
+  );
+}
+filteredEditProjects: any[] = [];
+onEditCustomerChange(): void {
+  this.editDeliverableData.project_id = null;
+  this.filteredEditProjects = this.optionProject.filter(
+      project => project.customer_id == this.editDeliverableData.customer_id
+  );
+}
 
 
 
   // ----------- project Phase ------------------
 
   // Add these to your component class
-  filteredDeliverables: any[] = [];
-  optionDeliverables: any[] = [];
+    filteredDeliverables: any[] = [];
+    optionDeliverables: any[] = [];
 
 
-  // For Project Phases
-  filterProjectsForPhases(): void {
-    if (this.projectPhaseForm.customer_id) {
-      this.filteredProjects = this.optionProject.filter(
-        project => project.customer_id == this.projectPhaseForm.customer_id
-      );
-    } else {
-      this.filteredProjects = [];
-      this.projectPhaseForm.project_id = null;
-      this.filteredDeliverables = [];
-      this.projectPhaseForm.pd_id = null;
+    // For Project Phases
+    filterProjectsForPhases(): void {
+      if (this.projectPhaseForm.customer_id) {
+        this.filteredProjects = this.optionProject.filter(
+          project => project.customer_id == this.projectPhaseForm.customer_id
+        );
+      } else {
+        this.filteredProjects = [];
+        this.projectPhaseForm.project_id = null;
+        this.filteredDeliverables = [];
+        this.projectPhaseForm.pd_id = null;
+      }
     }
+
+    filterDeliverablesForPhases(): void {
+      if (this.projectPhaseForm.project_id) {
+        this.filteredDeliverables = this.optionDeliverables.filter(
+          deliverable => deliverable.project_id == this.projectPhaseForm.project_id
+        );
+      } else {
+        this.filteredDeliverables = [];
+        this.projectPhaseForm.pd_id = null;
+      }
+    }
+    // Pagination and Filtering Variables
+    phaseCurrentPage: number = 1;
+    phaseTotalItems: number = 0;
+    phaseItemsPerPage: number = 30;
+    phaseMaxPageButtons: number = 5;
+    filteredProjectPhases: any[] = [];
+    paginatedProjectPhases: any[] = [];
+
+    // Filters for Project Phases
+    phaseNameFilter: string = '';
+
+    // Form Model
+    projectPhaseForm: any = {
+      customer_id: null,
+      project_id: null,
+      pd_id: null,
+      project_phase_name: ''
+    };
+
+    // Data Storage
+    projectPhases: any[] = [];
+
+    fetchProjectPhases(): void {
+      this.dataService.getAllProjectPhases().subscribe(
+        (response) => {
+          this.projectPhases = response;
+          this.filteredProjectPhases = [...this.projectPhases];
+          this.phaseTotalItems = this.filteredProjectPhases.length;
+          this.updatePhasePage();
+        },
+        (error) => {
+          console.error('Error fetching project phases:', error);
+        }
+      );
+    }
+
+    submitProjectPhase(projectPhaseFormRef: NgForm): void {
+      if (projectPhaseFormRef.invalid) return;
+
+      this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
+        (response) => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Project phase added successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          this.fetchProjectPhases();
+          projectPhaseFormRef.resetForm();
+          this.fetchOptions();
+        },
+        (error) => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error adding project phase!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      );
+    }
+
+    deleteProjectPhase(phaseId: number): void {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This project phase will be deleted!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.dataService.deleteProjectPhase(phaseId).subscribe(
+            (response) => {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Project phase deleted successfully!',
+                showConfirmButton: false,
+                timer: 3000
+              });
+              this.fetchProjectPhases();
+            },
+            (error) => {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error deleting project phase!',
+                showConfirmButton: false,
+                timer: 3000
+              });
+            }
+          );
+        }
+      });
+    }
+
+    applyPhaseFilters(): void {
+      this.filteredProjectPhases = this.projectPhases.filter(phase => {
+        return (
+          (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
+          (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
+          (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
+          (!this.phaseNameFilter ||
+            phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
+        );
+      });
+
+      this.phaseTotalItems = this.filteredProjectPhases.length;
+      this.phaseCurrentPage = 1;
+      this.updatePhasePage();
+    }
+
+    clearPhaseFilters(): void {
+      this.phaseNameFilter = '';
+      this.customerNameFilter = '';
+      this.projectNameFilter = '';
+      this.applyPhaseFilters();
+    }
+
+    clearPhaseFilter(filterName: string): void {
+      switch (filterName) {
+        case 'phaseNameFilter':
+          this.phaseNameFilter = '';
+          break;
+        case 'customerNameFilter':
+          this.customerNameFilter = '';
+          break;
+        case 'projectNameFilter':
+          this.projectNameFilter = '';
+          break;
+      }
+      this.applyPhaseFilters();
+    }
+
+    updatePhasePage(): void {
+      const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
+      const endIndex = startIndex + this.phaseItemsPerPage;
+      this.paginatedProjectPhases = this.filteredProjectPhases.slice(startIndex, endIndex);
+    }
+
+    changePhasePage(page: number): void {
+      if (page >= 1 && page <= this.phaseTotalPages) {
+        this.phaseCurrentPage = page;
+        this.updatePhasePage();
+      }
+    }
+
+    get phaseTotalPages(): number {
+      return Math.ceil(this.filteredProjectPhases.length / this.phaseItemsPerPage);
+    }
+
+    getVisiblePhasePageNumbers(): number[] {
+      const totalPages = this.phaseTotalPages;
+      const halfRange = Math.floor(this.phaseMaxPageButtons / 2);
+
+      let startPage = Math.max(1, this.phaseCurrentPage - halfRange);
+      let endPage = Math.min(totalPages, startPage + this.phaseMaxPageButtons - 1);
+
+      if (endPage - startPage + 1 < this.phaseMaxPageButtons) {
+        startPage = Math.max(1, endPage - this.phaseMaxPageButtons + 1);
+      }
+
+      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    }
+    isEditPhaseModalOpen = false;
+    editPhaseData: any = {
+      phase_id: null,
+      customer_id: null,
+      project_id: null,
+      pd_id: null,
+      project_phase_name: '',
+      // Display fields (optional)
+      customer_name: '',
+      project_name: '',
+      project_deliverable_name: ''
+  };
+  
+
+filteredEditDeliverables: any[] = [];
+
+
+
+// Open edit modal with phase data
+openEditPhaseModal(phase: any): void {
+  this.editPhaseData = {
+      phase_id: phase.phase_id,
+      customer_id: phase.customer_id,
+      project_id: phase.project_id,
+      pd_id: phase.pd_id,
+      project_phase_name: phase.project_phase_name,
+      // Display fields
+      customer_name: phase.customer_name,
+      project_name: phase.project_name,
+      project_deliverable_name: phase.project_deliverable_name
+  };
+  
+  // Initialize filtered lists
+  this.filteredEditProjects = this.optionProject.filter(
+      p => p.customer_id == phase.customer_id
+  );
+  this.filteredEditDeliverables = this.optionDeliverables.filter(
+      d => d.project_id == phase.project_id
+  );
+  
+  this.isEditPhaseModalOpen = true;
+}
+
+onEditCustomerChangePhase(): void {
+  this.editPhaseData.project_id = null;
+  this.editPhaseData.pd_id = null;
+  this.filteredEditProjects = this.optionProject.filter(
+      p => p.customer_id == this.editPhaseData.customer_id
+  );
+  this.filteredEditDeliverables = [];
+}
+
+onEditProjectChangePhase(): void {
+  this.editPhaseData.pd_id = null;
+  this.filteredEditDeliverables = this.optionDeliverables.filter(
+      d => d.project_id == this.editPhaseData.project_id
+  );
+}
+
+
+
+// Close edit modal
+closeEditPhaseModal(): void {
+  this.isEditPhaseModalOpen = false;
+  this.editPhaseData = {
+      phase_id: null,
+      customer_name: '',
+      project_name: '',
+      project_deliverable_name: '',
+      project_phase_name: '',
+      pd_id: null
+  };
+}
+
+// Update project phase
+updateProjectPhase(form: NgForm): void {
+  if (form.invalid || !this.editPhaseData.phase_id) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please fill all required fields!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
   }
 
-  filterDeliverablesForPhases(): void {
-    if (this.projectPhaseForm.project_id) {
-      this.filteredDeliverables = this.optionDeliverables.filter(
-        deliverable => deliverable.project_id == this.projectPhaseForm.project_id
-      );
-    } else {
-      this.filteredDeliverables = [];
-      this.projectPhaseForm.pd_id = null;
-    }
-  }
-  // Pagination and Filtering Variables
-  phaseCurrentPage: number = 1;
-  phaseTotalItems: number = 0;
-  phaseItemsPerPage: number = 30;
-  phaseMaxPageButtons: number = 5;
-  filteredProjectPhases: any[] = [];
-  paginatedProjectPhases: any[] = [];
-
-  // Filters for Project Phases
-  phaseNameFilter: string = '';
-
-  // Form Model
-  projectPhaseForm: any = {
-    customer_id: null,
-    project_id: null,
-    pd_id: null,
-    project_phase_name: ''
+  const payload = {
+      pd_id: this.editPhaseData.pd_id,
+      project_phase_name: this.editPhaseData.project_phase_name
   };
 
-  // Data Storage
-  projectPhases: any[] = [];
-
-  fetchProjectPhases(): void {
-    this.dataService.getAllProjectPhases().subscribe(
-      (response) => {
-        this.projectPhases = response;
-        this.filteredProjectPhases = [...this.projectPhases];
-        this.phaseTotalItems = this.filteredProjectPhases.length;
-        this.updatePhasePage();
-      },
-      (error) => {
-        console.error('Error fetching project phases:', error);
-      }
-    );
-  }
-
-  submitProjectPhase(projectPhaseFormRef: NgForm): void {
-    if (projectPhaseFormRef.invalid) return;
-
-    this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
-      (response) => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Project phase added successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-        this.fetchProjectPhases();
-        projectPhaseFormRef.resetForm();
-        this.fetchOptions();
-      },
-      (error) => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Error adding project phase!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    );
-  }
-
-  deleteProjectPhase(phaseId: number): void {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This project phase will be deleted!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.dataService.deleteProjectPhase(phaseId).subscribe(
-          (response) => {
-            Swal.fire({
+  this.dataService.updateProjectPhase(this.editPhaseData.phase_id, payload).subscribe(
+      () => {
+          Swal.fire({
               toast: true,
               position: 'top-end',
               icon: 'success',
-              title: 'Project phase deleted successfully!',
+              title: 'Project phase updated successfully!',
               showConfirmButton: false,
               timer: 3000
-            });
-            this.fetchProjectPhases();
-          },
-          (error) => {
-            Swal.fire({
+          });
+          this.fetchProjectPhases();
+          this.closeEditPhaseModal();
+      },
+      (error) => {
+          console.error('Error updating project phase:', error);
+          Swal.fire({
               toast: true,
               position: 'top-end',
               icon: 'error',
-              title: 'Error deleting project phase!',
+              title: 'Error updating project phase!',
               showConfirmButton: false,
               timer: 3000
-            });
-          }
-        );
+          });
       }
-    });
-  }
+  );
+}
 
-  applyPhaseFilters(): void {
-    this.filteredProjectPhases = this.projectPhases.filter(phase => {
-      return (
-        (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
-        (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
-        (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
-        (!this.phaseNameFilter ||
-          phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
-      );
-    });
-
-    this.phaseTotalItems = this.filteredProjectPhases.length;
-    this.phaseCurrentPage = 1;
-    this.updatePhasePage();
-  }
-
-  clearPhaseFilters(): void {
-    this.phaseNameFilter = '';
-    this.customerNameFilter = '';
-    this.projectNameFilter = '';
-    this.applyPhaseFilters();
-  }
-
-  clearPhaseFilter(filterName: string): void {
-    switch (filterName) {
-      case 'phaseNameFilter':
-        this.phaseNameFilter = '';
-        break;
-      case 'customerNameFilter':
-        this.customerNameFilter = '';
-        break;
-      case 'projectNameFilter':
-        this.projectNameFilter = '';
-        break;
-    }
-    this.applyPhaseFilters();
-  }
-
-  updatePhasePage(): void {
-    const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
-    const endIndex = startIndex + this.phaseItemsPerPage;
-    this.paginatedProjectPhases = this.filteredProjectPhases.slice(startIndex, endIndex);
-  }
-
-  changePhasePage(page: number): void {
-    if (page >= 1 && page <= this.phaseTotalPages) {
-      this.phaseCurrentPage = page;
-      this.updatePhasePage();
-    }
-  }
-
-  get phaseTotalPages(): number {
-    return Math.ceil(this.filteredProjectPhases.length / this.phaseItemsPerPage);
-  }
-
-  getVisiblePhasePageNumbers(): number[] {
-    const totalPages = this.phaseTotalPages;
-    const halfRange = Math.floor(this.phaseMaxPageButtons / 2);
-
-    let startPage = Math.max(1, this.phaseCurrentPage - halfRange);
-    let endPage = Math.min(totalPages, startPage + this.phaseMaxPageButtons - 1);
-
-    if (endPage - startPage + 1 < this.phaseMaxPageButtons) {
-      startPage = Math.max(1, endPage - this.phaseMaxPageButtons + 1);
-    }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  }
 
   // ------------------Toggle Section ------------------------
 
