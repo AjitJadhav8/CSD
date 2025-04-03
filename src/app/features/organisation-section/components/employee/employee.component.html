@@ -171,90 +171,7 @@
             </form>
           </div>
 
-        <div *ngIf="isEmployeeEditModalOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-            (click)="closeEmployeeEditModal()">
-            <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
-                <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
-                <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
-                    <div class="grid grid-cols-3 gap-4">
-                        <!-- Employee Code -->
-                        <div class="form-group">
-                            <label>Employee Code*</label>
-                            <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel"
-                                name="editUserCode" required class="border p-2 w-full rounded-md"
-                                [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
-                                Employee Code is required
-                            </span>
-                        </div>
-
-                        <!-- First Name -->
-                        <div class="form-group">
-                            <label>First Name*</label>
-                            <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
-                                name="editUserFirstName" required class="border p-2 w-full rounded-md"
-                                [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
-                                First Name is required
-                            </span>
-                        </div>
-
-                        <!-- Middle Name -->
-                        <div class="form-group">
-                            <label>Middle Name</label>
-                            <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
-                                class="border p-2 w-full rounded-md">
-                        </div>
-
-                        <!-- Last Name -->
-                        <div class="form-group">
-                            <label>Last Name*</label>
-                            <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
-                                name="editUserLastName" required class="border p-2 w-full rounded-md"
-                                [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
-                                Last Name is required
-                            </span>
-                        </div>
-
-                        <!-- Email ID -->
-                        <div class="form-group">
-                            <label>Email ID*</label>
-                            <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel"
-                                name="editUserEmail" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                                class="border p-2 w-full rounded-md"
-                                [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
-                                Valid Email is required
-                            </span>
-                        </div>
-
-                        <!-- Contact Number -->
-                        <div class="form-group">
-                            <label>Contact Number*</label>
-                            <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel"
-                                name="editUserContact" required pattern="^[0-9]{10}$"
-                                class="border p-2 w-full rounded-md"
-                                [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
-                            <span class="text-red-500 text-sm"
-                                *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
-                                Enter a valid 10-digit phone number
-                            </span>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-                            (click)="closeEmployeeEditModal()">Cancel</button>
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+       
 
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
 
@@ -426,6 +343,91 @@
                 </button>
             </div>
         </div>
+
+        <div *ngIf="isEmployeeEditModalOpen"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+        (click)="closeEmployeeEditModal()">
+        <div class="bg-white p-6 rounded-lg w-1/3" (click)="$event.stopPropagation()">
+            <h3 class="text-xl font-semibold mb-4">Edit Employee</h3>
+            <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- Employee Code -->
+                    <div class="form-group">
+                        <label>Employee Code*</label>
+                        <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel"
+                            name="editUserCode" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
+                        <span class="text-red-500 text-sm"
+                            *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
+                            Employee Code is required
+                        </span>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label>First Name*</label>
+                        <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
+                            name="editUserFirstName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
+                        <span class="text-red-500 text-sm"
+                            *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
+                            First Name is required
+                        </span>
+                    </div>
+
+                    <!-- Middle Name -->
+                    <div class="form-group">
+                        <label>Middle Name</label>
+                        <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
+                            class="border p-2 w-full rounded-md">
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label>Last Name*</label>
+                        <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
+                            name="editUserLastName" required class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
+                        <span class="text-red-500 text-sm"
+                            *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
+                            Last Name is required
+                        </span>
+                    </div>
+
+                    <!-- Email ID -->
+                    <div class="form-group">
+                        <label>Email ID*</label>
+                        <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel"
+                            name="editUserEmail" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                            class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
+                        <span class="text-red-500 text-sm"
+                            *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
+                            Valid Email is required
+                        </span>
+                    </div>
+
+                    <!-- Contact Number -->
+                    <div class="form-group">
+                        <label>Contact Number*</label>
+                        <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel"
+                            name="editUserContact" required pattern="^[0-9]{10}$"
+                            class="border p-2 w-full rounded-md"
+                            [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
+                        <span class="text-red-500 text-sm"
+                            *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
+                            Enter a valid 10-digit phone number
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                        (click)="closeEmployeeEditModal()">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
         <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
             class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
