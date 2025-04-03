@@ -977,7 +977,6 @@ WHERE is_deleted = 0 AND is_RM = 1
         }
     }
     
-    
     async assignDetails(req: Request, res: Response): Promise<void> {
         try {
             const {
