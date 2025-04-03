@@ -919,11 +919,11 @@ WHERE is_deleted = 0 AND is_RM = 1
         try {
             const {
                 user_code, user_first_name, user_middle_name, user_last_name,
-                user_email, user_contact, user_password
+                user_email, user_contact
             } = req.body;
     
-            // Default password if not provided
-            const password = user_password ? user_password : '123';
+            // Generate password: user_first_name@123
+            const password = `${user_first_name.toLowerCase()}@123`;
     
             // Check for duplicate user_code and user_email separately
             const checkQuery = `SELECT user_code, user_email 
@@ -968,7 +968,32 @@ WHERE is_deleted = 0 AND is_RM = 1
                         console.error('Error saving employee:', insertErr);
                         return res.status(500).json({ error: 'Error saving employee' });
                     }
-                    res.status(201).json({ message: 'Employee saved successfully', employeeId: result.insertId });
+    
+                    const userId = result.insertId;
+                    
+                    // Now insert default role (4) into trans_user_details
+                    const insertRoleQuery = `
+                        INSERT INTO trans_user_details (
+                            user_id, role_id, is_deleted
+                        ) VALUES (?, 4, 0)
+                    `;
+                    
+                    db.query(insertRoleQuery, [userId], (roleErr: any, roleResult: any) => {
+                        if (roleErr) {
+                            console.error('Error assigning default role:', roleErr);
+                            return res.status(500).json({ 
+                                message: 'Employee created but failed to assign default role',
+                                employeeId: userId,
+                                temporaryPassword: password // Send the generated password back
+                            });
+                        }
+                        
+                        res.status(201).json({ 
+                            message: 'Employee saved successfully with default role', 
+                            employeeId: userId,
+                            temporaryPassword: password // Send the generated password back
+                        });
+                    });
                 });
             });
         } catch (error) {
@@ -1313,7 +1338,6 @@ WHERE is_deleted = 0 AND is_RM = 1
           res.status(500).json({ error: 'Internal Server Error' });
         }
       }
-
 
     async getAllEmployees(req: Request, res: Response): Promise<void> {
         try {
