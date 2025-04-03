@@ -864,32 +864,96 @@ export class CustomerComponent {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
-  // Edit related properties
-isEditModalOpen = false;
-editCategoryId: number | null = null;
-editSector: string = '';
-editIndustry: string = '';
-editDomain: string = '';
+  filteredEditIndustries: string[] = [];
+  filteredEditDomains: string[] = [];
+  editNewSector: string = '';
+  editNewIndustry: string = '';
+  editNewDomain: string = '';
+  
+  // Update the edit related properties
+  isEditModalOpen = false;
+  editCategoryId: number = 0;
+  editSector: string = '';
+  editIndustry: string = '';
+  editDomain: string = '';
 
+  // Add these ViewChild declarations near the top of your component class
+@ViewChild('editNewSectorField') editNewSectorField!: NgModel;
+@ViewChild('editNewIndustryField') editNewIndustryField!: NgModel;
+@ViewChild('editNewDomainField') editNewDomainField!: NgModel;
 // Open edit modal with category data
 openEditModal(category: any): void {
   this.editCategoryId = category.category_id;
   this.editSector = category.sector;
   this.editIndustry = category.industry;
   this.editDomain = category.domain;
+  
+  // Initialize filtered lists
+  this.filteredEditIndustries = this.getIndustriesForSector(category.sector);
+  this.filteredEditDomains = this.getDomainsForIndustry(category.industry);
+  
   this.isEditModalOpen = true;
 }
+// Add helper methods
+private getIndustriesForSector(sector: string): string[] {
+  return [...new Set(
+      this.allCategories
+          .filter(cat => cat.sector === sector)
+          .map(cat => cat.industry)
+  )];
+}
 
+private getDomainsForIndustry(industry: string): string[] {
+  return [...new Set(
+      this.allCategories
+          .filter(cat => cat.industry === industry)
+          .map(cat => cat.domain)
+  )];
+}
+onEditSectorChange(): void {
+  this.editIndustry = '';
+  this.editDomain = '';
+  this.editNewIndustry = '';
+  this.editNewDomain = '';
+
+  if (this.editSector === '__new__') {
+      this.editIndustry = '__new__';
+      this.editDomain = '__new__';
+  } else {
+      this.filteredEditIndustries = this.getIndustriesForSector(this.editSector);
+  }
+}
+
+onEditIndustryChange(): void {
+  this.editDomain = '';
+  this.editNewDomain = '';
+
+  if (this.editIndustry === '__new__') {
+      this.editDomain = '__new__';
+  } else {
+      this.filteredEditDomains = this.getDomainsForIndustry(this.editIndustry);
+  }
+}
+
+
+// Close edit modal
 // Close edit modal
 closeEditModal(): void {
   this.isEditModalOpen = false;
-  this.editCategoryId = null;
+  this.editCategoryId = 0; 
   this.editSector = '';
   this.editIndustry = '';
   this.editDomain = '';
+  this.editNewSector = '';
+  this.editNewIndustry = '';
+  this.editNewDomain = '';
+  this.filteredEditIndustries = [];
+  this.filteredEditDomains = [];
 }
 
 // Update category
+// Update category
+// Update the updateCategory method
 updateCategory(form: NgForm): void {
   if (form.invalid || !this.editCategoryId) {
       Swal.fire({
@@ -909,7 +973,50 @@ updateCategory(form: NgForm): void {
       domain: this.editDomain
   };
 
-  this.dataService.updateCategory(this.editCategoryId, payload).subscribe(
+  // Type assertion to ensure editCategoryId is number
+  const categoryId = this.editCategoryId as number;
+
+  // Get original category
+  const originalCategory = this.allCategories.find(c => c.category_id === categoryId);
+  
+  if (!originalCategory) {
+      Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Original category not found!',
+          showConfirmButton: false,
+          timer: 3000
+      });
+      return;
+  }
+
+  // Check if any spelling has changed
+  const hasChanges = originalCategory.sector !== payload.sector || 
+                    originalCategory.industry !== payload.industry || 
+                    originalCategory.domain !== payload.domain;
+
+  if (hasChanges) {
+      Swal.fire({
+          title: 'Update Category?',
+          text: 'This will update the spelling of the category items. Are you sure?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              this.performCategoryUpdate(categoryId, payload);
+          }
+      });
+  } else {
+      this.performCategoryUpdate(categoryId, payload);
+  }
+}
+
+private performCategoryUpdate(categoryId: number, payload: any): void {
+  this.dataService.updateCategory(categoryId, payload).subscribe(
       () => {
           Swal.fire({
               toast: true,

@@ -604,33 +604,33 @@
           <h3 class="text-xl font-semibold mb-4">Edit Category</h3>
           <form #editCategoryForm="ngForm" (ngSubmit)="updateCategory(editCategoryForm); $event.preventDefault()">
               <div class="grid grid-cols-6 gap-4">
-                  <!-- Sector Field -->
+                  <!-- Sector Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Sector*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
                              [(ngModel)]="editSector" name="editSector" #editSectorField="ngModel" 
-                             required [disabled]="true"
+                             required
                              [ngClass]="{'border-red-500': (editCategoryForm.submitted || editSectorField?.touched) && editSectorField?.invalid}">
                       <span class="text-red-500 text-sm" 
                             *ngIf="(editCategoryForm.submitted || editSectorField?.touched) && editSectorField?.invalid">
                           Sector is required
                       </span>
                   </div>
-  
-                  <!-- Industry Field -->
+    
+                  <!-- Industry Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Industry*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
                              [(ngModel)]="editIndustry" name="editIndustry" #editIndustryField="ngModel" 
-                             required [disabled]="true"
+                             required
                              [ngClass]="{'border-red-500': (editCategoryForm.submitted || editIndustryField?.touched) && editIndustryField?.invalid}">
                       <span class="text-red-500 text-sm" 
                             *ngIf="(editCategoryForm.submitted || editIndustryField?.touched) && editIndustryField?.invalid">
                           Industry is required
                       </span>
                   </div>
-  
-                  <!-- Domain Field -->
+    
+                  <!-- Segment Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Segment*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
@@ -650,8 +650,8 @@
               </div>
           </form>
       </div>
-  </div>
-  
+    </div>
+
     <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
       <div class="grid grid-cols-6 gap-4">
 
