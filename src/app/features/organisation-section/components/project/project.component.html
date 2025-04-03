@@ -79,91 +79,8 @@
       <div class="mt-4">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">Save</button>
       </div>
-    </form>
-    <!-- Edit Phase Modal -->
-    <div *ngIf="isEditPhaseModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditPhaseModal()">
-      <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
-          <h3 class="text-xl font-semibold mb-4">Edit Project Phase</h3>
-          <form #editPhaseForm="ngForm" (ngSubmit)="updateProjectPhase(editPhaseForm); $event.preventDefault()">
-              <div class="grid grid-cols-6 gap-4">
-                  <!-- Customer Selection -->
-                  <div class="form-group">
-                      <label class="block mb-2 font-semibold">Customer*</label>
-                      <ng-select [(ngModel)]="editPhaseData.customer_id" #customerField="ngModel" 
-                                name="customer_id" required (change)="onEditCustomerChangePhase()"
-                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || customerField?.touched) && customerField?.invalid}"
-                                class="custom-ng-select">
-                          <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                              {{ customer.customer_name }}
-                          </ng-option>
-                      </ng-select>
-                      <span class="text-red-500 text-sm" 
-                            *ngIf="(editPhaseForm.submitted || customerField?.touched) && customerField?.invalid">
-                          Customer is required.
-                      </span>
-                  </div>
-    
-                  <!-- Project Selection -->
-                  <div class="form-group">
-                      <label class="block mb-2 font-semibold">Project*</label>
-                      <ng-select [(ngModel)]="editPhaseData.project_id" #projectField="ngModel" 
-                                name="project_id" required (change)="onEditProjectChangePhase()"
-                                [disabled]="!editPhaseData.customer_id"
-                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || projectField?.touched) && projectField?.invalid}"
-                                class="custom-ng-select">
-                          <ng-option [value]="" disabled selected>Select Project</ng-option>
-                          <ng-option *ngFor="let project of filteredEditProjects" [value]="project.project_id">
-                              {{ project.project_name }}
-                          </ng-option>
-                      </ng-select>
-                      <span class="text-red-500 text-sm" 
-                            *ngIf="(editPhaseForm.submitted || projectField?.touched) && projectField?.invalid">
-                          Project is required.
-                      </span>
-                  </div>
-    
-                  <!-- Deliverable Selection -->
-                  <div class="form-group">
-                      <label class="block mb-2 font-semibold">Deliverable*</label>
-                      <ng-select [(ngModel)]="editPhaseData.pd_id" #deliverableField="ngModel" 
-                                name="pd_id" required [disabled]="!editPhaseData.project_id"
-                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || deliverableField?.touched) && deliverableField?.invalid}"
-                                class="custom-ng-select">
-                          <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
-                          <ng-option *ngFor="let deliverable of filteredEditDeliverables" [value]="deliverable.pd_id">
-                              {{ deliverable.project_deliverable_name }}
-                          </ng-option>
-                      </ng-select>
-                      <span class="text-red-500 text-sm" 
-                            *ngIf="(editPhaseForm.submitted || deliverableField?.touched) && deliverableField?.invalid">
-                          Deliverable is required.
-                      </span>
-                  </div>
-    
-                  <!-- Phase Name Field -->
-                  <div class="form-group">
-                      <label class="block mb-2 font-semibold">Phase Name*</label>
-                      <input type="text" class="border p-2 w-full rounded-md" 
-                             [(ngModel)]="editPhaseData.project_phase_name" #phaseNameField="ngModel" 
-                             name="project_phase_name" required
-                             [ngClass]="{'border-red-500': (editPhaseForm.submitted || phaseNameField?.touched) && phaseNameField?.invalid}">
-                      <span class="text-red-500 text-sm" 
-                            *ngIf="(editPhaseForm.submitted || phaseNameField?.touched) && phaseNameField?.invalid">
-                          Phase name is required.
-                      </span>
-                  </div>
-              </div>
-              <div class="mt-4 flex justify-end">
-                  <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" 
-                          (click)="closeEditPhaseModal()">Cancel</button>
-                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-              </div>
-          </form>
-      </div>
-    </div>
+    </form>  
 
-    <!-- Filter Section -->
     <div class="rounded-lg w-full overflow-x-auto mt-6">
       <div class="min-w-max">
         <div
@@ -269,6 +186,88 @@
         class="px-3 py-1 border rounded-md">{{ phaseTotalPages }}</button>
       <button (click)="changePhasePage(phaseCurrentPage + 1)" [disabled]="phaseCurrentPage === phaseTotalPages"
         class="px-3 py-1 border rounded-md">Next</button>
+    </div>
+
+    <div *ngIf="isEditPhaseModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditPhaseModal()">
+      <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
+          <h3 class="text-xl font-semibold mb-4">Edit Project Phase</h3>
+          <form #editPhaseForm="ngForm" (ngSubmit)="updateProjectPhase(editPhaseForm); $event.preventDefault()">
+              <div class="grid grid-cols-6 gap-4">
+                  <!-- Customer Selection -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Customer*</label>
+                      <ng-select [(ngModel)]="editPhaseData.customer_id" #customerField="ngModel" 
+                                name="customer_id" required (change)="onEditCustomerChangePhase()"
+                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || customerField?.touched) && customerField?.invalid}"
+                                class="custom-ng-select">
+                          <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                              {{ customer.customer_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editPhaseForm.submitted || customerField?.touched) && customerField?.invalid">
+                          Customer is required.
+                      </span>
+                  </div>
+    
+                  <!-- Project Selection -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Project*</label>
+                      <ng-select [(ngModel)]="editPhaseData.project_id" #projectField="ngModel" 
+                                name="project_id" required (change)="onEditProjectChangePhase()"
+                                [disabled]="!editPhaseData.customer_id"
+                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || projectField?.touched) && projectField?.invalid}"
+                                class="custom-ng-select">
+                          <ng-option [value]="" disabled selected>Select Project</ng-option>
+                          <ng-option *ngFor="let project of filteredEditProjects" [value]="project.project_id">
+                              {{ project.project_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editPhaseForm.submitted || projectField?.touched) && projectField?.invalid">
+                          Project is required.
+                      </span>
+                  </div>
+    
+                  <!-- Deliverable Selection -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Deliverable*</label>
+                      <ng-select [(ngModel)]="editPhaseData.pd_id" #deliverableField="ngModel" 
+                                name="pd_id" required [disabled]="!editPhaseData.project_id"
+                                [ngClass]="{'border-red-500': (editPhaseForm.submitted || deliverableField?.touched) && deliverableField?.invalid}"
+                                class="custom-ng-select">
+                          <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                          <ng-option *ngFor="let deliverable of filteredEditDeliverables" [value]="deliverable.pd_id">
+                              {{ deliverable.project_deliverable_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editPhaseForm.submitted || deliverableField?.touched) && deliverableField?.invalid">
+                          Deliverable is required.
+                      </span>
+                  </div>
+    
+                  <!-- Phase Name Field -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Phase Name*</label>
+                      <input type="text" class="border p-2 w-full rounded-md" 
+                             [(ngModel)]="editPhaseData.project_phase_name" #phaseNameField="ngModel" 
+                             name="project_phase_name" required
+                             [ngClass]="{'border-red-500': (editPhaseForm.submitted || phaseNameField?.touched) && phaseNameField?.invalid}">
+                      <span class="text-red-500 text-sm" 
+                            *ngIf="(editPhaseForm.submitted || phaseNameField?.touched) && phaseNameField?.invalid">
+                          Phase name is required.
+                      </span>
+                  </div>
+              </div>
+              <div class="mt-4 flex justify-end">
+                  <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" 
+                          (click)="closeEditPhaseModal()">Cancel</button>
+                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+              </div>
+          </form>
+      </div>
     </div>
   </div>
 
@@ -509,8 +508,18 @@
 
 
   <div *ngIf="selectedSection === 'project'">
-    <h3 class="text-xl font-semibold mb-4">Add Project</h3>
-    <form #projectNgForm="ngForm" (ngSubmit)="submitProject(projectNgForm)">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+
+    <div class="mb-6 pb-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        Add New Project
+      </h3>
+      <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project</p>
+    </div>
+        <!-- <form #projectNgForm="ngForm" (ngSubmit)="submitProject(projectNgForm)">
       <div class="grid grid-cols-6 gap-4">
 
         <div class="form-group">
@@ -529,7 +538,6 @@
           </span>
         </div>
 
-        <!-- Project Name -->
         <div class="form-group">
           <label class="block mb-2 font-semibold">Project Name*</label>
           <input type="text" required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.project_name"
@@ -541,7 +549,6 @@
           </span>
         </div>
 
-        <!-- Planned Start Date -->
         <div class="form-group">
           <label class="block mb-2 font-semibold">Planned Start Date*</label>
           <input type="date" required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.planned_start_date"
@@ -553,7 +560,6 @@
           </span>
         </div>
 
-        <!-- Actual Start Date -->
         <div class="form-group">
           <label class="block mb-2 font-semibold">Actual Start Date*</label>
           <input type="date" required class="border p-2 w-full rounded-md" [(ngModel)]="projectForm.actual_start_date"
@@ -627,7 +633,6 @@
             Project Status is required
           </span>
         </div>
-        <!-- Tentative End Date -->
 
         <div class="form-group">
           <label class="block mb-2 font-semibold">Tentative End Date*</label>
@@ -646,161 +651,175 @@
         </div>
       </div>
 
-      <!-- Project Description -->
 
-      <!-- Save Button -->
       <div class="mt-4">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">Create Project</button>
       </div>
-    </form>
-    <!-- Edit Modal -->
-    <div *ngIf="isEditProjectModalOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-      (click)="closeEditProjectModal()">
-      <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
-        <h3 class="text-xl font-semibold mb-4">Edit Project</h3>
-        <form #editProjectForm="ngForm" (ngSubmit)="updateProject(editProjectForm); $event.preventDefault()">
-          <div class="grid grid-cols-5 gap-4">
+    </form> -->
 
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Customer Name*</label>
-              <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.customer_id"
-                #editCustomerId="ngModel" name="customer_id"
-                [ngClass]="{'border-red-500': (editCustomerId.invalid && editCustomerId.touched) || (editProjectForm.submitted && editCustomerId.invalid)}">
-                <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                  {{ customer.customer_name }}
-                </ng-option>
-              </ng-select>
-              <span class="text-red-500 text-sm"
-                *ngIf="(editCustomerId.invalid && editCustomerId.touched) || (editProjectForm.submitted && editCustomerId.invalid)">
-                Customer Name is required
-              </span>
-            </div>
-
-            <!-- Project Name -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Project Name*</label>
-              <input type="text" required class="border p-2 w-full rounded-md"
-                [(ngModel)]="editProjectFormData.project_name" #editProjectName="ngModel" name="project_name"
-                [ngClass]="{'border-red-500': (editProjectName.invalid && editProjectName.touched) || (editProjectForm.submitted && editProjectName.invalid)}">
-              <span class="text-red-500 text-sm"
-                *ngIf="(editProjectName.invalid && editProjectName.touched) || (editProjectForm.submitted && editProjectName.invalid)">
-                Project Name is required
-              </span>
-            </div>
-
-            <!-- Planned Start Date -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Planned Start Date*</label>
-              <input type="date" required class="border p-2 w-full rounded-md"
-                [(ngModel)]="editProjectFormData.planned_start_date" #editPlannedStartDate="ngModel"
-                name="planned_start_date"
-                [ngClass]="{'border-red-500': (editPlannedStartDate.invalid && editPlannedStartDate.touched) || (editProjectForm.submitted && editPlannedStartDate.invalid)}">
-              <span class="text-red-500 text-sm"
-                *ngIf="(editPlannedStartDate.invalid && editPlannedStartDate.touched) || (editProjectForm.submitted && editPlannedStartDate.invalid)">
-                Planned Start Date is required
-              </span>
-            </div>
-
-            <!-- Actual Start Date -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Actual Start Date</label>
-              <input type="date" class="border p-2 w-full rounded-md"
-                [(ngModel)]="editProjectFormData.actual_start_date" name="actual_start_date">
-            </div>
-
-
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Type of Project*</label>
-              <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.type_of_project_id"
-                #editTypeOfProjectId="ngModel" name="type_of_project_id"
-                [ngClass]="{'border-red-500': (editTypeOfProjectId.invalid && editTypeOfProjectId.touched) || (editProjectForm.submitted && editTypeOfProjectId.invalid)}">
-                <ng-option [value]="" disabled selected>Select Type</ng-option>
-                <ng-option *ngFor="let project of optionTypeOfProject" [value]="project.type_of_project_id">
-                  {{ project.project_type_name }}
-                </ng-option>
-              </ng-select>
-              <span class="text-red-500 text-sm"
-                *ngIf="(editTypeOfProjectId.invalid && editTypeOfProjectId.touched) || (editProjectForm.submitted && editTypeOfProjectId.invalid)">
-                Type of Project is required
-              </span>
-            </div>
-
-
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Type of Engagement*</label>
-              <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.type_of_engagement_id"
-                #editTypeOfEngagementId="ngModel" name="type_of_engagement_id"
-                [ngClass]="{'border-red-500': (editTypeOfEngagementId.invalid && editTypeOfEngagementId.touched) || (editProjectForm.submitted && editTypeOfEngagementId.invalid)}">
-                <ng-option [value]="" disabled selected>Select Type of Engagement</ng-option>
-                <ng-option *ngFor="let engagement of optionTypeOfEngagement" [value]="engagement.type_of_engagement_id">
-                  {{ engagement.type_of_engagement_name }}
-                </ng-option>
-              </ng-select>
-              <span class="text-red-500 text-sm"
-                *ngIf="(editTypeOfEngagementId.invalid && editTypeOfEngagementId.touched) || (editProjectForm.submitted && editTypeOfEngagementId.invalid)">
-                Type of Engagement is required
-              </span>
-            </div>
-
-            <!-- Project Manager -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Project Manager*</label>
-              <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.project_manager_id"
-                #editProjectManagerId="ngModel" name="project_manager_id"
-                [ngClass]="{'border-red-500': (editProjectManagerId.invalid && editProjectManagerId.touched) || (editProjectForm.submitted && editProjectManagerId.invalid)}">
-                <ng-option [value]="" disabled selected>Select Project Manager</ng-option>
-                <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
-                  {{ user.user_first_name }} {{ user.user_last_name }}
-                </ng-option>
-              </ng-select>
-              <span class="text-red-500 text-sm"
-                *ngIf="(editProjectManagerId.invalid && editProjectManagerId.touched) || (editProjectForm.submitted && editProjectManagerId.invalid)">
-                Project Manager is required
-              </span>
-            </div>
-
-            <!-- Project Status -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Project Status*</label>
-              <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.project_status_id"
-                #editProjectStatusId="ngModel" name="project_status_id"
-                [ngClass]="{'border-red-500': (editProjectStatusId.invalid && editProjectStatusId.touched) || (editProjectForm.submitted && editProjectStatusId.invalid)}">
-                <ng-option [value]="" disabled selected>Select Status</ng-option>
-                <ng-option *ngFor="let status of optionProjectStatus" [value]="status.project_status_id">
-                  {{ status.status_name }}
-                </ng-option>
-              </ng-select>
-              <span class="text-red-500 text-sm"
-                *ngIf="(editProjectStatusId.invalid && editProjectStatusId.touched) || (editProjectForm.submitted && editProjectStatusId.invalid)">
-                Project Status is required
-              </span>
-            </div>
-
-            <!-- Tentative End Date -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Tentative End Date</label>
-              <input type="date" class="border p-2 w-full rounded-md"
-                [(ngModel)]="editProjectFormData.tentative_end_date" name="tentative_end_date">
-            </div>
-
-            <!-- Project Description -->
-            <div class="form-group">
-              <label class="block mb-2 font-semibold">Project Description</label>
-              <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter project details..."
-                [(ngModel)]="editProjectFormData.project_description" name="project_description"></textarea>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="mt-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-          </div>
-        </form>
+    <form #projectNgForm="ngForm" (ngSubmit)="submitProject(projectNgForm); $event.preventDefault()">
+      <div class="grid grid-cols-6 gap-4">
+        <!-- Customer Name -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+          <ng-select required class="text-xs custom-ng-select" [(ngModel)]="projectForm.customer_id" #customerId="ngModel"
+            name="customer_id"
+            [ngClass]="{'border-red-500': (customerId.invalid && customerId.touched) || (projectNgForm.submitted && customerId.invalid)}">
+            <ng-option [value]="" disabled selected>Select Customer</ng-option>
+            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+              {{ customer.customer_name }}
+            </ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(customerId.invalid && customerId.touched) || (projectNgForm.submitted && customerId.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Project Name -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Name*</label>
+          <input type="text" required 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="projectForm.project_name" #projectName="ngModel" name="project_name"
+            [ngClass]="{'border-red-500': (projectName.invalid && projectName.touched) || (projectNgForm.submitted && projectName.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(projectName.invalid && projectName.touched) || (projectNgForm.submitted && projectName.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Planned Start Date -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Planned Start Date*</label>
+          <input type="date" required 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="projectForm.planned_start_date" #plannedStartDate="ngModel" name="planned_start_date"
+            [ngClass]="{'border-red-500': (plannedStartDate.invalid && plannedStartDate.touched) || (projectNgForm.submitted && plannedStartDate.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(plannedStartDate.invalid && plannedStartDate.touched) || (projectNgForm.submitted && plannedStartDate.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Actual Start Date -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Actual Start Date*</label>
+          <input type="date" required 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="projectForm.actual_start_date" #actualStartDate="ngModel" name="actual_start_date"
+            [ngClass]="{'border-red-500': (actualStartDate.invalid && actualStartDate.touched) || (projectNgForm.submitted && actualStartDate.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(actualStartDate.invalid && actualStartDate.touched) || (projectNgForm.submitted && actualStartDate.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Type of Project -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Type of Project*</label>
+          <ng-select required class="text-xs custom-ng-select" [(ngModel)]="projectForm.type_of_project_id"
+            #typeOfProjectId="ngModel" name="type_of_project_id"
+            [ngClass]="{'border-red-500': (typeOfProjectId.invalid && typeOfProjectId.touched) || (projectNgForm.submitted && typeOfProjectId.invalid)}">
+            <ng-option [value]="" disabled selected>Select Type</ng-option>
+            <ng-option *ngFor="let project of optionTypeOfProject" [value]="project.type_of_project_id">
+              {{ project.project_type_name }}
+            </ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(typeOfProjectId.invalid && typeOfProjectId.touched) || (projectNgForm.submitted && typeOfProjectId.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Type of Engagement -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Type of Engagement*</label>
+          <ng-select required class="text-xs custom-ng-select" [(ngModel)]="projectForm.type_of_engagement_id"
+            #typeOfEngagementId="ngModel" name="type_of_engagement_id"
+            [ngClass]="{'border-red-500': (typeOfEngagementId.invalid && typeOfEngagementId.touched) || (projectNgForm.submitted && typeOfEngagementId.invalid)}">
+            <ng-option [value]="" disabled selected>Select Engagement</ng-option>
+            <ng-option *ngFor="let engagement of optionTypeOfEngagement" [value]="engagement.type_of_engagement_id">
+              {{ engagement.type_of_engagement_name }}
+            </ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(typeOfEngagementId.invalid && typeOfEngagementId.touched) || (projectNgForm.submitted && typeOfEngagementId.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Project Manager -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Manager*</label>
+          <ng-select required class="text-xs custom-ng-select" [(ngModel)]="projectForm.project_manager_id"
+            #projectManagerId="ngModel" name="project_manager_id"
+            [ngClass]="{'border-red-500': (projectManagerId.invalid && projectManagerId.touched) || (projectNgForm.submitted && projectManagerId.invalid)}">
+            <ng-option [value]="" disabled selected>Select Manager</ng-option>
+            <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+              {{ user.user_first_name }} {{ user.user_last_name }}
+            </ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(projectManagerId.invalid && projectManagerId.touched) || (projectNgForm.submitted && projectManagerId.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Project Status -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Status*</label>
+          <ng-select required class="text-xs custom-ng-select" [(ngModel)]="projectForm.project_status_id"
+            #projectStatusId="ngModel" name="project_status_id"
+            [ngClass]="{'border-red-500': (projectStatusId.invalid && projectStatusId.touched) || (projectNgForm.submitted && projectStatusId.invalid)}">
+            <ng-option [value]="" disabled selected>Select Status</ng-option>
+            <ng-option *ngFor="let status of optionProjectStatus" [value]="status.project_status_id">
+              {{ status.status_name }}
+            </ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(projectStatusId.invalid && projectStatusId.touched) || (projectNgForm.submitted && projectStatusId.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Tentative End Date -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Tentative End Date*</label>
+          <input type="date" required 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="projectForm.tentative_end_date" #tentativeEndDate="ngModel" name="tentative_end_date"
+            [ngClass]="{'border-red-500': (tentativeEndDate.invalid && tentativeEndDate.touched) || (projectNgForm.submitted && tentativeEndDate.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(tentativeEndDate.invalid && tentativeEndDate.touched) || (projectNgForm.submitted && tentativeEndDate.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Project Description -->
+        <div class="space-y-1 col-span-3">
+          <label class="text-xs font-medium text-gray-600">Project Description</label>
+          <textarea rows="3" placeholder="Enter project details..."
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [(ngModel)]="projectForm.project_description" name="project_description"></textarea>
+        </div>
       </div>
+  
+      <!-- Submit Button -->
+      <div class="mt-6 flex justify-center">
+        <button type="submit"
+          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Create Project
+        </button>
+      </div>
+    </form>
     </div>
-
+  
+  
+   
     <div class="rounded-lg w-full overflow-x-auto">
 
       <!-- Filter Section -->
@@ -929,42 +948,54 @@
 
       <!-- Scrollable Table -->
       <div class="rounded-lg w-full inline-block whitespace-nowrap">
-        <table class="w-full border-collapse border border-gray-300 mt-4">
+        <table class="min-w-full text-xs border-collapse">
           <thead>
-            <tr class="bg-gray-100">
-              <th class="border p-2">Sr No</th>
-              <th class="border p-2">Project Name</th>
-              <th class="border p-2">Customer Name</th>
-              <th class="border p-2">Project Manager</th>
-              <th class="border p-2">Type of Project</th>
-              <th class="border p-2">Type of Engagement</th>
-              <th class="border p-2">Project Status</th>
-              <th class="border p-2">Planned Start Date</th>
-              <th class="border p-2">Actual Start Date</th>
-              <th class="border p-2">Tentative End Date</th>
-              <th class="border p-2">Project Description</th>
-              <th class="border p-2">Action</th>
+            <tr class="bg-gray-50">
+              <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Manager</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Project Type</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Engagement</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Planned Start</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Actual Start</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Tentative End</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
+              <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let project of paginatedProjects; let i = index" class="hover:bg-gray-50">
-              <td class="border p-2">{{ i + 1 }}</td>
-              <td class="border p-2">{{ project.project_name }}</td>
-              <td class="border p-2">{{ project.customer_name }}</td>
-              <td class="border p-2">{{ project.project_manager }}</td>
-              <td class="border p-2">{{ project.type_of_project }}</td>
-              <td class="border p-2">{{ project.type_of_engagement }}</td>
-              <td class="border p-2">{{ project.project_status }}</td>
-              <td class="border p-2">{{ project.planned_start_date |date:'dd-MMM-yyyy'}}</td>
-              <td class="border p-2">{{ project.actual_start_date | date:'dd-MMM-yyyy' }}</td>
-              <td class="border p-2">{{ project.tentative_end_date | date:'dd-MMM-yyyy' }}</td>
-              <td class="border p-2">{{ project.project_description }}</td>
-              <td class="border p-2">
-                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                  (click)="openEditProjectModal(project)">Edit</button>
-
-                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                  (click)="deleteProject(project.project_id)">Delete</button>
+              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.project_name || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.customer_name || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.project_manager || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.type_of_project || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.type_of_engagement || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.project_status || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.planned_start_date | date:'dd-MMM-yyyy' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.actual_start_date | date:'dd-MMM-yyyy' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ project.tentative_end_date | date:'dd-MMM-yyyy' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">
+                <div class="group relative inline-block">
+                  <span class="truncate max-w-[80px] inline-block">{{ project.project_description || '-' }}</span>
+                  <div *ngIf="project.project_description" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                    {{ project.project_description }}
+                  </div>
+                </div>
+              </td>
+              <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                <button (click)="openEditProjectModal(project)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button (click)="deleteProject(project.project_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -1001,5 +1032,151 @@
       </button>
     </div>
 
+    <div *ngIf="isEditProjectModalOpen"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+    (click)="closeEditProjectModal()">
+    <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
+      <h3 class="text-xl font-semibold mb-4">Edit Project</h3>
+      <form #editProjectForm="ngForm" (ngSubmit)="updateProject(editProjectForm); $event.preventDefault()">
+        <div class="grid grid-cols-5 gap-4">
+
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Customer Name*</label>
+            <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.customer_id"
+              #editCustomerId="ngModel" name="customer_id"
+              [ngClass]="{'border-red-500': (editCustomerId.invalid && editCustomerId.touched) || (editProjectForm.submitted && editCustomerId.invalid)}">
+              <ng-option [value]="" disabled selected>Select Customer</ng-option>
+              <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                {{ customer.customer_name }}
+              </ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editCustomerId.invalid && editCustomerId.touched) || (editProjectForm.submitted && editCustomerId.invalid)">
+              Customer Name is required
+            </span>
+          </div>
+
+          <!-- Project Name -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Project Name*</label>
+            <input type="text" required class="border p-2 w-full rounded-md"
+              [(ngModel)]="editProjectFormData.project_name" #editProjectName="ngModel" name="project_name"
+              [ngClass]="{'border-red-500': (editProjectName.invalid && editProjectName.touched) || (editProjectForm.submitted && editProjectName.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editProjectName.invalid && editProjectName.touched) || (editProjectForm.submitted && editProjectName.invalid)">
+              Project Name is required
+            </span>
+          </div>
+
+          <!-- Planned Start Date -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Planned Start Date*</label>
+            <input type="date" required class="border p-2 w-full rounded-md"
+              [(ngModel)]="editProjectFormData.planned_start_date" #editPlannedStartDate="ngModel"
+              name="planned_start_date"
+              [ngClass]="{'border-red-500': (editPlannedStartDate.invalid && editPlannedStartDate.touched) || (editProjectForm.submitted && editPlannedStartDate.invalid)}">
+            <span class="text-red-500 text-sm"
+              *ngIf="(editPlannedStartDate.invalid && editPlannedStartDate.touched) || (editProjectForm.submitted && editPlannedStartDate.invalid)">
+              Planned Start Date is required
+            </span>
+          </div>
+
+          <!-- Actual Start Date -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Actual Start Date</label>
+            <input type="date" class="border p-2 w-full rounded-md"
+              [(ngModel)]="editProjectFormData.actual_start_date" name="actual_start_date">
+          </div>
+
+
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Type of Project*</label>
+            <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.type_of_project_id"
+              #editTypeOfProjectId="ngModel" name="type_of_project_id"
+              [ngClass]="{'border-red-500': (editTypeOfProjectId.invalid && editTypeOfProjectId.touched) || (editProjectForm.submitted && editTypeOfProjectId.invalid)}">
+              <ng-option [value]="" disabled selected>Select Type</ng-option>
+              <ng-option *ngFor="let project of optionTypeOfProject" [value]="project.type_of_project_id">
+                {{ project.project_type_name }}
+              </ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editTypeOfProjectId.invalid && editTypeOfProjectId.touched) || (editProjectForm.submitted && editTypeOfProjectId.invalid)">
+              Type of Project is required
+            </span>
+          </div>
+
+
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Type of Engagement*</label>
+            <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.type_of_engagement_id"
+              #editTypeOfEngagementId="ngModel" name="type_of_engagement_id"
+              [ngClass]="{'border-red-500': (editTypeOfEngagementId.invalid && editTypeOfEngagementId.touched) || (editProjectForm.submitted && editTypeOfEngagementId.invalid)}">
+              <ng-option [value]="" disabled selected>Select Type of Engagement</ng-option>
+              <ng-option *ngFor="let engagement of optionTypeOfEngagement" [value]="engagement.type_of_engagement_id">
+                {{ engagement.type_of_engagement_name }}
+              </ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editTypeOfEngagementId.invalid && editTypeOfEngagementId.touched) || (editProjectForm.submitted && editTypeOfEngagementId.invalid)">
+              Type of Engagement is required
+            </span>
+          </div>
+
+          <!-- Project Manager -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Project Manager*</label>
+            <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.project_manager_id"
+              #editProjectManagerId="ngModel" name="project_manager_id"
+              [ngClass]="{'border-red-500': (editProjectManagerId.invalid && editProjectManagerId.touched) || (editProjectForm.submitted && editProjectManagerId.invalid)}">
+              <ng-option [value]="" disabled selected>Select Project Manager</ng-option>
+              <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                {{ user.user_first_name }} {{ user.user_last_name }}
+              </ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editProjectManagerId.invalid && editProjectManagerId.touched) || (editProjectForm.submitted && editProjectManagerId.invalid)">
+              Project Manager is required
+            </span>
+          </div>
+
+          <!-- Project Status -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Project Status*</label>
+            <ng-select required class="custom-ng-select" [(ngModel)]="editProjectFormData.project_status_id"
+              #editProjectStatusId="ngModel" name="project_status_id"
+              [ngClass]="{'border-red-500': (editProjectStatusId.invalid && editProjectStatusId.touched) || (editProjectForm.submitted && editProjectStatusId.invalid)}">
+              <ng-option [value]="" disabled selected>Select Status</ng-option>
+              <ng-option *ngFor="let status of optionProjectStatus" [value]="status.project_status_id">
+                {{ status.status_name }}
+              </ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(editProjectStatusId.invalid && editProjectStatusId.touched) || (editProjectForm.submitted && editProjectStatusId.invalid)">
+              Project Status is required
+            </span>
+          </div>
+
+          <!-- Tentative End Date -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Tentative End Date</label>
+            <input type="date" class="border p-2 w-full rounded-md"
+              [(ngModel)]="editProjectFormData.tentative_end_date" name="tentative_end_date">
+          </div>
+
+          <!-- Project Description -->
+          <div class="form-group">
+            <label class="block mb-2 font-semibold">Project Description</label>
+            <textarea class="border p-2 w-full rounded-md" rows="3" placeholder="Enter project details..."
+              [(ngModel)]="editProjectFormData.project_description" name="project_description"></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-4">
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
   </div>
 </div>

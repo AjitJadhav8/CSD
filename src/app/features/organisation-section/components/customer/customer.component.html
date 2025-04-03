@@ -1,11 +1,21 @@
 <div class="p-2">
   <!-- Customer Section -->
   <div *ngIf="selectedSection === 'customer'" class="p-2">
-    <h3 class="text-xl font-semibold mb-4">Add New Customer</h3>
 
-    <form class="mt-4" #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm)">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+
+    <div class="mb-6 pb-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        Add New Customer
+      </h3>
+      <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to register new customer</p>
+    </div>
+    
+    <!-- <form class="mt-4" #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm)">
       <div class="grid grid-cols-6 gap-4">
-        <!-- Customer Name (Required) -->
         <div class="form-group">
           <label>Customer Name*</label>
           <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerName"
@@ -51,7 +61,6 @@
             name="alternatePhone">
         </div>
 
-        <!-- Customer Status (Required) -->
         <div class="form-group">
           <label>Customer Status*</label>
           <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
@@ -65,7 +74,6 @@
           </span>
         </div>
 
-        <!-- Customer Sector -->
         <div class="form-group">
           <label>Customer Sector*</label>
           <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors" [searchable]="true"
@@ -78,8 +86,6 @@
             Sector is required
           </span>
         </div>
-
-        <!-- Customer Industry -->
 
         <div class="form-group">
           <label>Customer Industry*</label>
@@ -94,7 +100,6 @@
           </span>
         </div>
 
-        <!-- Customer Domain -->
         <div class="form-group">
           <label>Customer Segment*</label>
           <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
@@ -107,7 +112,6 @@
           </span>
         </div>
 
-        <!-- Customer Type (Required) -->
         <div class="form-group">
           <label>Customer Type*</label>
           <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
@@ -154,7 +158,6 @@
           </span>
         </div>
 
-        <!-- Country (Required) -->
         <div class="form-group">
           <label>Country</label>
           <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.country" #country="ngModel"
@@ -174,18 +177,215 @@
 
       </div>
 
-      <!-- Submit Button -->
       <div class="mt-4">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
           Create Customer
         </button>
       </div>
+    </form> -->
+
+    <form #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm); $event.preventDefault()">
+      <div class="grid grid-cols-6 gap-4">
+        <!-- Customer Name -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+          <input type="text" [(ngModel)]="customer.customerName" #customerName="ngModel" name="customerName" required
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Company Website -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Company Website</label>
+          <input type="text" [(ngModel)]="customer.companyWebsite" name="companyWebsite"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+  
+        <!-- Email Address -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Email Address</label>
+          <input type="email" [(ngModel)]="customer.email" #email="ngModel" name="email" 
+            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (email.invalid && email.touched) || (customerForm.submitted && email.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(email.invalid && email.touched) || (customerForm.submitted && email.invalid)">
+            Valid email required
+          </span>
+        </div>
+  
+        <!-- Phone Number -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Phone Number</label>
+          <input type="text" [(ngModel)]="customer.phone" #phone="ngModel" name="phone" pattern="^\d{10}$"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)">
+            10 digits required
+          </span>
+        </div>
+  
+        <!-- Alternate Phone Number -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Alternate Phone</label>
+          <input type="text" [(ngModel)]="customer.alternatePhone" name="alternatePhone"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+  
+        <!-- Customer Status -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Status*</label>
+          <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
+            [searchable]="true" [clearable]="false" required
+            [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="" disabled selected>Select status</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(status.invalid && status.touched) || (customerForm.submitted && status.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Customer Sector -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Sector*</label>
+          <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors" [searchable]="true"
+            (change)="filterIndustries()" required
+            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="" disabled selected>Select sector</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Customer Industry -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Industry*</label>
+          <ng-select [(ngModel)]="selectedIndustry" #industry="ngModel" name="industry" [items]="industries"
+            (change)="filterDomains()" required
+            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="" disabled selected>Select industry</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Customer Domain -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Segment*</label>
+          <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
+            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="" disabled selected>Select segment</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Customer Type -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Type*</label>
+          <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
+            [items]="['Existing', 'Potential']" [clearable]="false" required
+            [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="" disabled selected>Select type</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- City -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">City</label>
+          <input type="text" [(ngModel)]="customer.city" #city="ngModel" name="city"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (city.invalid && city.touched) || (customerForm.submitted && city.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(city.invalid && city.touched) || (customerForm.submitted && city.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- State -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">State</label>
+          <input type="text" [(ngModel)]="customer.state" #state="ngModel" name="state"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (state.invalid && state.touched) || (customerForm.submitted && state.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(state.invalid && state.touched) || (customerForm.submitted && state.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Pincode -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Pincode</label>
+          <input type="text" [(ngModel)]="customer.pincode" #pincode="ngModel" name="pincode" pattern="^[0-9]{6}$"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)">
+            6 digits required
+          </span>
+        </div>
+  
+        <!-- Country -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Country</label>
+          <input type="text" [(ngModel)]="customer.country" #country="ngModel" name="country"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [ngClass]="{'border-red-500': (country.invalid && country.touched) || (customerForm.submitted && country.invalid)}">
+          <span class="text-xs text-red-500"
+            *ngIf="(country.invalid && country.touched) || (customerForm.submitted && country.invalid)">
+            Required
+          </span>
+        </div>
+  
+        <!-- Customer Description -->
+        <div class="space-y-1 col-span-3">
+          <label class="text-xs font-medium text-gray-600">Customer Description</label>
+          <textarea [(ngModel)]="customer.description" name="description" rows="3"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
+      </div>
+  
+      <!-- Submit Button -->
+      <div class="mt-6 flex justify-center">
+        <button type="submit"
+          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Create Customer
+        </button>
+      </div>
     </form>
+
+    </div>
+  
    
     <!-- Customer Table -->
     <h3 class="mt-6 font-bold">Customer List</h3>
 
-    <div class="rounded-lg w-full overflow-x-auto p-2">
+    <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
       <!-- Filters -->
       <div class="min-w-max">
         <div
@@ -336,52 +536,64 @@
 
 
       <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-        <table class="w-full border-collapse border border-gray-300 mt-4">
+        <table class="min-w-full text-xs border-collapse">
           <thead>
-            <tr class="bg-gray-100">
-              <th class="border p-2">S.No.</th>
-              <th class="border p-2">Customer Name</th>
-              <th class="border p-2">Company Website</th>
-              <th class="border p-2">Email Address</th>
-              <th class="border p-2">Phone Number</th>
-              <th class="border p-2">Alternate Phone Number</th>
-              <th class="border p-2">Customer Status</th>
-              <th class="border p-2">Customer Sector</th>
-              <th class="border p-2">Customer Industry</th>
-              <th class="border p-2">Customer Segment</th>
-              <th class="border p-2">Customer Type</th>
-              <th class="border p-2">City</th>
-              <th class="border p-2">State</th>
-              <th class="border p-2">Pincode</th>
-              <th class="border p-2">Country</th>
-              <th class="border p-2">Customer Description</th>
-              <th class="border p-2">Action</th>
+            <tr class="bg-gray-50">
+              <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Company Website</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Email</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Phone</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Alt Phone</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Sector</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Industry</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Segment</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Type</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">City</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">State</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Pincode</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Country</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
+              <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
-              <td class="border p-2">{{ i + 1 }}</td>
-              <td class="border p-2">{{ customer.customer_name }}</td>
-              <td class="border p-2">{{ customer.customer_company_website || '-'}}</td>
-              <td class="border p-2">{{ customer.customer_email || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_phone || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_alternate_phone || '-' }}</td>
-              <td class="border p-2">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
-              <td class="border p-2">{{ customer.sector || '-' }}</td>
-              <td class="border p-2">{{ customer.industry || '-' }}</td>
-              <td class="border p-2">{{ customer.domain || '-' }}</td>
-              <td class="border p-2">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
-              <td class="border p-2">{{ customer.customer_city || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_state || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_pincode || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_country || '-' }}</td>
-              <td class="border p-2">{{ customer.customer_description || '-' }}</td>
-              <td class="border p-2">
-                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                  (click)="editCustomerModule(customer)">Edit</button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                  (click)="deleteCustomer(customer.customer_id)">Delete</button>
+              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_name || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_company_website || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_email || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_phone || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_alternate_phone || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.sector || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.industry || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.domain || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_city || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_state || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_pincode || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_country || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">
+                <div class="group relative inline-block">
+                  <span class="truncate max-w-[80px] inline-block">{{ customer.customer_description || '-' }}</span>
+                  <div *ngIf="customer.customer_description" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                    {{ customer.customer_description }}
+                  </div>
+                </div>
+              </td>
+              <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                <button (click)="editCustomerModule(customer)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button (click)="deleteCustomer(customer.customer_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </td>
             </tr>
           </tbody>
