@@ -1,13 +1,11 @@
 <div class="p-4">
     <!-- Employee Section -->
     <div *ngIf="selectedSection === 'employee'">
-        <h3 class="text-xl font-semibold mb-4">Add New Employee</h3>
+        <!-- <h3 class="text-xl font-semibold mb-4">Add New Employee</h3>
 
-        <!-- Scrollable Form -->
         <form #employeeForm="ngForm" (ngSubmit)="submitEmployee(employeeForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
 
-                <!-- Employee Code -->
                 <div class="form-group">
                     <label>Employee Code*</label>
                     <input type="text" [(ngModel)]="employee.user_code" #userCode="ngModel" name="user_code" required
@@ -19,7 +17,6 @@
                     </span>
                 </div>
 
-                <!-- First Name -->
                 <div class="form-group">
                     <label>First Name*</label>
                     <input type="text" [(ngModel)]="employee.user_first_name" #userFirstName="ngModel"
@@ -31,14 +28,12 @@
                     </span>
                 </div>
 
-                <!-- Middle Name -->
                 <div class="form-group">
                     <label>Middle Name</label>
                     <input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name"
                         class="border p-2 w-full rounded-md">
                 </div>
 
-                <!-- Last Name -->
                 <div class="form-group">
                     <label>Last Name*</label>
                     <input type="text" [(ngModel)]="employee.user_last_name" #userLastName="ngModel"
@@ -50,7 +45,6 @@
                     </span>
                 </div>
 
-                <!-- Email ID -->
                 <div class="form-group">
                     <label>Email ID*</label>
                     <input type="email" [(ngModel)]="employee.user_email" #userEmail="ngModel" name="user_email"
@@ -63,7 +57,6 @@
                     </span>
                 </div>
 
-                <!-- Contact Number -->
                 <div class="form-group">
                     <label>Contact Number*</label>
                     <input type="text" [(ngModel)]="employee.user_contact" #userContact="ngModel" name="user_contact"
@@ -76,11 +69,107 @@
                 </div>
 
             </div>
-            <!-- Submit Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Save Employee</button>
             </div>
-        </form>
+        </form> -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <!-- Enhanced Title Section -->
+            <div class="mb-6 pb-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+                Add New Employee
+              </h3>
+              <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to register new employee</p>
+            </div>
+          
+            <!-- Form Content -->
+            <form #employeeForm="ngForm" (ngSubmit)="submitEmployee(employeeForm); $event.preventDefault()">
+              <div class="grid grid-cols-6 gap-4">
+                <!-- Employee Code -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Employee Code*</label>
+                  <input type="text" [(ngModel)]="employee.user_code" #userCode="ngModel" name="user_code" required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': (userCode.invalid && userCode.touched) || (employeeForm.submitted && userCode.invalid)}">
+                  <span class="text-xs text-red-500"
+                    *ngIf="(userCode.invalid && userCode.touched) || (employeeForm.submitted && userCode.invalid)">
+                    Required
+                  </span>
+                </div>
+          
+                <!-- First Name -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">First Name*</label>
+                  <input type="text" [(ngModel)]="employee.user_first_name" #userFirstName="ngModel" name="user_first_name" required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': (userFirstName.invalid && userFirstName.touched) || (employeeForm.submitted && userFirstName.invalid)}">
+                  <span class="text-xs text-red-500"
+                    *ngIf="(userFirstName.invalid && userFirstName.touched) || (employeeForm.submitted && userFirstName.invalid)">
+                    Required
+                  </span>
+                </div>
+          
+                <!-- Middle Name -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Middle Name</label>
+                  <input type="text" [(ngModel)]="employee.user_middle_name" name="user_middle_name"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+          
+                <!-- Last Name -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Last Name*</label>
+                  <input type="text" [(ngModel)]="employee.user_last_name" #userLastName="ngModel" name="user_last_name" required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': (userLastName.invalid && userLastName.touched) || (employeeForm.submitted && userLastName.invalid)}">
+                  <span class="text-xs text-red-500"
+                    *ngIf="(userLastName.invalid && userLastName.touched) || (employeeForm.submitted && userLastName.invalid)">
+                    Required
+                  </span>
+                </div>
+          
+                <!-- Email ID -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Email ID*</label>
+                  <input type="email" [(ngModel)]="employee.user_email" #userEmail="ngModel" name="user_email" required
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': (userEmail.invalid && userEmail.touched) || (employeeForm.submitted && userEmail.invalid)}">
+                  <span class="text-xs text-red-500"
+                    *ngIf="(userEmail.invalid && userEmail.touched) || (employeeForm.submitted && userEmail.invalid)">
+                    Valid email
+                  </span>
+                </div>
+          
+                <!-- Contact Number -->
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Contact Number*</label>
+                  <input type="text" [(ngModel)]="employee.user_contact" #userContact="ngModel" name="user_contact" required
+                    pattern="^[0-9]{10}$"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': (userContact.invalid && userContact.touched) || (employeeForm.submitted && userContact.invalid)}">
+                  <span class="text-xs text-red-500"
+                    *ngIf="(userContact.invalid && userContact.touched) || (employeeForm.submitted && userContact.invalid)">
+                    10 digits
+                  </span>
+                </div>
+              </div>
+          
+              <!-- Submit Button at Bottom -->
+              <div class="mt-6 flex justify-center">
+                <button type="submit"
+                  class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  Save Employee
+                </button>
+              </div>
+            </form>
+          </div>
 
         <div *ngIf="isEmployeeEditModalOpen"
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
@@ -167,7 +256,7 @@
             </div>
         </div>
 
-        <div class="rounded-lg w-full overflow-x-auto p-2">
+        <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
 
             <!-- Filters -->
             <div class="min-w-max">
@@ -179,7 +268,7 @@
 
                         <input type="text" [(ngModel)]="employeeCodeFilter" placeholder="Employee Code"
                             (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none " />
                         <button *ngIf="employeeCodeFilter" (click)="clearFilter('employeeCodeFilter')"
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
@@ -203,7 +292,7 @@
                     <div class="relative flex-grow">
                         <label class="block text-xs font-medium mb-1">Email</label>
                         <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none" />
                         <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
@@ -237,7 +326,7 @@
                         <label class="block text-xs font-medium mb-1">Address</label>
 
                         <input type="text" [(ngModel)]="addressFilter" placeholder="Address" (input)="applyFilters()"
-                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none" />
                         <button *ngIf="addressFilter" (click)="clearFilter('addressFilter')"
                             class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                             ×
@@ -264,48 +353,62 @@
             </div>
 
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-                <table class="w-full border-collapse border border-gray-300">
+                <table class="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Employee Code</th>
-                            <th class="border p-2">Name</th>
-                            <th class="border p-2">Email</th>
-                            <th class="border p-2">Contact Number</th>
-                            <th class="border p-2">Department</th>
-                            <th class="border p-2">Current Address</th>
-                            <th class="border p-2">Designation</th> <!-- Add Designation Column -->
-                            <th class="border p-2">Reporting Manager</th>
-                            <th class="border p-2">Date of Joining</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
+                      <tr class="bg-gray-50">
+                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center">#</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Code</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Name</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Email</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Contact</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Department</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Address</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Designation</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Manager</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Join Date</th>
+                        <th class="sticky right-0 z-10 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                      </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let employee of paginatedEmployees; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ employee.user_code }}</td>
-                            <td class="border p-2">{{ employee.user_first_name }} {{ employee.user_last_name }}</td>
-                            <td class="border p-2">{{ employee.user_email }}</td>
-                            <td class="border p-2">{{ employee.user_contact }}</td>
-                            <td class="border p-2">{{ employee.department_name }}</td>
-                            <td class="border p-2">{{ employee.user_current_address }}</td>
-                            <td class="border p-2">{{ employee.designation_name }}</td> <!-- Display Designation -->
-                            <td class="border p-2">{{ employee.reporting_manager_first_name }} {{
-                                employee.reporting_manager_last_name }}</td>
-                            <td class="border p-2">{{ employee.user_DOJ | date:'dd-MMM-yyyy' }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded m-2"
-                                    (click)="assignDetails(employee)">Assign Details</button>
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="openEmployeeEditModal(employee)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteEmployee(employee.user_id)">Delete</button>
-                            </td>
-
-                        </tr>
+                      <tr *ngFor="let employee of paginatedEmployees; let i = index" class="hover:bg-gray-50">
+                        <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.user_code || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.user_first_name || '' }} {{ employee.user_last_name || '' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.user_email || '-'  }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.user_contact || '-'  }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.department_name || '-'  }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                            <div class="group relative inline-block">
+                              <span class="truncate max-w-[80px] inline-block">{{ employee.user_current_address || '-' }}</span>
+                              <div *ngIf="employee.user_current_address" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                                {{ employee.user_current_address }}
+                              </div>
+                            </div>
+                          </td>                        
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.designation_name || '-'  }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.reporting_manager_first_name || '' }} {{ employee.reporting_manager_last_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">    {{ employee.user_DOJ ? (employee.user_DOJ | date:'dd-MMM-yyyy') : '-' }}
+                        </td>
+                        <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                          <button (click)="assignDetails(employee)" class="text-blue-600 hover:text-blue-800 p-1" title="Assign">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                          </button>
+                          <button (click)="openEmployeeEditModal(employee)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </button>
+                          <button (click)="deleteEmployee(employee.user_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
                     </tbody>
-                </table>
+                  </table>
             </div>
             <!-- Pagination -->
             <div class="flex items-center justify-center mt-4 space-x-1">

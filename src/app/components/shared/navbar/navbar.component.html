@@ -20,7 +20,6 @@
   </div>
 
 
-  <!-- Navbar Center (Organisation Links - Conditionally Shown) -->
   <!-- Organisation Links (Dropdown for Customer) -->
   <div *ngIf="showOrganisationLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
 
@@ -130,19 +129,9 @@
       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
       Project Phases
     </a>
-        
-        <!-- <a (click)="navigateToProjectSection('taskCategory')"
-          [class.active-link]="isProjectSectionActive('taskCategory')"
-          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          Task Category
-        </a> -->
+
       </div>
     </div>
-
-    <!-- <a [routerLink]="['/organisation', 'admin']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
-      Admin
-    </a> -->
   </div>
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
@@ -151,31 +140,10 @@
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Fill Timesheet
     </a>
-    <!-- <a [routerLink]="['/timesheet', 'summary-report']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-    Timesheet Summary Report
-  </a> -->
-    <!-- <a [routerLink]="['/timesheet', 'fill-backdated-timesheet']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-    Fill Backdated Timesheet
-  </a>
-  <a [routerLink]="['/timesheet', 'view-my-projects']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-    View My Projects
-  </a> -->
-    <!-- <a [routerLink]="['/timesheet', 'view-timesheet']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-    View Timesheet
-  </a> -->
     <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Export My Timesheet
     </a>
-    <!-- <a [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-      Manager's Hub
-    </a> -->
-    <!-- Updated Managers Hub Dropdown -->
     <div *ngIf="shouldShowManagersHub" class="relative" #managersHubDropdown>
       <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
@@ -237,10 +205,7 @@
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
   <div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
-    <!-- <a [routerLink]="['/resource-management', 'allocation-report']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition">
-    Allocation Report
-  </a> -->
+    
     <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       Assign Project Team
@@ -249,19 +214,6 @@
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
       All Teams Timesheet
     </a>
-    <!-- 
-    <a [routerLink]="['/resource-management', 'all-projects-team']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
-      All Projects Team
-    </a>
-    <a [routerLink]="['/resource-management', 'view-resource-demand']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
-      View Resource Demand
-    </a>
-    <a [routerLink]="['/resource-management', 'view-update-employee-skills']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition">
-      View/Update Employee Skills
-    </a> -->
   </div>
 
   <!-- Navbar Right Section -->
@@ -288,11 +240,6 @@
           <img src="change-password.png" alt="Change Password Icon" class="h-5 w-5 mr-2" />
           Change Password
         </button>
-        <!-- <button class="flex items-center w-full text-base text-gray-700 hover:bg-gray-100 transition px-4 py-3"
-          (click)="showUpdateEmailForm = !showUpdateEmailForm">
-          <img src="email.png" alt="Update Email Icon" class="h-5 w-5 mr-2" />
-          Update Email
-        </button> -->
         <button class="flex items-center w-full text-base text-red-600 hover:bg-red-100 transition px-4 py-3"
           (click)="logout()">
           <img src="logout.png" alt="Logout Icon" class="h-5 w-5 mr-2" />
