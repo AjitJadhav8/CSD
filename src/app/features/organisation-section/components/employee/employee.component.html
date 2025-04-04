@@ -637,12 +637,21 @@
 
     <!-- Department Section -->
     <div *ngIf="selectedSection === 'department'">
-        <h3 class="text-xl font-semibold mb-4">Add New Department</h3>
 
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+
+        <div class="mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+              Add New Department
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new department</p>
+          </div>
         <!-- Department Form -->
-        <form #departmentForm="ngForm" (submit)="submitDepartment(departmentForm); $event.preventDefault()">
+        <!-- <form #departmentForm="ngForm" (submit)="submitDepartment(departmentForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
-                <!-- Department Name -->
                 <div class="form-group">
                     <label>Department Name*</label>
                     <input type="text" [(ngModel)]="departmentName" #departmentNameField="ngModel" name="departmentName"
@@ -655,36 +664,70 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Add Department</button>
             </div>
-        </form>
+        </form> -->
 
-        <div class="rounded-lg w-full overflow-x-auto">
-            <div class="rounded-lg w-full inline-block whitespace-nowrap">
-                <table class="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Department Name</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let department of departments; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ department.department_name }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="openDepartmentEditModal(department)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteDepartment(department.department_id)">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <form #departmentForm="ngForm" (submit)="submitDepartment(departmentForm); $event.preventDefault()">
+            <div class="grid grid-cols-6 gap-4">
+              <!-- Department Name -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Department Name*</label>
+                <input type="text" [(ngModel)]="departmentName" #departmentNameField="ngModel" name="departmentName"
+                  required class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (departmentNameField.invalid && departmentNameField.touched) || (departmentForm.submitted && departmentNameField.invalid)}" />
+                <span class="text-xs text-red-500"
+                  *ngIf="(departmentNameField.invalid && departmentNameField.touched) || (departmentForm.submitted && departmentNameField.invalid)">
+                  Required
+                </span>
+              </div>
             </div>
+        
+            <!-- Submit Button -->
+            <div class="mt-6 flex justify-center">
+              <button type="submit"
+                class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Add Department
+              </button>
+            </div>
+          </form>
+          </div>
+        
+
+          <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
+                        <div class="rounded-lg w-full inline-block whitespace-nowrap">
+                <table class="min-w-full text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-gray-50">
+                      <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                      <th class="px-1 py-1 border border-gray-200 text-center">Department Name</th>
+                      <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let department of departments; let i = index" class="hover:bg-gray-50">
+                      <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                      <td class="px-1 py-1 border border-gray-300 text-center">{{ department.department_name || '-' }}</td>
+                      <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                        <button (click)="openDepartmentEditModal(department)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button (click)="deleteDepartment(department.department_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
         </div>
         <!-- Add this modal for editing department -->
         <div *ngIf="isEditDepartmentModalOpen"
@@ -716,9 +759,19 @@
 
     <!-- Project Role Section -->
     <div *ngIf="selectedSection === 'project_role'">
-        <h3 class="text-xl font-semibold mb-4">Add New Project Role</h3>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-        <form #projectRoleForm="ngForm" (submit)="submitProjectRole(projectRoleForm); $event.preventDefault()">
+        <div class="mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-1a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v1h-3zM4.75 12.094A5.973 5.973 0 004 15v1H1v-1a3 3 0 013.75-2.906z" />
+              </svg>
+              Add New Project Role
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project role</p>
+          </div>
+
+        <!-- <form #projectRoleForm="ngForm" (submit)="submitProjectRole(projectRoleForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
                 <div class="form-group">
                     <label>Project Role Name*</label>
@@ -735,29 +788,63 @@
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Add Project Role</button>
             </div>
-        </form>
+        </form> -->
 
-        <div class="rounded-lg w-full overflow-x-auto">
+        <form #projectRoleForm="ngForm" (submit)="submitProjectRole(projectRoleForm); $event.preventDefault()">
+            <div class="grid grid-cols-6 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Project Role Name*</label>
+                <input type="text" [(ngModel)]="projectRoleName" #projectRoleNameField="ngModel"
+                  name="projectRoleName" required 
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (projectRoleNameField.invalid && projectRoleNameField.touched) || (projectRoleForm.submitted && projectRoleNameField.invalid)}" />
+                <span class="text-xs text-red-500"
+                  *ngIf="(projectRoleNameField.invalid && projectRoleNameField.touched) || (projectRoleForm.submitted && projectRoleNameField.invalid)">
+                  Required
+                </span>
+              </div>
+            </div>
+        
+            <div class="mt-6 flex justify-center">
+              <button type="submit"
+                class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Add Project Role
+              </button>
+            </div>
+          </form>
+        </div>
+
+
+        <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-                <table class="w-full border-collapse border border-gray-300 mt-4">
+              <table class="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Project Role Name</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
+                        <tr class="bg-gray-50">
+                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Role Name</th>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                          </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let projectRole of projectRoles; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ projectRole.project_role_name }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="openProjectRoleEditModal(projectRole)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteProjectRole(projectRole.project_role_id)">Delete</button>
+                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ projectRole.project_role_name || '-' }}</td>
+                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                              <button (click)="openProjectRoleEditModal(projectRole)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                              <button (click)="deleteProjectRole(projectRole.project_role_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
                             </td>
-                        </tr>
+                          </tr>
                     </tbody>
                 </table>
             </div>
@@ -797,9 +884,22 @@
 
     <!-- Designation Section -->
     <div *ngIf="selectedSection === 'designation'">
-        <h3 class="text-xl font-semibold mb-4">Add New Designation</h3>
+        <!-- <h3 class="text-xl font-semibold mb-4">Add New Designation</h3> -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-        <form #designationForm="ngForm" (submit)="submitDesignation(designationForm); $event.preventDefault()">
+
+        <div class="mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+              </svg>
+              Add New Designation
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new designation</p>
+          </div>
+
+        <!-- <form #designationForm="ngForm" (submit)="submitDesignation(designationForm); $event.preventDefault()">
             <div class="grid grid-cols-6 gap-4">
                 <div class="form-group">
                     <label>Designation Name*</label>
@@ -816,29 +916,63 @@
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Add Designation</button>
             </div>
-        </form>
+        </form> -->
+        
+  <form #designationForm="ngForm" (submit)="submitDesignation(designationForm); $event.preventDefault()">
+    <div class="grid grid-cols-6 gap-4">
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-600">Designation Name*</label>
+        <input type="text" [(ngModel)]="designationName" #designationNameField="ngModel"
+          name="designationName" required 
+          class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          [ngClass]="{'border-red-500': (designationNameField.invalid && designationNameField.touched) || (designationForm.submitted && designationNameField.invalid)}" />
+        <span class="text-xs text-red-500"
+          *ngIf="(designationNameField.invalid && designationNameField.touched) || (designationForm.submitted && designationNameField.invalid)">
+          Required
+        </span>
+      </div>
+    </div>
 
-        <div class="rounded-lg w-full overflow-x-auto">
-            <div class="rounded-lg w-full inline-block whitespace-nowrap">
-                <table class="w-full border-collapse border border-gray-300 mt-4">
+    <div class="mt-6 flex justify-center">
+      <button type="submit"
+        class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Add Designation
+      </button>
+    </div>
+  </form>
+</div>
+
+
+<div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
+    <div class="rounded-lg w-full inline-block whitespace-nowrap">
+      <table class="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Designation Name</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
+                        <tr class="bg-gray-50">
+                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Designation Name</th>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                          </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let designation of designations; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ designation.designation_name }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="editDesignationModule(designation)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteDesignation(designation.designation_id)">Delete</button>
+                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ designation.designation_name || '-' }}</td>
+                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                              <button (click)="editDesignationModule(designation)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                              <button (click)="deleteDesignation(designation.designation_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
                             </td>
-                        </tr>
+                          </tr>
                     </tbody>
                 </table>
             </div>
@@ -877,13 +1011,21 @@
     <!-- Skills Section -->
     <div *ngIf="selectedSection === 'skills'">
         <!-- Add Skill Button -->
-        <h3 class="text-xl font-semibold mb-4">Add New Skill</h3>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
+        <div class="mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
+              </svg>
+              Add New Skill
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new skill</p>
+          </div>
 
-        <form #skillForm="ngForm" (submit)="submitSkill(skillForm); $event.preventDefault();">
+        <!-- <form #skillForm="ngForm" (submit)="submitSkill(skillForm); $event.preventDefault();">
             <div class="grid grid-cols-6 gap-4">
 
-                <!-- Skill Name -->
                 <div class="form-group">
                     <label>Skill Name*</label>
                     <input type="text" [(ngModel)]="skillName" #skillNameField="ngModel" name="skillName" required
@@ -895,7 +1037,6 @@
                     </span>
                 </div>
 
-                <!-- Skill Category -->
 
                 <div class="form-group">
                     <label>Skill Category*</label>
@@ -914,49 +1055,110 @@
                     </span>
                 </div>
 
-                <!-- Skill Description -->
-                <!-- Skill Description -->
+        
                 <div class="form-group">
                     <label>Skill Description</label>
                     <textarea [(ngModel)]="skillDescription" name="skillDescription"
                         class="border p-2 w-full rounded-md" rows="1" placeholder="Enter skill details..."></textarea>
                 </div>
             </div>
-            <!-- Save Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Add Skill</button>
             </div>
-        </form>
+        </form> -->
+
+        <form #skillForm="ngForm" (submit)="submitSkill(skillForm); $event.preventDefault();">
+            <div class="grid grid-cols-5 gap-4">
+              <!-- Skill Name -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Skill Name*</label>
+                <input type="text" [(ngModel)]="skillName" #skillNameField="ngModel" name="skillName" required
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (skillNameField.invalid && skillNameField.touched) || (skillForm.submitted && skillNameField.invalid)}" />
+                <span class="text-xs text-red-500"
+                  *ngIf="(skillNameField.invalid && skillNameField.touched) || (skillForm.submitted && skillNameField.invalid)">
+                  Required
+                </span>
+              </div>
+        
+              <!-- Skill Category -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Skill Category*</label>
+                <select [(ngModel)]="skillCategory" #skillCategoryField="ngModel" name="skillCategory" required
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (skillCategoryField.invalid && skillCategoryField.touched) || (skillForm.submitted && skillCategoryField.invalid)}">
+                  <option value="" disabled selected>Select Category</option>
+                  <option value="technical">Technical</option>
+                  <option value="soft-skill">Soft Skill</option>
+                  <option value="management">Management</option>
+                  <option value="other">Other</option>
+                </select>
+                <span class="text-xs text-red-500"
+                  *ngIf="(skillCategoryField.invalid && skillCategoryField.touched) || (skillForm.submitted && skillCategoryField.invalid)">
+                  Required
+                </span>
+              </div>
+        
+              <!-- Skill Description -->
+              <div class="space-y-1 col-span-3">
+                <label class="text-xs font-medium text-gray-600">Skill Description</label>
+                <textarea [(ngModel)]="skillDescription" name="skillDescription" rows="1" placeholder="Enter skill details..."
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"></textarea>
+              </div>
+            </div>
+        
+            <div class="mt-6 flex justify-center">
+              <button type="submit"
+                class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Add Skill
+              </button>
+            </div>
+          </form>
+        </div>
 
 
-        <div class="rounded-lg w-full overflow-x-auto">
+
+        <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-                <!-- Skills Table -->
-                <table class="w-full border-collapse border border-gray-300 mt-4">
+              <table class="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-                            <th class="border p-2">Skill Name</th>
-                            <th class="border p-2">Category</th>
-                            <th class="border p-2">Skill Category</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
+                        <tr class="bg-gray-50">
+                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Skill Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Category</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                          </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let skill of skills; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ skill.skill_name }}</td>
-                            <td class="border p-2">{{ skill.skill_category }}</td>
-                            <td class="border p-2">{{ skill.skill_description }}</td>
-
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="openEditSkillModal(skill)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteSkill(skill.skill_id)">Delete</button>
+                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ skill.skill_name || '-' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ skill.skill_category || '-' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                              <div class="group relative inline-block">
+                                <span class="truncate max-w-[80px] inline-block">{{ skill.skill_description || '-' }}</span>
+                                <div *ngIf="skill.skill_description" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                                  {{ skill.skill_description }}
+                                </div>
+                              </div>
                             </td>
-                        </tr>
+                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                              <button (click)="openEditSkillModal(skill)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                              <button (click)="deleteSkill(skill.skill_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </td>
+                          </tr>
                     </tbody>
                 </table>
             </div>
@@ -1022,16 +1224,22 @@
 
     <!-- Reporting Manager History Section -->
     <div *ngIf="selectedSection === 'reportingManagerHistory'">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+
         <!-- Add Reporting Manager Button -->
-        <h3 class="text-xl font-semibold mb-4">Add Reporting Manager</h3>
+        <div class="mb-6 pb-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+              </svg>
+              Add Reporting Manager
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to assign reporting manager</p>
+          </div>
 
-
-        <!-- Reporting Manager Modal -->
-
-        <form #reportingManagerForm="ngForm"
+        <!-- <form #reportingManagerForm="ngForm"
             (ngSubmit)="onSubmitReportingManager(reportingManagerForm); $event.preventDefault();">
             <div class="grid grid-cols-6 gap-4">
-                <!-- Employee Name Dropdown -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Employee Name*</label>
                     <ng-select [(ngModel)]="employee.selectedUserId" #employeeField="ngModel" name="user"
@@ -1050,8 +1258,7 @@
                 </div>
 
 
-                <!-- Reporting Manager Dropdown -->
-                <!-- Reporting Manager Dropdown -->
+       
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Reporting Manager*</label>
                     <ng-select [(ngModel)]="employee.selectedReportingManagerId" #managerField="ngModel"
@@ -1071,8 +1278,6 @@
 
 
 
-                <!-- From Date -->
-                <!-- From Date -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">From Date*</label>
                     <input type="date" [(ngModel)]="fromDate" #fromDateField="ngModel" name="fromDate" required
@@ -1084,7 +1289,6 @@
                     </span>
                 </div>
 
-                <!-- Till Date -->
                 <div class="form-group">
                     <label class="block mb-2 font-semibold">Till Date*</label>
                     <input type="date" [(ngModel)]="tillDate" #tillDateField="ngModel" name="tillDate" required
@@ -1097,43 +1301,120 @@
                 </div>
             </div>
 
-            <!-- Save Button -->
             <div class="mt-4">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-4">Submit</button>
             </div>
-        </form>
+        </form> -->
 
-        <div class="rounded-lg w-full overflow-x-auto">
+        <form #reportingManagerForm="ngForm" (ngSubmit)="onSubmitReportingManager(reportingManagerForm); $event.preventDefault();">
+            <div class="grid grid-cols-4 gap-4">
+              <!-- Employee Name Dropdown -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Employee Name*</label>
+                <ng-select [(ngModel)]="employee.selectedUserId" #employeeField="ngModel" name="user"
+                  [searchable]="true" [clearable]="true" required
+                  [ngClass]="{'border-red-500': (employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)}"
+                  class="text-xs custom-ng-select">
+                  <ng-option [value]="" disabled selected>Select Employee</ng-option>
+                  <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                    {{ user.user_first_name }} {{ user.user_last_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-xs text-red-500"
+                  *ngIf="(employeeField.invalid && employeeField.touched) || (reportingManagerForm.submitted && employeeField.invalid)">
+                  Required
+                </span>
+              </div>
+        
+              <!-- Reporting Manager Dropdown -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Reporting Manager*</label>
+                <ng-select [(ngModel)]="employee.selectedReportingManagerId" #managerField="ngModel"
+                  name="reporting_manager" [searchable]="true" [clearable]="true" required
+                  [ngClass]="{'border-red-500': (managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)}"
+                  class="text-xs custom-ng-select">
+                  <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                  <ng-option *ngFor="let user of optionUsers" [value]="user.user_id">
+                    {{ user.user_first_name }} {{ user.user_last_name }}
+                  </ng-option>
+                </ng-select>
+                <span class="text-xs text-red-500"
+                  *ngIf="(managerField.invalid && managerField.touched) || (reportingManagerForm.submitted && managerField.invalid)">
+                  Required
+                </span>
+              </div>
+        
+              <!-- From Date -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">From Date*</label>
+                <input type="date" [(ngModel)]="fromDate" #fromDateField="ngModel" name="fromDate" required
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (fromDateField.invalid && fromDateField.touched) || (reportingManagerForm.submitted && fromDateField.invalid)}" />
+                <span class="text-xs text-red-500"
+                  *ngIf="(fromDateField.invalid && fromDateField.touched) || (reportingManagerForm.submitted && fromDateField.invalid)">
+                  Required
+                </span>
+              </div>
+        
+              <!-- Till Date -->
+              <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Till Date*</label>
+                <input type="date" [(ngModel)]="tillDate" #tillDateField="ngModel" name="tillDate" required
+                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  [ngClass]="{'border-red-500': (tillDateField.invalid && tillDateField.touched) || (reportingManagerForm.submitted && tillDateField.invalid)}" />
+                <span class="text-xs text-red-500"
+                  *ngIf="(tillDateField.invalid && tillDateField.touched) || (reportingManagerForm.submitted && tillDateField.invalid)">
+                  Required
+                </span>
+              </div>
+            </div>
+        
+            <div class="mt-6 flex justify-center">
+              <button type="submit"
+                class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+
+
+        <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-                <!-- Reporting Manager History Table -->
-                <table class="w-full border-collapse border border-gray-300 mt-4">
+              <table class="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
-                            <th class="border p-2">S.No.</th>
-
-                            <th class="border p-2">Employee Name</th>
-                            <th class="border p-2">Reporting Manager Name</th>
-                            <th class="border p-2">From Date</th>
-                            <th class="border p-2">till Date</th>
-                            <th class="border p-2">Action</th>
-                        </tr>
+                        <tr class="bg-gray-50">
+                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Reporting Manager</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">From Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Till Date</th>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+                          </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let manager of reportingManagerHistory; let i = index" class="hover:bg-gray-50">
-                            <td class="border p-2">{{ i + 1 }}</td>
-                            <td class="border p-2">{{ manager.employee_first_name }} {{ manager.employee_last_name }}
+                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ manager.employee_first_name }} {{ manager.employee_last_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ manager.manager_first_name }} {{ manager.manager_last_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ manager.from_date | date:'dd-MMM-yyyy' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ manager.till_date | date:'dd-MMM-yyyy' }}</td>
+                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                              <button (click)="openEditModal(manager)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                              <button (click)="deleteReportingManager(manager.reporting_manager_history_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
                             </td>
-                            <td class="border p-2">{{ manager.manager_first_name }} {{ manager.manager_last_name }}</td>
-                            <td class="border p-2">{{ manager.from_date | date:'dd-MMM-yyyy' }}</td>
-                            <td class="border p-2">{{ manager.till_date | date:'dd-MMM-yyyy' }}</td>
-                            <td class="border p-2">
-                                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                    (click)="openEditModal(manager)">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                    (click)="deleteReportingManager(manager.reporting_manager_history_id)">Delete</button>
-                            </td>
-                        </tr>
+                          </tr>
                     </tbody>
                 </table>
             </div>
