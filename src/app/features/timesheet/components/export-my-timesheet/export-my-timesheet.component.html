@@ -1,20 +1,38 @@
 <div class="p-4">
 
-    <div class="rounded-lg w-full overflow-x-auto">
-        <div class="flex space-x-4 mb-4">
-            <label>From:</label>
-            <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()" class="border p-2 rounded">
-    
-            <label>To:</label>
-            <input type="date" [(ngModel)]="toDate" (change)="applyFilters()" class="border p-2 rounded">
-    
-            <button (click)="exportToExcel()" class="bg-blue-500 text-white px-4 py-2 rounded">
-                Export to Excel
-            </button>
+  <div class="mb-6 pb-4 border-b border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+      </svg>
+      Export My Timesheets
+    </h3>
+    <p class="text-xs text-gray-500 mt-1">View all submitted timesheet entries</p>
+  </div>
+
+
+      <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">From:</label>
+            <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()" 
+                   class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">To:</label>
+            <input type="date" [(ngModel)]="toDate" (change)="applyFilters()"
+                   class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+      
+          <button (click)="exportToExcel()" 
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export to Excel
+          </button>
         </div>
-
-
-
         <div class="min-w-max">
             <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
                 <!-- Customer Filter -->
@@ -119,38 +137,51 @@
             </div>
         </div>
 
-        <table class="w-full border-collapse border border-gray-300">
+        <div class="rounded-lg w-full inline-block whitespace-nowrap">
+          <table class="min-w-full text-xs border-collapse">
             <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-2">S.No.</th>
-                    <th class="border p-2">Customer Name</th>
-                    <th class="border p-2">Project Name</th>
-                    <th class="border p-2">Project Deliverable</th>
-                    <th class="border p-2">Phase</th>
-                    <th class="border p-2">Project Manager</th>  <!-- Added this column -->
-                    <th class="border p-2">Task Description</th>
-                    <th class="border p-2">Hours</th>
-                    <th class="border p-2">Minutes</th>
-                    <th class="border p-2">Task Status</th>
-                    <th class="border p-2">Date</th>
+              <tr class="bg-gray-50">
+                <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                <th class="border p-2">Customer Name</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Project Deliverable</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>  <!-- Added this column -->
+                    <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Task Status</th>
+                    <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
 
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let timesheet of displayedTimesheetData; let i = index" class="hover:bg-gray-50">
-                    <td class="border p-2">{{ i + 1 }}</td>
-                    <td class="border p-2">{{ timesheet.customer_name }}</td>
-                    <td class="border p-2">{{ timesheet.project_name }}</td>
-                    <td class="border p-2">{{ timesheet.project_deliverable_name }}</td>
-                    <td class="border p-2">{{ timesheet.project_phase_name }}</td>
-                    <td class="border p-2">{{ timesheet.project_manager_name }}</td>
-                    <td class="border p-2">{{ timesheet.task_description }}</td>
-                    <td class="border p-2">{{ timesheet.hours }}</td>
-                    <td class="border p-2">{{ timesheet.minutes }}</td>
-                    <td class="border p-2">
+                  <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                  <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_manager_name }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">
+                      <div class="group relative inline-block">
+                        <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description || '-' }}</span>
+                        <div *ngIf="timesheet.task_description" class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                          {{ timesheet.task_description }}
+                        </div>
+                      </div>
+                    </td>
+
+
+
+
+
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">
                         {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
                     </td>
-                    <td class="border p-2">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
 
                 </tr>
             </tbody>
@@ -179,6 +210,7 @@
                 class="px-3 py-1 border rounded-md">
                 Next
             </button>
+        </div>
         </div>
 
     </div>
