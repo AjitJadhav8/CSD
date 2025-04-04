@@ -1,9 +1,9 @@
 /* Use ::ng-deep to penetrate component boundaries */
-::ng-deep .custom-ng-select .ng-select-container {
+/* ::ng-deep .custom-ng-select .ng-select-container {
     background-color: white;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
-    min-height: 42px;
+    min-height: 22px;
     padding: 0.5rem 0.75rem;
   }
   
@@ -38,8 +38,61 @@
   
   ::ng-deep .custom-ng-select {
     width: 100%;
-  }
+  } */
 
+  ::ng-deep .custom-ng-select .ng-select-container {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    min-height: auto;
+    height: 26px;  /* Ultra compact height */
+    min-width: 100%;
+    padding: 0 0.5rem; /* Tight padding */
+    font-size: 0.75rem;
+  }
+  
+  ::ng-deep .custom-ng-select .ng-value {
+    line-height: 1.1;
+    padding: 0;
+  }
+  
+  ::ng-deep .custom-ng-select .ng-input {
+    top: 0;
+    height: 24px;
+    padding: 0;
+  }
+  
+  ::ng-deep .custom-ng-select .ng-input>input {
+    padding: 0;
+    height: 24px;
+  }
+  
+  ::ng-deep .custom-ng-select .ng-clear-wrapper {
+    height: 16px;
+    width: 16px;
+  }
+  
+  ::ng-deep .custom-ng-select .ng-arrow-wrapper {
+    height: 16px;
+    width: 16px;
+    padding: 0;
+  }
+  
+  /* Keep dropdown panel styles */
+  ::ng-deep .custom-ng-select .ng-dropdown-panel {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    margin-top: 0.25rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  
+  /* Compact dropdown options */
+  ::ng-deep .custom-ng-select .ng-option {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
   /* Add to your styles ---------------------------------------------------------- */
 /* Custom styles for .custom-ng-select-filter */
 ::ng-deep .custom-ng-select-filter .ng-select-container {
