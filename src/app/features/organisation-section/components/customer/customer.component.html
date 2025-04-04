@@ -814,7 +814,246 @@
 
   <!-- Customer Domain Section -->
   <div *ngIf="selectedSection === 'customerCategory'" class="p-2">
-    <h3 class="text-xl font-semibold mb-4">Add New Category</h3>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+
+    <div class="mb-6 pb-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        Add New Category
+      </h3>
+      <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new category</p>
+    </div>
+  
+    <!-- <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
+      <div class="grid grid-cols-6 gap-4">
+
+        <div class="form-group col-span-2">
+          <label>Sector*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.sector" name="sector" (change)="onSectorChange()"
+              required #sector="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
+              <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
+              Sector is required
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__'">
+          <label>New Sector Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" name="newSector"
+            #newSectorField="ngModel" placeholder="Enter new sector" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
+            New sector name is required
+          </span>
+        </div>
+
+        <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
+          <label>Industry*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
+              (change)="onIndustryChange()" required #industry="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
+              <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm"
+              *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
+              Industry is required
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
+          <label>New Industry Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" name="newIndustry"
+            #newIndustryField="ngModel" placeholder="Enter new industry" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
+            New industry name is required
+          </span>
+        </div>
+
+        <div class="form-group col-span-2"
+          *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+          <label>Segment*</label>
+          <div class="flex flex-col">
+            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required #domain="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
+              <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
+            </ng-select>
+            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
+              Segment is required
+            </span>
+          </div>
+        </div>
+
+
+        <div class="form-group col-span-2"
+          *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
+          <label>New Segment Name*</label>
+          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" name="newDomain"
+            #newDomainField="ngModel" placeholder="Enter new segment" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
+          <span class="text-red-500 text-sm"
+            *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
+            New segment name is required
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-4">
+       
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
+          Save
+        </button>
+      </div>
+    </form> -->
+
+
+    <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
+      <div class="grid grid-cols-6 gap-4">
+        <!-- Sector Selection -->
+        <div class="space-y-1 col-span-2">
+          <label class="text-xs font-medium text-gray-600">Sector*</label>
+          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.sector" name="sector" (change)="onSectorChange()"
+            required #sector="ngModel"
+            [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
+            <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
+            <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
+            Required
+          </span>
+        </div>
+  
+        <!-- New Sector Input -->
+        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__'">
+          <label class="text-xs font-medium text-gray-600">New Sector Name*</label>
+          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="newSector" name="newSector" #newSectorField="ngModel" placeholder="Enter new sector" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
+          <span class="text-xs text-red-500"
+            *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
+            Required
+          </span>
+        </div>
+  
+        <!-- Industry Selection -->
+        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
+          <label class="text-xs font-medium text-gray-600">Industry*</label>
+          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
+            (change)="onIndustryChange()" required #industry="ngModel"
+            [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
+            <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
+            <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500"
+            *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
+            Required
+          </span>
+        </div>
+  
+        <!-- New Industry Input -->
+        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
+          <label class="text-xs font-medium text-gray-600">New Industry Name*</label>
+          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="newIndustry" name="newIndustry" #newIndustryField="ngModel" placeholder="Enter new industry" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
+          <span class="text-xs text-red-500"
+            *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
+            Required
+          </span>
+        </div>
+  
+        <!-- Segment Selection -->
+        <div class="space-y-1 col-span-2"
+          *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+          <label class="text-xs font-medium text-gray-600">Segment*</label>
+          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required #domain="ngModel"
+            [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
+            <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
+            <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
+          </ng-select>
+          <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
+            Required
+          </span>
+        </div>
+  
+        <!-- New Segment Input -->
+        <div class="space-y-1 col-span-2"
+          *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
+          <label class="text-xs font-medium text-gray-600">New Segment Name*</label>
+          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [(ngModel)]="newDomain" name="newDomain" #newDomainField="ngModel" placeholder="Enter new segment" required
+            [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
+          <span class="text-xs text-red-500"
+            *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
+            Required
+          </span>
+        </div>
+      </div>
+  
+      <!-- Submit Button -->
+      <div class="mt-6 flex justify-center">
+        <button type="submit"
+          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Save Category
+        </button>
+      </div>
+    </form>
+    </div>
+
+    <!-- Category Table -->
+    <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
+      <!-- Table -->
+      <div class="rounded-lg w-full inline-block whitespace-nowrap">
+        <table class="min-w-full text-xs border-collapse">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Sector</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Industry</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Segment</th>
+              <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
+              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ category.sector || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ category.industry || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ category.domain || '-' }}</td>
+              <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                <button (click)="openEditModal(category)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button (click)="deleteCategory(category.category_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
 
     <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditModal()">
       <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
@@ -866,140 +1105,6 @@
                   <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
               </div>
           </form>
-      </div>
-    </div>
-
-    <form class="mt-4" #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm)">
-      <div class="grid grid-cols-6 gap-4">
-
-        <div class="form-group col-span-2">
-          <label>Sector*</label>
-          <div class="flex flex-col">
-            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.sector" name="sector" (change)="onSectorChange()"
-              required #sector="ngModel"
-              [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
-              <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
-              <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
-            </ng-select>
-            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
-              Sector is required
-            </span>
-          </div>
-        </div>
-
-        <!-- New Sector Input -->
-        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__'">
-          <label>New Sector Name*</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newSector" name="newSector"
-            #newSectorField="ngModel" placeholder="Enter new sector" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
-            New sector name is required
-          </span>
-        </div>
-        <!-- Industry Selection -->
-        <div class="form-group col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
-          <label>Industry*</label>
-          <div class="flex flex-col">
-            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
-              (change)="onIndustryChange()" required #industry="ngModel"
-              [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
-              <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
-              <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
-            </ng-select>
-            <span class="text-red-500 text-sm"
-              *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
-              Industry is required
-            </span>
-          </div>
-        </div>
-
-        <!-- New Industry Input (shown if sector is new OR industry is new) -->
-        <div class="form-group col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
-          <label>New Industry Name*</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newIndustry" name="newIndustry"
-            #newIndustryField="ngModel" placeholder="Enter new industry" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
-            New industry name is required
-          </span>
-        </div>
-
-        <!-- Segment Selection -->
-        <div class="form-group col-span-2"
-          *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
-          <label>Segment*</label>
-          <div class="flex flex-col">
-            <ng-select class="custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required #domain="ngModel"
-              [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
-              <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
-              <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
-            </ng-select>
-            <span class="text-red-500 text-sm" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
-              Segment is required
-            </span>
-          </div>
-        </div>
-
-
-        <!-- New Segment Input (shown if sector or industry is new OR segment is new) -->
-        <div class="form-group col-span-2"
-          *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
-          <label>New Segment Name*</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="newDomain" name="newDomain"
-            #newDomainField="ngModel" placeholder="Enter new segment" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
-            New segment name is required
-          </span>
-        </div>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="mt-4">
-       
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-          Save
-        </button>
-      </div>
-    </form>
-
-    <!-- Category Table -->
-    <h3 class="mt-6 font-bold">Category List</h3>
-    <div class="rounded-lg w-full overflow-x-auto">
-      <div class="rounded-lg w-full inline-block whitespace-nowrap">
-
-        <table class="w-full border-collapse border border-gray-300 mt-4">
-          <thead>
-            <tr class="bg-gray-100">
-              <th class="border p-2">S.No.</th>
-              <th class="border p-2">Sector</th>
-              <th class="border p-2">Industry</th>
-              <th class="border p-2">Segment</th>
-              <th class="border p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
-              <td class="border p-2">{{ i + 1 }}</td> <!-- Serial Number -->
-              <td class="border p-2">{{ category.sector }}</td>
-              <td class="border p-2">{{ category.industry }}</td>
-              <td class="border p-2">{{ category.domain }}</td>
-              <td class="border p-2">
-                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" 
-                (click)="openEditModal(category)">
-            Edit
-        </button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="deleteCategory(category.category_id)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
