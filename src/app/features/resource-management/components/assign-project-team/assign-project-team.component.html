@@ -251,7 +251,7 @@
           <div class="space-y-1">
             <label class="text-xs font-medium text-gray-600">Allocation Percentage*</label>
             <select [(ngModel)]="selectedAllocationPercentage" name="allocationPercentage"
-              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded ">
               <option value="" disabled selected>Select Percentage</option>
               <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
                 {{ percentage }}%
@@ -282,7 +282,7 @@
         <div class="space-y-1">
           <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
           <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded " 
             [disabled]="selectedBilledStatus === 0">
             <option value="" disabled selected>Select Percentage</option>
             <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
@@ -519,7 +519,7 @@
                     <label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
 
                     <input type="date" [(ngModel)]="startDateFilter" (change)="applyFilters()"
-                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
                     <button *ngIf="startDateFilter" (click)="clearFilter('startDateFilter')"
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
@@ -531,7 +531,7 @@
                     <label class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
 
                     <input type="date" [(ngModel)]="endDateFilter" (change)="applyFilters()"
-                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
                     <button *ngIf="endDateFilter" (click)="clearFilter('endDateFilter')"
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
@@ -555,7 +555,7 @@
 
                     <input type="number" [(ngModel)]="allocationPercentageFilter" placeholder="Allocation %"
                         (input)="applyFilters()"
-                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
                     <button *ngIf="allocationPercentageFilter !== null"
                         (click)="clearFilter('allocationPercentageFilter')"
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
@@ -580,7 +580,7 @@
 
                     <input type="number" [(ngModel)]="billingPercentageFilter" placeholder="Billing %"
                         (input)="applyFilters()"
-                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
                     <button *ngIf="billingPercentageFilter !== null" (click)="clearFilter('billingPercentageFilter')"
                         class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
                         ×
