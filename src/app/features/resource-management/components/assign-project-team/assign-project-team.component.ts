@@ -79,9 +79,7 @@ export class AssignProjectTeamComponent {
   toggleAllocationStatus() {
     this.selectedAllocationStatus = this.selectedAllocationStatus === 1 ? 0 : 1;
     // If switching to Shadow, auto-set billing to 0% and Not Billed
-    if (this.selectedAllocationStatus === 0) {
-      this.selectedAllocationPercentage = 0;
-    }
+ 
   }
 
   selectedBilledStatus: number = 0; // Default to Not Billed (0)
@@ -235,13 +233,12 @@ export class AssignProjectTeamComponent {
     }
 
     // Validate allocation percentage if in Employee mode
-    if (this.selectedAllocationStatus === 1 &&
-      (this.selectedAllocationPercentage === null || this.selectedAllocationPercentage <= 0)) {
+    if (this.selectedAllocationPercentage === null || this.selectedAllocationPercentage < 0 || this.selectedAllocationPercentage > 100) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'warning',
-        title: 'Please select a valid allocation percentage for Employee mode!',
+        title: 'Please select a valid allocation percentage (0-100)!',
         showConfirmButton: false,
         timer: 3000
       });
@@ -284,9 +281,8 @@ export class AssignProjectTeamComponent {
       start_date: this.startDate,
       end_date: this.tentativeEndDate || null,
       allocation_status: this.selectedAllocationStatus,
-      allocation_percentage: this.selectedAllocationStatus === 1
-        ? Number(this.selectedAllocationPercentage)
-        : 0,
+      allocation_percentage: Number(this.selectedAllocationPercentage), // Always send the selected percentage
+
       billed_status: this.selectedBilledStatus,
       billing_percentage: this.selectedBilledStatus === 1
         ? Number(this.selectedBillingPercentage)
@@ -585,19 +581,18 @@ export class AssignProjectTeamComponent {
     }
 
     // Validate allocation percentage if in Employee mode
-    if (this.editSelectedAllocationStatus === 1 &&
-      (this.editSelectedAllocationPercentage === null ||
-        this.editSelectedAllocationPercentage <= 0)) {
+    if (this.editSelectedAllocationPercentage === null || this.editSelectedAllocationPercentage < 0 || this.editSelectedAllocationPercentage > 100) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'warning',
-        title: 'Please enter a valid allocation percentage for Employee mode!',
+        title: 'Please enter a valid allocation percentage (0-100)!',
         showConfirmButton: false,
         timer: 3000
       });
       return;
     }
+
 
     // Validate billing percentage if in Billed mode
     if (this.editSelectedBilledStatus === 1 &&
@@ -635,7 +630,7 @@ export class AssignProjectTeamComponent {
       start_date: this.formatDate(this.editStartDate),
       end_date: this.editTentativeEndDate ? this.formatDate(this.editTentativeEndDate) : null,
       allocation_status: this.editSelectedAllocationStatus,
-      allocation_percentage: this.editSelectedAllocationStatus === 0 ? 0 : Number(this.editSelectedAllocationPercentage),
+      allocation_percentage: Number(this.editSelectedAllocationPercentage), // Always send the selected percentage
       billed_status: this.editSelectedBilledStatus,
       billing_percentage: this.editSelectedBilledStatus === 0 ? 0 : Number(this.editSelectedBillingPercentage)
     };
@@ -729,22 +724,10 @@ export class AssignProjectTeamComponent {
 
   // Toggle Allocation Status
   // Toggle Allocation Status
-  toggleEditAllocationStatus(): void {
-    const newStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
-    this.editSelectedAllocationStatus = newStatus;
-
-    // Reset dependent fields when switching to Shadow
-    if (newStatus === 0) {
-      this.editSelectedAllocationPercentage = 0;
-      this.editSelectedBilledStatus = 0;
-      this.editSelectedBillingPercentage = 0;
-    } else {
-      // When switching to Employee, set default allocation if not set
-      if (this.editSelectedAllocationPercentage === null || this.editSelectedAllocationPercentage === 0) {
-        this.editSelectedAllocationPercentage = this.allocationPercentages[0] || 100;
-      }
-    }
-  }
+ toggleEditAllocationStatus(): void {
+  this.editSelectedAllocationStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
+  // No longer resetting allocation percentage here
+}
 
   // Toggle Billed Status
   toggleEditBilledStatus(): void {

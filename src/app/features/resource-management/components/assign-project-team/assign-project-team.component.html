@@ -1,7 +1,18 @@
 <div class="p-4">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-    <div class="grid grid-cols-5 gap-4 mt-8">
-        <!-- Row 1 -->
+    <div class="mb-6 pb-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+          </svg>
+          Assign Project Team
+        </h3>
+        <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to assign team members to projects</p>
+      </div>
+
+    <!-- <div class="grid grid-cols-5 gap-4 mt-8">
         <div>
             <label class="block mb-2 font-semibold">Customer Name*</label>
             <ng-select [(ngModel)]="selectedCustomerId" name="customer" (change)="filterProjects()" [searchable]="true"
@@ -54,7 +65,6 @@
         </div>
 
 
-        <!-- Row 2 -->
         <div>
             <label class="block mb-2 font-semibold">Start Date*</label>
             <input type="date" [(ngModel)]="startDate" name="startDate" class="border p-2 w-full rounded-md">
@@ -97,7 +107,6 @@
                 </option>
             </select>
         </div>
-        <!-- Billed Status -->
         <div>
             <label class="block mb-2 font-semibold">Billed Status*</label>
             <div class="flex gap-4 items-center">
@@ -119,7 +128,6 @@
         </div>
 
 
-        <!-- Billing Percentage -->
         <div>
             <label class="block mb-2 font-semibold">Billing Percentage*</label>
             <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
@@ -132,12 +140,169 @@
 
     </div>
 
-    <!-- Submit Button -->
     <div class="mt-6 flex justify-start">
         <button (click)="submitAssignProjectTeam()" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
             Submit
         </button>
+    </div> -->
+    
+    <div class="grid grid-cols-5 gap-4">
+        <!-- Row 1 -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+          <ng-select [(ngModel)]="selectedCustomerId" name="customer" (change)="filterProjects()" [searchable]="true"
+            [clearable]="true" class="text-xs custom-ng-select">
+            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+              {{ customer.customer_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+    
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Name*</label>
+          <ng-select [(ngModel)]="selectedProjectId" [disabled]="!selectedCustomerId || filteredProjects.length === 0"
+            (change)="onProjectChange($event)" [searchable]="true" [clearable]="true" class="text-xs custom-ng-select">
+            <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+              {{ project.project_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+    
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Manager*</label>
+          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded bg-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            [value]="selectedProjectManagerName || 'Not Assigned'" readonly />
+        </div>
+    
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Employee Name*</label>
+          <ng-select [(ngModel)]="selectedEmployeeId" name="employee" [searchable]="true" [clearable]="true"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="null" disabled hidden>Select Employee</ng-option>
+            <ng-option *ngFor="let employee of optionEmployees" [value]="employee.user_id">
+              {{ employee.user_first_name }} {{ employee.user_last_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+    
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Project Role*</label>
+          <ng-select [(ngModel)]="selectedProjectRoleId" name="projectRole" [searchable]="true" [clearable]="true"
+            class="text-xs custom-ng-select">
+            <ng-option [value]="null" disabled hidden>Select Project Role</ng-option>
+            <ng-option *ngFor="let role of optionProjectRoles" [value]="role.project_role_id">
+              {{ role.project_role_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+    
+        <!-- Row 2 -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Start Date*</label>
+          <input type="date" [(ngModel)]="startDate" name="startDate" 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+    
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Tentative End Date*</label>
+          <input type="date" [(ngModel)]="tentativeEndDate" name="tentativeEndDate"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+    
+        <!-- <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Allocation Status*</label>
+          <div class="flex gap-2 items-center">
+            <span class="text-xs font-medium" [class.text-gray-500]="selectedAllocationStatus === 0"
+              [class.text-green-600]="selectedAllocationStatus === 1">
+              {{ selectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
+            </span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" [checked]="selectedAllocationStatus === 1"
+                (change)="toggleAllocationStatus()">
+              <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
+                peer-checked:after:translate-x-full peer-checked:after:border-white
+                after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+                after:border after:rounded-full after:h-4 after:w-4 after:transition-all
+                peer-checked:bg-green-600">
+              </div>
+            </label>
+          </div>
+        </div> -->
+        <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Allocation Status*</label>
+            <div class="flex gap-2 items-center">
+              <span class="text-xs font-medium" [class.text-gray-500]="selectedAllocationStatus === 0"
+                [class.text-green-600]="selectedAllocationStatus === 1">
+                {{ selectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
+              </span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" [checked]="selectedAllocationStatus === 1"
+                  (change)="toggleAllocationStatus()">
+                <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
+                  peer-checked:after:translate-x-full peer-checked:after:border-white
+                  after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+                  after:border after:rounded-full after:h-4 after:w-4 after:transition-all
+                  peer-checked:bg-green-600">
+                </div>
+              </label>
+            </div>
+          </div>
+    
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Allocation Percentage*</label>
+            <select [(ngModel)]="selectedAllocationPercentage" name="allocationPercentage"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+              <option value="" disabled selected>Select Percentage</option>
+              <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
+                {{ percentage }}%
+              </option>
+            </select>
+          </div>
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Billed Status*</label>
+          <div class="flex gap-2 items-center">
+            <span class="text-xs font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
+              [class.text-green-600]="selectedBilledStatus === 1">
+              {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
+            </span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
+                (change)="toggleBilledStatus()">
+              <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
+                peer-checked:after:translate-x-full peer-checked:after:border-white
+                after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+                after:border after:rounded-full after:h-4 after:w-4 after:transition-all
+                peer-checked:bg-green-600">
+              </div>
+            </label>
+          </div>
+        </div>
+    
+        <!-- Billing Percentage -->
+        <div class="space-y-1">
+          <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
+          <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+            [disabled]="selectedBilledStatus === 0">
+            <option value="" disabled selected>Select Percentage</option>
+            <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
+          </select>
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <div class="mt-6 flex justify-center">
+        <button (click)="submitAssignProjectTeam()" 
+          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Submit
+        </button>
+      </div>
     </div>
+    
+    
     <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
         (click)="closeEditModal()">
         <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
@@ -208,38 +373,35 @@
                     <div class="form-group">
                         <label class="block mb-2 font-semibold">Allocation Status*</label>
                         <div class="flex gap-4 items-center">
-                            <span class="text-sm font-medium" [class.text-gray-500]="editSelectedAllocationStatus === 0"
-                                [class.text-green-600]="editSelectedAllocationStatus === 1">
-                                {{ editSelectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
-                            </span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer"
-                                    [checked]="editSelectedAllocationStatus === 1"
-                                    (change)="toggleEditAllocationStatus()">
-                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                                     peer-checked:after:translate-x-full peer-checked:after:border-white
-                                     after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                                     after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                                     peer-checked:bg-green-600">
-                                </div>
-                            </label>
+                          <span class="text-sm font-medium" [class.text-gray-500]="editSelectedAllocationStatus === 0"
+                            [class.text-green-600]="editSelectedAllocationStatus === 1">
+                            {{ editSelectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
+                          </span>
+                          <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer"
+                              [checked]="editSelectedAllocationStatus === 1"
+                              (change)="toggleEditAllocationStatus()">
+                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                              peer-checked:after:translate-x-full peer-checked:after:border-white
+                              after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                              after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                              peer-checked:bg-green-600">
+                            </div>
+                          </label>
                         </div>
-                    </div>
+                      </div>
 
                     <!-- Allocation Percentage -->
                     <div class="form-group">
                         <label class="block mb-2 font-semibold">Allocation Percentage*</label>
                         <select [(ngModel)]="editSelectedAllocationPercentage" name="editAllocationPercentage"
-                            [disabled]="editSelectedAllocationStatus === 0" class="border p-2 w-full rounded-md"
-                            [required]="editSelectedAllocationStatus === 1">
-                            <option *ngIf="editSelectedAllocationStatus === 1" value="" disabled selected>Select
-                                Allocation Percentage</option>
-                            <option *ngFor="let percentage of allocationPercentages" [value]="percentage"
-                                [selected]="editSelectedAllocationStatus === 0 && percentage === 0">
-                                {{ percentage }}%
-                            </option>
+                          class="border p-2 w-full rounded-md" [required]="true">
+                          <option value="" disabled selected>Select Allocation Percentage</option>
+                          <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
+                            {{ percentage }}%
+                          </option>
                         </select>
-                    </div>
+                      </div>
 
                     <!-- Billed Status -->
                     <div class="form-group">
@@ -286,10 +448,9 @@
         </div>
     </div>
 
-    <div class="rounded-lg w-full overflow-x-auto">
+    <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">        
         <!-- Filter Section -->
         <div class="min-w-max">
-
             <div
                 class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
 
@@ -432,50 +593,61 @@
                     All Filters</button>
             </div>
         </div>
+
         <div class="rounded-lg w-full inline-block whitespace-nowrap">
-            <table class="w-full border-collapse border border-gray-300 mt-4">
+            <table class="min-w-full text-xs border-collapse">
                 <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border p-2">Sr No</th>
-                        <th class="border p-2">Customer Name</th>
-                        <th class="border p-2">Project Name</th>
-                        <th class="border p-2">Employee Name</th>
-                        <th class="border p-2">Project Role</th>
-                        <th class="border p-2">Project Manager</th>
-                        <th class="border p-2">Start Date</th>
-                        <th class="border p-2">End Date</th>
-                        <th class="border p-2">Allocation Status</th>
-                        <th class="border p-2">Allocation %</th>
-                        <th class="border p-2">Billed Status</th>
-                        <th class="border p-2">Billing Percentag</th>
-                        <th class="border p-2">Action</th>
+                    <tr class="bg-gray-50">
+ <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>     
+                    <th class="border p-2">Customer Name</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Project Role</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">End Date</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation Status</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Billed Status</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Billing Percentag</th>
+                        <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let team of paginatedAssignedProjectTeams; let i = index" class="hover:bg-gray-50">
-                        <td class="border p-2">{{ i + 1 }}</td>
-                        <td class="border p-2">{{ team.customer_name }}</td>
-                        <td class="border p-2">{{ team.project_name }}</td>
-                        <td class="border p-2">{{ team.employee_name }}</td>
-                        <td class="border p-2">{{ team.project_role_name }}</td>
-                        <td class="border p-2">{{ team.project_manager_name }}</td>
-                        <td class="border p-2">{{ team.start_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="border p-2">{{ team.end_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="border p-2">
+                        <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.customer_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.project_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.employee_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.project_role_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.project_manager_name || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.start_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.end_date | date:'dd-MMM-yyyy' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                          <span [class.text-green-600]="team.allocation_status === 1" [class.text-gray-500]="team.allocation_status === 0">
                             {{ team.allocation_status === 1 ? 'Employee' : 'Shadow' }}
+                          </span>
                         </td>
-                        <td class="border p-2">{{ team.allocation_percentage }}%</td>
-                        <td class="border p-2">{{ team.billed_status ? 'Billed' : 'Not Billed' }}</td>
-                        <td class="border p-2">{{ team.billing_percentage }}%</td>
-                        <td class="border p-2">
-                            <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                (click)="openEditModal(team)">Edit</button>
-                            <button class="bg-red-500 text-white px-2 py-1 rounded"
-                                (click)="deleteAssignProjectTeam(team.project_team_id)">
-                                Delete
-                            </button>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.allocation_percentage }}%</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                          <span [class.text-green-600]="team.billed_status" [class.text-gray-500]="!team.billed_status">
+                            {{ team.billed_status ? 'Billed' : 'Not Billed' }}
+                          </span>
                         </td>
-                    </tr>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ team.billing_percentage }}%</td>
+                        <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                          <button (click)="openEditModal(team)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </button>
+                          <button (click)="deleteAssignProjectTeam(team.project_team_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
                 </tbody>
             </table>
         </div>
