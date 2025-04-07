@@ -13,176 +13,6 @@
       </h3>
       <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to register new customer</p>
     </div>
-    
-    <!-- <form class="mt-4" #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm)">
-      <div class="grid grid-cols-6 gap-4">
-        <div class="form-group">
-          <label>Customer Name*</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.customerName"
-            #customerName="ngModel" name="customerName" required
-            [ngClass]="{'border-red-500': customerName.invalid && customerName.touched || (customerForm.submitted && customerName.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">Customer
-            Name is required</span>
-        </div>
-
-        <div class="form-group">
-          <label>Company Website</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.companyWebsite"
-            name="companyWebsite">
-        </div>
-
-
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="customer.email" #email="ngModel"
-            name="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
-          <span class="text-red-500 text-sm" *ngIf="email.touched && email.value && email.invalid">
-            Enter a valid email address
-          </span>
-        </div>
-
-
-        <div class="form-group">
-          <label>Phone Number</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.phone" #phone="ngModel"
-            name="phone" pattern="^\d{10}$"
-            [ngClass]="{'border-red-500': (phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(phone.touched && phone.value && phone.invalid) || (customerForm.submitted && phone.value && phone.invalid)">
-            Enter a valid 10-digit phone number
-          </span>
-        </div>
-
-
-        <div class="form-group">
-          <label>Alternate Phone Number</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.alternatePhone"
-            name="alternatePhone">
-        </div>
-
-        <div class="form-group">
-          <label>Customer Status*</label>
-          <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
-            [searchable]="true" [clearable]="false" required
-            [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
-            class="custom-ng-select">
-            <ng-option [value]="" disabled selected>Select or type status</ng-option>
-          </ng-select>
-          <span class="text-red-500 text-sm" *ngIf="status.invalid && (status.touched || customerForm.submitted)">
-            Status is required
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Customer Sector*</label>
-          <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors" [searchable]="true"
-            (change)="filterIndustries()" required
-            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
-            class="custom-ng-select">
-            <ng-option [value]="" disabled selected>Select or type sector</ng-option>
-          </ng-select>
-          <span class="text-red-500 text-sm" *ngIf="sector.invalid && (sector.touched || customerForm.submitted)">
-            Sector is required
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Customer Industry*</label>
-          <ng-select [(ngModel)]="selectedIndustry" #industry="ngModel" name="industry" [items]="industries"
-            (change)="filterDomains()" required
-            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
-            class="custom-ng-select">
-            <ng-option [value]="" disabled selected>Select Industry</ng-option>
-          </ng-select>
-          <span class="text-red-500 text-sm" *ngIf="industry.invalid && (industry.touched || customerForm.submitted)">
-            Industry is required
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Customer Segment*</label>
-          <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
-            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
-            class="custom-ng-select">
-            <ng-option [value]="" disabled selected>Select Segment</ng-option>
-          </ng-select>
-          <span class="text-red-500 text-sm" *ngIf="domain.invalid && (domain.touched || customerForm.submitted)">
-            Segment is required
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Customer Type*</label>
-          <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
-            [items]="['Existing', 'Potential']" [clearable]="false" required
-            [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
-            class="custom-ng-select">
-            <ng-option [value]="" disabled selected>Select Customer Type</ng-option>
-          </ng-select>
-          <span class="text-red-500 text-sm"
-            *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">Customer
-            Type is required</span>
-        </div>
-
-        <div class="form-group">
-          <label>City</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.city" #city="ngModel"
-            name="city"
-            [ngClass]="{'border-red-500': (city.touched && city.invalid) || (customerForm.submitted && city.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(city.touched && city.invalid) || (customerForm.submitted && city.invalid)">
-            Enter a valid city
-          </span>
-        </div>
-        <div class="form-group">
-          <label>State</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.state" #state="ngModel"
-            name="state"
-            [ngClass]="{'border-red-500': (state.touched && state.invalid) || (customerForm.submitted && state.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(state.touched && state.invalid) || (customerForm.submitted && state.invalid)">
-            Enter a valid state
-          </span>
-        </div>
-
-
-        <div class="form-group">
-          <label>Pincode</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.pincode" #pincode="ngModel"
-            name="pincode" pattern="^[0-9]{6}$"
-            [ngClass]="{'border-red-500': (pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(pincode.touched && pincode.value && pincode.invalid) || (customerForm.submitted && pincode.value && pincode.invalid)">
-            Enter a valid 6-digit pincode
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Country</label>
-          <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="customer.country" #country="ngModel"
-            name="country"
-            [ngClass]="{'border-red-500': (country.touched && country.invalid) || (customerForm.submitted && country.invalid)}">
-          <span class="text-red-500 text-sm"
-            *ngIf="(country.touched && country.invalid) || (customerForm.submitted && country.invalid)">
-            Enter a valid country
-          </span>
-        </div>
-
-        <div class="form-group">
-          <label>Customer Description</label>
-          <textarea class="border p-2 w-full rounded-md" [(ngModel)]="customer.description" name="description"
-            rows="3"></textarea>
-        </div>
-
-      </div>
-
-      <div class="mt-4">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-          Create Customer
-        </button>
-      </div>
-    </form> -->
 
     <form #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm); $event.preventDefault()">
       <div class="grid grid-cols-6 gap-4">
@@ -384,15 +214,14 @@
    
     <!-- Customer Table -->
     <h3 class="mt-6 font-bold">Customer List</h3>
-
     <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
       <!-- Filters -->
-      <div class="min-w-max">
-        <div
-          class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+      <div class="min-w-max relative z-10">
+        
+        <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
           <!-- Customer Name Filter -->
-          <div class="relative flex-grow">
-            <label class="block text-xs font-medium mb-1">Customer</label>
+          <div class="relative min-w-[120px] space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer</label>
             <ng-select [(ngModel)]="customerNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
               class="text-xs custom-ng-select-filter">
               <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
@@ -404,7 +233,6 @@
           <!-- Company Website Filter -->
           <div class="relative flex-grow">
             <label class="block text-xs font-medium mb-1">Company Website</label>
-
             <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
               class="text-xs border border-gray-300 rounded px-2 py-1 w-full" />
             <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
