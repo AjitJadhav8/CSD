@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const jwtSecret = process.env.JWT_SECRET as string;
-const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '1h'; // Default expiry if not set
+const jwtExpiresIn = process.env.JWT_EXPIRES_IN ; // Default expiry if not set
 
 if (!jwtSecret) {
   throw new Error('JWT_SECRET is not defined in the environment variables.');

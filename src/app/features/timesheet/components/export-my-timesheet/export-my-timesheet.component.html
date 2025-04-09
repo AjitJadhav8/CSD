@@ -2,8 +2,11 @@
 
   <div class="mb-6 pb-4 border-b border-gray-200 m-4">
     <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+        fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+          clip-rule="evenodd" />
       </svg>
       Export My Timesheets
     </h3>
@@ -11,207 +14,200 @@
   </div>
 
 
-      <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
-        <div class="flex flex-wrap items-center gap-4 mb-4">
-          <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">From:</label>
-            <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()" 
-                   class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          </div>
-      
-          <div class="flex items-center space-x-2">
-            <label class="text-sm font-medium text-gray-700">To:</label>
-            <input type="date" [(ngModel)]="toDate" (change)="applyFilters()"
-                   class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-          </div>
-      
-          <button (click)="exportToExcel()" 
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Export to Excel
+  <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+    <div class="flex flex-wrap items-center gap-4 mb-4">
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">From:</label>
+        <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()"
+          class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">To:</label>
+        <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()"
+          class="text-sm border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <button (click)="exportToExcel()"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Export to Excel
+      </button>
+      <button (click)="clearDateFilter()"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+        Clear Dates
+      </button>
+    </div>
+    <div class="min-w-max">
+      <div
+        class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+        <!-- Customer Filter -->
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
+          <ng-select [(ngModel)]="customerFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter"
+            [clearable]="true" [searchable]="true">
+            <ng-option [value]="null">Select Customer</ng-option>
+            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+              {{ customer.customer_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- Project Filter -->
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Project</label>
+          <ng-select [(ngModel)]="projectFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter"
+            [clearable]="true" [searchable]="true">
+            <ng-option [value]="null">Select Project</ng-option>
+            <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
+              {{ project.project_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Deliverable</label>
+          <ng-select [(ngModel)]="projectDeliverableFilter" (change)="applyFilters()"
+            class="text-xs custom-ng-select-filter" [clearable]="true" [searchable]="true">
+            <ng-option [value]="null">Select Deliverable</ng-option>
+            <ng-option *ngFor="let deliverable of optionProjectDeliverables" [value]="deliverable.pd_id">
+              {{ deliverable.project_deliverable_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Phase</label>
+          <ng-select [(ngModel)]="phasesFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter"
+            [clearable]="true" [searchable]="true">
+            <ng-option [value]="null">Select Phase</ng-option>
+            <ng-option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
+              {{ phases.project_phase_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <!-- project manager -->
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Project Manager</label>
+          <ng-select [(ngModel)]="projectManagerFilter" (change)="applyFilters()"
+            class="text-xs custom-ng-select-filter" [clearable]="true" [searchable]="true">
+            <ng-option [value]="null">Select Project Manager</ng-option>
+            <ng-option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
+              {{ manager.user_first_name }} {{ manager.user_last_name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <!-- Timesheet Date Filter -->
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Date</label>
+          <input type="date" [(ngModel)]="timesheetDateFilter" (change)="applyFilters()"
+            class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
+          <button *ngIf="timesheetDateFilter" (click)="clearFilter('timesheetDateFilter')"
+            class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+            ×
           </button>
         </div>
-        <div class="min-w-max">
-            <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-4 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
-                <!-- Customer Filter -->
-                <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
-                    <ng-select [(ngModel)]="customerFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true"
-                              [searchable]="true">
-                      <ng-option [value]="null">Select Customer</ng-option>
-                      <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                        {{ customer.customer_name }}
-                      </ng-option>
-                    </ng-select>
-                  </div>
 
-                <!-- Project Filter -->
-                <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Project</label>
-                    <ng-select [(ngModel)]="projectFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true"
-                              [searchable]="true">
-                      <ng-option [value]="null">Select Project</ng-option>
-                      <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
-                        {{ project.project_name }}
-                      </ng-option>
-                    </ng-select>
-                  </div>
-
-                  <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Deliverable</label>
-                    <ng-select [(ngModel)]="projectDeliverableFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true"
-                              [searchable]="true">
-                      <ng-option [value]="null">Select Deliverable</ng-option>
-                      <ng-option *ngFor="let deliverable of optionProjectDeliverables" [value]="deliverable.pd_id">
-                        {{ deliverable.project_deliverable_name }}
-                      </ng-option>
-                    </ng-select>
-                  </div>
-                  <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Phase</label>
-                    <ng-select [(ngModel)]="phasesFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true"
-                              [searchable]="true">
-                      <ng-option [value]="null">Select Phase</ng-option>
-                      <ng-option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
-                        {{ phases.project_phase_name }}
-                      </ng-option>
-                    </ng-select>
-                  </div>
-
-                <!-- project manager -->
-                <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Project Manager</label>
-                    <ng-select [(ngModel)]="projectManagerFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true"
-                              [searchable]="true">
-                      <ng-option [value]="null">Select Project Manager</ng-option>
-                      <ng-option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
-                        {{ manager.user_first_name }} {{ manager.user_last_name }}
-                      </ng-option>
-                    </ng-select>
-                  </div>
-                <!-- Timesheet Date Filter -->
-                <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" [(ngModel)]="timesheetDateFilter" (change)="applyFilters()"
-                        class="text-xs border border-gray-300 rounded px-1 py-1 w-full focus:outline-none focus:ring focus:ring-blue-300" />
-                    <button *ngIf="timesheetDateFilter" (click)="clearFilter('timesheetDateFilter')"
-                        class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-                        ×
-                    </button>
-                </div>
-
-                <div class="relative flex-grow">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Task Status</label>
-                    <ng-select [(ngModel)]="taskStatusFilter"
-                              (change)="applyFilters()"
-                              class="text-xs custom-ng-select-filter"
-                              [clearable]="true">
-                      <ng-option [value]="null">Select Task Status</ng-option>
-                      <ng-option [value]="1">Completed</ng-option>
-                      <ng-option [value]="0">In Progress</ng-option>
-                    </ng-select>
-                  </div>
-
-                <!-- Clear All Filters -->
-                <button (click)="clearFilters()"
-                    class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">
-                    Clear All Filters
-                </button>
-            </div>
+        <div class="relative flex-grow">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Task Status</label>
+          <ng-select [(ngModel)]="taskStatusFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter"
+            [clearable]="true">
+            <ng-option [value]="null">Select Task Status</ng-option>
+            <ng-option [value]="1">Completed</ng-option>
+            <ng-option [value]="0">In Progress</ng-option>
+          </ng-select>
         </div>
 
-        <div class="rounded-lg w-full inline-block whitespace-nowrap">
-          <table class="min-w-full text-xs border-collapse">
-            <thead>
-              <tr class="bg-gray-50">
-                <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
-                <th class="border p-2">Customer Name</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Project Deliverable</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>  <!-- Added this column -->
-                    <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Task Status</th>
-                    <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let timesheet of displayedTimesheetData; let i = index" class="hover:bg-gray-50">
-                  <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
-                  <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_manager_name }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">
-                      <div class="group relative inline-block">
-                        <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description || '-' }}</span>
-                        <div *ngIf="timesheet.task_description" class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
-                          {{ timesheet.task_description }}
-                        </div>
-                      </div>
-                    </td>
-
-
-
-
-
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">
-                        {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
-                    </td>
-                    <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-
-                </tr>
-            </tbody>
-        </table>
-       
-        <div class="flex items-center justify-center mt-4 space-x-1">
-            <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
-                class="px-3 py-1 border rounded-md">
-                Previous
-            </button>
-
-            <button *ngIf="currentPage > 3" (click)="changePage(1)" class="px-3 py-1 border rounded-md">
-                1
-            </button>
-            <span *ngIf="currentPage > 4" class="px-2">...</span>
-            <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
-                [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
-                {{ page }}
-            </button>
-            <span *ngIf="currentPage < totalPages() - 3" class="px-2">...</span>
-            <button *ngIf="currentPage < totalPages() - 2" (click)="changePage(totalPages())"
-                class="px-3 py-1 border rounded-md">
-                {{ totalPages() }}
-            </button>
-            <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages()"
-                class="px-3 py-1 border rounded-md">
-                Next
-            </button>
-        </div>
-        </div>
-
+        <!-- Clear All Filters -->
+        <button (click)="clearFilters()"
+          class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">
+          Clear All Filters
+        </button>
+      </div>
     </div>
+
+    <div class="rounded-lg w-full inline-block whitespace-nowrap">
+      <table class="min-w-full text-xs border-collapse">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+            <th class="border p-2">Customer Name</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Project Deliverable</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th> <!-- Added this column -->
+            <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Task Status</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let timesheet of displayedTimesheetData; let i = index" class="hover:bg-gray-50">
+            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1
+              }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_manager_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">
+              <div class="group relative inline-block">
+                <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description || '-' }}</span>
+                <div *ngIf="timesheet.task_description"
+                  class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                  {{ timesheet.task_description }}
+                </div>
+              </div>
+            </td>
+
+
+
+
+
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">
+              {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
+            </td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="flex items-center justify-center mt-4 space-x-1">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+          class="px-3 py-1 border rounded-md">
+          Previous
+        </button>
+
+        <button *ngIf="currentPage > 3" (click)="changePage(1)" class="px-3 py-1 border rounded-md">
+          1
+        </button>
+        <span *ngIf="currentPage > 4" class="px-2">...</span>
+        <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+          [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+          {{ page }}
+        </button>
+        <span *ngIf="currentPage < totalPages() - 3" class="px-2">...</span>
+        <button *ngIf="currentPage < totalPages() - 2" (click)="changePage(totalPages())"
+          class="px-3 py-1 border rounded-md">
+          {{ totalPages() }}
+        </button>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages()"
+          class="px-3 py-1 border rounded-md">
+          Next
+        </button>
+      </div>
+    </div>
+
+  </div>
 </div>

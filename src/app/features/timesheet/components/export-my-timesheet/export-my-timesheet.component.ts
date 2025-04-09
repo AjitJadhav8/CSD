@@ -27,6 +27,7 @@ export class ExportMyTimesheetComponent {
       this.userId = Number(storedUserId);
       this.fetchFullTimesheets();
       this.fetchOptions();
+      
 
     } else {
       console.error('User ID not found in local storage.');
@@ -42,45 +43,39 @@ export class ExportMyTimesheetComponent {
   displayedTimesheetData: any[] = [];
 
   currentPage: number = 1;
-  itemsPerPage: number = 30;
-  maxPageButtons: number = 5; 
+  itemsPerPage: number = 50;
+  maxPageButtons: number = 5;
 
-    timesheetDateFilter: string = '';
-    customerFilter: string = '';
-    projectFilter: string = '';
-    projectDeliverableFilter: string = '';
-    taskStatusFilter: string = '';
-    projectManagerFilter: string = '';
-    phasesFilter: string = '';
+  timesheetDateFilter: string = '';
+  customerFilter: number | null = null;
+  projectFilter: number | null = null;
+  projectDeliverableFilter: number | null = null;
+  taskStatusFilter: number | null = null;
+  projectManagerFilter: number | null = null;
+  phasesFilter: number | null = null;
 
-    optionCustomers: any[] = [];
-    optionProjects: any[] = [];
-    optionProjectDeliverables: any[] = [];
-    optionProjectManagers: any[] = [];
-    optionPhases: any[] = [];
+  optionCustomers: any[] = [];
+  optionProjects: any[] = [];
+  optionProjectDeliverables: any[] = [];
+  optionProjectManagers: any[] = [];
+  optionPhases: any[] = [];
 
-    fetchOptions(): void {
-      this.dataService.getOptions().subscribe(
-        (response) => {
-          this.optionCustomers = response.customers;
-          this.optionProjects = response.projects;
-          this.optionProjectDeliverables = response.projectDeliverables;
-          this.optionProjectManagers = response.projectManagers;
-          this.optionPhases = response.phases;
-        },
-        (error) => {
-          console.error('Error fetching options:', error);
-        }
-      );
-    }
-
-  clearDateFilter(): void {
-    this.fromDate = '';
-    this.toDate = '';
-    this.filteredTimesheetData = [...this.fullTimesheetData];
-    this.currentPage = 1;
-    this.updateDisplayedData();
+  fetchOptions(): void {
+    this.dataService.getOptions().subscribe(
+      (response) => {
+        this.optionCustomers = response.customers;
+        this.optionProjects = response.projects;
+        this.optionProjectDeliverables = response.projectDeliverables;
+        this.optionProjectManagers = response.projectManagers;
+        this.optionPhases = response.phases;
+      },
+      (error) => {
+        console.error('Error fetching options:', error);
+      }
+    );
   }
+
+
   updateDisplayedData(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
@@ -148,7 +143,7 @@ export class ExportMyTimesheetComponent {
       console.error('User ID not available');
       return;
     }
-  
+
     this.timesheetService.getUserFullTimesheet(this.userId).subscribe(
       (response) => {
         // Map the response to include the expected properties
@@ -160,16 +155,16 @@ export class ExportMyTimesheetComponent {
           project_id: item.project_id || item.project?.project_id,
           project_name: item.project_name || item.project?.project_name,
           project_manager_id: item.project_manager_id || item.project_manager?.user_id,
-          project_manager_name: item.project_manager_name || 
+          project_manager_name: item.project_manager_name ||
             (item.project_manager ? `${item.project_manager.user_first_name} ${item.project_manager.user_last_name}` : ''),
           phase_id: item.phase_id || item.project_phase?.phase_id,
           project_phase_name: item.project_phase_name || item.project_phase?.project_phase_name,
           pd_id: item.pd_id || item.project_deliverable?.pd_id,
-          project_deliverable_name: item.project_deliverable_name || item.project_deliverable?.project_deliverable_name
+          project_deliverable_name: item.project_deliverable_name || item.project_deliverable?.project_deliverable_name,
         }));
-  
+
         console.log('Mapped timesheet data:', this.fullTimesheetData);
-        
+
         this.filteredTimesheetData = [...this.fullTimesheetData];
         this.updateDisplayedData();
         this.applyFilters();
@@ -181,52 +176,96 @@ export class ExportMyTimesheetComponent {
   }
 
   // Date formatting function
-formatDateForComparison(dateString: string): string {
-  if (!dateString) return '';
-  
-  const date = new Date(dateString);
-  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-  
-  return localDate.toISOString().split('T')[0];
-}
+  formatDateForComparison(dateString: string): string {
+    if (!dateString) return '';
 
-    applyFilters(): void {
-      this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
-        const itemDate = new Date(timesheet.timesheet_date);
-        
-        const from = this.fromDate ? new Date(this.fromDate) : null;
-        if (from) from.setHours(0, 0, 0, 0);
-        
-        const to = this.toDate ? new Date(this.toDate) : null;
-        if (to) to.setHours(23, 59, 59, 999);
-        
-        const dateInRange = (!from || itemDate >= from) && (!to || itemDate <= to);
-        
-        const otherFiltersMatch = 
-        (!this.timesheetDateFilter || 
-          this.formatDateForComparison(timesheet.timesheet_date) === this.formatDateForComparison(this.timesheetDateFilter))&&          (!this.customerFilter || String(timesheet.customer_id) === String(this.customerFilter)) &&
-          
-          (!this.projectFilter || String(timesheet.project_id) === String(this.projectFilter)) &&
-          (!this.projectDeliverableFilter || String(timesheet.pd_id) === String(this.projectDeliverableFilter)) &&
-          (!this.phasesFilter || String(timesheet.phase_id) === String(this.phasesFilter)) &&
-          (this.taskStatusFilter !== null ? timesheet.task_status === Number(this.taskStatusFilter) : true)&&            (!this.projectManagerFilter || String(timesheet.project_manager_id) === String(this.projectManagerFilter));
+    // Parse the date as UTC and format as YYYY-MM-DD
+    const date = new Date(dateString);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
 
-        return dateInRange && otherFiltersMatch;
-      });
+    return `${year}-${month}-${day}`;
+  }
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+
+    // Convert UTC date to local timezone correctly
+    const date = new Date(dateString);
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+    // Format as YYYY-MM-DD
+    return localDate.toISOString().split('T')[0];
+  }
+
+
+  applyFilters(): void {
+    this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
+      // Convert all filter values to strings for consistent comparison
+      const tsCustomerId = timesheet.customer_id?.toString();
+      const tsProjectId = timesheet.project_id?.toString();
+      const tsPdId = timesheet.pd_id?.toString();
+      const tsPhaseId = timesheet.phase_id?.toString();
+      const tsManagerId = timesheet.project_manager_id?.toString();
       
-      this.currentPage = 1;
-      this.updateDisplayedData();
-    }
-      // Clear Filters
+      return (
+        (!this.timesheetDateFilter ||
+          this.formatDate(timesheet.timesheet_date) === this.formatDateForComparison(this.timesheetDateFilter)) &&
+        (!this.customerFilter || tsCustomerId === this.customerFilter?.toString()) &&
+        (!this.projectFilter || tsProjectId === this.projectFilter?.toString()) &&
+        (!this.projectDeliverableFilter || tsPdId === this.projectDeliverableFilter?.toString()) &&
+        (!this.phasesFilter || tsPhaseId === this.phasesFilter?.toString()) &&
+        (this.taskStatusFilter === null || this.taskStatusFilter === undefined || 
+         timesheet.task_status === Number(this.taskStatusFilter)) &&
+        (!this.projectManagerFilter || tsManagerId === this.projectManagerFilter?.toString())
+      );
+    });
+    
+    this.currentPage = 1;
+    this.updateDisplayedData();
+  }
+  
+
+  applyDateFilter(): void {
+    this.filteredTimesheetData = this.fullTimesheetData.filter(item => {
+      const itemDate = new Date(item.timesheet_date);
+
+      const from = this.fromDate ? new Date(this.fromDate) : null;
+      if (from) from.setHours(0, 0, 0, 0);
+
+      const to = this.toDate ? new Date(this.toDate) : null;
+      if (to) to.setHours(23, 59, 59, 999);
+
+      return (!from || itemDate >= from) && (!to || itemDate <= to);
+    });
+
+    this.currentPage = 1;
+    this.updateDisplayedData();
+  }
+  clearDateFilter(): void {
+    this.fromDate = '';
+    this.toDate = '';
+    this.filteredTimesheetData = [...this.fullTimesheetData];
+    this.currentPage = 1;
+    this.updateDisplayedData();
+  }
+
+
+  // Clear Filters
   clearFilters(): void {
+    this.customerFilter = null;
+    this.projectFilter = null;
+    this.projectDeliverableFilter = null;
+    this.phasesFilter = null;
+    this.projectManagerFilter = null;
     this.timesheetDateFilter = '';
-    this.customerFilter = '';
-    this.projectFilter = '';
-    this.projectDeliverableFilter = '';
-    this.taskStatusFilter = '';
-    this.phasesFilter = '';
-    this.projectManagerFilter = '';
-    this.applyFilters();
+    this.taskStatusFilter = null;
+    this.fromDate = '';
+    this.toDate = '';
+    
+    this.filteredTimesheetData = [...this.fullTimesheetData];
+    this.currentPage = 1;
+    this.updateDisplayedData();
   }
   clearFilter(filterName: string): void {
     (this as any)[filterName] = '';
