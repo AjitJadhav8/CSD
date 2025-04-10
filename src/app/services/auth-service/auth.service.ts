@@ -11,6 +11,17 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
+  logout() {
+    // Clear all auth-related items from storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('first_name');
+    localStorage.removeItem('last_name');
+    localStorage.removeItem('role_id');
+    localStorage.removeItem('email');
+    localStorage.removeItem('is_RM');
+    localStorage.removeItem('is_PM');
+  }
 
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/auth/login`, credentials);

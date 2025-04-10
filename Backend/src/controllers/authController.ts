@@ -6,6 +6,42 @@ import { generateToken } from '../config/jwt';
 import { sendPasswordResetEmail } from '../utils/mailer';
 
 class AuthController {
+
+
+
+  // Add this method to your AuthController class
+async refreshToken(req: Request, res: Response): Promise<void> {
+  try {
+    // The user is attached by the protect middleware
+    const user = (req as any).user; // Quick fix
+    if (!user) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    // Generate new token with the same user data
+    const token = generateToken(user);
+    res.status(200).json({
+      token,
+      user: {
+        user_id: user.user_id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role_id: user.role_id,
+        is_RM: user.is_RM,
+        is_PM: user.is_PM
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
+
+
+
+
   async login(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
 
