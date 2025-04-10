@@ -18,20 +18,23 @@ export class AppComponent {
   }
 
   private checkTokenExpiration() {
-    const token = localStorage.getItem('token');
-    
-    if (token) {
-      try {
-        const jwtToken = JSON.parse(atob(token.split('.')[1]));
-        const isExpired = Date.now() >= jwtToken.exp * 1000;
-        
-        if (isExpired) {
+    // 👇 Check if running in browser
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        try {
+          const jwtToken = JSON.parse(atob(token.split('.')[1]));
+          const isExpired = Date.now() >= jwtToken.exp * 1000;
+          
+          if (isExpired) {
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }
+        } catch (e) {
           this.authService.logout();
           this.router.navigate(['/login']);
         }
-      } catch (e) {
-        this.authService.logout();
-        this.router.navigate(['/login']);
       }
     }
   }
