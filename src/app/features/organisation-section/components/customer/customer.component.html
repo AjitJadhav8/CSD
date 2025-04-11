@@ -245,11 +245,10 @@
           <!-- Email Filter -->
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Customer Email</label>
-
             <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
             <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
               ×
             </button>
           </div>
@@ -257,11 +256,10 @@
           <!-- Phone Filter -->
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Phone</label>
-
             <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
             <button *ngIf="phoneFilter" (click)="clearFilter('phoneFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
               ×
             </button>
           </div>
@@ -271,9 +269,9 @@
             <label class="block text-xs font-medium mb-1">Alternate Phone</label>
 
             <input type="text" [(ngModel)]="alternatePhoneFilter" placeholder="Alternate Phone" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
             <button *ngIf="alternatePhoneFilter" (click)="clearFilter('alternatePhoneFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
               ×
             </button>
           </div>
@@ -282,7 +280,7 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Status</label>
             <ng-select [(ngModel)]="statusFilter" (change)="applyFilters()" [clearable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option value="Active">Active</ng-option>
               <ng-option value="Inactive">Inactive</ng-option>
             </ng-select>
@@ -292,7 +290,7 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Sector</label>
             <ng-select [(ngModel)]="sectorFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option *ngFor="let sector of distinctSectors" [value]="sector">
                 {{ sector }}
               </ng-option>
@@ -304,7 +302,7 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Industry</label>
             <ng-select [(ngModel)]="industryFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option *ngFor="let industry of distinctIndustries" [value]="industry">
                 {{ industry }}
               </ng-option>
@@ -315,7 +313,7 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Segment</label>
             <ng-select [(ngModel)]="domainFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option *ngFor="let category of optionMasterCategory" [value]="category.domain">
                 {{ category.domain }}
               </ng-option>
@@ -326,7 +324,7 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Type</label>
             <ng-select [(ngModel)]="customerTypeFilter" (change)="applyFilters()" [clearable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option value="Existing">Existing</ng-option>
               <ng-option value="Potential">Potential</ng-option>
             </ng-select>
@@ -336,9 +334,9 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">City</label>
             <input type="text" [(ngModel)]="cityFilter" placeholder="City" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
             <button *ngIf="cityFilter" (click)="clearFilter('cityFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
               ×
             </button>
           </div>
@@ -348,18 +346,27 @@
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Description</label>
             <input type="text" [(ngModel)]="descriptionFilter" placeholder="Description" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
             <button *ngIf="descriptionFilter" (click)="clearFilter('descriptionFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
               ×
             </button>
           </div>
 
           <!-- Clear All Filters -->
-          <button (click)="clearFilters()"
-            class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
-            All
-            Filters</button>
+          <!-- Clear All Filters Button -->
+          <div class="relative w-28">
+
+            <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
+
+          <button (click)="clearFilters()" title="Clear all filters"
+          class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <span>Clear</span>
+        </button>
+        </div>
         </div>
       </div>
 
