@@ -230,7 +230,7 @@
                     <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes || '0' }}</td>
                     <td class="px-1 py-1 border border-gray-300 text-center">
                       <span [class.text-green-600]="timesheet.task_status" [class.text-yellow-600]="!timesheet.task_status">
-                        {{ timesheet.task_status ? 'Completed' : 'Pending' }}
+                        {{ timesheet.task_status ? 'Completed' : ' In Progress' }}
                       </span>
                     </td>
                   </tr>

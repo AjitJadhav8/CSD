@@ -837,9 +837,22 @@
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
 
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td>
+                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
+
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                            <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
+                              {{ member.allocation_status ? 'Active' : 'Inactive' }}
+                            </span>
+                          </td>
+
+
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td>
+                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                            <span [class.text-green-600]="member.billed_status" [class.text-gray-500]="!member.billed_status">
+                              {{ member.billed_status ? 'Billed' : 'Not Billed' }}
+                            </span>
+                          </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
                     </tr>
@@ -998,7 +1011,12 @@
 
                         <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.hours }}</td>
                         <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.minutes }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td>
+                        <!-- <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
+                        <td class="px-1 py-1 border border-gray-200 text-center">
+                            <span [class.text-green-600]="timesheet.task_status" [class.text-yellow-600]="!timesheet.task_status">
+                              {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
+                            </span>
+                          </td>
                         <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                     </tr>
                 </tbody>
@@ -1175,9 +1193,19 @@
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.reporting_manager_name }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td>
+                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                            <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
+                              {{ member.allocation_status ? 'Active' : 'Inactive' }}
+                            </span>
+                          </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td>
+                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
+                        <td class="px-1 py-1 border border-gray-300 text-center">
+                            <span [class.text-green-600]="member.billed_status" [class.text-gray-500]="!member.billed_status">
+                              {{ member.billed_status ? 'Billed' : 'Not Billed' }}
+                            </span>
+                          </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
                     </tr>
@@ -1340,7 +1368,12 @@
 
                             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
                             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td>
+                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span [class.text-green-600]="timesheet.task_status" [class.text-yellow-600]="!timesheet.task_status">
+                                  {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
+                                </span>
+                              </td>
                             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                         </tr>
                     </tbody>
