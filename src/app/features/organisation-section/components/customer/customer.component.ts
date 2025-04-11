@@ -514,8 +514,24 @@ export class CustomerComponent {
   }
   // Clear Filters
   clearFilters(): void {
+    // Reset all filter properties
     this.customerNameFilter = '';
+    this.companyWebsiteFilter = '';
+    this.emailFilter = '';
+    this.phoneFilter = '';
+    this.alternatePhoneFilter = '';
+    this.statusFilter = '';
+    this.sectorFilter = '';
+    this.industryFilter = '';
+    this.domainFilter = '';
     this.customerTypeFilter = '';
+    this.cityFilter = '';
+    this.stateFilter = '';
+    this.pincodeFilter = '';
+    this.countryFilter = '';
+    this.descriptionFilter = '';
+  
+    // Reapply filters to reset the view
     this.applyFilters();
   }
 
