@@ -216,33 +216,34 @@
     <h3 class="mt-6 font-bold">Customer List</h3>
     <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
       <!-- Filters -->
-      <div class="min-w-max relative z-10">
+      <div class="min-w-full relative z-10">
         
         <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
           <!-- Customer Name Filter -->
-          <div class="relative min-w-[120px] space-y-1">
-            <label class="text-xs font-medium text-gray-600">Customer</label>
+          <div class="relative w-48">
+            <label class="block text-xs font-medium mb-1">Customer</label>
             <ng-select [(ngModel)]="customerNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
-              class="text-xs custom-ng-select-filter">
+              class="text-xs custom-ng-select-filter w-full">
               <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
                 {{ customer.customer_name }}
               </ng-option>
             </ng-select>
           </div>
 
+
           <!-- Company Website Filter -->
-          <div class="relative flex-grow">
-            <label class="block text-xs font-medium mb-1">Company Website</label>
-            <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
-              class="text-xs border border-gray-300 rounded px-2 py-1 w-full" />
-            <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
-              class="absolute inset-y-0 right-0 px-2 flex items-center text-gray-500 hover:text-gray-700">
-              ×
-            </button>
-          </div>
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Company Website</label>
+              <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6" />
+              <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
 
           <!-- Email Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Customer Email</label>
 
             <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
@@ -254,7 +255,7 @@
           </div>
 
           <!-- Phone Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Phone</label>
 
             <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
@@ -266,7 +267,7 @@
           </div>
 
           <!-- Alternate Phone Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Alternate Phone</label>
 
             <input type="text" [(ngModel)]="alternatePhoneFilter" placeholder="Alternate Phone" (input)="applyFilters()"
@@ -278,7 +279,7 @@
           </div>
 
           <!-- Status Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Status</label>
             <ng-select [(ngModel)]="statusFilter" (change)="applyFilters()" [clearable]="true"
               class="text-xs custom-ng-select-filter">
@@ -288,7 +289,7 @@
           </div>
 
           <!-- Sector Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Sector</label>
             <ng-select [(ngModel)]="sectorFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
               class="text-xs custom-ng-select-filter">
@@ -300,7 +301,7 @@
 
 
 
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Industry</label>
             <ng-select [(ngModel)]="industryFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
               class="text-xs custom-ng-select-filter">
@@ -311,7 +312,7 @@
           </div>
 
           <!-- Domain Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Segment</label>
             <ng-select [(ngModel)]="domainFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
               class="text-xs custom-ng-select-filter">
@@ -322,7 +323,7 @@
           </div>
 
           <!-- Customer Type Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Type</label>
             <ng-select [(ngModel)]="customerTypeFilter" (change)="applyFilters()" [clearable]="true"
               class="text-xs custom-ng-select-filter">
@@ -332,7 +333,7 @@
           </div>
 
           <!-- City Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">City</label>
             <input type="text" [(ngModel)]="cityFilter" placeholder="City" (input)="applyFilters()"
               class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />
@@ -344,7 +345,7 @@
 
 
           <!-- Description Filter -->
-          <div class="relative flex-grow">
+          <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Description</label>
             <input type="text" [(ngModel)]="descriptionFilter" placeholder="Description" (input)="applyFilters()"
               class="text-xs border border-gray-300 rounded px-1 py-1 w-full " />

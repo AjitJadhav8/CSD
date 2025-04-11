@@ -227,25 +227,46 @@
 
 
 
-/* Custom styles for .custom-ng-select-filter */::ng-deep .custom-ng-select-filter .ng-select-container {
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  min-height: auto;
-  height: 20px; /* Matching ultra compact height */
-  min-width: 150px;
-  padding: 0 0.5rem; /* Tight padding to match */
+/* Custom styles for .custom-ng-select-filter *//* Custom ng-select filter - Base Styles */
+.custom-ng-select-filter {
   font-size: 0.75rem;
-  display: flex;
-  align-items: center; /* Ensure content is vertically centered */
+  width: 100%;
 }
 
+/* Container Styles */
+::ng-deep .custom-ng-select-filter .ng-select-container {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.275rem;
+  min-height: 1.5rem; /* 28px */
+  height: 1.5rem;
+  min-width: 100%;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.35rem; /* Add same margin as label gap */
+  margin-bottom: 0.05rem; /* Add same margin as label gap */
+
+  transition: border-color 0.2s;
+}
+
+::ng-deep .custom-ng-select-filter.ng-select-focused .ng-select-container {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Value and Input Styles */
 ::ng-deep .custom-ng-select-filter .ng-value {
   line-height: 1;
   padding: 0;
   display: flex;
   align-items: center;
   height: 100%;
+}
+
+::ng-deep .custom-ng-select-filter .ng-value-label {
+  padding: 0;
 }
 
 ::ng-deep .custom-ng-select-filter .ng-input {
@@ -258,41 +279,60 @@
 
 ::ng-deep .custom-ng-select-filter .ng-input > input {
   padding: 0;
-  height: 24px;
+  height: 1.25rem; /* 24px */
   font-size: 0.75rem;
   line-height: 1;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
+/* Clear and Arrow Icons */
 ::ng-deep .custom-ng-select-filter .ng-clear-wrapper {
-  height: 16px;
-  width: 16px;
+  height: 1rem; /* 16px */
+  width: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #9ca3af;
+  transition: color 0.2s;
 }
 
-::ng-deep .custom-ng-select-filter .ng-arrow-wrapper {
-  height: 16px;
-  width: 16px;
+::ng-deep .custom-ng-select-filter .ng-clear-wrapper:hover {
+  color: #6b7280;
+}
+
+/* ::ng-deep .custom-ng-select-filter .ng-arrow-wrapper {
+  height: 1rem;
+  width: 1rem;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Matching dropdown panel styles */
+::ng-deep .custom-ng-select-filter .ng-arrow {
+  border-color: #6b7280 transparent transparent;
+  border-style: solid;
+  border-width: 0.25rem 0.25rem 0;
+} */
+
+/* Dropdown Panel Styles */
 ::ng-deep .custom-ng-select-filter .ng-dropdown-panel {
   background-color: white;
   border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
+  border-radius: 0.475rem;
   margin-top: 0.25rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  min-width: 150px;
+  min-width: 100%;
 }
 
-/* Matching compact dropdown options */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown Options */
 ::ng-deep .custom-ng-select-filter .ng-option {
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
@@ -314,4 +354,33 @@
 
 ::ng-deep .custom-ng-select-filter .ng-option.ng-option--selected:hover {
   background-color: #1d4ed8;
+}
+
+::ng-deep .custom-ng-select-filter .ng-option.ng-option-marked {
+  background-color: #eff6ff;
+}
+
+/* Multi-select specific styles */
+::ng-deep .custom-ng-select-filter.ng-select-multiple .ng-value-container {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+::ng-deep .custom-ng-select-filter.ng-select-multiple .ng-value {
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  margin-right: 0.25rem;
+  margin-bottom: 0;
+}
+
+::ng-deep .custom-ng-select-filter.ng-select-multiple .ng-value-icon {
+  padding: 0 0.125rem;
+}
+
+/* Disabled state */
+::ng-deep .custom-ng-select-filter.ng-select-disabled .ng-select-container {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #9ca3af;
 }
