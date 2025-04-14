@@ -841,7 +841,7 @@
 
                         <td class="px-1 py-1 border border-gray-300 text-center">
                             <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
-                              {{ member.allocation_status ? 'Active' : 'Inactive' }}
+                              {{ member.allocation_status ? 'Employee' : 'Shadow' }}
                             </span>
                           </td>
 
@@ -1196,7 +1196,7 @@
                         <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
                         <td class="px-1 py-1 border border-gray-300 text-center">
                             <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
-                              {{ member.allocation_status ? 'Active' : 'Inactive' }}
+                              {{ member.allocation_status ? 'Employee' : 'Shadow' }}
                             </span>
                           </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%</td>
