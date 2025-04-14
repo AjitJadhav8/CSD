@@ -3,21 +3,24 @@
     <div *ngIf="selectedSection === 'projectDeliverable'">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-        <div class="mb-6 pb-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-              </svg>
-              Add New Project Deliverable
-            </h3>
-            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project deliverable</p>
-          </div>
-       
+            <div class="mb-6 pb-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Add New Project Deliverable
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project deliverable</p>
+            </div>
 
-          <form #projectDeliverableFormRef="ngForm" (ngSubmit)="submitProjectDeliverable(projectDeliverableFormRef); $event.preventDefault()">
-            <div class="grid grid-cols-3 gap-4">
 
-                <!-- <div class="space-y-1">
+            <form #projectDeliverableFormRef="ngForm"
+                (ngSubmit)="submitProjectDeliverable(projectDeliverableFormRef); $event.preventDefault()">
+                <div class="grid grid-cols-3 gap-4">
+
+                    <!-- <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Customer Name*</label>
                     <ng-select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel"
                         name="customer_id" required (change)="filterProjectsByCustomerForDeliverable()"
@@ -34,72 +37,76 @@
                     </span>
                 </div> -->
 
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Customer Name*</label>
-                    <ng-select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel" name="customer_id"
-                      required (change)="filterProjectsByCustomerForDeliverable()"
-                      [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}"
-                      class="text-xs custom-ng-select">
-                      <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                      <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                        {{ customer.customer_name }}
-                      </ng-option>
-                    </ng-select>
-                    <span class="text-xs text-red-500"
-                      *ngIf="(customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)">
-                      Required
-                    </span>
-                  </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+                        <ng-select [(ngModel)]="projectDeliverableForm.customer_id" #customerField="ngModel"
+                            name="customer_id" required (change)="filterProjectsByCustomerForDeliverable()"
+                            [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(customerField.invalid && customerField.touched) || (projectDeliverableFormRef.submitted && customerField.invalid)">
+                            Required
+                        </span>
+                    </div>
 
 
-                  <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Project*</label>
-                    <ng-select [(ngModel)]="projectDeliverableForm.project_id" #projectField="ngModel" name="project_id" required
-                      [disabled]="!projectDeliverableForm.customer_id"
-                      [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}"
-                      class="text-xs custom-ng-select">
-                      <ng-option [value]="" disabled selected>Select Project</ng-option>
-                      <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
-                        {{ project.project_name }}
-                      </ng-option>
-                    </ng-select>
-                    <span class="text-xs text-red-500"
-                      *ngIf="(projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)">
-                      Required
-                    </span>
-                  </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Project*</label>
+                        <ng-select [(ngModel)]="projectDeliverableForm.project_id" #projectField="ngModel"
+                            name="project_id" required [disabled]="!projectDeliverableForm.customer_id"
+                            [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Project</ng-option>
+                            <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                                {{ project.project_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(projectField.invalid && projectField.touched) || (projectDeliverableFormRef.submitted && projectField.invalid)">
+                            Required
+                        </span>
+                    </div>
 
-                  <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Deliverable Name*</label>
-                    <input type="text" [(ngModel)]="projectDeliverableForm.project_deliverable_name" #deliverableField="ngModel"
-                      name="project_deliverable_name" required 
-                      class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Enter deliverable name"
-                      [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectDeliverableFormRef.submitted && deliverableField.invalid)}" />
-                    <span class="text-xs text-red-500"
-                      *ngIf="(deliverableField.invalid && deliverableField.touched) || (projectDeliverableFormRef.submitted && deliverableField.invalid)">
-                      Required
-                    </span>
-                  </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Deliverable Name*</label>
+                        <input type="text" [(ngModel)]="projectDeliverableForm.project_deliverable_name"
+                            #deliverableField="ngModel" name="project_deliverable_name" required
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter deliverable name"
+                            [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectDeliverableFormRef.submitted && deliverableField.invalid)}" />
+                        <span class="text-xs text-red-500"
+                            *ngIf="(deliverableField.invalid && deliverableField.touched) || (projectDeliverableFormRef.submitted && deliverableField.invalid)">
+                            Required
+                        </span>
+                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-center">
                     <button type="submit"
-                      class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      Save Deliverable
+                        class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Save Deliverable
                     </button>
-                  </div>
-                </form>
-              </div>
+                </div>
+            </form>
+        </div>
 
 
-              <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
-                <!-- Filter Section -->
-                <div class="min-w-full relative">
-                    <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+        <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+            <!-- Filter Section -->
+            <div class="min-w-full relative">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
 
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Customer</label>
@@ -142,18 +149,21 @@
                     <!-- <button (click)="clearDeliverableFilters()"
                         class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
                         All Filters</button> -->
-                        <div class="relative w-28">
+                    <div class="relative w-28">
 
-                            <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-                
-                          <button (click)="clearDeliverableFilters()" title="Clear all filters"
-                          class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                          </svg>
-                          <span>Clear</span>
+                        <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
+
+                        <button (click)="clearDeliverableFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
                         </button>
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -162,32 +172,48 @@
                 <table class="min-w-full text-xs border-collapse">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                #</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
-                          </tr>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let deliverable of paginatedProjectDeliverables; let i = index" class="hover:bg-gray-50">
-                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ deliverable.customer_name || '-' }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ deliverable.project_name || '-' }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ deliverable.project_deliverable_name || '-' }}</td>
-                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
-                              <button (click)="openEditDeliverableModal(deliverable)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                              </button>
-                              <button (click)="deleteProjectDeliverable(deliverable.pd_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
+                        <tr *ngFor="let deliverable of paginatedProjectDeliverables; let i = index"
+                            class="hover:bg-gray-50">
+                            <td
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                {{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ deliverable.customer_name || '-'
+                                }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ deliverable.project_name || '-'
+                                }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{
+                                deliverable.project_deliverable_name || '-' }}</td>
+                            <td
+                                class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                <button (click)="openEditDeliverableModal(deliverable)"
+                                    class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button (click)="deleteProjectDeliverable(deliverable.pd_id)"
+                                    class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
                             </td>
-                          </tr>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -230,89 +256,91 @@
                 Next
             </button>
         </div>
-         <!-- Edit Deliverable Modal -->
-         <div *ngIf="isEditDeliverableModalOpen"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-         (click)="closeEditDeliverableModal()">
-         <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
-             <h3 class="text-xl font-semibold mb-4">Edit Project Deliverable</h3>
-             <form #editDeliverableForm="ngForm"
-                 (ngSubmit)="updateProjectDeliverable(editDeliverableForm); $event.preventDefault()">
-                 <div class="grid grid-cols-6 gap-4">
-                     <!-- Customer Selection -->
-                     <div class="form-group">
-                         <label class="block mb-2 font-semibold">Customer*</label>
-                         <ng-select [(ngModel)]="editDeliverableData.customer_id" #editCustomerField="ngModel"
-                             name="customer_id" required (change)="onEditCustomerChangeDel()"
-                             [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editCustomerField?.touched) && editCustomerField?.invalid}"
-                             class="custom-ng-select">
-                             <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                             <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                                 {{ customer.customer_name }}
-                             </ng-option>
-                         </ng-select>
-                         <span class="text-red-500 text-sm"
-                             *ngIf="(editDeliverableForm.submitted || editCustomerField?.touched) && editCustomerField?.invalid">
-                             Customer is required.
-                         </span>
-                     </div>
+        <!-- Edit Deliverable Modal -->
+        <div *ngIf="isEditDeliverableModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+            (click)="closeEditDeliverableModal()">
+            <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
+                <h3 class="text-xl font-semibold mb-4">Edit Project Deliverable</h3>
+                <form #editDeliverableForm="ngForm"
+                    (ngSubmit)="updateProjectDeliverable(editDeliverableForm); $event.preventDefault()">
+                    <div class="grid grid-cols-6 gap-4">
+                        <!-- Customer Selection -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Customer*</label>
+                            <ng-select [(ngModel)]="editDeliverableData.customer_id" #editCustomerField="ngModel"
+                                name="customer_id" required (change)="onEditCustomerChangeDel()"
+                                [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editCustomerField?.touched) && editCustomerField?.invalid}"
+                                class="custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                                <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                    {{ customer.customer_name }}
+                                </ng-option>
+                            </ng-select>
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editDeliverableForm.submitted || editCustomerField?.touched) && editCustomerField?.invalid">
+                                Customer is required.
+                            </span>
+                        </div>
 
-                     <!-- Project Selection -->
-                     <div class="form-group">
-                         <label class="block mb-2 font-semibold">Project*</label>
-                         <ng-select [(ngModel)]="editDeliverableData.project_id" #editProjectField="ngModel"
-                             name="project_id" required [disabled]="!editDeliverableData.customer_id"
-                             [clearable]="true"
-                             [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editProjectField?.touched) && editProjectField?.invalid}"
-                             class="custom-ng-select">
-                             <ng-option [value]="" disabled selected>Select Project</ng-option>
-                             <ng-option *ngFor="let project of filteredEditProjects" [value]="project.project_id">
-                                 {{ project.project_name }}
-                             </ng-option>
-                         </ng-select>
-                         <span class="text-red-500 text-sm"
-                             *ngIf="(editDeliverableForm.submitted || editProjectField?.touched) && editProjectField?.invalid">
-                             Project is required.
-                         </span>
-                     </div>
+                        <!-- Project Selection -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Project*</label>
+                            <ng-select [(ngModel)]="editDeliverableData.project_id" #editProjectField="ngModel"
+                                name="project_id" required [disabled]="!editDeliverableData.customer_id"
+                                [clearable]="true"
+                                [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editProjectField?.touched) && editProjectField?.invalid}"
+                                class="custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Project</ng-option>
+                                <ng-option *ngFor="let project of filteredEditProjects" [value]="project.project_id">
+                                    {{ project.project_name }}
+                                </ng-option>
+                            </ng-select>
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editDeliverableForm.submitted || editProjectField?.touched) && editProjectField?.invalid">
+                                Project is required.
+                            </span>
+                        </div>
 
-                     <!-- Deliverable Name Field -->
-                     <div class="form-group">
-                         <label class="block mb-2 font-semibold">Deliverable Name*</label>
-                         <input type="text" class="border p-2 w-full rounded-md"
-                             [(ngModel)]="editDeliverableData.project_deliverable_name"
-                             #editDeliverableNameField="ngModel" name="project_deliverable_name" required
-                             [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editDeliverableNameField?.touched) && editDeliverableNameField?.invalid}">
-                         <span class="text-red-500 text-sm"
-                             *ngIf="(editDeliverableForm.submitted || editDeliverableNameField?.touched) && editDeliverableNameField?.invalid">
-                             Deliverable name is required.
-                         </span>
-                     </div>
-                 </div>
-                 <div class="mt-4 flex justify-end">
-                     <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-                         (click)="closeEditDeliverableModal()">Cancel</button>
-                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-                 </div>
-             </form>
-         </div>
-     </div>
+                        <!-- Deliverable Name Field -->
+                        <div class="form-group">
+                            <label class="block mb-2 font-semibold">Deliverable Name*</label>
+                            <input type="text" class="border p-2 w-full rounded-md"
+                                [(ngModel)]="editDeliverableData.project_deliverable_name"
+                                #editDeliverableNameField="ngModel" name="project_deliverable_name" required
+                                [ngClass]="{'border-red-500': (editDeliverableForm.submitted || editDeliverableNameField?.touched) && editDeliverableNameField?.invalid}">
+                            <span class="text-red-500 text-sm"
+                                *ngIf="(editDeliverableForm.submitted || editDeliverableNameField?.touched) && editDeliverableNameField?.invalid">
+                                Deliverable name is required.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                            (click)="closeEditDeliverableModal()">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <div *ngIf="selectedSection === 'projectPhases'">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-        <div class="mb-6 pb-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-              </svg>
-              Add New Project Phase
-            </h3>
-            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project phase</p>
-          </div>
+            <div class="mb-6 pb-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Add New Project Phase
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project phase</p>
+            </div>
 
-        <!-- <form #projectPhaseFormRef="ngForm" (ngSubmit)="submitProjectPhase(projectPhaseFormRef)">
+            <!-- <form #projectPhaseFormRef="ngForm" (ngSubmit)="submitProjectPhase(projectPhaseFormRef)">
             <div class="grid grid-cols-6 gap-4">
                
                 <div class="form-group">
@@ -385,93 +413,98 @@
             </div>
         </form> -->
 
-        <form #projectPhaseFormRef="ngForm" (ngSubmit)="submitProjectPhase(projectPhaseFormRef); $event.preventDefault()">
-            <div class="grid grid-cols-4 gap-4">
-              <!-- Customer Name -->
-              <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Customer Name*</label>
-                <ng-select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel" name="customer_id" required
-                  (change)="filterProjectsForPhases()"
-                  [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}"
-                  class="text-xs custom-ng-select">
-                  <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                  <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                    {{ customer.customer_name }}
-                  </ng-option>
-                </ng-select>
-                <span class="text-xs text-red-500"
-                  *ngIf="(customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)">
-                  Required
-                </span>
-              </div>
-        
-              <!-- Project Selection -->
-              <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Project*</label>
-                <ng-select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project_id" required
-                  (change)="filterDeliverablesForPhases()" [disabled]="!projectPhaseForm.customer_id"
-                  [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}"
-                  class="text-xs custom-ng-select">
-                  <ng-option [value]="" disabled selected>Select Project</ng-option>
-                  <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
-                    {{ project.project_name }}
-                  </ng-option>
-                </ng-select>
-                <span class="text-xs text-red-500"
-                  *ngIf="(projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)">
-                  Required
-                </span>
-              </div>
-        
-              <!-- Deliverable Selection -->
-              <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Deliverable*</label>
-                <ng-select [(ngModel)]="projectPhaseForm.pd_id" #deliverableField="ngModel" name="pd_id" required
-                  [disabled]="!projectPhaseForm.project_id"
-                  [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectPhaseFormRef.submitted && deliverableField.invalid)}"
-                  class="text-xs custom-ng-select">
-                  <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
-                  <ng-option *ngFor="let deliverable of filteredDeliverables" [value]="deliverable.pd_id">
-                    {{ deliverable.project_deliverable_name }}
-                  </ng-option>
-                </ng-select>
-                <span class="text-xs text-red-500"
-                  *ngIf="(deliverableField.invalid && deliverableField.touched) || (projectPhaseFormRef.submitted && deliverableField.invalid)">
-                  Required
-                </span>
-              </div>
-        
-              <!-- Phase Name -->
-              <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Phase Name*</label>
-                <input type="text" [(ngModel)]="projectPhaseForm.project_phase_name" #phaseField="ngModel"
-                  name="project_phase_name" required placeholder="Enter phase name"
-                  class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectPhaseFormRef.submitted && phaseField.invalid)}" />
-                <span class="text-xs text-red-500"
-                  *ngIf="(phaseField.invalid && phaseField.touched) || (projectPhaseFormRef.submitted && phaseField.invalid)">
-                  Required
-                </span>
-              </div>
-            </div>
-        
-            <!-- Submit Button -->
-            <div class="mt-6 flex justify-center">
-              <button type="submit"
-                class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Save Phase
-              </button>
-            </div>
-          </form>
-          </div>
+            <form #projectPhaseFormRef="ngForm"
+                (ngSubmit)="submitProjectPhase(projectPhaseFormRef); $event.preventDefault()">
+                <div class="grid grid-cols-4 gap-4">
+                    <!-- Customer Name -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+                        <ng-select [(ngModel)]="projectPhaseForm.customer_id" #customerField="ngModel"
+                            name="customer_id" required (change)="filterProjectsForPhases()"
+                            [ngClass]="{'border-red-500': (customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(customerField.invalid && customerField.touched) || (projectPhaseFormRef.submitted && customerField.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Project Selection -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Project*</label>
+                        <ng-select [(ngModel)]="projectPhaseForm.project_id" #projectField="ngModel" name="project_id"
+                            required (change)="filterDeliverablesForPhases()" [disabled]="!projectPhaseForm.customer_id"
+                            [ngClass]="{'border-red-500': (projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Project</ng-option>
+                            <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
+                                {{ project.project_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(projectField.invalid && projectField.touched) || (projectPhaseFormRef.submitted && projectField.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Deliverable Selection -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Deliverable*</label>
+                        <ng-select [(ngModel)]="projectPhaseForm.pd_id" #deliverableField="ngModel" name="pd_id"
+                            required [disabled]="!projectPhaseForm.project_id"
+                            [ngClass]="{'border-red-500': (deliverableField.invalid && deliverableField.touched) || (projectPhaseFormRef.submitted && deliverableField.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                            <ng-option *ngFor="let deliverable of filteredDeliverables" [value]="deliverable.pd_id">
+                                {{ deliverable.project_deliverable_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(deliverableField.invalid && deliverableField.touched) || (projectPhaseFormRef.submitted && deliverableField.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Phase Name -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Phase Name*</label>
+                        <input type="text" [(ngModel)]="projectPhaseForm.project_phase_name" #phaseField="ngModel"
+                            name="project_phase_name" required placeholder="Enter phase name"
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            [ngClass]="{'border-red-500': (phaseField.invalid && phaseField.touched) || (projectPhaseFormRef.submitted && phaseField.invalid)}" />
+                        <span class="text-xs text-red-500"
+                            *ngIf="(phaseField.invalid && phaseField.touched) || (projectPhaseFormRef.submitted && phaseField.invalid)">
+                            Required
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6 flex justify-center">
+                    <button type="submit"
+                        class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Save Phase
+                    </button>
+                </div>
+            </form>
+        </div>
 
         <!-- Filter Section -->
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative ">
-                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
 
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Customer</label>
@@ -532,18 +565,21 @@
                     <!-- <button (click)="clearPhaseFilters()"
                         class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
                         All Filters</button> -->
-                        <div class="relative w-28">
+                    <div class="relative w-28">
 
-                            <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-                
-                          <button (click)="clearPhaseFilters()" title="Clear all filters"
-                          class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                          </svg>
-                          <span>Clear</span>
+                        <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
+
+                        <button (click)="clearPhaseFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
                         </button>
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -552,34 +588,50 @@
                 <table class="min-w-full text-xs border-collapse">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                #</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
-                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
-                          </tr>
+                            <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let phase of paginatedProjectPhases; let i = index" class="hover:bg-gray-50">
-                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.customer_name || '-' }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_name || '-' }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_deliverable_name || '-' }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_phase_name || '-' }}</td>
-                            <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
-                              <button (click)="openEditPhaseModal(phase)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                              </button>
-                              <button (click)="deleteProjectPhase(phase.phase_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
+                            <td
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                {{ i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.customer_name || '-' }}
                             </td>
-                          </tr>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_name || '-' }}
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_deliverable_name
+                                || '-' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ phase.project_phase_name || '-'
+                                }}</td>
+                            <td
+                                class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                <button (click)="openEditPhaseModal(phase)"
+                                    class="text-green-600 hover:text-green-800 p-1" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button (click)="deleteProjectPhase(phase.phase_id)"
+                                    class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -690,12 +742,25 @@
     </div>
 
     <div *ngIf="selectedSection === 'viewMyProjectTeam'">
-        <h3 class="text-xl font-semibold mb-4">My Project Team</h3>
+        <!-- My Project Team -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z"
+                        clip-rule="evenodd" />
+                </svg>
+                My Project Team
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">View your project team members</p>
 
+        </div>
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative ">
                 <!-- Enhanced Filter Section -->
-                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
 
 
                     <div class="relative w-48">
@@ -798,14 +863,17 @@
                     <div class="relative w-38">
 
                         <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-            
-                      <button (click)="clearTeamFilters()" title="Clear all filters"
-                      class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                      </svg>
-                      <span>Clear</span>
-                    </button>
+
+                        <button (click)="clearTeamFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -813,106 +881,124 @@
             <!-- Project Team Table -->
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
                 <table class="min-w-full text-xs border-collapse">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Role</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation Status</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let member of paginatedProjectTeamData; let i = index" class="hover:bg-gray-50">
-                        <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ (teamCurrentPage - 1) * teamItemsPerPage + i + 1 }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.customer_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_manager_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                #</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Role</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Allocation Status</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let member of paginatedProjectTeamData; let i = index" class="hover:bg-gray-50">
+                            <td
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                {{ (teamCurrentPage - 1) * teamItemsPerPage + i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.customer_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_manager_name }}
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
 
-                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
+                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
 
-                        <td class="px-1 py-1 border border-gray-300 text-center">
-                            <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
-                              {{ member.allocation_status ? 'Employee' : 'Shadow' }}
-                            </span>
-                          </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span [class.text-green-600]="member.allocation_status"
+                                    [class.text-gray-500]="!member.allocation_status">
+                                    {{ member.allocation_status ? 'Employee' : 'Shadow' }}
+                                </span>
+                            </td>
 
 
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%</td>
-                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
-                        <td class="px-1 py-1 border border-gray-300 text-center">
-                            <span [class.text-green-600]="member.billed_status" [class.text-gray-500]="!member.billed_status">
-                              {{ member.billed_status ? 'Billed' : 'Not Billed' }}
-                            </span>
-                          </td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%
+                            </td>
+                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span [class.text-green-600]="member.billed_status"
+                                    [class.text-gray-500]="!member.billed_status">
+                                    {{ member.billed_status ? 'Billed' : 'Not Billed' }}
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <!-- Pagination Controls -->
-            <div class="flex items-center justify-center mt-4 space-x-1">
-                <button (click)="changeTeamPage(teamCurrentPage - 1)" [disabled]="teamCurrentPage === 1"
-                    class="px-3 py-1 border rounded-md">
-                    Previous
-                </button>
-                <button *ngIf="teamCurrentPage > 3" (click)="changeTeamPage(1)"
-                    class="px-3 py-1 border rounded-md">1</button>
-                <span *ngIf="teamCurrentPage > 4" class="px-2">...</span>
-                <button *ngFor="let page of getVisibleTeamPageNumbers()" (click)="changeTeamPage(page)"
-                    [class.bg-blue-500]="teamCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
-                    }}</button>
-                <span *ngIf="teamCurrentPage < teamTotalPages - 3" class="px-2">...</span>
-                <button *ngIf="teamCurrentPage < teamTotalPages - 2" (click)="changeTeamPage(teamTotalPages)"
-                    class="px-3 py-1 border rounded-md">{{ teamTotalPages }}</button>
-                <button (click)="changeTeamPage(teamCurrentPage + 1)" [disabled]="teamCurrentPage === teamTotalPages"
-                    class="px-3 py-1 border rounded-md">Next</button>
+                <!-- Pagination Controls -->
+                <div class="flex items-center justify-center mt-4 space-x-1">
+                    <button (click)="changeTeamPage(teamCurrentPage - 1)" [disabled]="teamCurrentPage === 1"
+                        class="px-3 py-1 border rounded-md">
+                        Previous
+                    </button>
+                    <button *ngIf="teamCurrentPage > 3" (click)="changeTeamPage(1)"
+                        class="px-3 py-1 border rounded-md">1</button>
+                    <span *ngIf="teamCurrentPage > 4" class="px-2">...</span>
+                    <button *ngFor="let page of getVisibleTeamPageNumbers()" (click)="changeTeamPage(page)"
+                        [class.bg-blue-500]="teamCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
+                        }}</button>
+                    <span *ngIf="teamCurrentPage < teamTotalPages - 3" class="px-2">...</span>
+                    <button *ngIf="teamCurrentPage < teamTotalPages - 2" (click)="changeTeamPage(teamTotalPages)"
+                        class="px-3 py-1 border rounded-md">{{ teamTotalPages }}</button>
+                    <button (click)="changeTeamPage(teamCurrentPage + 1)"
+                        [disabled]="teamCurrentPage === teamTotalPages"
+                        class="px-3 py-1 border rounded-md">Next</button>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 
     <div *ngIf="selectedSection === 'viewMyProjectTeamsTimesheet'">
-            <div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
-                    </svg>
-                    My Project Team's Timesheet
-                </h3>
-                <div class="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
-                    <div>
-                        <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
+        <!-- My Project Team's Timesheet -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        My Project Team's Timesheet
+                    </h3>
+                    <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Total Entries</div>
+                        <div class="font-semibold">{{filteredTimesheetData.length}}</div>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-center">
-                            <div class="text-xs text-gray-500">Total Entries</div>
-                            <div class="font-semibold">{{filteredTimesheetData.length}}</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-xs text-gray-500">Total Hours</div>
-                            <div class="font-semibold text-blue-600">
-                                {{calculateTimesheetTotalTime().hours}}h {{calculateTimesheetTotalTime().minutes}}m
-                            </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Total Hours</div>
+                        <div class="font-semibold text-blue-600">
+                            {{calculateTimesheetTotalTime().hours}}h {{calculateTimesheetTotalTime().minutes}}m
                         </div>
                     </div>
-</div>
+                </div>
             </div>
-            
-           
-        
+
+        </div>
+
+
+
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative ">
-                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="timesheetEmployeeFilter" (change)="applyTimesheetFilters()"
@@ -981,14 +1067,17 @@
                     <div class="relative w-28">
 
                         <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-            
-                      <button (click)="clearTimesheetFilters()" title="Clear all filters"
-                      class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                      </svg>
-                      <span>Clear</span>
-                    </button>
+
+                        <button (click)="clearTimesheetFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -997,88 +1086,111 @@
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
                 <table class="min-w-full text-xs border-collapse">
                     <thead>
-                    <tr class="bg-gray-50">
-                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let timesheet of paginatedTimesheetData; let i = index" class="hover:bg-gray-50">
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ (timesheetCurrentPage - 1) * timesheetItemsPerPage + i + 1 }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.project_name }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.project_phase_name }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.project_deliverable_name }}</td>
-                        <!-- <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_description }}</td> -->
+                        <tr class="bg-gray-50">
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                #</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let timesheet of paginatedTimesheetData; let i = index" class="hover:bg-gray-50">
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ (timesheetCurrentPage - 1) *
+                                timesheetItemsPerPage + i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.project_name }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.project_phase_name }}
+                            </td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{
+                                timesheet.project_deliverable_name }}</td>
+                            <!-- <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_description }}</td> -->
 
 
 
-                        <td class="px-1 py-1 border border-gray-300 text-center">
-                            <div class="group relative inline-block">
-                              <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description || '-' }}</span>
-                              <div *ngIf="timesheet.task_description" class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
-                                {{ timesheet.task_description }}
-                              </div>
-                            </div>
-                          </td>
-      
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <div class="group relative inline-block">
+                                    <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description ||
+                                        '-' }}</span>
+                                    <div *ngIf="timesheet.task_description"
+                                        class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                                        {{ timesheet.task_description }}
+                                    </div>
+                                </div>
+                            </td>
 
 
 
 
 
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.hours }}</td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.minutes }}</td>
-                        <!-- <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
-                        <td class="px-1 py-1 border border-gray-200 text-center">
-                            <span [class.text-green-600]="timesheet.task_status" [class.text-yellow-600]="!timesheet.task_status">
-                              {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
-                            </span>
-                          </td>
-                        <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <!-- Pagination Controls -->
-            <div class="flex items-center justify-center mt-4 space-x-1">
-                <button (click)="changeTimesheetPage(timesheetCurrentPage - 1)" [disabled]="timesheetCurrentPage === 1"
-                    class="px-3 py-1 border rounded-md">
-                    Previous
-                </button>
-                <button *ngIf="timesheetCurrentPage > 3" (click)="changeTimesheetPage(1)"
-                    class="px-3 py-1 border rounded-md">1</button>
-                <span *ngIf="timesheetCurrentPage > 4" class="px-2">...</span>
-                <button *ngFor="let page of getVisibleTimesheetPageNumbers()" (click)="changeTimesheetPage(page)"
-                    [class.bg-blue-500]="timesheetCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
-                    }}</button>
-                <span *ngIf="timesheetCurrentPage < timesheetTotalPages - 3" class="px-2">...</span>
-                <button *ngIf="timesheetCurrentPage < timesheetTotalPages - 2"
-                    (click)="changeTimesheetPage(timesheetTotalPages)" class="px-3 py-1 border rounded-md">{{
-                    timesheetTotalPages }}</button>
-                <button (click)="changeTimesheetPage(timesheetCurrentPage + 1)"
-                    [disabled]="timesheetCurrentPage === timesheetTotalPages"
-                    class="px-3 py-1 border rounded-md">Next</button>
-            </div>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.hours }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.minutes }}</td>
+                            <!-- <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
+                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                <span [class.text-green-600]="timesheet.task_status"
+                                    [class.text-yellow-600]="!timesheet.task_status">
+                                    {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination Controls -->
+                <div class="flex items-center justify-center mt-4 space-x-1">
+                    <button (click)="changeTimesheetPage(timesheetCurrentPage - 1)"
+                        [disabled]="timesheetCurrentPage === 1" class="px-3 py-1 border rounded-md">
+                        Previous
+                    </button>
+                    <button *ngIf="timesheetCurrentPage > 3" (click)="changeTimesheetPage(1)"
+                        class="px-3 py-1 border rounded-md">1</button>
+                    <span *ngIf="timesheetCurrentPage > 4" class="px-2">...</span>
+                    <button *ngFor="let page of getVisibleTimesheetPageNumbers()" (click)="changeTimesheetPage(page)"
+                        [class.bg-blue-500]="timesheetCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
+                        }}</button>
+                    <span *ngIf="timesheetCurrentPage < timesheetTotalPages - 3" class="px-2">...</span>
+                    <button *ngIf="timesheetCurrentPage < timesheetTotalPages - 2"
+                        (click)="changeTimesheetPage(timesheetTotalPages)" class="px-3 py-1 border rounded-md">{{
+                        timesheetTotalPages }}</button>
+                    <button (click)="changeTimesheetPage(timesheetCurrentPage + 1)"
+                        [disabled]="timesheetCurrentPage === timesheetTotalPages"
+                        class="px-3 py-1 border rounded-md">Next</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div *ngIf="selectedSection === 'viewMyReportingTeam'">
-        <h3 class="text-xl font-semibold mb-4">My Reporting Team</h3>
+        <!-- My Reporting Team -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z"
+                        clip-rule="evenodd" />
+                </svg>
+                My Reporting Team
+            </h3>
+            <p class="text-xs text-gray-500 mt-1">View your reporting team members</p>
 
+            <!-- Team content would go here -->
+        </div>
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative ">
                 <!-- Enhanced Filter Section -->
-                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
 
                     <div class="relative w-48">
                         <label class="block text-xs font-medium mb-1">Customer</label>
@@ -1180,14 +1292,17 @@
                     <div class="relative w-38">
 
                         <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-            
-                      <button (click)="clearReportingFilters()" title="Clear all filters"
-                      class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                      </svg>
-                      <span>Clear</span>
-                    </button>
+
+                        <button (click)="clearReportingFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1195,106 +1310,122 @@
             <!-- Reporting Team Table -->
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
                 <table class="min-w-full text-xs border-collapse">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Reporting Manager</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Project Role</th>
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                #</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Reporting Manager</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Project Role</th>
 
-                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation Status</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let member of paginatedReportingTeamData; let i = index" class="hover:bg-gray-50">
-                        <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ (reportingCurrentPage - 1) * reportingItemsPerPage + i + 1 }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.customer_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.reporting_manager_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
-                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
-                        <td class="px-1 py-1 border border-gray-300 text-center">
-                            <span [class.text-green-600]="member.allocation_status" [class.text-gray-500]="!member.allocation_status">
-                              {{ member.allocation_status ? 'Employee' : 'Shadow' }}
-                            </span>
-                          </td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%</td>
-                        <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
-                        <td class="px-1 py-1 border border-gray-300 text-center">
-                            <span [class.text-green-600]="member.billed_status" [class.text-gray-500]="!member.billed_status">
-                              {{ member.billed_status ? 'Billed' : 'Not Billed' }}
-                            </span>
-                          </td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date | date:'dd-MMM-yyyy' }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Allocation Status</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let member of paginatedReportingTeamData; let i = index" class="hover:bg-gray-50">
+                            <td
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                {{ (reportingCurrentPage - 1) * reportingItemsPerPage + i + 1 }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.customer_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.reporting_manager_name }}
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.employee_name }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.project_role_name }}</td>
+                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_status ? 'Active' : 'Inactive' }}</td> -->
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span [class.text-green-600]="member.allocation_status"
+                                    [class.text-gray-500]="!member.allocation_status">
+                                    {{ member.allocation_status ? 'Employee' : 'Shadow' }}
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.allocation_percentage }}%
+                            </td>
+                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ member.billed_status ? 'Billed' : 'Not Billed' }}</td> -->
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span [class.text-green-600]="member.billed_status"
+                                    [class.text-gray-500]="!member.billed_status">
+                                    {{ member.billed_status ? 'Billed' : 'Not Billed' }}
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.start_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <div class="flex items-center justify-center mt-4 space-x-1">
-                <button (click)="changeReportingPage(reportingCurrentPage - 1)" [disabled]="reportingCurrentPage === 1"
-                    class="px-3 py-1 border rounded-md">
-                    Previous
-                </button>
-                <button *ngIf="reportingCurrentPage > 3" (click)="changeReportingPage(1)"
-                    class="px-3 py-1 border rounded-md">1</button>
-                <span *ngIf="reportingCurrentPage > 4" class="px-2">...</span>
-                <button *ngFor="let page of getVisibleReportingPageNumbers()" (click)="changeReportingPage(page)"
-                    [class.bg-blue-500]="reportingCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
-                    }}</button>
-                <span *ngIf="reportingCurrentPage < reportingTotalPages - 3" class="px-2">...</span>
-                <button *ngIf="reportingCurrentPage < reportingTotalPages - 2"
-                    (click)="changeReportingPage(reportingTotalPages)" class="px-3 py-1 border rounded-md">{{
-                    reportingTotalPages }}</button>
-                <button (click)="changeReportingPage(reportingCurrentPage + 1)"
-                    [disabled]="reportingCurrentPage === reportingTotalPages"
-                    class="px-3 py-1 border rounded-md">Next</button>
-            </div>
+                <div class="flex items-center justify-center mt-4 space-x-1">
+                    <button (click)="changeReportingPage(reportingCurrentPage - 1)"
+                        [disabled]="reportingCurrentPage === 1" class="px-3 py-1 border rounded-md">
+                        Previous
+                    </button>
+                    <button *ngIf="reportingCurrentPage > 3" (click)="changeReportingPage(1)"
+                        class="px-3 py-1 border rounded-md">1</button>
+                    <span *ngIf="reportingCurrentPage > 4" class="px-2">...</span>
+                    <button *ngFor="let page of getVisibleReportingPageNumbers()" (click)="changeReportingPage(page)"
+                        [class.bg-blue-500]="reportingCurrentPage === page" class="px-3 py-1 border rounded-md">{{ page
+                        }}</button>
+                    <span *ngIf="reportingCurrentPage < reportingTotalPages - 3" class="px-2">...</span>
+                    <button *ngIf="reportingCurrentPage < reportingTotalPages - 2"
+                        (click)="changeReportingPage(reportingTotalPages)" class="px-3 py-1 border rounded-md">{{
+                        reportingTotalPages }}</button>
+                    <button (click)="changeReportingPage(reportingCurrentPage + 1)"
+                        [disabled]="reportingCurrentPage === reportingTotalPages"
+                        class="px-3 py-1 border rounded-md">Next</button>
+                </div>
             </div>
         </div>
     </div>
 
 
     <div *ngIf="selectedSection === 'viewMyReportingTeamsTimesheet'">
-        <div>
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
-            </svg>
-            My Reporting Team's Timesheet
-        </h3>
-        
-        <div class="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
-            <div>
-                <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <div class="text-center">
-                    <div class="text-xs text-gray-500">Total Entries</div>
-                    <div class="font-semibold">{{filteredReportingTimesheetData.length}}</div>
+        <!-- My Reporting Team's Timesheet -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        My Reporting Team's Timesheet
+                    </h3>
+                    <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
                 </div>
-                <div class="text-center">
-                    <div class="text-xs text-gray-500">Total Hours</div>
-                    <div class="font-semibold text-blue-600">
-                        {{calculateFilteredTotalTime().hours}}h {{calculateFilteredTotalTime().minutes}}m
+
+                <div class="flex items-center space-x-4">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Total Entries</div>
+                        <div class="font-semibold">{{filteredReportingTimesheetData.length}}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Total Hours</div>
+                        <div class="font-semibold text-blue-600">
+                            {{calculateFilteredTotalTime().hours}}h {{calculateFilteredTotalTime().minutes}}m
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Timesheet content would go here -->
         </div>
-    </div>
 
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative">
                 <!-- Enhanced Filter Section -->
-                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+                <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+                    style="overflow: visible;">
 
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Employee</label>
@@ -1368,94 +1499,109 @@
                     <div class="relative w-28">
 
                         <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
-            
-                      <button (click)="clearReportingTimesheetFilters()" title="Clear all filters"
-                      class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                      </svg>
-                      <span>Clear</span>
-                    </button>
+
+                        <button (click)="clearReportingTimesheetFilters()" title="Clear all filters"
+                            class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Clear</span>
+                        </button>
                     </div>
                 </div>
                 <!-- Add this right after the filter section and before the table -->
 
-  
+
 
                 <!-- Timesheet Table -->
                 <div class="rounded-lg w-full inline-block whitespace-nowrap">
                     <table class="min-w-full text-xs border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                            <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let timesheet of paginatedReportingTimesheetData; let i = index"
-                            class="hover:bg-gray-50">
-                            <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ (reportingTimesheetCurrentPage - 1) *
-                                reportingTimesheetItemsPerPage + i + 1 }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.employee_name }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name }}</td>
-                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_description }}</td> -->
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th
+                                    class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                                    #</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                                <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let timesheet of paginatedReportingTimesheetData; let i = index"
+                                class="hover:bg-gray-50">
+                                <td
+                                    class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                                    {{ (reportingTimesheetCurrentPage - 1) *
+                                    reportingTimesheetItemsPerPage + i + 1 }}</td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.employee_name }}
+                                </td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}
+                                </td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name
+                                    }}</td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{
+                                    timesheet.project_deliverable_name }}</td>
+                                <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_description }}</td> -->
 
-                            <td class="px-1 py-1 border border-gray-300 text-center">
-                                <div class="group relative inline-block">
-                                  <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description || '-' }}</span>
-                                  <div *ngIf="timesheet.task_description" class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
-                                    {{ timesheet.task_description }}
-                                  </div>
-                                </div>
-                              </td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">
+                                    <div class="group relative inline-block">
+                                        <span class="truncate max-w-[100px] inline-block">{{ timesheet.task_description
+                                            || '-' }}</span>
+                                        <div *ngIf="timesheet.task_description"
+                                            class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                                            {{ timesheet.task_description }}
+                                        </div>
+                                    </div>
+                                </td>
 
 
 
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
-                            <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
-                            <td class="px-1 py-1 border border-gray-300 text-center">
-                                <span [class.text-green-600]="timesheet.task_status" [class.text-yellow-600]="!timesheet.task_status">
-                                  {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
-                                </span>
-                              </td>
-                            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}</td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes }}</td>
+                                <!-- <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_status ? 'Completed' : 'In Progress' }}</td> -->
+                                <td class="px-1 py-1 border border-gray-300 text-center">
+                                    <span [class.text-green-600]="timesheet.task_status"
+                                        [class.text-yellow-600]="!timesheet.task_status">
+                                        {{ timesheet.task_status ? 'Completed' : 'In Progress' }}
+                                    </span>
+                                </td>
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date |
+                                    date:'dd-MMM-yyyy' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <!-- Pagination Controls -->
-                <div class="flex items-center justify-center mt-4 space-x-1">
-                    <button (click)="changeReportingTimesheetPage(reportingTimesheetCurrentPage - 1)"
-                        [disabled]="reportingTimesheetCurrentPage === 1" class="px-3 py-1 border rounded-md">
-                        Previous
-                    </button>
-                    <button *ngIf="reportingTimesheetCurrentPage > 3" (click)="changeReportingTimesheetPage(1)"
-                        class="px-3 py-1 border rounded-md">1</button>
-                    <span *ngIf="reportingTimesheetCurrentPage > 4" class="px-2">...</span>
-                    <button *ngFor="let page of getVisibleReportingTimesheetPageNumbers()"
-                        (click)="changeReportingTimesheetPage(page)"
-                        [class.bg-blue-500]="reportingTimesheetCurrentPage === page"
-                        class="px-3 py-1 border rounded-md">{{ page }}</button>
-                    <span *ngIf="reportingTimesheetCurrentPage < reportingTimesheetTotalPages - 3"
-                        class="px-2">...</span>
-                    <button *ngIf="reportingTimesheetCurrentPage < reportingTimesheetTotalPages - 2"
-                        (click)="changeReportingTimesheetPage(reportingTimesheetTotalPages)"
-                        class="px-3 py-1 border rounded-md">{{ reportingTimesheetTotalPages }}</button>
-                    <button (click)="changeReportingTimesheetPage(reportingTimesheetCurrentPage + 1)"
-                        [disabled]="reportingTimesheetCurrentPage === reportingTimesheetTotalPages"
-                        class="px-3 py-1 border rounded-md">Next</button>
-                </div>
+                    <!-- Pagination Controls -->
+                    <div class="flex items-center justify-center mt-4 space-x-1">
+                        <button (click)="changeReportingTimesheetPage(reportingTimesheetCurrentPage - 1)"
+                            [disabled]="reportingTimesheetCurrentPage === 1" class="px-3 py-1 border rounded-md">
+                            Previous
+                        </button>
+                        <button *ngIf="reportingTimesheetCurrentPage > 3" (click)="changeReportingTimesheetPage(1)"
+                            class="px-3 py-1 border rounded-md">1</button>
+                        <span *ngIf="reportingTimesheetCurrentPage > 4" class="px-2">...</span>
+                        <button *ngFor="let page of getVisibleReportingTimesheetPageNumbers()"
+                            (click)="changeReportingTimesheetPage(page)"
+                            [class.bg-blue-500]="reportingTimesheetCurrentPage === page"
+                            class="px-3 py-1 border rounded-md">{{ page }}</button>
+                        <span *ngIf="reportingTimesheetCurrentPage < reportingTimesheetTotalPages - 3"
+                            class="px-2">...</span>
+                        <button *ngIf="reportingTimesheetCurrentPage < reportingTimesheetTotalPages - 2"
+                            (click)="changeReportingTimesheetPage(reportingTimesheetTotalPages)"
+                            class="px-3 py-1 border rounded-md">{{ reportingTimesheetTotalPages }}</button>
+                        <button (click)="changeReportingTimesheetPage(reportingTimesheetCurrentPage + 1)"
+                            [disabled]="reportingTimesheetCurrentPage === reportingTimesheetTotalPages"
+                            class="px-3 py-1 border rounded-md">Next</button>
+                    </div>
                 </div>
             </div>
         </div>
