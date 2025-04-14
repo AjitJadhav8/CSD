@@ -61,6 +61,7 @@ export class AllTeamsTimesheetComponent {
         this.filteredTimesheets = [...this.timesheets];
         this.updatePage();
         this.applyDateFilter(); // Apply filters after fetching data
+        this.calculateFilteredTotalTime();
 
       },
       (error) => {
@@ -243,4 +244,26 @@ export class AllTeamsTimesheetComponent {
       saveAs(data, 'AllTeamsTimesheetData.xlsx');
     }
 
+
+    // Add these methods to your component class
+calculateFilteredTotalTime(): { hours: number, minutes: number } {
+  if (!this.filteredTimesheets || this.filteredTimesheets.length === 0) {
+    return { hours: 0, minutes: 0 };
+  }
+
+  let totalMinutes = this.filteredTimesheets.reduce((sum, entry) => {
+    return sum + (entry.hours * 60) + entry.minutes;
+  }, 0);
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  
+  return { hours, minutes };
 }
+
+calculateFilteredTotalHours(): number {
+  const totalTime = this.calculateFilteredTotalTime();
+  return totalTime.hours + (totalTime.minutes / 60);
+}
+}
+
