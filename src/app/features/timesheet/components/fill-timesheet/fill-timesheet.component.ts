@@ -57,6 +57,55 @@ export class FillTimesheetComponent {
       }
     );
   }
+  retainTimesheetEntry(timesheet: any): void {
+    console.log('Retaining Timesheet Entry:', timesheet);
+    
+    // Set the form values based on the selected timesheet
+    this.selectedDate = this.formatDate(timesheet.timesheet_date);
+    this.selectedCustomer = timesheet.customer_id;
+    
+    // Trigger customer change to load projects
+    this.onCustomerChange();
+    
+    // Set project after a small delay to ensure projects are loaded
+    setTimeout(() => {
+        this.selectedProject = timesheet.project_id;
+        
+        // Trigger project change to load deliverables
+        this.onProjectChange();
+        
+        setTimeout(() => {
+            this.selectedDeliverable = timesheet.pd_id;
+            
+            // Trigger deliverable change to load phases
+            this.onDeliverableChange();
+            
+            setTimeout(() => {
+                this.selectedPhase = timesheet.phase_id;
+                this.selectedHours = timesheet.hours;
+                this.selectedMinutes = timesheet.minutes;
+                this.selectedTaskStatus = timesheet.task_status;
+                this.taskDescription = timesheet.task_description;
+                
+                // Scroll to the form for better UX
+                const formElement = document.querySelector('.p-4');
+                if (formElement) {
+                    formElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+        }, 100);
+    }, 100);
+    
+    // Show success message
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Timesheet entry retained!',
+        showConfirmButton: false,
+        timer: 2000
+    });
+}
 
   isEditModalOpen = false;
   editTimesheetId: number | null = null;

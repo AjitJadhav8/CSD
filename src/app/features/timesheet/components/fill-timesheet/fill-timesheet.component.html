@@ -254,6 +254,14 @@
                         </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                            
+    <button (click)="retainTimesheetEntry(timesheet)" 
+    class="text-blue-600 hover:text-blue-800 p-1 mr-1"
+    title="Retain this entry to fill again">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>
+</button>
  
                             <button (click)="openEditModal(timesheet)" 
               class="text-green-600 hover:text-green-800 p-1 mr-1"
@@ -277,16 +285,7 @@
             </table>
         </div>
     </div>
-    <!-- In template -->
-     
-<!-- <div class="bg-gray-50 rounded-lg p-3 m-4 border border-gray-200 flex justify-between items-center">
-    <div class="text-sm font-medium text-gray-600">
-      Total Time for {{selectedDate | date:'dd-MMM-yyyy'}}:
-    </div>
-    <div class="text-lg font-semibold text-blue-600">
-      {{calculateTotalTime().hours}}h {{calculateTotalTime().minutes}}m
-    </div>
-  </div> -->
+
 
       <!-- Edit Timesheet Modal -->
       <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
