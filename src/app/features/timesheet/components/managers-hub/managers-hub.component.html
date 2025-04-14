@@ -882,8 +882,34 @@
     </div>
 
     <div *ngIf="selectedSection === 'viewMyProjectTeamsTimesheet'">
-        <h3 class="text-xl font-semibold mb-4">My Project Team's Timesheet</h3>
-
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
+                    </svg>
+                    My Project Team's Timesheet
+                </h3>
+                <div class="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center">
+                            <div class="text-xs text-gray-500">Total Entries</div>
+                            <div class="font-semibold">{{filteredTimesheetData.length}}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs text-gray-500">Total Hours</div>
+                            <div class="font-semibold text-blue-600">
+                                {{calculateTimesheetTotalTime().hours}}h {{calculateTimesheetTotalTime().minutes}}m
+                            </div>
+                        </div>
+                    </div>
+</div>
+            </div>
+            
+           
+        
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative ">
                 <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
@@ -1237,7 +1263,33 @@
 
 
     <div *ngIf="selectedSection === 'viewMyReportingTeamsTimesheet'">
-        <h3 class="text-xl font-semibold mb-4">My Reporting Team's Timesheet</h3>
+        <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12 6a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
+            </svg>
+            My Reporting Team's Timesheet
+        </h3>
+        
+        <div class="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-500">View and manage your team's timesheet entries</p>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-xs text-gray-500">Total Entries</div>
+                    <div class="font-semibold">{{filteredReportingTimesheetData.length}}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500">Total Hours</div>
+                    <div class="font-semibold text-blue-600">
+                        {{calculateFilteredTotalTime().hours}}h {{calculateFilteredTotalTime().minutes}}m
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
             <div class="min-w-full relative">
@@ -1326,6 +1378,9 @@
                     </button>
                     </div>
                 </div>
+                <!-- Add this right after the filter section and before the table -->
+
+  
 
                 <!-- Timesheet Table -->
                 <div class="rounded-lg w-full inline-block whitespace-nowrap">

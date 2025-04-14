@@ -1163,6 +1163,36 @@ export class ManagersHubComponent {
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
 
+  calculateTimesheetTotalTime(): { hours: number, minutes: number } {
+    if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
+      return { hours: 0, minutes: 0 };
+    }
+  
+    let totalMinutes = this.filteredTimesheetData.reduce((sum, entry) => {
+      return sum + (entry.hours * 60) + entry.minutes;
+    }, 0);
+  
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    
+    return { hours, minutes };
+  }
+  
+  calculateTimesheetTotalHours(): number {
+    const totalTime = this.calculateTimesheetTotalTime();
+    return totalTime.hours + (totalTime.minutes / 60);
+  }
+
+
+
+
+
+
+
+
+
+
+
   //reporting manager 
 
 
@@ -1485,6 +1515,26 @@ export class ManagersHubComponent {
   }
 
 
+// Add these methods to your component class
+calculateFilteredTotalTime(): { hours: number, minutes: number } {
+  if (!this.filteredReportingTimesheetData || this.filteredReportingTimesheetData.length === 0) {
+    return { hours: 0, minutes: 0 };
+  }
+
+  let totalMinutes = this.filteredReportingTimesheetData.reduce((sum, entry) => {
+    return sum + (entry.hours * 60) + entry.minutes;
+  }, 0);
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  
+  return { hours, minutes };
+}
+
+calculateFilteredTotalHours(): number {
+  const totalTime = this.calculateFilteredTotalTime();
+  return totalTime.hours + (totalTime.minutes / 60);
+}
 
 
 
