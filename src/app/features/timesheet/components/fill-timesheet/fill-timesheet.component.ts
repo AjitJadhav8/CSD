@@ -214,6 +214,7 @@ export class FillTimesheetComponent {
     });
   }
 
+ 
   onEditProjectChange(): void {
     if (this.editSelectedProject) {
       // Filter deliverables by selected project
@@ -288,6 +289,8 @@ export class FillTimesheetComponent {
       (response) => {
         console.log('User Timesheets Updated:', response);
         this.timesheetData = response; // Update the table data
+        this.calculateTotalTime();
+
       },
       (error) => {
         console.error('Error fetching timesheets:', error);
@@ -338,6 +341,7 @@ export class FillTimesheetComponent {
           timer: 3000
         });
         this.fetchTimesheets(this.selectedDate);
+        this.calculateTotalTime();
       },
       error: (error) => {
         console.error('Error submitting timesheet:', error);
@@ -352,6 +356,8 @@ export class FillTimesheetComponent {
       }
     });
   }
+
+
 
   deleteTimesheet(timesheet_id: number) {
     Swal.fire({
@@ -369,6 +375,8 @@ export class FillTimesheetComponent {
             console.log('Timesheet Deleted');
 
             this.fetchTimesheets(this.selectedDate);
+            this.calculateTotalTime();
+
 
             // Success Toast Notification
             Swal.fire({
@@ -396,6 +404,53 @@ export class FillTimesheetComponent {
         });
       }
     });
+  }
+
+  // Add these methods to your component
+private checkDailyLimit(newHours: number, newMinutes: number): { valid: boolean, message?: string } {
+  const currentTotal = this.calculateTotalHours();
+  const newEntryHours = newHours + (newMinutes / 60);
+  const projectedTotal = currentTotal + newEntryHours;
+
+  if (projectedTotal > 24) {
+    return {
+      valid: false,
+      message: `Total time would exceed 24 hours for this day (currently ${currentTotal.toFixed(2)}h)`
+    };
+  }
+  return { valid: true };
+}
+
+  calculateTotalTime(): { hours: number, minutes: number } {
+    if (!this.timesheetData || this.timesheetData.length === 0) {
+      return { hours: 0, minutes: 0 };
+    }
+  
+    let totalMinutes = 0;
+    
+    this.timesheetData.forEach((entry: any) => {
+      totalMinutes += (entry.hours * 60) + entry.minutes;
+    });
+  
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    
+    return { hours, minutes };
+  }
+  getHoursStatusText(): string {
+    const total = this.calculateTotalHours();
+    if (total < 6) {
+      return 'Below minimum (6h)';
+    } else if (total >= 6 && total <= 8) {
+      return 'Standard workday';
+    } else {
+      return 'Overtime';
+    }
+  }
+  // Add this method to your component
+  calculateTotalHours(): number {
+    const totalTime = this.calculateTotalTime();
+    return totalTime.hours + (totalTime.minutes / 60);
   }
 
   getTaskStatusLabel(status: number): string {
@@ -488,5 +543,9 @@ export class FillTimesheetComponent {
   toggleTaskStatus() {
     this.selectedTaskStatus = this.selectedTaskStatus === 1 ? 0 : 1;
   }
+
+  // Total Hours Logic 
+
+  // In component
 
 }

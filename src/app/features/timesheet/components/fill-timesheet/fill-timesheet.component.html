@@ -2,172 +2,49 @@
     <!-- Button to open the modal -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-        <div class="mb-6 pb-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                        clip-rule="evenodd" />
-                </svg>
-                Fill Timesheet
-            </h3>
-            <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to submit your timesheet</p>
-        </div>
-
-        <!-- <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(timesheetForm); $event.preventDefault()">
-        <div class="grid grid-cols-5 gap-4">
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Filling Timesheet for </label>
-                <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="selectedDate"
-                    (change)="onDateChange()" [min]="minDate" [max]="maxDate" name="selectedDate"
-                    #selectedDateInput="ngModel" required
-                    [ngClass]="{'border-red-500': (selectedDateInput.invalid && selectedDateInput.touched) || (timesheetForm.submitted && selectedDateInput.invalid)}">
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedDateInput.invalid && selectedDateInput.touched) || (timesheetForm.submitted && selectedDateInput.invalid)">
-                    Date is required
-                </span>
+        <div class="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Fill Timesheet
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to submit your timesheet</p>
             </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Customer*</label>
-                <ng-select class="custom-ng-select" [(ngModel)]="selectedCustomer" name="selectedCustomer"
-                    #selectedCustomerInput="ngModel" (change)="onCustomerChange()" required
-                    [ngClass]="{'border-red-500': (selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)}">
-                    <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                    <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                        {{ customer.customer_name }}
-                    </ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedCustomerInput.invalid && selectedCustomerInput.touched) || (timesheetForm.submitted && selectedCustomerInput.invalid)">
-                    Customer is required
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Project*</label>
-                <ng-select class="custom-ng-select" [(ngModel)]="selectedProject" name="selectedProject"
-                    #selectedProjectInput="ngModel" [disabled]="!selectedCustomer" (change)="onProjectChange()" required
-                    [ngClass]="{'border-red-500': (selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)}">
-                    <ng-option [value]="" disabled selected>Select Project</ng-option>
-                    <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
-                        {{ project.project_name }}
-                    </ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedProjectInput.invalid && selectedProjectInput.touched) || (timesheetForm.submitted && selectedProjectInput.invalid)">
-                    Project is required
-                </span>
-            </div>
-
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Deliverable*</label>
-                <ng-select class="custom-ng-select" [(ngModel)]="selectedDeliverable" name="selectedDeliverable"
-                    #selectedDeliverableInput="ngModel" [disabled]="!selectedProject" (change)="onDeliverableChange()"
-                    required
-                    [ngClass]="{'border-red-500': (selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)}">
-                    <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
-                    <ng-option *ngFor="let deliverable of filterOptionProjectDeliverables" [value]="deliverable.pd_id">
-                        {{ deliverable.project_deliverable_name }}
-                    </ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedDeliverableInput.invalid && selectedDeliverableInput.touched) || (timesheetForm.submitted && selectedDeliverableInput.invalid)">
-                    Deliverable is required
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Select Phase*</label>
-                <ng-select class="custom-ng-select" [(ngModel)]="selectedPhase" name="selectedPhase"
-                    #selectedPhaseInput="ngModel" [disabled]="!selectedDeliverable" required
-                    [ngClass]="{'border-red-500': (selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)}">
-                    <ng-option [value]="" disabled selected>Select Phase</ng-option>
-                    <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
-                        {{ phase.project_phase_name }}
-                    </ng-option>
-                </ng-select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)">
-                    Phase is required
-                </span>
-            </div>
-
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Task Description*</label>
-                <textarea class="border p-2 w-full rounded-md" [(ngModel)]="taskDescription" name="taskDescription"
-                    #taskDescriptionInput="ngModel" rows="3" required
-                    [ngClass]="{'border-red-500': (taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)}"></textarea>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(taskDescriptionInput.invalid && taskDescriptionInput.touched) || (timesheetForm.submitted && taskDescriptionInput.invalid)">
-                    Task Description is required
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Hours*</label>
-                <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedHours" name="selectedHours"
-                    #selectedHoursInput="ngModel" required
-                    [ngClass]="{'border-red-500': (selectedHoursInput.invalid && selectedHoursInput.touched) || (timesheetForm.submitted && selectedHoursInput.invalid)}">
-                    <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
-                </select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedHoursInput.invalid && selectedHoursInput.touched) || (timesheetForm.submitted && selectedHoursInput.invalid)">
-                    Hours are required
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Minutes*</label>
-                <select class="border p-2 w-full rounded-md" [(ngModel)]="selectedMinutes" name="selectedMinutes"
-                    #selectedMinutesInput="ngModel" required
-                    [ngClass]="{'border-red-500': (selectedMinutesInput.invalid && selectedMinutesInput.touched) || (timesheetForm.submitted && selectedMinutesInput.invalid)}">
-                    <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
-                </select>
-                <span class="text-red-500 text-sm"
-                    *ngIf="(selectedMinutesInput.invalid && selectedMinutesInput.touched) || (timesheetForm.submitted && selectedMinutesInput.invalid)">
-                    Minutes are required
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="block mb-2 font-semibold">Task Status*</label>
-                <div class="flex items-center space-x-3">
-                    <span class="text-sm font-medium" [class.text-gray-500]="selectedTaskStatus === 0"
-                        [class.text-green-600]="selectedTaskStatus === 1">
-                        {{ selectedTaskStatus === 1 ? '✅ Completed' : '⚠ In Progress' }}
-                    </span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer" [checked]="selectedTaskStatus === 1"
-                            (change)="toggleTaskStatus()">
-                        <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                                        peer-checked:after:translate-x-full peer-checked:after:border-white
-                                        after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                                        after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                                        peer-checked:bg-green-600">
-                        </div>
-                    </label>
+            
+            <div class="flex items-center">
+                <div class="text-right">
+                    <div class="flex items-center justify-end" [ngClass]="{
+                        'text-red-600': calculateTotalHours() < 6,
+                        'text-orange-500': calculateTotalHours() >= 6 && calculateTotalHours() <= 8,
+                        'text-green-600': calculateTotalHours() > 8
+                    }">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="font-medium">
+                            {{ calculateTotalTime().hours }}h {{ calculateTotalTime().minutes }}m
+                        </span>
+                    </div>
+                    <div class="text-xs mt-1" [ngClass]="{
+                        'text-red-500': calculateTotalHours() < 6,
+                        'text-orange-500': calculateTotalHours() >= 6 && calculateTotalHours() <= 8,
+                        'text-green-500': calculateTotalHours() > 8
+                    }">
+                        {{ getHoursStatusText() }}
+                    </div>
                 </div>
-                <span class="text-red-500 text-sm" *ngIf="selectedTaskStatus === null && timesheetForm.submitted">
-                    Task Status is required
-                </span>
             </div>
-
-
         </div>
-        <div class="mt-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-                Submit
-            </button>
-        </div>
-    </form> -->
+         
+
 
         <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(timesheetForm); $event.preventDefault()">
             <div class="grid grid-cols-5 gap-4 mb-4">
-                <!-- Date Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Filling Timesheet for*</label>
                     <input type="date"
@@ -181,7 +58,6 @@
                     </span>
                 </div>
 
-                <!-- Customer Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Customer*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedCustomer" name="selectedCustomer"
@@ -198,7 +74,6 @@
                     </span>
                 </div>
 
-                <!-- Project Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Project*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedProject" name="selectedProject"
@@ -216,7 +91,6 @@
                     </span>
                 </div>
 
-                <!-- Deliverable Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Deliverable*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedDeliverable"
@@ -235,7 +109,6 @@
                     </span>
                 </div>
 
-                <!-- Phase Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Phase*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedPhase" name="selectedPhase"
@@ -256,7 +129,6 @@
             <div class="grid grid-cols-5 gap-4 mb-4">
 
 
-                <!-- Hours Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Hours*</label>
                     <select
@@ -271,7 +143,6 @@
                     </span>
                 </div>
 
-                <!-- Minutes Selection -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Minutes*</label>
                     <select
@@ -286,7 +157,6 @@
                     </span>
                 </div>
 
-                <!-- Task Status -->
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Task Status*</label>
                     <div class="flex items-center space-x-3">
@@ -310,7 +180,6 @@
                     </span>
                 </div>
 
-                <!-- Task Description (Full Width) -->
                 <div class="space-y-1 col-span-2">
                     <label class="text-xs font-medium text-gray-600">Task Description*</label>
                     <textarea
@@ -343,160 +212,7 @@
         </form>
     </div>
 
-    <!-- Edit Timesheet Modal -->
-    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-        (click)="closeEditModal()">
-        <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
-            <h3 class="text-xl font-semibold mb-4">Edit Timesheet</h3>
-            <form #editTimesheetForm="ngForm" (ngSubmit)="updateTimesheet(editTimesheetForm); $event.preventDefault()">
-                <div class="grid grid-cols-4 gap-4">
-                    <!-- Date -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Date*</label>
-                        <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedDate"
-                            name="editSelectedDate" #editSelectedDateInput="ngModel" required>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedDateInput.invalid && editSelectedDateInput.touched">
-                            Date is required
-                        </span>
-                    </div>
-
-                    <!-- Customer -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Customer*</label>
-                        <ng-select class="custom-ng-select" [(ngModel)]="editSelectedCustomer"
-                            name="editSelectedCustomer" #editSelectedCustomerInput="ngModel"
-                            (change)="onEditCustomerChange()" required>
-                            <ng-option [value]="" disabled selected>Select Customer</ng-option>
-                            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                                {{ customer.customer_name }}
-                            </ng-option>
-                        </ng-select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedCustomerInput.invalid && editSelectedCustomerInput.touched">
-                            Customer is required
-                        </span>
-                    </div>
-                    <!-- Project -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Project*</label>
-                        <ng-select class="custom-ng-select" [(ngModel)]="editSelectedProject" name="editSelectedProject"
-                            #editSelectedProjectInput="ngModel" [disabled]="!editSelectedCustomer"
-                            (change)="onEditProjectChange()" required>
-                            <ng-option [value]="" disabled selected>Select Project</ng-option>
-                            <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
-                                {{ project.project_name }}
-                            </ng-option>
-                        </ng-select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedProjectInput.invalid && editSelectedProjectInput.touched">
-                            Project is required
-                        </span>
-                    </div>
-
-                    <!-- Deliverable -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Deliverable*</label>
-                        <ng-select class="custom-ng-select" [(ngModel)]="editSelectedDeliverable"
-                            name="editSelectedDeliverable" #editSelectedDeliverableInput="ngModel"
-                            [disabled]="!editSelectedProject" (change)="onEditDeliverableChange()" required>
-                            <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
-                            <ng-option *ngFor="let deliverable of filterOptionProjectDeliverables"
-                                [value]="deliverable.pd_id">
-                                {{ deliverable.project_deliverable_name }}
-                            </ng-option>
-                        </ng-select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedDeliverableInput.invalid && editSelectedDeliverableInput.touched">
-                            Deliverable is required
-                        </span>
-                    </div>
-
-                    <!-- Phase -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Phase*</label>
-                        <ng-select class="custom-ng-select" [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
-                            #editSelectedPhaseInput="ngModel" [disabled]="!editSelectedDeliverable" required>
-                            <ng-option [value]="" disabled selected>Select Phase</ng-option>
-                            <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
-                                {{ phase.project_phase_name }}
-                            </ng-option>
-                        </ng-select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched">
-                            Phase is required
-                        </span>
-                    </div>
-
-                    <!-- Hours -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Hours*</label>
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedHours"
-                            name="editSelectedHours" #editSelectedHoursInput="ngModel" required>
-                            <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
-                        </select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedHoursInput.invalid && editSelectedHoursInput.touched">
-                            Hours are required
-                        </span>
-                    </div>
-
-                    <!-- Minutes -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Minutes*</label>
-                        <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedMinutes"
-                            name="editSelectedMinutes" #editSelectedMinutesInput="ngModel" required>
-                            <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
-                        </select>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editSelectedMinutesInput.invalid && editSelectedMinutesInput.touched">
-                            Minutes are required
-                        </span>
-                    </div>
-
-                    <!-- Task Status -->
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Task Status*</label>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm font-medium" [class.text-gray-500]="editSelectedTaskStatus === 0"
-                                [class.text-green-600]="editSelectedTaskStatus === 1">
-                                {{ editSelectedTaskStatus === 1 ? '✅ Completed' : '⚠ In Progress' }}
-                            </span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" [(ngModel)]="editSelectedTaskStatus"
-                                    name="editSelectedTaskStatus" (ngModelChange)="onEditTaskStatusChange($event)">
-                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                                       peer-checked:after:translate-x-full peer-checked:after:border-white
-                                       after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                                       after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                                       peer-checked:bg-green-600">
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Task Description -->
-                    <div class="form-group col-span-4">
-                        <label class="block mb-2 font-semibold">Task Description*</label>
-                        <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editTaskDescription"
-                            name="editTaskDescription" #editTaskDescriptionInput="ngModel" rows="3" required></textarea>
-                        <span class="text-red-500 text-sm"
-                            *ngIf="editTaskDescriptionInput.invalid && editTaskDescriptionInput.touched">
-                            Task Description is required
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="mt-4">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                        Update
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+  
     <!-- 🔹 Timesheet Table Section -->
     <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
         <div class="rounded-lg w-full inline-block whitespace-nowrap">
@@ -538,15 +254,7 @@
                         </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
                         <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
-                           
-                            <!-- <button (click)="openEditModal(timesheet)"
-                                class="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                [disabled]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [class.opacity-50]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [class.cursor-not-allowed]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [title]="!isTimesheetEditable(timesheet.timesheet_date) ? 'Editing is only allowed within 24 hours of creation' : ''">
-                                Edit
-                            </button> -->
+ 
                             <button (click)="openEditModal(timesheet)" 
               class="text-green-600 hover:text-green-800 p-1 mr-1"
               [disabled]="!isTimesheetEditable(timesheet.timesheet_date)"
@@ -569,5 +277,170 @@
             </table>
         </div>
     </div>
+    <!-- In template -->
+     
+<!-- <div class="bg-gray-50 rounded-lg p-3 m-4 border border-gray-200 flex justify-between items-center">
+    <div class="text-sm font-medium text-gray-600">
+      Total Time for {{selectedDate | date:'dd-MMM-yyyy'}}:
+    </div>
+    <div class="text-lg font-semibold text-blue-600">
+      {{calculateTotalTime().hours}}h {{calculateTotalTime().minutes}}m
+    </div>
+  </div> -->
+
+      <!-- Edit Timesheet Modal -->
+      <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+      (click)="closeEditModal()">
+      <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
+          <h3 class="text-xl font-semibold mb-4">Edit Timesheet</h3>
+          <form #editTimesheetForm="ngForm" (ngSubmit)="updateTimesheet(editTimesheetForm); $event.preventDefault()">
+              <div class="grid grid-cols-4 gap-4">
+                  <!-- Date -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Date*</label>
+                      <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedDate"
+                          name="editSelectedDate" #editSelectedDateInput="ngModel" required>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedDateInput.invalid && editSelectedDateInput.touched">
+                          Date is required
+                      </span>
+                  </div>
+
+                  <!-- Customer -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Customer*</label>
+                      <ng-select class="custom-ng-select" [(ngModel)]="editSelectedCustomer"
+                          name="editSelectedCustomer" #editSelectedCustomerInput="ngModel"
+                          (change)="onEditCustomerChange()" required>
+                          <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                          <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                              {{ customer.customer_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedCustomerInput.invalid && editSelectedCustomerInput.touched">
+                          Customer is required
+                      </span>
+                  </div>
+                  <!-- Project -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Project*</label>
+                      <ng-select class="custom-ng-select" [(ngModel)]="editSelectedProject" name="editSelectedProject"
+                          #editSelectedProjectInput="ngModel" [disabled]="!editSelectedCustomer"
+                          (change)="onEditProjectChange()" required>
+                          <ng-option [value]="" disabled selected>Select Project</ng-option>
+                          <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+                              {{ project.project_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedProjectInput.invalid && editSelectedProjectInput.touched">
+                          Project is required
+                      </span>
+                  </div>
+
+                  <!-- Deliverable -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Deliverable*</label>
+                      <ng-select class="custom-ng-select" [(ngModel)]="editSelectedDeliverable"
+                          name="editSelectedDeliverable" #editSelectedDeliverableInput="ngModel"
+                          [disabled]="!editSelectedProject" (change)="onEditDeliverableChange()" required>
+                          <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                          <ng-option *ngFor="let deliverable of filterOptionProjectDeliverables"
+                              [value]="deliverable.pd_id">
+                              {{ deliverable.project_deliverable_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedDeliverableInput.invalid && editSelectedDeliverableInput.touched">
+                          Deliverable is required
+                      </span>
+                  </div>
+
+                  <!-- Phase -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Phase*</label>
+                      <ng-select class="custom-ng-select" [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
+                          #editSelectedPhaseInput="ngModel" [disabled]="!editSelectedDeliverable" required>
+                          <ng-option [value]="" disabled selected>Select Phase</ng-option>
+                          <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
+                              {{ phase.project_phase_name }}
+                          </ng-option>
+                      </ng-select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched">
+                          Phase is required
+                      </span>
+                  </div>
+
+                  <!-- Hours -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Hours*</label>
+                      <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedHours"
+                          name="editSelectedHours" #editSelectedHoursInput="ngModel" required>
+                          <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
+                      </select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedHoursInput.invalid && editSelectedHoursInput.touched">
+                          Hours are required
+                      </span>
+                  </div>
+
+                  <!-- Minutes -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Minutes*</label>
+                      <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedMinutes"
+                          name="editSelectedMinutes" #editSelectedMinutesInput="ngModel" required>
+                          <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
+                      </select>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editSelectedMinutesInput.invalid && editSelectedMinutesInput.touched">
+                          Minutes are required
+                      </span>
+                  </div>
+
+                  <!-- Task Status -->
+                  <div class="form-group">
+                      <label class="block mb-2 font-semibold">Task Status*</label>
+                      <div class="flex items-center space-x-3">
+                          <span class="text-sm font-medium" [class.text-gray-500]="editSelectedTaskStatus === 0"
+                              [class.text-green-600]="editSelectedTaskStatus === 1">
+                              {{ editSelectedTaskStatus === 1 ? '✅ Completed' : '⚠ In Progress' }}
+                          </span>
+                          <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="sr-only peer" [(ngModel)]="editSelectedTaskStatus"
+                                  name="editSelectedTaskStatus" (ngModelChange)="onEditTaskStatusChange($event)">
+                              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                                     peer-checked:after:translate-x-full peer-checked:after:border-white
+                                     after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                                     after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                                     peer-checked:bg-green-600">
+                              </div>
+                          </label>
+                      </div>
+                  </div>
+
+                  <!-- Task Description -->
+                  <div class="form-group col-span-4">
+                      <label class="block mb-2 font-semibold">Task Description*</label>
+                      <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editTaskDescription"
+                          name="editTaskDescription" #editTaskDescriptionInput="ngModel" rows="3" required></textarea>
+                      <span class="text-red-500 text-sm"
+                          *ngIf="editTaskDescriptionInput.invalid && editTaskDescriptionInput.touched">
+                          Task Description is required
+                      </span>
+                  </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="mt-4">
+                  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                      Update
+                  </button>
+              </div>
+          </form>
+      </div>
+  </div>
+
 
 </div>
