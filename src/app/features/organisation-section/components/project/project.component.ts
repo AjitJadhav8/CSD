@@ -989,10 +989,12 @@ onEditCustomerChange(): void {
 
     clearPhaseFilters(): void {
       this.phaseNameFilter = '';
-      this.customerNameFilter = '';
-      this.projectNameFilter = '';
+      this.phaseCustomerFilter = '';
+      this.phaseProjectFilter = '';
+      this.phaseDeliverableFilter='';
       this.applyPhaseFilters();
     }
+    
 
     clearPhaseFilter(filterName: string): void {
       switch (filterName) {
