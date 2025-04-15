@@ -100,4 +100,12 @@ router.put('/project-phases/:phaseId', orgController.updateProjectPhase);
 // router.get('/task-categories', orgController.getTaskCategories);
 // router.delete('/task-categories/:taskCatId', orgController.softDeleteTaskCategory);
 
+
+router.get('/manager/:managerId/project-deliverables', orgController.getManagerProjectDeliverables);
+router.get('/manager/:managerId/project-phases', orgController.getManagerProjectPhases);
+router.post('/project-deliverable', orgController.addProjectDeliverableManager);
+router.get('/manager-projects/:managerId', orgController.getManagerProjects);
+router.put('/project-deliverables/:deliverableId', orgController.updateProjectDeliverableManager);
+
+
 export default router;

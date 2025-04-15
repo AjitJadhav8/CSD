@@ -2239,6 +2239,247 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
             }
         }
 
+
+
+
+
+
+
+        async getManagerProjectDeliverables(req: Request, res: Response): Promise<void> {
+            try {
+                const managerId = req.params.managerId;
+                
+                if (!managerId) {
+                    res.status(400).json({ error: 'Manager ID is required' });
+                    return;
+                }
+        
+                const query = `
+                    SELECT 
+                        mpd.pd_id, 
+                        mpd.project_deliverable_name,
+                        mc.customer_name,
+                        mc.customer_id,
+                        mp.project_name,
+                        mp.project_id
+                    FROM master_project_deliverables mpd
+                    JOIN master_project mp ON mpd.project_id = mp.project_id
+                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+                    WHERE mpd.is_deleted = 0
+                    AND mp.project_manager_id = ?
+                    ORDER BY mpd.pd_id DESC;
+                `;
+                
+                db.query(query, [managerId], (err: any, results: any) => {
+                    if (err) {
+                        console.error('Error fetching manager project deliverables:', err);
+                        res.status(500).json({ error: 'Error fetching project deliverables' });
+                        return;
+                    }
+                    res.status(200).json(results);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+        
+        async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
+            try {
+                const managerId = req.params.managerId;
+                
+                if (!managerId) {
+                    res.status(400).json({ error: 'Manager ID is required' });
+                    return;
+                }
+        
+                const query = `
+                    SELECT 
+                        mpp.phase_id, 
+                        mpp.project_phase_name,
+                        mpd.pd_id,
+                        mpd.project_deliverable_name,
+                        mc.customer_name,
+                        mc.customer_id,
+                        mp.project_id,
+                        mp.project_name
+                    FROM master_project_phases mpp
+                    JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
+                    JOIN master_project mp ON mpd.project_id = mp.project_id
+                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+                    WHERE mpp.is_deleted = 0
+                    AND mp.project_manager_id = ?
+                    ORDER BY mpp.phase_id DESC;
+                `;
+                
+                db.query(query, [managerId], (err: any, results: any) => {
+                    if (err) {
+                        console.error('Error fetching manager project phases:', err);
+                        res.status(500).json({ error: 'Error fetching project phases' });
+                        return;
+                    }
+                    res.status(200).json(results);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+
+
+
+
+        async getManagerProjects(req: Request, res: Response): Promise<void> {
+            try {
+                const managerId = req.params.managerId;
+                
+                if (!managerId) {
+                    res.status(400).json({ error: 'Manager ID is required' });
+                    return;
+                }
+        
+                const query = `
+                    SELECT 
+                        p.project_id, 
+                        p.project_name,
+                        p.customer_id,
+                        c.customer_name
+                    FROM master_project p
+                    JOIN master_customer c ON p.customer_id = c.customer_id
+                    WHERE p.is_deleted = 0
+                    AND p.project_manager_id = ?
+                    ORDER BY p.project_name;
+                `;
+                
+                db.query(query, [managerId], (err: any, results: any) => {
+                    if (err) {
+                        console.error('Error fetching manager projects:', err);
+                        res.status(500).json({ error: 'Error fetching projects' });
+                        return;
+                    }
+                    res.status(200).json(results);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+        
+        // Modify the addProjectDeliverable to ensure customer_id comes from the project
+        async addProjectDeliverableManager(req: Request, res: Response): Promise<void> {
+            try {
+                const { project_id, project_deliverable_name } = req.body;
+                
+                if (!project_id || !project_deliverable_name) {
+                    res.status(400).json({ error: 'All fields are required' });
+                    return;
+                }
+        
+                // First get the customer_id from the project
+                const getCustomerQuery = 'SELECT customer_id FROM master_project WHERE project_id = ?';
+                
+                db.query(getCustomerQuery, [project_id], (err: any, results: any) => {
+                    if (err) {
+                        console.error('Error getting customer from project:', err);
+                        res.status(500).json({ error: 'Error validating project' });
+                        return;
+                    }
+        
+                    if (results.length === 0) {
+                        res.status(400).json({ error: 'Invalid project selected' });
+                        return;
+                    }
+        
+                    const customer_id = results[0].customer_id;
+        
+                    const insertQuery = `
+                        INSERT INTO master_project_deliverables 
+                        (customer_id, project_id, project_deliverable_name, is_deleted) 
+                        VALUES (?, ?, ?, 0)
+                    `;
+        
+                    const values = [customer_id, project_id, project_deliverable_name];
+        
+                    db.query(insertQuery, values, (err: any, result: any) => {
+                        if (err) {
+                            console.error('Error adding project deliverable:', err);
+                            res.status(500).json({ error: 'Error adding project deliverable' });
+                            return;
+                        }
+                        res.status(201).json({ 
+                            message: 'Project deliverable added successfully', 
+                            deliverableId: result.insertId 
+                        });
+                    });
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+
+        async updateProjectDeliverableManager(req: Request, res: Response): Promise<void> {
+            try {
+                const { deliverableId } = req.params;
+                const { project_id, project_deliverable_name, customer_id } = req.body;
+                
+                if (!project_id || !project_deliverable_name || !customer_id) {
+                    res.status(400).json({ error: 'All fields are required' });
+                    return;
+                }
+        
+                // Check if the deliverable already exists (excluding current one)
+                const checkQuery = `
+                    SELECT pd_id FROM master_project_deliverables 
+                    WHERE project_id = ? AND project_deliverable_name = ?
+                    AND pd_id != ?
+                    LIMIT 1
+                `;
+        
+                db.query(checkQuery, [project_id, project_deliverable_name, deliverableId], (checkErr: any, checkResults: any) => {
+                    if (checkErr) {
+                        console.error('Error checking existing deliverable:', checkErr);
+                        res.status(500).json({ error: 'Database error while checking deliverable' });
+                        return;
+                    }
+        
+                    if (checkResults.length > 0) {
+                        res.status(400).json({ error: 'Project deliverable already exists for this project' });
+                        return;
+                    }
+        
+                    // Update the deliverable
+                    const updateQuery = `
+                        UPDATE master_project_deliverables 
+                        SET customer_id = ?, project_id = ?, project_deliverable_name = ?, updated_at = NOW()
+                        WHERE pd_id = ?
+                    `;
+        
+                    db.query(updateQuery, [customer_id, project_id, project_deliverable_name, deliverableId], (updateErr: any, result: any) => {
+                        if (updateErr) {
+                            console.error('Database error:', updateErr);
+                            res.status(500).json({ error: 'Error updating project deliverable' });
+                            return;
+                        }
+        
+                        if (result.affectedRows === 0) {
+                            return res.status(404).json({ error: 'Project deliverable not found' });
+                        }
+        
+                        res.status(200).json({ message: 'Project deliverable updated successfully' });
+                    });
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+
+
+
+
+
+
     // ---- Task Category --------
 
     // async addTaskCategory(req: Request, res: Response): Promise<void> {

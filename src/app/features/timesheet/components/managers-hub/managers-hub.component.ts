@@ -16,6 +16,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './managers-hub.component.css'
 })
 export class ManagersHubComponent {
+  
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
 
@@ -46,11 +47,21 @@ export class ManagersHubComponent {
   }
 
 
+
   selectedSection: string = 'projectPhases';
+  // currentManagerId = Number(localStorage.getItem('user_id')) || 0;
+  currentManagerId: number = 0;
+
   ngOnInit(): void {
+  
+    this.currentManagerId = Number(localStorage.getItem('user_id')) || 0;
+    console.log('Current Manager ID:', this.currentManagerId);
 
     this.selectedSection = localStorage.getItem('selectedManagersHubSection') || 'projectPhases';
     localStorage.setItem('selectedManagersHubSection', this.selectedSection);
+
+    this.fetchManagerProjects(); // Add this line
+
 
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
 
@@ -62,6 +73,20 @@ export class ManagersHubComponent {
     this.fetchReportingTeamsTimesheet();
     this.fetchOptions();
   }
+
+  managerProjects: any[] = [];
+  fetchManagerProjects(): void {
+    this.dataService.getManagerProjects(this.currentManagerId).subscribe(
+      (response) => {
+        this.managerProjects = response;
+      },
+      (error) => {
+        console.error('Error fetching manager projects:', error);
+      }
+    );
+  }
+
+
 
   fetchOptions() {
     this.dataService.getOptions().subscribe(
@@ -116,7 +141,6 @@ export class ManagersHubComponent {
   filterProjects(): void {
     const selectedCustomerId = Number(this.projectDeliverableForm.customer_id);
 
-
     if (selectedCustomerId) {
       this.filteredProjects = this.optionProject.filter(
         project => Number(project.customer_id) === selectedCustomerId
@@ -145,7 +169,7 @@ export class ManagersHubComponent {
 
   projectDeliverableForm: any = {
     // phase_id: '',
-    customer_id: null,
+    // customer_id: null,
     project_id: null,
     project_deliverable_name: '',
   };
@@ -171,7 +195,7 @@ export class ManagersHubComponent {
   }
 
   fetchProjectDeliverables(): void {
-    this.dataService.getAllProjectDeliverables().subscribe(
+    this.dataService.getManagerProjectDeliverables(this.currentManagerId).subscribe(
       (response) => {
         this.projectDeliverables = response;
         this.filteredProjectDeliverables = [...this.projectDeliverables];
@@ -188,14 +212,27 @@ export class ManagersHubComponent {
   submitProjectDeliverable(form: NgForm): void {
     if (form.invalid) return;
 
+    const selectedProject = this.managerProjects.find(p => p.project_id == this.projectDeliverableForm.project_id);
+    if (!selectedProject) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Invalid project selected!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
     // Prepare the data to send
     const deliverableData = {
-      customer_id: this.projectDeliverableForm.customer_id,
+      customer_id: selectedProject.customer_id,
       project_id: this.projectDeliverableForm.project_id,
       project_deliverable_name: this.projectDeliverableForm.project_deliverable_name
     };
 
-    this.dataService.addProjectDeliverable(deliverableData).subscribe({
+    this.dataService.addProjectDeliverableManager(deliverableData).subscribe({
       next: (response) => {
         Swal.fire({
           toast: true,
@@ -336,34 +373,44 @@ export class ManagersHubComponent {
   isEditDeliverableModalOpen = false;
   editDeliverableData: any = {
     pd_id: null,
-    customer_id: null,
+    // customer_id: null,
     project_id: null,
     project_deliverable_name: '',
     // Display fields (optional)
-    customer_name: '',
+    // customer_name: '',
     project_name: ''
   };
   filteredEditProjects: any[] = [];
 
   // Add these methods
-  openEditDeliverableModal(deliverable: any): void {
-    this.editDeliverableData = {
-      pd_id: deliverable.pd_id,
-      customer_id: deliverable.customer_id,
-      project_id: deliverable.project_id,
-      project_deliverable_name: deliverable.project_deliverable_name,
-      // Display fields
-      customer_name: deliverable.customer_name,
-      project_name: deliverable.project_name
-    };
+  // openEditDeliverableModal(deliverable: any): void {
+  //   this.editDeliverableData = {
+  //     pd_id: deliverable.pd_id,
+  //     customer_id: deliverable.customer_id,
+  //     project_id: deliverable.project_id,
+  //     project_deliverable_name: deliverable.project_deliverable_name,
+  //     customer_name: deliverable.customer_name,
+  //     project_name: deliverable.project_name
+  //   };
 
-    // Initialize filtered projects
-    this.filteredEditProjects = this.optionProject.filter(
-      p => p.customer_id == deliverable.customer_id
-    );
+  //   this.filteredEditProjects = this.optionProject.filter(
+  //     p => p.customer_id == deliverable.customer_id
+  //   );
 
-    this.isEditDeliverableModalOpen = true;
-  }
+  //   this.isEditDeliverableModalOpen = true;
+  // }
+
+  // Update the open modal methods
+openEditDeliverableModal(deliverable: any): void {
+  this.editDeliverableData = {
+    pd_id: deliverable.pd_id,
+    project_id: deliverable.project_id,
+    project_deliverable_name: deliverable.project_deliverable_name,
+    project_name: deliverable.project_name
+  };
+  this.isEditDeliverableModalOpen = true;
+}
+
 
   closeEditDeliverableModal(): void {
     this.isEditDeliverableModalOpen = false;
@@ -390,81 +437,89 @@ export class ManagersHubComponent {
 
     console.log('Filtered projects after customer change:', this.filteredEditProjects); // Debug log
   }
+// Update the update methods
+updateProjectDeliverable(form: NgForm): void {
+  if (form.invalid || !this.editDeliverableData.pd_id) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'warning',
+      title: 'Please fill all required fields!',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    return;
+  }
 
-  updateProjectDeliverable(form: NgForm): void {
-    if (form.invalid || !this.editDeliverableData.pd_id) {
+  const selectedProject = this.managerProjects.find(p => p.project_id == this.editDeliverableData.project_id);
+  if (!selectedProject) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Invalid project selected!',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    return;
+  }
+
+  const payload = {
+    project_id: this.editDeliverableData.project_id,
+    project_deliverable_name: this.editDeliverableData.project_deliverable_name,
+    customer_id: selectedProject.customer_id
+  };
+
+  // Get original deliverable for comparison
+  const originalDeliverable = this.projectDeliverables.find(d => d.pd_id === this.editDeliverableData.pd_id);
+  const hasHierarchyChanged = originalDeliverable.project_id !== this.editDeliverableData.project_id;
+
+  if (hasHierarchyChanged) {
+    Swal.fire({
+      title: 'Change Project Hierarchy?',
+      text: 'Changing project will move this deliverable. Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, update it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.performDeliverableUpdate(payload);
+      }
+    });
+  } else {
+    this.performDeliverableUpdate(payload);
+  }
+}
+
+private performDeliverableUpdate(payload: any): void {
+  this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
+    () => {
       Swal.fire({
         toast: true,
         position: 'top-end',
-        icon: 'warning',
-        title: 'Please fill all required fields!',
+        icon: 'success',
+        title: 'Project deliverable updated successfully!',
         showConfirmButton: false,
         timer: 3000
       });
-      return;
-    }
-
-    const payload = {
-      customer_id: this.editDeliverableData.customer_id,
-      project_id: this.editDeliverableData.project_id,
-      project_deliverable_name: this.editDeliverableData.project_deliverable_name
-    };
-
-    // Get original deliverable for comparison
-    const originalDeliverable = this.projectDeliverables.find(d => d.pd_id === this.editDeliverableData.pd_id);
-    const hasHierarchyChanged = originalDeliverable.customer_id !== this.editDeliverableData.customer_id ||
-      originalDeliverable.project_id !== this.editDeliverableData.project_id;
-
-    if (hasHierarchyChanged) {
+      this.fetchProjectDeliverables();
+      this.closeEditDeliverableModal();
+    },
+    (error) => {
+      console.error('Error updating project deliverable:', error);
       Swal.fire({
-        title: 'Change Project Hierarchy?',
-        text: 'Changing customer/project will move this deliverable. Are you sure?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, update it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.performDeliverableUpdate();
-        }
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error updating project deliverable!',
+        showConfirmButton: false,
+        timer: 3000
       });
-    } else {
-      this.performDeliverableUpdate();
     }
-  }
-
-  private performDeliverableUpdate(): void {
-    this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, {
-      customer_id: this.editDeliverableData.customer_id,
-      project_id: this.editDeliverableData.project_id,
-      project_deliverable_name: this.editDeliverableData.project_deliverable_name
-    }).subscribe(
-      () => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Project deliverable updated successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-        this.fetchProjectDeliverables();
-        this.closeEditDeliverableModal();
-      },
-      (error) => {
-        console.error('Error updating project deliverable:', error);
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Error updating project deliverable!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    );
-  }
+  );
+}
 
 
   // ----------------- Project Phasese -----------------------
@@ -491,7 +546,6 @@ export class ManagersHubComponent {
     } else {
       this.filteredDeliverables = [];
     }
-    // Reset deliverable and phase fields when project changes
     this.projectPhaseForm.pd_id = null;
   }
   phaseCurrentPage: number = 1;
@@ -511,7 +565,7 @@ export class ManagersHubComponent {
 
   // Form Model
   projectPhaseForm: any = {
-    customer_id: null,
+    // customer_id: null,
     project_id: null,
     pd_id: null,
 
@@ -522,7 +576,7 @@ export class ManagersHubComponent {
   projectPhases: any[] = [];
 
   fetchProjectPhases(): void {
-    this.dataService.getAllProjectPhases().subscribe(
+    this.dataService.getManagerProjectPhases(this.currentManagerId).subscribe(
       (response) => {
         this.projectPhases = response;
         this.filteredProjectPhases = [...this.projectPhases];
@@ -668,39 +722,55 @@ export class ManagersHubComponent {
   isEditPhaseModalOpen = false;
   editPhaseData: any = {
     phase_id: null,
-    customer_id: null,
+    // customer_id: null,
     project_id: null,
     pd_id: null,
     project_phase_name: '',
     // Display fields (optional)
-    customer_name: '',
+    // customer_name: '',
     project_name: '',
     project_deliverable_name: ''
   };
   filteredEditDeliverables: any[] = [];
 
   // Add these methods
+  // openEditPhaseModal(phase: any): void {
+  //   this.editPhaseData = {
+  //     phase_id: phase.phase_id,
+  //     customer_id: phase.customer_id,
+  //     project_id: phase.project_id,
+  //     pd_id: phase.pd_id,
+  //     project_phase_name: phase.project_phase_name,
+  //     customer_name: phase.customer_name,
+  //     project_name: phase.project_name,
+  //     project_deliverable_name: phase.project_deliverable_name
+  //   };
+
+  //   this.filteredEditProjects = this.optionProject.filter(
+  //     p => p.customer_id == phase.customer_id
+  //   );
+  //   this.filteredEditDeliverables = this.optionDeliverables.filter(
+  //     d => d.project_id == phase.project_id
+  //   );
+
+  //   this.isEditPhaseModalOpen = true;
+  // }
+
   openEditPhaseModal(phase: any): void {
     this.editPhaseData = {
       phase_id: phase.phase_id,
-      customer_id: phase.customer_id,
       project_id: phase.project_id,
       pd_id: phase.pd_id,
       project_phase_name: phase.project_phase_name,
-      // Display fields
-      customer_name: phase.customer_name,
       project_name: phase.project_name,
       project_deliverable_name: phase.project_deliverable_name
     };
-
-    // Initialize filtered lists
-    this.filteredEditProjects = this.optionProject.filter(
-      p => p.customer_id == phase.customer_id
-    );
+  
+    // Initialize filtered deliverables
     this.filteredEditDeliverables = this.optionDeliverables.filter(
       d => d.project_id == phase.project_id
     );
-
+  
     this.isEditPhaseModalOpen = true;
   }
 
@@ -791,6 +861,7 @@ export class ManagersHubComponent {
         });
         this.fetchProjectPhases();
         this.closeEditPhaseModal();
+        this.fetchManagerProjects();
       },
       (error) => {
         console.error('Error updating project phase:', error);

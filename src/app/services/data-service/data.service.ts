@@ -220,6 +220,36 @@ export class DataService {
     return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload);
 }
 
+
+getManagerProjectDeliverables(managerId: number): Observable<any> {
+  if (!managerId) {
+    throw new Error('Manager ID is required');
+  }
+  return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-deliverables`);
+}
+
+getManagerProjectPhases(managerId: number): Observable<any> {
+  if (!managerId) {
+    throw new Error('Manager ID is required');
+  }
+  return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`);
+}
+
+
+getManagerProjects(managerId: number): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/api/manager-projects/${managerId}`);
+}
+
+addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
+}
+
+updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
+  return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
+}
+
+
+
   // ------------------ Task Category ------------------------
 
   // addTaskCategory(taskCategory: any): Observable<any> {
