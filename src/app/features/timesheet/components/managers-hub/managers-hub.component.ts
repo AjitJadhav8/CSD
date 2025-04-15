@@ -16,7 +16,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './managers-hub.component.css'
 })
 export class ManagersHubComponent {
-  
+
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
 
@@ -53,7 +53,7 @@ export class ManagersHubComponent {
   currentManagerId: number = 0;
 
   ngOnInit(): void {
-  
+
     this.currentManagerId = Number(localStorage.getItem('user_id')) || 0;
     console.log('Current Manager ID:', this.currentManagerId);
 
@@ -401,15 +401,15 @@ export class ManagersHubComponent {
   // }
 
   // Update the open modal methods
-openEditDeliverableModal(deliverable: any): void {
-  this.editDeliverableData = {
-    pd_id: deliverable.pd_id,
-    project_id: deliverable.project_id,
-    project_deliverable_name: deliverable.project_deliverable_name,
-    project_name: deliverable.project_name
-  };
-  this.isEditDeliverableModalOpen = true;
-}
+  openEditDeliverableModal(deliverable: any): void {
+    this.editDeliverableData = {
+      pd_id: deliverable.pd_id,
+      project_id: deliverable.project_id,
+      project_deliverable_name: deliverable.project_deliverable_name,
+      project_name: deliverable.project_name
+    };
+    this.isEditDeliverableModalOpen = true;
+  }
 
 
   closeEditDeliverableModal(): void {
@@ -437,89 +437,89 @@ openEditDeliverableModal(deliverable: any): void {
 
     console.log('Filtered projects after customer change:', this.filteredEditProjects); // Debug log
   }
-// Update the update methods
-updateProjectDeliverable(form: NgForm): void {
-  if (form.invalid || !this.editDeliverableData.pd_id) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'warning',
-      title: 'Please fill all required fields!',
-      showConfirmButton: false,
-      timer: 3000
-    });
-    return;
-  }
-
-  const selectedProject = this.managerProjects.find(p => p.project_id == this.editDeliverableData.project_id);
-  if (!selectedProject) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'error',
-      title: 'Invalid project selected!',
-      showConfirmButton: false,
-      timer: 3000
-    });
-    return;
-  }
-
-  const payload = {
-    project_id: this.editDeliverableData.project_id,
-    project_deliverable_name: this.editDeliverableData.project_deliverable_name,
-    customer_id: selectedProject.customer_id
-  };
-
-  // Get original deliverable for comparison
-  const originalDeliverable = this.projectDeliverables.find(d => d.pd_id === this.editDeliverableData.pd_id);
-  const hasHierarchyChanged = originalDeliverable.project_id !== this.editDeliverableData.project_id;
-
-  if (hasHierarchyChanged) {
-    Swal.fire({
-      title: 'Change Project Hierarchy?',
-      text: 'Changing project will move this deliverable. Are you sure?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, update it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.performDeliverableUpdate(payload);
-      }
-    });
-  } else {
-    this.performDeliverableUpdate(payload);
-  }
-}
-
-private performDeliverableUpdate(payload: any): void {
-  this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
-    () => {
+  // Update the update methods
+  updateProjectDeliverable(form: NgForm): void {
+    if (form.invalid || !this.editDeliverableData.pd_id) {
       Swal.fire({
         toast: true,
         position: 'top-end',
-        icon: 'success',
-        title: 'Project deliverable updated successfully!',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
         showConfirmButton: false,
         timer: 3000
       });
-      this.fetchProjectDeliverables();
-      this.closeEditDeliverableModal();
-    },
-    (error) => {
-      console.error('Error updating project deliverable:', error);
+      return;
+    }
+
+    const selectedProject = this.managerProjects.find(p => p.project_id == this.editDeliverableData.project_id);
+    if (!selectedProject) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'error',
-        title: 'Error updating project deliverable!',
+        title: 'Invalid project selected!',
         showConfirmButton: false,
         timer: 3000
       });
+      return;
     }
-  );
-}
+
+    const payload = {
+      project_id: this.editDeliverableData.project_id,
+      project_deliverable_name: this.editDeliverableData.project_deliverable_name,
+      customer_id: selectedProject.customer_id
+    };
+
+    // Get original deliverable for comparison
+    const originalDeliverable = this.projectDeliverables.find(d => d.pd_id === this.editDeliverableData.pd_id);
+    const hasHierarchyChanged = originalDeliverable.project_id !== this.editDeliverableData.project_id;
+
+    if (hasHierarchyChanged) {
+      Swal.fire({
+        title: 'Change Project Hierarchy?',
+        text: 'Changing project will move this deliverable. Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.performDeliverableUpdate(payload);
+        }
+      });
+    } else {
+      this.performDeliverableUpdate(payload);
+    }
+  }
+
+  private performDeliverableUpdate(payload: any): void {
+    this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
+      () => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project deliverable updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchProjectDeliverables();
+        this.closeEditDeliverableModal();
+      },
+      (error) => {
+        console.error('Error updating project deliverable:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error updating project deliverable!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    );
+  }
 
 
   // ----------------- Project Phasese -----------------------
@@ -765,12 +765,12 @@ private performDeliverableUpdate(payload: any): void {
       project_name: phase.project_name,
       project_deliverable_name: phase.project_deliverable_name
     };
-  
+
     // Initialize filtered deliverables
     this.filteredEditDeliverables = this.optionDeliverables.filter(
       d => d.project_id == phase.project_id
     );
-  
+
     this.isEditPhaseModalOpen = true;
   }
 
@@ -1238,17 +1238,17 @@ private performDeliverableUpdate(payload: any): void {
     if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
       return { hours: 0, minutes: 0 };
     }
-  
+
     let totalMinutes = this.filteredTimesheetData.reduce((sum, entry) => {
       return sum + (entry.hours * 60) + entry.minutes;
     }, 0);
-  
+
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    
+
     return { hours, minutes };
   }
-  
+
   calculateTimesheetTotalHours(): number {
     const totalTime = this.calculateTimesheetTotalTime();
     return totalTime.hours + (totalTime.minutes / 60);
@@ -1586,26 +1586,26 @@ private performDeliverableUpdate(payload: any): void {
   }
 
 
-// Add these methods to your component class
-calculateFilteredTotalTime(): { hours: number, minutes: number } {
-  if (!this.filteredReportingTimesheetData || this.filteredReportingTimesheetData.length === 0) {
-    return { hours: 0, minutes: 0 };
+  // Add these methods to your component class
+  calculateFilteredTotalTime(): { hours: number, minutes: number } {
+    if (!this.filteredReportingTimesheetData || this.filteredReportingTimesheetData.length === 0) {
+      return { hours: 0, minutes: 0 };
+    }
+
+    let totalMinutes = this.filteredReportingTimesheetData.reduce((sum, entry) => {
+      return sum + (entry.hours * 60) + entry.minutes;
+    }, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return { hours, minutes };
   }
 
-  let totalMinutes = this.filteredReportingTimesheetData.reduce((sum, entry) => {
-    return sum + (entry.hours * 60) + entry.minutes;
-  }, 0);
-
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  
-  return { hours, minutes };
-}
-
-calculateFilteredTotalHours(): number {
-  const totalTime = this.calculateFilteredTotalTime();
-  return totalTime.hours + (totalTime.minutes / 60);
-}
+  calculateFilteredTotalHours(): number {
+    const totalTime = this.calculateFilteredTotalTime();
+    return totalTime.hours + (totalTime.minutes / 60);
+  }
 
 
 

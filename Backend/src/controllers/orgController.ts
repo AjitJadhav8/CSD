@@ -78,22 +78,22 @@ class OrgController {
         category_id, sector, industry, domain, is_deleted, created_at, updated_at
     FROM master_category WHERE is_deleted = 0
 `;
-  // New query for phases
-  const phasesQuery = `
+            // New query for phases
+            const phasesQuery = `
   SELECT 
         phase_id, pd_id, project_phase_name 
     FROM master_project_phases 
     WHERE is_deleted = 0
 `;
 
-const projectManagersQuery = `
+            const projectManagersQuery = `
  SELECT 
                 user_id, user_code, user_first_name, user_middle_name, user_last_name
             FROM master_user 
             WHERE is_deleted = 0 AND is_PM = 1
 `;
 
-const reportingManagersQuery = `
+            const reportingManagersQuery = `
 SELECT 
     user_id, user_code, user_first_name, user_middle_name, user_last_name
 FROM master_user 
@@ -184,23 +184,23 @@ WHERE is_deleted = 0 AND is_RM = 1
                 }),
                 new Promise((resolve, reject) => {
                     db.query(phasesQuery, (err: any, results: any) => {
-                      if (err) reject(err);
-                      resolve(results);
+                        if (err) reject(err);
+                        resolve(results);
                     });
-                  }),
-                  new Promise((resolve, reject) => {
+                }),
+                new Promise((resolve, reject) => {
                     db.query(projectManagersQuery, (err: any, results: any) => {
-                      if (err) reject(err);
-                      resolve(results);
+                        if (err) reject(err);
+                        resolve(results);
                     });
-                  }),
-                  new Promise((resolve, reject) => {
+                }),
+                new Promise((resolve, reject) => {
                     db.query(reportingManagersQuery, (err: any, results: any) => {
-                      if (err) reject(err);
-                      resolve(results);
+                        if (err) reject(err);
+                        resolve(results);
                     });
-                  }),
-                
+                }),
+
 
 
             ]);
@@ -356,40 +356,40 @@ WHERE is_deleted = 0 AND is_RM = 1
 
     async updateCustomer(req: Request, res: Response): Promise<void> {
         try {
-          const { customerId } = req.params;
-          const {
-            customerName, companyWebsite, email, phone, alternatePhone, status,
-            domain, customerType, city, state, pincode, country, description
-          } = req.body;
-      
-          // Determine flags for active and new customers
-          const isActive = status === 'Active' ? 1 : 0;
-          const isNew = customerType === 'Potential' ? 1 : 0;
-      
-          // Query to get category_id based on selected domain
-          const categoryQuery = `
+            const { customerId } = req.params;
+            const {
+                customerName, companyWebsite, email, phone, alternatePhone, status,
+                domain, customerType, city, state, pincode, country, description
+            } = req.body;
+
+            // Determine flags for active and new customers
+            const isActive = status === 'Active' ? 1 : 0;
+            const isNew = customerType === 'Potential' ? 1 : 0;
+
+            // Query to get category_id based on selected domain
+            const categoryQuery = `
             SELECT category_id FROM master_category 
             WHERE domain = ?
             LIMIT 1
           `;
-      
-          db.query(categoryQuery, [domain], (err: any, results: any) => {
-            if (err) {
-              console.error('Error fetching category ID:', err);
-              res.status(500).json({ error: 'Error fetching category ID' });
-              return;
-            }
-      
-            if (results.length === 0) {
-              console.error(`Category not found for Domain: ${domain}`);
-              res.status(400).json({ error: `Invalid domain: ${domain}` });
-              return;
-            }
-      
-            const categoryId = results[0].category_id; // Get category_id
-      
-            // Update customer data with retrieved category_id
-            const updateQuery = `
+
+            db.query(categoryQuery, [domain], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching category ID:', err);
+                    res.status(500).json({ error: 'Error fetching category ID' });
+                    return;
+                }
+
+                if (results.length === 0) {
+                    console.error(`Category not found for Domain: ${domain}`);
+                    res.status(400).json({ error: `Invalid domain: ${domain}` });
+                    return;
+                }
+
+                const categoryId = results[0].category_id; // Get category_id
+
+                // Update customer data with retrieved category_id
+                const updateQuery = `
               UPDATE master_customer 
               SET 
                 customer_name = ?, customer_company_website = ?, customer_email = ?, customer_phone = ?, customer_alternate_phone = ?, 
@@ -397,29 +397,29 @@ WHERE is_deleted = 0 AND is_RM = 1
                 customer_description = ?, is_active = ?, is_new = ?
               WHERE customer_id = ?
             `;
-      
-            db.query(updateQuery, [
-              customerName, companyWebsite, email, phone, alternatePhone,
-              categoryId, city, state, pincode, country, description, isActive, isNew, customerId
-            ], (updateErr: any, result: any) => {
-              if (updateErr) {
-                console.error('Database error:', updateErr);
-                res.status(500).json({ error: 'Error updating customer' });
-                return;
-              }
-      
-              if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'Customer not found' });
-              }
-      
-              res.status(200).json({ message: 'Customer updated successfully' });
+
+                db.query(updateQuery, [
+                    customerName, companyWebsite, email, phone, alternatePhone,
+                    categoryId, city, state, pincode, country, description, isActive, isNew, customerId
+                ], (updateErr: any, result: any) => {
+                    if (updateErr) {
+                        console.error('Database error:', updateErr);
+                        res.status(500).json({ error: 'Error updating customer' });
+                        return;
+                    }
+
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Customer not found' });
+                    }
+
+                    res.status(200).json({ message: 'Customer updated successfully' });
+                });
             });
-          });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
 
     // ---- Category --------
 
@@ -535,12 +535,12 @@ WHERE is_deleted = 0 AND is_RM = 1
         try {
             const { categoryId } = req.params;
             const { sector, industry, domain } = req.body;
-    
+
             if (!sector || !industry || !domain) {
                 res.status(400).json({ error: 'All fields are required' });
                 return;
             }
-    
+
             // Check if the updated category already exists (excluding current one)
             const checkQuery = `
                 SELECT category_id FROM master_category 
@@ -548,41 +548,41 @@ WHERE is_deleted = 0 AND is_RM = 1
                 AND category_id != ?
                 LIMIT 1
             `;
-    
+
             db.query(checkQuery, [sector, industry, domain, categoryId], (err: any, results: any) => {
                 if (err) {
                     console.error('Error checking existing category:', err);
                     res.status(500).json({ error: 'Database error while checking category' });
                     return;
                 }
-    
+
                 if (results.length > 0) {
                     res.status(400).json({ error: 'Category already exists' });
                     return;
                 }
-    
+
                 // Update the category
                 const updateQuery = `
                     UPDATE master_category 
                     SET sector = ?, industry = ?, domain = ?, updated_at = NOW()
                     WHERE category_id = ?
                 `;
-    
+
                 db.query(updateQuery, [sector, industry, domain, categoryId], (updateErr: any, result: any) => {
                     if (updateErr) {
                         console.error('Database error:', updateErr);
                         res.status(500).json({ error: 'Error updating category' });
                         return;
                     }
-    
+
                     if (result.affectedRows === 0) {
                         return res.status(404).json({ error: 'Category not found' });
                     }
-    
+
                     res.status(200).json({ message: 'Category updated successfully' });
                 });
             });
-    
+
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -921,10 +921,10 @@ WHERE is_deleted = 0 AND is_RM = 1
                 user_code, user_first_name, user_middle_name, user_last_name,
                 user_email, user_contact
             } = req.body;
-    
+
             // Generate password: user_first_name@123
             const password = `${user_first_name.toLowerCase()}@123`;
-    
+
             // Check for duplicate user_code and user_email separately
             const checkQuery = `SELECT user_code, user_email 
             FROM master_user 
@@ -935,19 +935,19 @@ WHERE is_deleted = 0 AND is_RM = 1
                     console.error('Error checking for duplicate:', err);
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
-    
+
                 // Identify which field is duplicated
                 const duplicateFields: string[] = [];
                 results.forEach((user: any) => {
                     if (user.user_code === user_code) duplicateFields.push('Employee Code');
                     if (user.user_email === user_email) duplicateFields.push('Email');
                 });
-    
+
                 // If any duplicates exist, return an appropriate error message
                 if (duplicateFields.length > 0) {
                     return res.status(400).json({ error: `${duplicateFields.join(' and ')} already exist` });
                 }
-    
+
                 // SQL query to insert the new employee into the database
                 const insertQuery = `
                     INSERT INTO master_user (
@@ -956,40 +956,40 @@ WHERE is_deleted = 0 AND is_RM = 1
                 ) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, 0)
                 `;
-    
+
                 const values = [
                     user_code, user_first_name, user_middle_name, user_last_name,
                     user_email, user_contact, password
                 ];
-    
+
                 // Insert the data into the database
                 db.query(insertQuery, values, (insertErr: any, result: any) => {
                     if (insertErr) {
                         console.error('Error saving employee:', insertErr);
                         return res.status(500).json({ error: 'Error saving employee' });
                     }
-    
+
                     const userId = result.insertId;
-                    
+
                     // Now insert default role (4) into trans_user_details
                     const insertRoleQuery = `
                         INSERT INTO trans_user_details (
                             user_id, role_id, is_deleted
                         ) VALUES (?, 4, 0)
                     `;
-                    
+
                     db.query(insertRoleQuery, [userId], (roleErr: any, roleResult: any) => {
                         if (roleErr) {
                             console.error('Error assigning default role:', roleErr);
-                            return res.status(500).json({ 
+                            return res.status(500).json({
                                 message: 'Employee created but failed to assign default role',
                                 employeeId: userId,
                                 temporaryPassword: password // Send the generated password back
                             });
                         }
-                        
-                        res.status(201).json({ 
-                            message: 'Employee saved successfully with default role', 
+
+                        res.status(201).json({
+                            message: 'Employee saved successfully with default role',
                             employeeId: userId,
                             temporaryPassword: password // Send the generated password back
                         });
@@ -1001,7 +1001,7 @@ WHERE is_deleted = 0 AND is_RM = 1
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-    
+
     async assignDetails(req: Request, res: Response): Promise<void> {
         try {
             const {
@@ -1019,13 +1019,13 @@ WHERE is_deleted = 0 AND is_RM = 1
                 is_timesheet_required,
                 reporting_manager_id
             } = req.body;
-    
+
             // Validate required fields
             if (!user_id) {
                 res.status(400).json({ error: "User ID is required" });
                 return;
             }
-    
+
             // Update master_user table with personal details
             const updateMasterUserQuery = `
                 UPDATE master_user
@@ -1039,7 +1039,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                     user_DOJ = ?
                 WHERE user_id = ?
             `;
-    
+
             const masterUserValues = [
                 user_emergency_contact,
                 is_passport,
@@ -1050,7 +1050,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                 user_DOJ,
                 user_id
             ];
-    
+
             // Execute the update query for master_user
             db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
                 if (err) {
@@ -1058,25 +1058,25 @@ WHERE is_deleted = 0 AND is_RM = 1
                     res.status(500).json({ error: "Error updating employee details" });
                     return;
                 }
-    
+
                 // Check if a record already exists in trans_user_details for the given user_id
                 const checkRecordQuery = `
                     SELECT * FROM trans_user_details WHERE user_id = ?
                 `;
-    
+
                 db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
                     if (err) {
                         console.error("Error checking trans_user_details:", err);
                         res.status(500).json({ error: "Error checking trans_user_details" });
                         return;
                     }
-    
+
                     let previousReportingManagerId: number | null = null;
-    
+
                     if (result.length > 0) {
                         // Record exists, store the previous reporting manager ID
                         previousReportingManagerId = result[0].reporting_manager_id;
-    
+
                         // Perform UPDATE
                         const updateTransUserDetailsQuery = `
                             UPDATE trans_user_details
@@ -1088,7 +1088,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                                 reporting_manager_id = ?
                             WHERE user_id = ?
                         `;
-    
+
                         const updateValues = [
                             role_id,
                             department_id,
@@ -1097,14 +1097,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                             reporting_manager_id,
                             user_id
                         ];
-    
+
                         db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error updating trans_user_details:", err);
                                 res.status(500).json({ error: "Error updating trans_user_details" });
                                 return;
                             }
-    
+
                             // Update the is_RM flag for the new reporting manager
                             if (reporting_manager_id) {
                                 const updateIsRmQuery = `
@@ -1112,14 +1112,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                                     SET is_RM = 1
                                     WHERE user_id = ?
                                 `;
-    
+
                                 db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
                                     if (updateIsRmErr) {
                                         console.error("Error updating is_RM flag:", updateIsRmErr);
                                         res.status(500).json({ error: "Error updating is_RM flag" });
                                         return;
                                     }
-    
+
                                     // Check if the previous reporting manager is still assigned to any user
                                     if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
                                         const checkPreviousRmQuery = `
@@ -1127,16 +1127,16 @@ WHERE is_deleted = 0 AND is_RM = 1
                                             FROM trans_user_details
                                             WHERE reporting_manager_id = ? AND is_deleted = 0
                                         `;
-    
+
                                         db.query(checkPreviousRmQuery, [previousReportingManagerId], (checkErr: any, checkResult: any) => {
                                             if (checkErr) {
                                                 console.error("Error checking previous reporting manager assignments:", checkErr);
                                                 res.status(500).json({ error: "Error checking previous reporting manager assignments" });
                                                 return;
                                             }
-    
+
                                             const userCount = checkResult[0].user_count;
-    
+
                                             // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
                                             if (userCount === 0) {
                                                 const updatePreviousRmQuery = `
@@ -1144,14 +1144,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                                                     SET is_RM = 0
                                                     WHERE user_id = ?
                                                 `;
-    
+
                                                 db.query(updatePreviousRmQuery, [previousReportingManagerId], (updatePreviousRmErr: any, updatePreviousRmResult: any) => {
                                                     if (updatePreviousRmErr) {
                                                         console.error("Error updating previous is_RM flag:", updatePreviousRmErr);
                                                         res.status(500).json({ error: "Error updating previous is_RM flag" });
                                                         return;
                                                     }
-    
+
                                                     res.status(200).json({ message: "Details updated successfully" });
                                                 });
                                             } else {
@@ -1174,7 +1174,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             )
                             VALUES (?, ?, ?, ?, ?, ?)
                         `;
-    
+
                         const insertValues = [
                             user_id,
                             role_id,
@@ -1183,14 +1183,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                             is_timesheet_required,
                             reporting_manager_id
                         ];
-    
+
                         db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
                             if (err) {
                                 console.error("Error inserting trans_user_details:", err);
                                 res.status(500).json({ error: "Error inserting trans_user_details" });
                                 return;
                             }
-    
+
                             // Update the is_RM flag for the new reporting manager
                             if (reporting_manager_id) {
                                 const updateIsRmQuery = `
@@ -1198,14 +1198,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                                     SET is_RM = 1
                                     WHERE user_id = ?
                                 `;
-    
+
                                 db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
                                     if (updateIsRmErr) {
                                         console.error("Error updating is_RM flag:", updateIsRmErr);
                                         res.status(500).json({ error: "Error updating is_RM flag" });
                                         return;
                                     }
-    
+
                                     res.status(200).json({ message: "Details assigned successfully" });
                                 });
                             } else {
@@ -1223,44 +1223,44 @@ WHERE is_deleted = 0 AND is_RM = 1
     async softDeleteEmployee(req: Request, res: Response): Promise<void> {
         try {
             const { employeeId } = req.params;
-    
+
             // Soft delete the employee in master_user
             const updateMasterUserQuery = `UPDATE master_user SET is_deleted = 1 WHERE user_id = ?`;
             const updateTransUserDetailsQuery = `UPDATE trans_user_details SET is_deleted = 1 WHERE user_id = ?`;
-    
+
             // Execute the first query to soft-delete the employee in master_user
             db.query(updateMasterUserQuery, [employeeId], (err: any, result: any) => {
                 if (err) {
                     console.error('Error deleting employee:', err);
                     return res.status(500).json({ error: 'Error deleting employee' });
                 }
-    
+
                 if (result.affectedRows === 0) {
                     return res.status(404).json({ error: 'Employee not found' });
                 }
-    
+
                 // Execute the second query to soft-delete the corresponding record in trans_user_details
                 db.query(updateTransUserDetailsQuery, [employeeId], (err: any, result: any) => {
                     if (err) {
                         console.error('Error deleting trans_user_details:', err);
                         return res.status(500).json({ error: 'Error deleting trans_user_details' });
                     }
-    
+
                     // Check if the soft-deleted employee was a reporting manager for any other employees
                     const checkRmQuery = `
                         SELECT COUNT(*) AS user_count
                         FROM trans_user_details
                         WHERE reporting_manager_id = ? AND is_deleted = 0
                     `;
-    
+
                     db.query(checkRmQuery, [employeeId], (checkErr: any, checkResult: any) => {
                         if (checkErr) {
                             console.error('Error checking reporting manager assignments:', checkErr);
                             return res.status(500).json({ error: 'Error checking reporting manager assignments' });
                         }
-    
+
                         const userCount = checkResult[0].user_count;
-    
+
                         // If the soft-deleted employee is no longer a reporting manager for any employees, set is_RM to 0
                         if (userCount === 0) {
                             const updateIsRmQuery = `
@@ -1269,13 +1269,13 @@ WHERE is_deleted = 0 AND is_RM = 1
                                 WHERE user_id = ?
                             `;
                             console.log(`Updating is_RM = 0 for user_id: ${employeeId}`);
-    
+
                             db.query(updateIsRmQuery, [employeeId], (updateIsRmErr: any, updateIsRmResult: any) => {
                                 if (updateIsRmErr) {
                                     console.error('Error updating is_RM flag:', updateIsRmErr);
                                     return res.status(500).json({ error: 'Error updating is_RM flag' });
                                 }
-    
+
                                 res.status(200).json({ message: 'Employee and details soft deleted successfully. Reporting manager flag updated.' });
                             });
                         } else {
@@ -1292,18 +1292,18 @@ WHERE is_deleted = 0 AND is_RM = 1
 
     async updateEmployee(req: Request, res: Response): Promise<void> {
         try {
-          const { employeeId } = req.params;
-          const {
-            user_code, user_first_name, user_middle_name, user_last_name,
-            user_email, user_contact
-          } = req.body;
-      
-          if (!user_code || !user_first_name || !user_last_name || !user_email || !user_contact) {
-            res.status(400).json({ error: 'All required fields must be filled' });
-            return;
-          }
-      
-          const updateQuery = `
+            const { employeeId } = req.params;
+            const {
+                user_code, user_first_name, user_middle_name, user_last_name,
+                user_email, user_contact
+            } = req.body;
+
+            if (!user_code || !user_first_name || !user_last_name || !user_email || !user_contact) {
+                res.status(400).json({ error: 'All required fields must be filled' });
+                return;
+            }
+
+            const updateQuery = `
             UPDATE master_user
             SET 
               user_code = ?,
@@ -1314,30 +1314,30 @@ WHERE is_deleted = 0 AND is_RM = 1
               user_contact = ?,
               updated_at = NOW()
             WHERE user_id = ?`;
-      
-          const values = [
-            user_code, user_first_name, user_middle_name, user_last_name,
-            user_email, user_contact, employeeId
-          ];
-      
-          db.query(updateQuery, values, (err: any, result: any) => {
-            if (err) {
-              console.error('Error updating employee:', err);
-              res.status(500).json({ error: 'Error updating employee' });
-              return;
-            }
-      
-            if (result.affectedRows === 0) {
-              return res.status(404).json({ error: 'Employee not found' });
-            }
-      
-            res.status(200).json({ message: 'Employee updated successfully' });
-          });
+
+            const values = [
+                user_code, user_first_name, user_middle_name, user_last_name,
+                user_email, user_contact, employeeId
+            ];
+
+            db.query(updateQuery, values, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error updating employee:', err);
+                    res.status(500).json({ error: 'Error updating employee' });
+                    return;
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Employee not found' });
+                }
+
+                res.status(200).json({ message: 'Employee updated successfully' });
+            });
         } catch (error) {
-          console.error('Error:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-      }
+    }
 
     async getAllEmployees(req: Request, res: Response): Promise<void> {
         try {
@@ -1423,7 +1423,7 @@ WHERE is_deleted = 0 AND is_RM = 1
         }
     }
 
-  
+
 
 
 
@@ -1713,7 +1713,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                 type_of_project_id, type_of_engagement_id, project_manager_id,
                 project_status_id, tentative_end_date, project_description
             } = req.body;
-    
+
             // Insert the project into the master_project table
             const insertQuery = `
                 INSERT INTO master_project 
@@ -1724,32 +1724,32 @@ WHERE is_deleted = 0 AND is_RM = 1
                 ) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
-    
+
             const insertValues = [
                 customer_id, project_name, planned_start_date, actual_start_date,
                 type_of_project_id, type_of_engagement_id, project_manager_id,
                 project_status_id, tentative_end_date, project_description
             ];
-    
+
             db.query(insertQuery, insertValues, (err: any, result: any) => {
                 if (err) {
                     console.error('Error adding project:', err);
                     return res.status(500).json({ error: 'Error adding project' });
                 }
-    
+
                 // Update the is_PM flag for the assigned project manager
                 const updateIsPmQuery = `
                     UPDATE master_user
                     SET is_PM = 1
                     WHERE user_id = ?
                 `;
-    
+
                 db.query(updateIsPmQuery, [project_manager_id], (updateErr: any, updateResult: any) => {
                     if (updateErr) {
                         console.error('Error updating is_PM flag:', updateErr);
                         return res.status(500).json({ error: 'Error updating is_PM flag' });
                     }
-    
+
                     // Return success response
                     res.status(201).json({ message: 'Project added successfully', projectId: result.insertId });
                 });
@@ -1763,7 +1763,7 @@ WHERE is_deleted = 0 AND is_RM = 1
     async softDeleteProject(req: Request, res: Response): Promise<void> {
         try {
             const { projectId } = req.params;
-    
+
             // Get the project manager ID before soft-deleting the project
             const getManagerQuery = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
             db.query(getManagerQuery, [projectId], (managerErr: any, managerResult: any) => {
@@ -1771,9 +1771,9 @@ WHERE is_deleted = 0 AND is_RM = 1
                     console.error('Error fetching project manager:', managerErr);
                     return res.status(500).json({ error: 'Error fetching project manager' });
                 }
-    
+
                 const projectManagerId = managerResult[0].project_manager_id;
-    
+
                 // Soft delete the project
                 const updateQuery = `UPDATE master_project SET is_deleted = 1 WHERE project_id = ?`;
                 db.query(updateQuery, [projectId], (err: any, result: any) => {
@@ -1781,26 +1781,26 @@ WHERE is_deleted = 0 AND is_RM = 1
                         console.error('Error deleting project:', err);
                         return res.status(500).json({ error: 'Error deleting project' });
                     }
-    
+
                     if (result.affectedRows === 0) {
                         return res.status(404).json({ error: 'Project not found' });
                     }
-    
+
                     // Check if the project manager is still assigned to any project
                     const checkManagerQuery = `
                         SELECT COUNT(*) AS project_count
                         FROM master_project
                         WHERE project_manager_id = ? AND is_deleted = 0
                     `;
-    
+
                     db.query(checkManagerQuery, [projectManagerId], (checkErr: any, checkResult: any) => {
                         if (checkErr) {
                             console.error('Error checking project manager assignments:', checkErr);
                             return res.status(500).json({ error: 'Error checking project manager assignments' });
                         }
-    
+
                         const projectCount = checkResult[0].project_count;
-    
+
                         // If the project manager is no longer assigned to any project, set is_PM to 0
                         if (projectCount === 0) {
                             const updateIsPmQuery = `
@@ -1808,7 +1808,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                                 SET is_PM = 0
                                 WHERE user_id = ?
                             `;
-    
+
                             db.query(updateIsPmQuery, [projectManagerId], (updateIsPmErr: any, updateIsPmResult: any) => {
                                 if (updateIsPmErr) {
                                     console.error('Error updating is_PM flag:', updateIsPmErr);
@@ -1816,7 +1816,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                                 }
                             });
                         }
-    
+
                         // Return success response
                         res.status(200).json({ message: 'Project soft deleted successfully' });
                     });
@@ -1836,7 +1836,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                 type_of_project_id, type_of_engagement_id, project_manager_id,
                 project_status_id, tentative_end_date, project_description
             } = req.body;
-    
+
             // Get the old project manager ID before updating
             const getOldManagerQuery = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
             db.query(getOldManagerQuery, [projectId], (oldManagerErr: any, oldManagerResult: any) => {
@@ -1844,9 +1844,9 @@ WHERE is_deleted = 0 AND is_RM = 1
                     console.error('Error fetching old project manager:', oldManagerErr);
                     return res.status(500).json({ error: 'Error fetching old project manager' });
                 }
-    
+
                 const oldProjectManagerId = oldManagerResult[0].project_manager_id;
-    
+
                 // Update the project with the new project manager (or null if removing)
                 const updateProjectQuery = `
                     UPDATE master_project 
@@ -1856,38 +1856,38 @@ WHERE is_deleted = 0 AND is_RM = 1
                         project_status_id = ?, tentative_end_date = ?, project_description = ?
                     WHERE project_id = ?
                 `;
-    
+
                 const updateValues = [
                     customer_id, project_name, planned_start_date, actual_start_date,
                     type_of_project_id, type_of_engagement_id, project_manager_id,
                     project_status_id, tentative_end_date, project_description, projectId
                 ];
-    
+
                 db.query(updateProjectQuery, updateValues, (updateErr: any, updateResult: any) => {
                     if (updateErr) {
                         console.error('Error updating project:', updateErr);
                         return res.status(500).json({ error: 'Error updating project' });
                     }
-    
+
                     if (updateResult.affectedRows === 0) {
                         return res.status(404).json({ error: 'Project not found' });
                     }
-    
+
                     // Check if the old project manager is still assigned to any project
                     const checkManagerQuery = `
                         SELECT COUNT(*) AS project_count
                         FROM master_project
                         WHERE project_manager_id = ? AND is_deleted = 0
                     `;
-    
+
                     db.query(checkManagerQuery, [oldProjectManagerId], (checkErr: any, checkResult: any) => {
                         if (checkErr) {
                             console.error('Error checking project manager assignments:', checkErr);
                             return res.status(500).json({ error: 'Error checking project manager assignments' });
                         }
-    
+
                         const projectCount = checkResult[0].project_count;
-    
+
                         // If the old project manager is no longer assigned to any project, set is_PM to 0
                         if (projectCount === 0) {
                             const updateIsPmQuery = `
@@ -1895,7 +1895,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                                 SET is_PM = 0
                                 WHERE user_id = ?
                             `;
-    
+
                             db.query(updateIsPmQuery, [oldProjectManagerId], (updateIsPmErr: any, updateIsPmResult: any) => {
                                 if (updateIsPmErr) {
                                     console.error('Error updating is_PM flag:', updateIsPmErr);
@@ -1904,7 +1904,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             });
                         }
                     });
-    
+
                     // Update the is_PM flag for the new project manager
                     if (project_manager_id) {
                         const updateNewManagerQuery = `
@@ -1912,7 +1912,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             SET is_PM = 1
                             WHERE user_id = ?
                         `;
-    
+
                         db.query(updateNewManagerQuery, [project_manager_id], (updateNewManagerErr: any, updateNewManagerResult: any) => {
                             if (updateNewManagerErr) {
                                 console.error('Error updating is_PM flag for new manager:', updateNewManagerErr);
@@ -1920,7 +1920,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             }
                         });
                     }
-    
+
                     // Return success response
                     res.status(200).json({ message: 'Project updated successfully' });
                 });
@@ -1935,45 +1935,45 @@ WHERE is_deleted = 0 AND is_RM = 1
 
     // ---- Project Deliverable -------
 
-  
-async addProjectDeliverable(req: Request, res: Response): Promise<void> {
-    try {
-        const { customer_id, project_id, project_deliverable_name } = req.body; 
-        
-        if (!customer_id || !project_id || !project_deliverable_name) {
-            res.status(400).json({ error: 'All fields are required' });
-            return;
-        }
 
-        const query = `
+    async addProjectDeliverable(req: Request, res: Response): Promise<void> {
+        try {
+            const { customer_id, project_id, project_deliverable_name } = req.body;
+
+            if (!customer_id || !project_id || !project_deliverable_name) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            const query = `
             INSERT INTO master_project_deliverables 
             (customer_id, project_id, project_deliverable_name, is_deleted) 
             VALUES (?, ?, ?, 0)
         `;
 
-        const values = [customer_id, project_id, project_deliverable_name];
+            const values = [customer_id, project_id, project_deliverable_name];
 
-        db.query(query, values, (err: any, result: any) => {
-            if (err) {
-                console.error('Error adding project deliverable:', err);
-                res.status(500).json({ error: 'Error adding project deliverable' });
-                return;
-            }
-            res.status(201).json({ 
-                message: 'Project deliverable added successfully', 
-                deliverableId: result.insertId 
+            db.query(query, values, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error adding project deliverable:', err);
+                    res.status(500).json({ error: 'Error adding project deliverable' });
+                    return;
+                }
+                res.status(201).json({
+                    message: 'Project deliverable added successfully',
+                    deliverableId: result.insertId
+                });
             });
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
-}
 
 
-async getProjectDeliverables(req: Request, res: Response): Promise<void> {
-    try {
-        const query = `
+    async getProjectDeliverables(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
             SELECT 
                 mpd.pd_id, 
                 mpd.project_deliverable_name,
@@ -1988,19 +1988,19 @@ async getProjectDeliverables(req: Request, res: Response): Promise<void> {
             ORDER BY mpd.pd_id DESC;
         `;
 
-        db.query(query, (err: any, results: any) => {
-            if (err) {
-                console.error('Error fetching project deliverables:', err);
-                res.status(500).json({ error: 'Error fetching project deliverables' });
-                return;
-            }
-            res.status(200).json(results);
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+            db.query(query, (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching project deliverables:', err);
+                    res.status(500).json({ error: 'Error fetching project deliverables' });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
-}
 
 
     async softDeleteProjectDeliverable(req: Request, res: Response): Promise<void> {
@@ -2031,12 +2031,12 @@ async getProjectDeliverables(req: Request, res: Response): Promise<void> {
         try {
             const { deliverableId } = req.params;
             const { customer_id, project_id, project_deliverable_name } = req.body;
-    
+
             if (!customer_id || !project_id || !project_deliverable_name) {
                 res.status(400).json({ error: 'All fields are required' });
                 return;
             }
-    
+
             // Check if the deliverable already exists (excluding current one)
             const checkQuery = `
                 SELECT pd_id FROM master_project_deliverables 
@@ -2044,89 +2044,89 @@ async getProjectDeliverables(req: Request, res: Response): Promise<void> {
                 AND pd_id != ?
                 LIMIT 1
             `;
-    
+
             db.query(checkQuery, [customer_id, project_id, project_deliverable_name, deliverableId], (err: any, results: any) => {
                 if (err) {
                     console.error('Error checking existing deliverable:', err);
                     res.status(500).json({ error: 'Database error while checking deliverable' });
                     return;
                 }
-    
+
                 if (results.length > 0) {
                     res.status(400).json({ error: 'Project deliverable already exists for this project' });
                     return;
                 }
-    
+
                 // Update the deliverable
                 const updateQuery = `
                     UPDATE master_project_deliverables 
                     SET customer_id = ?, project_id = ?, project_deliverable_name = ?, updated_at = NOW()
                     WHERE pd_id = ?
                 `;
-    
+
                 db.query(updateQuery, [customer_id, project_id, project_deliverable_name, deliverableId], (updateErr: any, result: any) => {
                     if (updateErr) {
                         console.error('Database error:', updateErr);
                         res.status(500).json({ error: 'Error updating project deliverable' });
                         return;
                     }
-    
+
                     if (result.affectedRows === 0) {
                         return res.status(404).json({ error: 'Project deliverable not found' });
                     }
-    
+
                     res.status(200).json({ message: 'Project deliverable updated successfully' });
                 });
             });
-    
+
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 
-        // ---- Project Phase --------
+    // ---- Project Phase --------
 
 
-        
-async addProjectPhase(req: Request, res: Response): Promise<void> {
-    try {
-        const { pd_id, project_phase_name } = req.body; 
-        
-        if (!pd_id || !project_phase_name) {
-            res.status(400).json({ error: 'All fields are required' });
-            return;
-        }
 
-        const query = `
+    async addProjectPhase(req: Request, res: Response): Promise<void> {
+        try {
+            const { pd_id, project_phase_name } = req.body;
+
+            if (!pd_id || !project_phase_name) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            const query = `
             INSERT INTO master_project_phases 
             (pd_id, project_phase_name, is_deleted) 
             VALUES (?, ?, 0)
         `;
 
-        const values = [pd_id, project_phase_name];
+            const values = [pd_id, project_phase_name];
 
-        db.query(query, values, (err: any, result: any) => {
-            if (err) {
-                console.error('Error adding project phase:', err);
-                res.status(500).json({ error: 'Error adding project phase' });
-                return;
-            }
-            res.status(201).json({ 
-                message: 'Project phase added successfully', 
-                phaseId: result.insertId 
+            db.query(query, values, (err: any, result: any) => {
+                if (err) {
+                    console.error('Error adding project phase:', err);
+                    res.status(500).json({ error: 'Error adding project phase' });
+                    return;
+                }
+                res.status(201).json({
+                    message: 'Project phase added successfully',
+                    phaseId: result.insertId
+                });
             });
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
-}
 
 
-        async getProjectPhases(req: Request, res: Response): Promise<void> {
-            try {
-                const query = `
+    async getProjectPhases(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
                     SELECT 
                         mpp.phase_id, 
                         mpp.project_phase_name,
@@ -2143,101 +2143,101 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
                     WHERE mpp.is_deleted = 0
                     ORDER BY mpp.phase_id DESC;
                 `;
-        
-                db.query(query, (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error fetching project phases:', err);
-                        res.status(500).json({ error: 'Error fetching project phases' });
-                        return;
-                    }
-                    res.status(200).json(results);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        }
-          
-          async softDeleteProjectPhase(req: Request, res: Response): Promise<void> {
-            try {
-              const { phaseId } = req.params;
-          
-              const updateQuery = `UPDATE master_project_phases SET is_deleted = 1 WHERE phase_id = ?`;
-          
-              db.query(updateQuery, [phaseId], (err: any, result: any) => {
+
+            db.query(query, (err: any, results: any) => {
                 if (err) {
-                  console.error('Error deleting project phase:', err);
-                  return res.status(500).json({ error: 'Error deleting project phase' });
-                }
-          
-                if (result.affectedRows === 0) {
-                  return res.status(404).json({ error: 'Project phase not found' });
-                }
-          
-                res.status(200).json({ message: 'Project phase soft deleted successfully' });
-              });
-            } catch (error) {
-              console.error('Error:', error);
-              res.status(500).json({ error: 'Internal Server Error' });
-            }
-          }
-          async updateProjectPhase(req: Request, res: Response): Promise<void> {
-            try {
-                const { phaseId } = req.params;
-                const { pd_id, project_phase_name } = req.body;
-        
-                if (!pd_id || !project_phase_name) {
-                    res.status(400).json({ error: 'All fields are required' });
+                    console.error('Error fetching project phases:', err);
+                    res.status(500).json({ error: 'Error fetching project phases' });
                     return;
                 }
-        
-                // Check if the phase already exists (excluding current one)
-                const checkQuery = `
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async softDeleteProjectPhase(req: Request, res: Response): Promise<void> {
+        try {
+            const { phaseId } = req.params;
+
+            const updateQuery = `UPDATE master_project_phases SET is_deleted = 1 WHERE phase_id = ?`;
+
+            db.query(updateQuery, [phaseId], (err: any, result: any) => {
+                if (err) {
+                    console.error('Error deleting project phase:', err);
+                    return res.status(500).json({ error: 'Error deleting project phase' });
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Project phase not found' });
+                }
+
+                res.status(200).json({ message: 'Project phase soft deleted successfully' });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async updateProjectPhase(req: Request, res: Response): Promise<void> {
+        try {
+            const { phaseId } = req.params;
+            const { pd_id, project_phase_name } = req.body;
+
+            if (!pd_id || !project_phase_name) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            // Check if the phase already exists (excluding current one)
+            const checkQuery = `
                     SELECT phase_id FROM master_project_phases 
                     WHERE pd_id = ? AND project_phase_name = ?
                     AND phase_id != ?
                     LIMIT 1
                 `;
-        
-                db.query(checkQuery, [pd_id, project_phase_name, phaseId], (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error checking existing phase:', err);
-                        res.status(500).json({ error: 'Database error while checking phase' });
-                        return;
-                    }
-        
-                    if (results.length > 0) {
-                        res.status(400).json({ error: 'Project phase already exists' });
-                        return;
-                    }
-        
-                    // Update the phase
-                    const updateQuery = `
+
+            db.query(checkQuery, [pd_id, project_phase_name, phaseId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error checking existing phase:', err);
+                    res.status(500).json({ error: 'Database error while checking phase' });
+                    return;
+                }
+
+                if (results.length > 0) {
+                    res.status(400).json({ error: 'Project phase already exists' });
+                    return;
+                }
+
+                // Update the phase
+                const updateQuery = `
                         UPDATE master_project_phases 
                         SET pd_id = ?, project_phase_name = ?, updated_at = NOW()
                         WHERE phase_id = ?
                     `;
-        
-                    db.query(updateQuery, [pd_id, project_phase_name, phaseId], (updateErr: any, result: any) => {
-                        if (updateErr) {
-                            console.error('Database error:', updateErr);
-                            res.status(500).json({ error: 'Error updating project phase' });
-                            return;
-                        }
-        
-                        if (result.affectedRows === 0) {
-                            return res.status(404).json({ error: 'Project phase not found' });
-                        }
-        
-                        res.status(200).json({ message: 'Project phase updated successfully' });
-                    });
+
+                db.query(updateQuery, [pd_id, project_phase_name, phaseId], (updateErr: any, result: any) => {
+                    if (updateErr) {
+                        console.error('Database error:', updateErr);
+                        res.status(500).json({ error: 'Error updating project phase' });
+                        return;
+                    }
+
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Project phase not found' });
+                    }
+
+                    res.status(200).json({ message: 'Project phase updated successfully' });
                 });
-        
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
 
 
 
@@ -2245,16 +2245,16 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
 
 
 
-        async getManagerProjectDeliverables(req: Request, res: Response): Promise<void> {
-            try {
-                const managerId = req.params.managerId;
-                
-                if (!managerId) {
-                    res.status(400).json({ error: 'Manager ID is required' });
-                    return;
-                }
-        
-                const query = `
+    async getManagerProjectDeliverables(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
                     SELECT 
                         mpd.pd_id, 
                         mpd.project_deliverable_name,
@@ -2269,31 +2269,31 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
                     AND mp.project_manager_id = ?
                     ORDER BY mpd.pd_id DESC;
                 `;
-                
-                db.query(query, [managerId], (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error fetching manager project deliverables:', err);
-                        res.status(500).json({ error: 'Error fetching project deliverables' });
-                        return;
-                    }
-                    res.status(200).json(results);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        }
-        
-        async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
-            try {
-                const managerId = req.params.managerId;
-                
-                if (!managerId) {
-                    res.status(400).json({ error: 'Manager ID is required' });
+
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager project deliverables:', err);
+                    res.status(500).json({ error: 'Error fetching project deliverables' });
                     return;
                 }
-        
-                const query = `
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
                     SELECT 
                         mpp.phase_id, 
                         mpp.project_phase_name,
@@ -2311,34 +2311,34 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
                     AND mp.project_manager_id = ?
                     ORDER BY mpp.phase_id DESC;
                 `;
-                
-                db.query(query, [managerId], (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error fetching manager project phases:', err);
-                        res.status(500).json({ error: 'Error fetching project phases' });
-                        return;
-                    }
-                    res.status(200).json(results);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        }
 
-
-
-
-        async getManagerProjects(req: Request, res: Response): Promise<void> {
-            try {
-                const managerId = req.params.managerId;
-                
-                if (!managerId) {
-                    res.status(400).json({ error: 'Manager ID is required' });
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager project phases:', err);
+                    res.status(500).json({ error: 'Error fetching project phases' });
                     return;
                 }
-        
-                const query = `
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+
+
+
+    async getManagerProjects(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
                     SELECT 
                         p.project_id, 
                         p.project_name,
@@ -2350,212 +2350,130 @@ async addProjectPhase(req: Request, res: Response): Promise<void> {
                     AND p.project_manager_id = ?
                     ORDER BY p.project_name;
                 `;
-                
-                db.query(query, [managerId], (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error fetching manager projects:', err);
-                        res.status(500).json({ error: 'Error fetching projects' });
-                        return;
-                    }
-                    res.status(200).json(results);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        }
-        
-        // Modify the addProjectDeliverable to ensure customer_id comes from the project
-        async addProjectDeliverableManager(req: Request, res: Response): Promise<void> {
-            try {
-                const { project_id, project_deliverable_name } = req.body;
-                
-                if (!project_id || !project_deliverable_name) {
-                    res.status(400).json({ error: 'All fields are required' });
+
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager projects:', err);
+                    res.status(500).json({ error: 'Error fetching projects' });
                     return;
                 }
-        
-                // First get the customer_id from the project
-                const getCustomerQuery = 'SELECT customer_id FROM master_project WHERE project_id = ?';
-                
-                db.query(getCustomerQuery, [project_id], (err: any, results: any) => {
-                    if (err) {
-                        console.error('Error getting customer from project:', err);
-                        res.status(500).json({ error: 'Error validating project' });
-                        return;
-                    }
-        
-                    if (results.length === 0) {
-                        res.status(400).json({ error: 'Invalid project selected' });
-                        return;
-                    }
-        
-                    const customer_id = results[0].customer_id;
-        
-                    const insertQuery = `
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // Modify the addProjectDeliverable to ensure customer_id comes from the project
+    async addProjectDeliverableManager(req: Request, res: Response): Promise<void> {
+        try {
+            const { project_id, project_deliverable_name } = req.body;
+
+            if (!project_id || !project_deliverable_name) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            // First get the customer_id from the project
+            const getCustomerQuery = 'SELECT customer_id FROM master_project WHERE project_id = ?';
+
+            db.query(getCustomerQuery, [project_id], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error getting customer from project:', err);
+                    res.status(500).json({ error: 'Error validating project' });
+                    return;
+                }
+
+                if (results.length === 0) {
+                    res.status(400).json({ error: 'Invalid project selected' });
+                    return;
+                }
+
+                const customer_id = results[0].customer_id;
+
+                const insertQuery = `
                         INSERT INTO master_project_deliverables 
                         (customer_id, project_id, project_deliverable_name, is_deleted) 
                         VALUES (?, ?, ?, 0)
                     `;
-        
-                    const values = [customer_id, project_id, project_deliverable_name];
-        
-                    db.query(insertQuery, values, (err: any, result: any) => {
-                        if (err) {
-                            console.error('Error adding project deliverable:', err);
-                            res.status(500).json({ error: 'Error adding project deliverable' });
-                            return;
-                        }
-                        res.status(201).json({ 
-                            message: 'Project deliverable added successfully', 
-                            deliverableId: result.insertId 
-                        });
+
+                const values = [customer_id, project_id, project_deliverable_name];
+
+                db.query(insertQuery, values, (err: any, result: any) => {
+                    if (err) {
+                        console.error('Error adding project deliverable:', err);
+                        res.status(500).json({ error: 'Error adding project deliverable' });
+                        return;
+                    }
+                    res.status(201).json({
+                        message: 'Project deliverable added successfully',
+                        deliverableId: result.insertId
                     });
                 });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
 
-        async updateProjectDeliverableManager(req: Request, res: Response): Promise<void> {
-            try {
-                const { deliverableId } = req.params;
-                const { project_id, project_deliverable_name, customer_id } = req.body;
-                
-                if (!project_id || !project_deliverable_name || !customer_id) {
-                    res.status(400).json({ error: 'All fields are required' });
-                    return;
-                }
-        
-                // Check if the deliverable already exists (excluding current one)
-                const checkQuery = `
+    async updateProjectDeliverableManager(req: Request, res: Response): Promise<void> {
+        try {
+            const { deliverableId } = req.params;
+            const { project_id, project_deliverable_name, customer_id } = req.body;
+
+            if (!project_id || !project_deliverable_name || !customer_id) {
+                res.status(400).json({ error: 'All fields are required' });
+                return;
+            }
+
+            // Check if the deliverable already exists (excluding current one)
+            const checkQuery = `
                     SELECT pd_id FROM master_project_deliverables 
                     WHERE project_id = ? AND project_deliverable_name = ?
                     AND pd_id != ?
                     LIMIT 1
                 `;
-        
-                db.query(checkQuery, [project_id, project_deliverable_name, deliverableId], (checkErr: any, checkResults: any) => {
-                    if (checkErr) {
-                        console.error('Error checking existing deliverable:', checkErr);
-                        res.status(500).json({ error: 'Database error while checking deliverable' });
-                        return;
-                    }
-        
-                    if (checkResults.length > 0) {
-                        res.status(400).json({ error: 'Project deliverable already exists for this project' });
-                        return;
-                    }
-        
-                    // Update the deliverable
-                    const updateQuery = `
+
+            db.query(checkQuery, [project_id, project_deliverable_name, deliverableId], (checkErr: any, checkResults: any) => {
+                if (checkErr) {
+                    console.error('Error checking existing deliverable:', checkErr);
+                    res.status(500).json({ error: 'Database error while checking deliverable' });
+                    return;
+                }
+
+                if (checkResults.length > 0) {
+                    res.status(400).json({ error: 'Project deliverable already exists for this project' });
+                    return;
+                }
+
+                // Update the deliverable
+                const updateQuery = `
                         UPDATE master_project_deliverables 
                         SET customer_id = ?, project_id = ?, project_deliverable_name = ?, updated_at = NOW()
                         WHERE pd_id = ?
                     `;
-        
-                    db.query(updateQuery, [customer_id, project_id, project_deliverable_name, deliverableId], (updateErr: any, result: any) => {
-                        if (updateErr) {
-                            console.error('Database error:', updateErr);
-                            res.status(500).json({ error: 'Error updating project deliverable' });
-                            return;
-                        }
-        
-                        if (result.affectedRows === 0) {
-                            return res.status(404).json({ error: 'Project deliverable not found' });
-                        }
-        
-                        res.status(200).json({ message: 'Project deliverable updated successfully' });
-                    });
+
+                db.query(updateQuery, [customer_id, project_id, project_deliverable_name, deliverableId], (updateErr: any, result: any) => {
+                    if (updateErr) {
+                        console.error('Database error:', updateErr);
+                        res.status(500).json({ error: 'Error updating project deliverable' });
+                        return;
+                    }
+
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Project deliverable not found' });
+                    }
+
+                    res.status(200).json({ message: 'Project deliverable updated successfully' });
                 });
-            } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-
-
-
-
-
-
-    // ---- Task Category --------
-
-    // async addTaskCategory(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const { task_category_name } = req.body;
-
-    //         if (!task_category_name) {
-    //             res.status(400).json({ error: 'Task category name is required' });
-    //             return;
-    //         }
-
-    //         const query = `
-    //     INSERT INTO master_task_category (task_category_name, is_deleted) 
-    //     VALUES (?, 0)
-    //   `;
-
-    //         db.query(query, [task_category_name], (err: any, result: any) => {
-    //             if (err) {
-    //                 console.error('Error adding task category:', err);
-    //                 res.status(500).json({ error: 'Error adding task category' });
-    //                 return;
-    //             }
-    //             res.status(201).json({ message: 'Task category added successfully', taskCategoryId: result.insertId });
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
-
-    // async getTaskCategories(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const query = `
-    //     SELECT task_cat_id, task_category_name 
-    //     FROM master_task_category 
-    //     WHERE is_deleted = 0 
-    //     ORDER BY task_cat_id DESC
-    //   `;
-
-    //         db.query(query, (err: any, results: any) => {
-    //             if (err) {
-    //                 console.error('Error fetching task categories:', err);
-    //                 res.status(500).json({ error: 'Error fetching task categories' });
-    //                 return;
-    //             }
-    //             res.status(200).json(results);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
-
-    // async softDeleteTaskCategory(req: Request, res: Response): Promise<void> {
-    //     try {
-    //         const { taskCatId } = req.params;
-
-    //         const updateQuery = `UPDATE master_task_category SET is_deleted = 1 WHERE task_cat_id = ?`;
-
-    //         db.query(updateQuery, [taskCatId], (err: any, result: any) => {
-    //             if (err) {
-    //                 console.error('Error deleting task category:', err);
-    //                 return res.status(500).json({ error: 'Error deleting task category' });
-    //             }
-
-    //             if (result.affectedRows === 0) {
-    //                 return res.status(404).json({ error: 'Task category not found' });
-    //             }
-
-    //             res.status(200).json({ message: 'Task category soft deleted successfully' });
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         res.status(500).json({ error: 'Internal Server Error' });
-    //     }
-    // }
+    }
 
 };
 

@@ -249,20 +249,6 @@ updateProjectDeliverableManager(deliverableId: number, payload: any): Observable
 }
 
 
-
-  // ------------------ Task Category ------------------------
-
-  // addTaskCategory(taskCategory: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/api/task-category`, taskCategory);
-  // }
-
-  // getAllTaskCategories(): Observable<any> {
-  //   return this.http.get(`${this.apiUrl}/api/task-categories`);
-  // }
-
-  // deleteTaskCategory(taskCatId: number): Observable<any> {
-  //   return this.http.delete(`${this.apiUrl}/api/task-categories/${taskCatId}`);
-  // }
   // ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------
 
 

@@ -94,13 +94,6 @@ router.get('/project-phases', orgController.getProjectPhases);
 router.delete('/project-phases/:phaseId', orgController.softDeleteProjectPhase);
 router.put('/project-phases/:phaseId', orgController.updateProjectPhase);
 
-// ---- Task Category --------
-
-// router.post('/task-category', orgController.addTaskCategory);
-// router.get('/task-categories', orgController.getTaskCategories);
-// router.delete('/task-categories/:taskCatId', orgController.softDeleteTaskCategory);
-
-
 router.get('/manager/:managerId/project-deliverables', orgController.getManagerProjectDeliverables);
 router.get('/manager/:managerId/project-phases', orgController.getManagerProjectPhases);
 router.post('/project-deliverable', orgController.addProjectDeliverableManager);
