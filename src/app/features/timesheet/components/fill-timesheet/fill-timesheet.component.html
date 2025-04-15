@@ -15,7 +15,7 @@
                 </h3>
                 <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to submit your timesheet</p>
             </div>
-            
+
             <div class="flex items-center">
                 <div class="text-right">
                     <div class="flex items-center justify-end" [ngClass]="{
@@ -23,8 +23,10 @@
                         'text-orange-500': calculateTotalHours() >= 6 && calculateTotalHours() <= 8,
                         'text-green-600': calculateTotalHours() > 8
                     }">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span class="font-medium">
                             {{ calculateTotalTime().hours }}h {{ calculateTotalTime().minutes }}m
@@ -40,7 +42,7 @@
                 </div>
             </div>
         </div>
-         
+
 
 
         <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(timesheetForm); $event.preventDefault()">
@@ -212,14 +214,16 @@
         </form>
     </div>
 
-  
+
     <!-- 🔹 Timesheet Table Section -->
     <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200 m-4">
         <div class="rounded-lg w-full inline-block whitespace-nowrap">
             <table class="min-w-full text-xs border-collapse">
                 <thead>
                     <tr class="bg-gray-50">
-                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                        <th
+                            class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                            #</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
@@ -229,56 +233,75 @@
                         <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
                         <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
-                      </tr>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let timesheet of timesheetData; let i = index" class="hover:bg-gray-50">
-                        <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name || '-' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name || '-' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name || '-' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name || '-' }}</td>
+                        <td
+                            class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
+                            {{ i + 1 }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name || '-' }}
+                        </td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name || '-' }}
+                        </td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name
+                            || '-' }}</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name || '-'
+                            }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">
-                          <div class="group relative inline-block">
-                            <span class="truncate max-w-[80px] inline-block">{{ timesheet.task_description || '-' }}</span>
-                            <div *ngIf="timesheet.task_description" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
-                              {{ timesheet.task_description }}
+                            <div class="group relative inline-block">
+                                <span class="truncate max-w-[80px] inline-block">{{ timesheet.task_description || '-'
+                                    }}</span>
+                                <div *ngIf="timesheet.task_description"
+                                    class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                                    {{ timesheet.task_description }}
+                                </div>
                             </div>
-                          </div>
                         </td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}h {{ timesheet.minutes }}m</td>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours }}h {{
+                            timesheet.minutes }}m</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">
-                          <span [class.text-green-600]="timesheet.task_status === 1" [class.text-yellow-600]="timesheet.task_status === 0">
-                            {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
-                          </span>
+                            <span [class.text-green-600]="timesheet.task_status === 1"
+                                [class.text-yellow-600]="timesheet.task_status === 0">
+                                {{ timesheet.task_status === 0 ? 'In Progress' : 'Completed' }}
+                            </span>
                         </td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                        <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
-                            
-    <button (click)="retainTimesheetEntry(timesheet)" 
-    class="text-blue-600 hover:text-blue-800 p-1 mr-1"
-    title="Retain this entry to fill again">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-    </svg>
-</button>
- 
-                            <button (click)="openEditModal(timesheet)" 
-              class="text-green-600 hover:text-green-800 p-1 mr-1"
-              [disabled]="!isTimesheetEditable(timesheet.timesheet_date)"
-              [class.opacity-50]="!isTimesheetEditable(timesheet.timesheet_date)"
-              [class.cursor-not-allowed]="!isTimesheetEditable(timesheet.timesheet_date)"
-              [title]="!isTimesheetEditable(timesheet.timesheet_date) ? 'Editing is only allowed within 24 hours of creation' : ''">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-            </button>
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date |
+                            date:'dd-MMM-yyyy' }}</td>
+                        <td
+                            class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
 
-            <button (click)="deleteTimesheet(timesheet.timesheet_id)" class="text-red-600 hover:text-red-800 p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
+                            <button (click)="retainTimesheetEntry(timesheet)"
+                                class="text-blue-600 hover:text-blue-800 p-1 mr-1"
+                                title="Retain this entry to fill again">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            </button>
+
+                            <button (click)="openEditModal(timesheet)"
+                                class="text-green-600 hover:text-green-800 p-1 mr-1"
+                                [disabled]="!isTimesheetEditable(timesheet.timesheet_date)"
+                                [class.opacity-50]="!isTimesheetEditable(timesheet.timesheet_date)"
+                                [class.cursor-not-allowed]="!isTimesheetEditable(timesheet.timesheet_date)"
+                                [title]="!isTimesheetEditable(timesheet.timesheet_date) ? 'Editing is only allowed within 24 hours of creation' : ''">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </button>
+
+                            <button (click)="deleteTimesheet(timesheet.timesheet_id)"
+                                class="text-red-600 hover:text-red-800 p-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -287,14 +310,13 @@
     </div>
 
 
-      <!-- Edit Timesheet Modal -->
-      <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+    <!-- Edit Timesheet Modal -->
+    <!-- <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
       (click)="closeEditModal()">
       <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
           <h3 class="text-xl font-semibold mb-4">Edit Timesheet</h3>
           <form #editTimesheetForm="ngForm" (ngSubmit)="updateTimesheet(editTimesheetForm); $event.preventDefault()">
               <div class="grid grid-cols-4 gap-4">
-                  <!-- Date -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Date*</label>
                       <input type="date" class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedDate"
@@ -305,7 +327,6 @@
                       </span>
                   </div>
 
-                  <!-- Customer -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Customer*</label>
                       <ng-select class="custom-ng-select" [(ngModel)]="editSelectedCustomer"
@@ -321,7 +342,6 @@
                           Customer is required
                       </span>
                   </div>
-                  <!-- Project -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Project*</label>
                       <ng-select class="custom-ng-select" [(ngModel)]="editSelectedProject" name="editSelectedProject"
@@ -338,7 +358,6 @@
                       </span>
                   </div>
 
-                  <!-- Deliverable -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Deliverable*</label>
                       <ng-select class="custom-ng-select" [(ngModel)]="editSelectedDeliverable"
@@ -356,7 +375,6 @@
                       </span>
                   </div>
 
-                  <!-- Phase -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Phase*</label>
                       <ng-select class="custom-ng-select" [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
@@ -372,7 +390,6 @@
                       </span>
                   </div>
 
-                  <!-- Hours -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Hours*</label>
                       <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedHours"
@@ -385,7 +402,6 @@
                       </span>
                   </div>
 
-                  <!-- Minutes -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Minutes*</label>
                       <select class="border p-2 w-full rounded-md" [(ngModel)]="editSelectedMinutes"
@@ -398,7 +414,6 @@
                       </span>
                   </div>
 
-                  <!-- Task Status -->
                   <div class="form-group">
                       <label class="block mb-2 font-semibold">Task Status*</label>
                       <div class="flex items-center space-x-3">
@@ -419,7 +434,6 @@
                       </div>
                   </div>
 
-                  <!-- Task Description -->
                   <div class="form-group col-span-4">
                       <label class="block mb-2 font-semibold">Task Description*</label>
                       <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editTaskDescription"
@@ -431,7 +445,6 @@
                   </div>
               </div>
 
-              <!-- Submit Button -->
               <div class="mt-4">
                   <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
                       Update
@@ -439,7 +452,185 @@
               </div>
           </form>
       </div>
-  </div>
+  </div> -->
 
+    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+        (click)="closeEditModal()">
+        <div class="bg-white p-6 rounded-lg w-1/2 max-w-3xl" (click)="$event.stopPropagation()">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Timesheet</h3>
+            <form #editTimesheetForm="ngForm" (ngSubmit)="updateTimesheet(editTimesheetForm); $event.preventDefault()">
+                <div class="grid grid-cols-4 gap-4">
+                    <!-- Date -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Date*</label>
+                        <input type="date" [(ngModel)]="editSelectedDate" name="editSelectedDate"
+                            #editSelectedDateInput="ngModel" required
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            [ngClass]="{'border-red-500': (editSelectedDateInput.invalid && editSelectedDateInput.touched) || (editTimesheetForm.submitted && editSelectedDateInput.invalid)}">
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedDateInput.invalid && editSelectedDateInput.touched) || (editTimesheetForm.submitted && editSelectedDateInput.invalid)">
+                            Required
+                        </span>
+                    </div>
 
+                    <!-- Customer -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Customer*</label>
+                        <ng-select [(ngModel)]="editSelectedCustomer" name="editSelectedCustomer"
+                            #editSelectedCustomerInput="ngModel" (change)="onEditCustomerChange()" required
+                            [ngClass]="{'border-red-500': (editSelectedCustomerInput.invalid && editSelectedCustomerInput.touched) || (editTimesheetForm.submitted && editSelectedCustomerInput.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Customer</ng-option>
+                            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                                {{ customer.customer_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedCustomerInput.invalid && editSelectedCustomerInput.touched) || (editTimesheetForm.submitted && editSelectedCustomerInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Project -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Project*</label>
+                        <ng-select [(ngModel)]="editSelectedProject" name="editSelectedProject"
+                            #editSelectedProjectInput="ngModel" [disabled]="!editSelectedCustomer"
+                            (change)="onEditProjectChange()" required
+                            [ngClass]="{'border-red-500': (editSelectedProjectInput.invalid && editSelectedProjectInput.touched) || (editTimesheetForm.submitted && editSelectedProjectInput.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Project</ng-option>
+                            <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+                                {{ project.project_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedProjectInput.invalid && editSelectedProjectInput.touched) || (editTimesheetForm.submitted && editSelectedProjectInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Deliverable -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Deliverable*</label>
+                        <ng-select [(ngModel)]="editSelectedDeliverable" name="editSelectedDeliverable"
+                            #editSelectedDeliverableInput="ngModel" [disabled]="!editSelectedProject"
+                            (change)="onEditDeliverableChange()" required
+                            [ngClass]="{'border-red-500': (editSelectedDeliverableInput.invalid && editSelectedDeliverableInput.touched) || (editTimesheetForm.submitted && editSelectedDeliverableInput.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Deliverable</ng-option>
+                            <ng-option *ngFor="let deliverable of filterOptionProjectDeliverables"
+                                [value]="deliverable.pd_id">
+                                {{ deliverable.project_deliverable_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedDeliverableInput.invalid && editSelectedDeliverableInput.touched) || (editTimesheetForm.submitted && editSelectedDeliverableInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Phase -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Phase*</label>
+                        <ng-select [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
+                            #editSelectedPhaseInput="ngModel" [disabled]="!editSelectedDeliverable" required
+                            [ngClass]="{'border-red-500': (editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched) || (editTimesheetForm.submitted && editSelectedPhaseInput.invalid)}"
+                            class="text-xs custom-ng-select">
+                            <ng-option [value]="" disabled selected>Select Phase</ng-option>
+                            <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
+                                {{ phase.project_phase_name }}
+                            </ng-option>
+                        </ng-select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched) || (editTimesheetForm.submitted && editSelectedPhaseInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Hours -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Hours*</label>
+                        <select [(ngModel)]="editSelectedHours" name="editSelectedHours"
+                            #editSelectedHoursInput="ngModel" required
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            [ngClass]="{'border-red-500': (editSelectedHoursInput.invalid && editSelectedHoursInput.touched) || (editTimesheetForm.submitted && editSelectedHoursInput.invalid)}">
+                            <option *ngFor="let hour of hoursList" [value]="hour">{{ hour }}</option>
+                        </select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedHoursInput.invalid && editSelectedHoursInput.touched) || (editTimesheetForm.submitted && editSelectedHoursInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Minutes -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Minutes*</label>
+                        <select [(ngModel)]="editSelectedMinutes" name="editSelectedMinutes"
+                            #editSelectedMinutesInput="ngModel" required
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            [ngClass]="{'border-red-500': (editSelectedMinutesInput.invalid && editSelectedMinutesInput.touched) || (editTimesheetForm.submitted && editSelectedMinutesInput.invalid)}">
+                            <option *ngFor="let minute of minutesList" [value]="minute">{{ minute }}</option>
+                        </select>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editSelectedMinutesInput.invalid && editSelectedMinutesInput.touched) || (editTimesheetForm.submitted && editSelectedMinutesInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+
+                    <!-- Task Status -->
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-gray-600">Task Status*</label>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-medium" [class.text-gray-500]="editSelectedTaskStatus === 0"
+                                [class.text-green-600]="editSelectedTaskStatus === 1">
+                                {{ editSelectedTaskStatus === 1 ? '✅ Completed' : '⚠ In Progress' }}
+                            </span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" [(ngModel)]="editSelectedTaskStatus"
+                                    name="editSelectedTaskStatus" (ngModelChange)="onEditTaskStatusChange($event)">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
+                       peer-checked:after:translate-x-full peer-checked:after:border-white
+                       after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
+                       after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                       peer-checked:bg-green-600">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Task Description -->
+                    <div class="space-y-1 col-span-4">
+                        <label class="text-xs font-medium text-gray-600">Task Description*</label>
+                        <textarea [(ngModel)]="editTaskDescription" name="editTaskDescription"
+                            #editTaskDescriptionInput="ngModel" rows="3" required
+                            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            [ngClass]="{'border-red-500': (editTaskDescriptionInput.invalid && editTaskDescriptionInput.touched) || (editTimesheetForm.submitted && editTaskDescriptionInput.invalid)}"></textarea>
+                        <span class="text-xs text-red-500"
+                            *ngIf="(editTaskDescriptionInput.invalid && editTaskDescriptionInput.touched) || (editTimesheetForm.submitted && editTaskDescriptionInput.invalid)">
+                            Required
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button"
+                        class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+                        (click)="closeEditModal()">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Update Timesheet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

@@ -4,221 +4,226 @@
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-    <div class="mb-6 pb-4 border-b border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-        </svg>
-        Add New Customer
-      </h3>
-      <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to register new customer</p>
-    </div>
-
-    <form #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm); $event.preventDefault()">
-      <div class="grid grid-cols-6 gap-4">
-        <!-- Customer Name -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Name*</label>
-          <input type="text" [(ngModel)]="customer.customerName" #customerName="ngModel" name="customerName" required
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Company Website -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Company Website</label>
-          <input type="text" [(ngModel)]="customer.companyWebsite" name="companyWebsite"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-        </div>
-  
-        <!-- Email Address -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Email Address</label>
-          <input type="email" [(ngModel)]="customer.email" #email="ngModel" name="email" 
-            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (email.invalid && email.touched) || (customerForm.submitted && email.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(email.invalid && email.touched) || (customerForm.submitted && email.invalid)">
-            Valid email required
-          </span>
-        </div>
-  
-        <!-- Phone Number -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Phone Number</label>
-          <input type="text" [(ngModel)]="customer.phone" #phone="ngModel" name="phone" pattern="^\d{10}$"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)">
-            10 digits required
-          </span>
-        </div>
-  
-        <!-- Alternate Phone Number -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Alternate Phone</label>
-          <input type="text" [(ngModel)]="customer.alternatePhone" name="alternatePhone"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-        </div>
-  
-        <!-- Customer Status -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Status*</label>
-          <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
-            [searchable]="true" [clearable]="false" required
-            [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
-            class="text-xs custom-ng-select">
-            <ng-option [value]="" disabled selected>Select status</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(status.invalid && status.touched) || (customerForm.submitted && status.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Customer Sector -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Sector*</label>
-          <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors" [searchable]="true"
-            (change)="filterIndustries()" required
-            [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
-            class="text-xs custom-ng-select">
-            <ng-option [value]="" disabled selected>Select sector</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Customer Industry -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Industry*</label>
-          <ng-select [(ngModel)]="selectedIndustry" #industry="ngModel" name="industry" [items]="industries"
-            (change)="filterDomains()" required
-            [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
-            class="text-xs custom-ng-select">
-            <ng-option [value]="" disabled selected>Select industry</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Customer Domain -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Segment*</label>
-          <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
-            [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
-            class="text-xs custom-ng-select">
-            <ng-option [value]="" disabled selected>Select segment</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Customer Type -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer Type*</label>
-          <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
-            [items]="['Existing', 'Potential']" [clearable]="false" required
-            [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
-            class="text-xs custom-ng-select">
-            <ng-option [value]="" disabled selected>Select type</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- City -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">City</label>
-          <input type="text" [(ngModel)]="customer.city" #city="ngModel" name="city"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (city.invalid && city.touched) || (customerForm.submitted && city.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(city.invalid && city.touched) || (customerForm.submitted && city.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- State -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">State</label>
-          <input type="text" [(ngModel)]="customer.state" #state="ngModel" name="state"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (state.invalid && state.touched) || (customerForm.submitted && state.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(state.invalid && state.touched) || (customerForm.submitted && state.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Pincode -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Pincode</label>
-          <input type="text" [(ngModel)]="customer.pincode" #pincode="ngModel" name="pincode" pattern="^[0-9]{6}$"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)">
-            6 digits required
-          </span>
-        </div>
-  
-        <!-- Country -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Country</label>
-          <input type="text" [(ngModel)]="customer.country" #country="ngModel" name="country"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (country.invalid && country.touched) || (customerForm.submitted && country.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(country.invalid && country.touched) || (customerForm.submitted && country.invalid)">
-            Required
-          </span>
-        </div>
-  
-        <!-- Customer Description -->
-        <div class="space-y-1 col-span-3">
-          <label class="text-xs font-medium text-gray-600">Customer Description</label>
-          <textarea [(ngModel)]="customer.description" name="description" rows="3"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"></textarea>
-        </div>
-      </div>
-  
-      <!-- Submit Button -->
-      <div class="mt-6 flex justify-center">
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+      <div class="mb-6 pb-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
           </svg>
-          Create Customer
-        </button>
+          Add New Customer
+        </h3>
+        <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to register new customer</p>
       </div>
-    </form>
+
+      <form #customerForm="ngForm" (ngSubmit)="submitCustomer(customerForm); $event.preventDefault()">
+        <div class="grid grid-cols-6 gap-4">
+          <!-- Customer Name -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+            <input type="text" [(ngModel)]="customer.customerName" #customerName="ngModel" name="customerName" required
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(customerName.invalid && customerName.touched) || (customerForm.submitted && customerName.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Company Website -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Company Website</label>
+            <input type="text" [(ngModel)]="customer.companyWebsite" name="companyWebsite"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <!-- Email Address -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Email Address</label>
+            <input type="email" [(ngModel)]="customer.email" #email="ngModel" name="email"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (email.invalid && email.touched) || (customerForm.submitted && email.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(email.invalid && email.touched) || (customerForm.submitted && email.invalid)">
+              Valid email required
+            </span>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Phone Number</label>
+            <input type="text" [(ngModel)]="customer.phone" #phone="ngModel" name="phone" pattern="^\d{10}$"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(phone.invalid && phone.touched) || (customerForm.submitted && phone.invalid)">
+              10 digits required
+            </span>
+          </div>
+
+          <!-- Alternate Phone Number -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Alternate Phone</label>
+            <input type="text" [(ngModel)]="customer.alternatePhone" name="alternatePhone"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <!-- Customer Status -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Status*</label>
+            <ng-select [(ngModel)]="customer.status" #status="ngModel" name="status" [items]="['Active', 'Inactive']"
+              [searchable]="true" [clearable]="false" required
+              [ngClass]="{'border-red-500': (status.invalid && status.touched) || (customerForm.submitted && status.invalid)}"
+              class="text-xs custom-ng-select">
+              <ng-option [value]="" disabled selected>Select status</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(status.invalid && status.touched) || (customerForm.submitted && status.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Customer Sector -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Sector*</label>
+            <ng-select [(ngModel)]="selectedSector" #sector="ngModel" name="sector" [items]="sectors"
+              [searchable]="true" (change)="filterIndustries()" required
+              [ngClass]="{'border-red-500': (sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)}"
+              class="text-xs custom-ng-select">
+              <ng-option [value]="" disabled selected>Select sector</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(sector.invalid && sector.touched) || (customerForm.submitted && sector.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Customer Industry -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Industry*</label>
+            <ng-select [(ngModel)]="selectedIndustry" #industry="ngModel" name="industry" [items]="industries"
+              (change)="filterDomains()" required
+              [ngClass]="{'border-red-500': (industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)}"
+              class="text-xs custom-ng-select">
+              <ng-option [value]="" disabled selected>Select industry</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(industry.invalid && industry.touched) || (customerForm.submitted && industry.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Customer Domain -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Segment*</label>
+            <ng-select [(ngModel)]="selectedDomain" #domain="ngModel" name="domain" [items]="domains" required
+              [ngClass]="{'border-red-500': (domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)}"
+              class="text-xs custom-ng-select">
+              <ng-option [value]="" disabled selected>Select segment</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(domain.invalid && domain.touched) || (customerForm.submitted && domain.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Customer Type -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Customer Type*</label>
+            <ng-select [(ngModel)]="customer.customerType" #customerType="ngModel" name="customerType"
+              [items]="['Existing', 'Potential']" [clearable]="false" required
+              [ngClass]="{'border-red-500': (customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)}"
+              class="text-xs custom-ng-select">
+              <ng-option [value]="" disabled selected>Select type</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(customerType.invalid && customerType.touched) || (customerForm.submitted && customerType.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- City -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">City</label>
+            <input type="text" [(ngModel)]="customer.city" #city="ngModel" name="city"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (city.invalid && city.touched) || (customerForm.submitted && city.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(city.invalid && city.touched) || (customerForm.submitted && city.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- State -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">State</label>
+            <input type="text" [(ngModel)]="customer.state" #state="ngModel" name="state"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (state.invalid && state.touched) || (customerForm.submitted && state.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(state.invalid && state.touched) || (customerForm.submitted && state.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Pincode -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Pincode</label>
+            <input type="text" [(ngModel)]="customer.pincode" #pincode="ngModel" name="pincode" pattern="^[0-9]{6}$"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(pincode.invalid && pincode.touched) || (customerForm.submitted && pincode.invalid)">
+              6 digits required
+            </span>
+          </div>
+
+          <!-- Country -->
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Country</label>
+            <input type="text" [(ngModel)]="customer.country" #country="ngModel" name="country"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (country.invalid && country.touched) || (customerForm.submitted && country.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(country.invalid && country.touched) || (customerForm.submitted && country.invalid)">
+              Required
+            </span>
+          </div>
+
+          <!-- Customer Description -->
+          <div class="space-y-1 col-span-3">
+            <label class="text-xs font-medium text-gray-600">Customer Description</label>
+            <textarea [(ngModel)]="customer.description" name="description" rows="3"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-6 flex justify-center">
+          <button type="submit"
+            class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd" />
+            </svg>
+            Create Customer
+          </button>
+        </div>
+      </form>
 
     </div>
-  
-   
+
+
     <!-- Customer Table -->
     <h3 class="mt-6 font-bold">Customer List</h3>
     <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
       <!-- Filters -->
       <div class="min-w-full relative z-10">
-        
-        <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+
+        <div
+          class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
+          style="overflow: visible;">
           <!-- Customer Name Filter -->
           <div class="relative w-48">
             <label class="block text-xs font-medium mb-1">Customer</label>
@@ -232,15 +237,15 @@
 
 
           <!-- Company Website Filter -->
-            <div class="relative w-48">
-              <label class="block text-xs font-medium mb-1">Company Website</label>
-              <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
-                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6" />
-              <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
-                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                ×
-              </button>
-            </div>
+          <div class="relative w-48">
+            <label class="block text-xs font-medium mb-1">Company Website</label>
+            <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
+              class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6" />
+            <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
+              class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+              ×
+            </button>
+          </div>
 
           <!-- Email Filter -->
           <div class="relative w-48">
@@ -359,14 +364,16 @@
 
             <div class="h-[1.325rem]"></div> <!-- Exactly halfway between h-4 (1rem) and h-5 (1.25rem) -->
 
-          <button (click)="clearFilters()" title="Clear all filters"
-          class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-          </svg>
-          <span>Clear</span>
-        </button>
-        </div>
+            <button (click)="clearFilters()" title="Clear all filters"
+              class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span>Clear</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -396,17 +403,22 @@
           </thead>
           <tbody>
             <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
-              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i +
+                1 }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_name || '-' }}</td>
-              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_company_website || '-' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_company_website || '-' }}
+              </td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_email || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_phone || '-' }}</td>
-              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_alternate_phone || '-' }}</td>
-              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_alternate_phone || '-' }}
+              </td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_active ? 'Active' : 'Inactive' }}
+              </td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.sector || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.industry || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.domain || '-' }}</td>
-              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+              <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_new ? 'Potential' : 'Existing' }}
+              </td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_city || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_state || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_pincode || '-' }}</td>
@@ -414,20 +426,27 @@
               <td class="px-1 py-1 border border-gray-300 text-center">
                 <div class="group relative inline-block">
                   <span class="truncate max-w-[80px] inline-block">{{ customer.customer_description || '-' }}</span>
-                  <div *ngIf="customer.customer_description" class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
+                  <div *ngIf="customer.customer_description"
+                    class="absolute z-20 hidden group-hover:block w-64 px-1 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300">
                     {{ customer.customer_description }}
                   </div>
                 </div>
               </td>
               <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
-                <button (click)="editCustomerModule(customer)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <button (click)="editCustomerModule(customer)" class="text-green-600 hover:text-green-800 p-1"
+                  title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-                <button (click)="deleteCustomer(customer.customer_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <button (click)="deleteCustomer(customer.customer_id)" class="text-red-600 hover:text-red-800 p-1"
+                  title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </td>
@@ -453,14 +472,14 @@
     </div>
 
 
-    <div *ngIf="isCustomerModalOpen"
+    <!-- <div *ngIf="isCustomerModalOpen"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
     (click)="closeCustomerModule()">
     <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
       <h3 class="text-xl font-semibold mb-4">Edit Customer</h3>
       <form #editCustomerForm="ngForm" (ngSubmit)="updateCustomer(editCustomerForm); $event.preventDefault()">
         <div class="grid grid-cols-5 gap-4">
-          <!-- Customer Name (Required) -->
+
           <div class="form-group">
             <label>Customer Name*</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.customerName"
@@ -471,21 +490,18 @@
               Name is required</span>
           </div>
 
-          <!-- Company Website -->
           <div class="form-group">
             <label>Company Website</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.companyWebsite"
               name="editCompanyWebsite">
           </div>
 
-          <!-- Email (Required & Valid Email) -->
           <div class="form-group">
             <label>Email Address</label>
             <input type="email" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.email"
               #editEmail="ngModel" name="editEmail" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
           </div>
 
-          <!-- Phone Number -->
           <div class="form-group">
             <label>Phone Number</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.phone"
@@ -497,14 +513,12 @@
             </span>
           </div>
 
-          <!-- Alternate Phone Number -->
           <div class="form-group">
             <label>Alternate Phone Number</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.alternatePhone"
               name="editAlternatePhone">
           </div>
 
-          <!-- Customer Status (Required) -->
           <div class="form-group">
             <label>Customer Status*</label>
             <ng-select class="custom-ng-select" [(ngModel)]="editCustomer.status" name="editStatus"
@@ -517,7 +531,6 @@
             </span>
           </div>
 
-          <!-- Customer Sector -->
           <div class="form-group">
             <label>Customer Sector*</label>
             <ng-select class="custom-ng-select" [(ngModel)]="editSelectedSector" name="editSector" [items]="sectors"
@@ -530,7 +543,6 @@
             </span>
           </div>
 
-          <!-- Customer Industry -->
           <div class="form-group">
             <label>Customer Industry*</label>
             <ng-select class="custom-ng-select" [(ngModel)]="editSelectedIndustry" name="editIndustry"
@@ -543,7 +555,6 @@
             </span>
           </div>
 
-          <!-- Customer Domain -->
           <div class="form-group">
             <label>Customer Segment*</label>
             <ng-select class="custom-ng-select" [(ngModel)]="editSelectedDomain" name="editDomain" [items]="domains"
@@ -556,7 +567,6 @@
             </span>
           </div>
 
-          <!-- Customer Type (Required) -->
           <div class="form-group">
             <label>Customer Type*</label>
             <ng-select class="custom-ng-select" [(ngModel)]="editCustomer.customerType" name="editCustomerType"
@@ -570,7 +580,6 @@
             </span>
           </div>
 
-          <!-- City -->
           <div class="form-group">
             <label>City</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.city"
@@ -582,7 +591,6 @@
             </span>
           </div>
 
-          <!-- State -->
           <div class="form-group">
             <label>State</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.state"
@@ -594,7 +602,6 @@
             </span>
           </div>
 
-          <!-- Pincode -->
           <div class="form-group">
             <label>Pincode</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.pincode"
@@ -606,7 +613,6 @@
             </span>
           </div>
 
-          <!-- Country -->
           <div class="form-group">
             <label>Country</label>
             <input type="text" class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.country"
@@ -618,7 +624,6 @@
             </span>
           </div>
 
-          <!-- Customer Description -->
           <div class="form-group">
             <label>Customer Description</label>
             <textarea class="border p-2 w-full rounded-md" [(ngModel)]="editCustomer.description"
@@ -626,7 +631,6 @@
           </div>
         </div>
 
-        <!-- Submit Button -->
         <div class="mt-4 flex justify-end space-x-2">
           <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
             (click)="closeCustomerModule()">
@@ -638,8 +642,215 @@
         </div>
       </form>
     </div>
-  </div>
+  </div> -->
 
+
+    <!-- Customer Edit Modal -->
+    <div *ngIf="isCustomerModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-4xl">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Customer</h3>
+        <form #editCustomerForm="ngForm" (ngSubmit)="updateCustomer(editCustomerForm); $event.preventDefault()">
+          <div class="grid grid-cols-5 gap-4">
+            <!-- Customer Name (Required) -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Name*</label>
+              <input type="text" [(ngModel)]="editCustomer.customerName" #editCustomerName="ngModel"
+                name="editCustomerName" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editCustomerName.invalid && editCustomerName.touched) || (editCustomerForm.submitted && editCustomerName.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editCustomerName.invalid && editCustomerName.touched) || (editCustomerForm.submitted && editCustomerName.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Company Website -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Company Website</label>
+              <input type="text" [(ngModel)]="editCustomer.companyWebsite" name="editCompanyWebsite"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Email Address</label>
+              <input type="email" [(ngModel)]="editCustomer.email" #editEmail="ngModel" name="editEmail"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editEmail.invalid && editEmail.touched) || (editCustomerForm.submitted && editEmail.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editEmail.invalid && editEmail.touched) || (editCustomerForm.submitted && editEmail.invalid)">
+                Valid email required
+              </span>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Phone Number</label>
+              <input type="text" [(ngModel)]="editCustomer.phone" #editPhone="ngModel" name="editPhone"
+                pattern="^\d{10}$"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editPhone.invalid && editPhone.touched) || (editCustomerForm.submitted && editPhone.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editPhone.touched && editPhone.value && editPhone.invalid) || (editCustomerForm.submitted && editPhone.value && editPhone.invalid)">
+                10 digits required
+              </span>
+            </div>
+
+            <!-- Alternate Phone Number -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Alternate Phone</label>
+              <input type="text" [(ngModel)]="editCustomer.alternatePhone" name="editAlternatePhone"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Customer Status -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Status*</label>
+              <ng-select [(ngModel)]="editCustomer.status" #editStatus="ngModel" name="editStatus"
+                [items]="['Active', 'Inactive']" [searchable]="true" [clearable]="false" required
+                [ngClass]="{'border-red-500': (editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)}"
+                class="text-xs custom-ng-select">
+              </ng-select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editStatus.invalid && editStatus.touched) || (editCustomerForm.submitted && editStatus.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Customer Sector -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Sector*</label>
+              <ng-select [(ngModel)]="editSelectedSector" #editSector="ngModel" name="editSector" [items]="sectors"
+                [searchable]="true" (change)="filterEditIndustries()" required
+                [ngClass]="{'border-red-500': (editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)}"
+                class="text-xs custom-ng-select">
+              </ng-select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editSector.invalid && editSector.touched) || (editCustomerForm.submitted && editSector.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Customer Industry -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Industry*</label>
+              <ng-select [(ngModel)]="editSelectedIndustry" #editIndustry="ngModel" name="editIndustry"
+                [items]="industries" [searchable]="true" (change)="filterEditDomains()" required
+                [ngClass]="{'border-red-500': (editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)}"
+                class="text-xs custom-ng-select">
+              </ng-select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editIndustry.invalid && editIndustry.touched) || (editCustomerForm.submitted && editIndustry.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Customer Domain -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Segment*</label>
+              <ng-select [(ngModel)]="editSelectedDomain" #editDomain="ngModel" name="editDomain" [items]="domains"
+                [searchable]="true" required
+                [ngClass]="{'border-red-500': (editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)}"
+                class="text-xs custom-ng-select">
+              </ng-select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editDomain.invalid && editDomain.touched) || (editCustomerForm.submitted && editDomain.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Customer Type -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Customer Type*</label>
+              <ng-select [(ngModel)]="editCustomer.customerType" #editCustomerType="ngModel" name="editCustomerType"
+                [items]="['Existing', 'Potential']" [searchable]="false" [clearable]="false" required
+                [ngClass]="{'border-red-500': (editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)}"
+                class="text-xs custom-ng-select">
+              </ng-select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editCustomerType.invalid && editCustomerType.touched) || (editCustomerForm.submitted && editCustomerType.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- City -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">City</label>
+              <input type="text" [(ngModel)]="editCustomer.city" #editCity="ngModel" name="editCity"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editCity.invalid && editCity.touched) || (editCustomerForm.submitted && editCity.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editCity.invalid && editCity.touched) || (editCustomerForm.submitted && editCity.invalid)">
+                Valid city required
+              </span>
+            </div>
+
+            <!-- State -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">State</label>
+              <input type="text" [(ngModel)]="editCustomer.state" #editState="ngModel" name="editState"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editState.invalid && editState.touched) || (editCustomerForm.submitted && editState.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editState.invalid && editState.touched) || (editCustomerForm.submitted && editState.invalid)">
+                Valid state required
+              </span>
+            </div>
+
+            <!-- Pincode -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Pincode</label>
+              <input type="text" [(ngModel)]="editCustomer.pincode" #editPincode="ngModel" name="editPincode"
+                pattern="^[0-9]{6}$"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editPincode.invalid && editPincode.touched) || (editCustomerForm.submitted && editPincode.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editPincode.invalid && editPincode.touched) || (editCustomerForm.submitted && editPincode.invalid)">
+                6 digits required
+              </span>
+            </div>
+
+            <!-- Country -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Country</label>
+              <input type="text" [(ngModel)]="editCustomer.country" #editCountry="ngModel" name="editCountry"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editCountry.invalid && editCountry.touched) || (editCustomerForm.submitted && editCountry.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editCountry.invalid && editCountry.touched) || (editCustomerForm.submitted && editCountry.invalid)">
+                Valid country required
+              </span>
+            </div>
+
+            <!-- Customer Description -->
+            <div class="space-y-1 col-span-5">
+              <label class="text-xs font-medium text-gray-600">Customer Description</label>
+              <textarea [(ngModel)]="editCustomer.description" name="editDescription" rows="3"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeCustomerModule()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Customer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
 
   </div>
@@ -652,17 +863,18 @@
   <div *ngIf="selectedSection === 'customerCategory'" class="p-2">
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
-    <div class="mb-6 pb-4 border-b border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-        </svg>
-        Add New Category
-      </h3>
-      <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new category</p>
-    </div>
-  
-    <!-- <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
+      <div class="mb-6 pb-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+            fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+          Add New Category
+        </h3>
+        <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new category</p>
+      </div>
+
+      <!-- <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
       <div class="grid grid-cols-6 gap-4">
 
         <div class="form-group col-span-2">
@@ -756,100 +968,108 @@
     </form> -->
 
 
-    <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
-      <div class="grid grid-cols-6 gap-4">
-        <!-- Sector Selection -->
-        <div class="space-y-1 col-span-2">
-          <label class="text-xs font-medium text-gray-600">Sector*</label>
-          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.sector" name="sector" (change)="onSectorChange()"
-            required #sector="ngModel"
-            [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
-            <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
-            <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
-            Required
-          </span>
+      <form #categoryForm="ngForm" (ngSubmit)="saveCategory(categoryForm); $event.preventDefault()">
+        <div class="grid grid-cols-6 gap-4">
+          <!-- Sector Selection -->
+          <div class="space-y-1 col-span-2">
+            <label class="text-xs font-medium text-gray-600">Sector*</label>
+            <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.sector" name="sector"
+              (change)="onSectorChange()" required #sector="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || sector?.touched) && sector?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Sector</ng-option>
+              <ng-option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || sector?.touched) && sector?.invalid">
+              Required
+            </span>
+          </div>
+
+          <!-- New Sector Input -->
+          <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__'">
+            <label class="text-xs font-medium text-gray-600">New Sector Name*</label>
+            <input type="text"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [(ngModel)]="newSector" name="newSector" #newSectorField="ngModel" placeholder="Enter new sector" required
+              [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
+            <span class="text-xs text-red-500"
+              *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
+              Required
+            </span>
+          </div>
+
+          <!-- Industry Selection -->
+          <div class="space-y-1 col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
+            <label class="text-xs font-medium text-gray-600">Industry*</label>
+            <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
+              (change)="onIndustryChange()" required #industry="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
+              <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500"
+              *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
+              Required
+            </span>
+          </div>
+
+          <!-- New Industry Input -->
+          <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
+            <label class="text-xs font-medium text-gray-600">New Industry Name*</label>
+            <input type="text"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [(ngModel)]="newIndustry" name="newIndustry" #newIndustryField="ngModel" placeholder="Enter new industry"
+              required
+              [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
+            <span class="text-xs text-red-500"
+              *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
+              Required
+            </span>
+          </div>
+
+          <!-- Segment Selection -->
+          <div class="space-y-1 col-span-2"
+            *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
+            <label class="text-xs font-medium text-gray-600">Segment*</label>
+            <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required
+              #domain="ngModel"
+              [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
+              <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
+              <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
+            </ng-select>
+            <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
+              Required
+            </span>
+          </div>
+
+          <!-- New Segment Input -->
+          <div class="space-y-1 col-span-2"
+            *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
+            <label class="text-xs font-medium text-gray-600">New Segment Name*</label>
+            <input type="text"
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [(ngModel)]="newDomain" name="newDomain" #newDomainField="ngModel" placeholder="Enter new segment"
+              required
+              [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
+            <span class="text-xs text-red-500"
+              *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
+              Required
+            </span>
+          </div>
         </div>
-  
-        <!-- New Sector Input -->
-        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__'">
-          <label class="text-xs font-medium text-gray-600">New Sector Name*</label>
-          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-            [(ngModel)]="newSector" name="newSector" #newSectorField="ngModel" placeholder="Enter new sector" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid}">
-          <span class="text-xs text-red-500"
-            *ngIf="(categoryForm.submitted || newSectorField?.touched) && newSectorField?.invalid">
-            Required
-          </span>
+
+        <!-- Submit Button -->
+        <div class="mt-6 flex justify-center">
+          <button type="submit"
+            class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clip-rule="evenodd" />
+            </svg>
+            Save Category
+          </button>
         </div>
-  
-        <!-- Industry Selection -->
-        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector && inputMode.sector !== '__new__'">
-          <label class="text-xs font-medium text-gray-600">Industry*</label>
-          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.industry" name="industry"
-            (change)="onIndustryChange()" required #industry="ngModel"
-            [ngClass]="{'border-red-500': (categoryForm.submitted || industry?.touched) && industry?.invalid}">
-            <ng-option [value]="'__new__'">+ Add New Industry</ng-option>
-            <ng-option *ngFor="let industry of filteredIndustries" [value]="industry">{{ industry }}</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500"
-            *ngIf="(categoryForm.submitted || industry?.touched) && industry?.invalid">
-            Required
-          </span>
-        </div>
-  
-        <!-- New Industry Input -->
-        <div class="space-y-1 col-span-2" *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__'">
-          <label class="text-xs font-medium text-gray-600">New Industry Name*</label>
-          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-            [(ngModel)]="newIndustry" name="newIndustry" #newIndustryField="ngModel" placeholder="Enter new industry" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid}">
-          <span class="text-xs text-red-500"
-            *ngIf="(categoryForm.submitted || newIndustryField?.touched) && newIndustryField?.invalid">
-            Required
-          </span>
-        </div>
-  
-        <!-- Segment Selection -->
-        <div class="space-y-1 col-span-2"
-          *ngIf="inputMode.industry && inputMode.industry !== '__new__' && inputMode.sector !== '__new__'">
-          <label class="text-xs font-medium text-gray-600">Segment*</label>
-          <ng-select class="text-xs custom-ng-select" [(ngModel)]="inputMode.domain" name="domain" required #domain="ngModel"
-            [ngClass]="{'border-red-500': (categoryForm.submitted || domain?.touched) && domain?.invalid}">
-            <ng-option [value]="'__new__'">+ Add New Segment</ng-option>
-            <ng-option *ngFor="let domain of filteredDomains" [value]="domain">{{ domain }}</ng-option>
-          </ng-select>
-          <span class="text-xs text-red-500" *ngIf="(categoryForm.submitted || domain?.touched) && domain?.invalid">
-            Required
-          </span>
-        </div>
-  
-        <!-- New Segment Input -->
-        <div class="space-y-1 col-span-2"
-          *ngIf="inputMode.sector === '__new__' || inputMode.industry === '__new__' || inputMode.domain === '__new__'">
-          <label class="text-xs font-medium text-gray-600">New Segment Name*</label>
-          <input type="text" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-            [(ngModel)]="newDomain" name="newDomain" #newDomainField="ngModel" placeholder="Enter new segment" required
-            [ngClass]="{'border-red-500': (categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid}">
-          <span class="text-xs text-red-500"
-            *ngIf="(categoryForm.submitted || newDomainField?.touched) && newDomainField?.invalid">
-            Required
-          </span>
-        </div>
-      </div>
-  
-      <!-- Submit Button -->
-      <div class="mt-6 flex justify-center">
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          Save Category
-        </button>
-      </div>
-    </form>
+      </form>
     </div>
 
     <!-- Category Table -->
@@ -868,19 +1088,25 @@
           </thead>
           <tbody>
             <tr *ngFor="let category of allCategories; let i = index" class="hover:bg-gray-50">
-              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+              <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i +
+                1 }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ category.sector || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ category.industry || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ category.domain || '-' }}</td>
               <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
                 <button (click)="openEditModal(category)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-                <button (click)="deleteCategory(category.category_id)" class="text-red-600 hover:text-red-800 p-1" title="Delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <button (click)="deleteCategory(category.category_id)" class="text-red-600 hover:text-red-800 p-1"
+                  title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </td>
@@ -889,14 +1115,13 @@
         </table>
       </div>
     </div>
-    
 
-    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditModal()">
+
+    <!-- <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeEditModal()">
       <div class="bg-white p-6 rounded-lg w-auto" (click)="$event.stopPropagation()">
           <h3 class="text-xl font-semibold mb-4">Edit Category</h3>
           <form #editCategoryForm="ngForm" (ngSubmit)="updateCategory(editCategoryForm); $event.preventDefault()">
               <div class="grid grid-cols-6 gap-4">
-                  <!-- Sector Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Sector*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
@@ -909,7 +1134,6 @@
                       </span>
                   </div>
     
-                  <!-- Industry Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Industry*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
@@ -922,7 +1146,6 @@
                       </span>
                   </div>
     
-                  <!-- Segment Field - Now editable -->
                   <div class="form-group col-span-2">
                       <label>Segment*</label>
                       <input type="text" class="border p-2 w-full rounded-md" 
@@ -942,7 +1165,72 @@
               </div>
           </form>
       </div>
+    </div> -->
+
+    <!-- Customer Category Edit Modal -->
+    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-2xl">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Category</h3>
+        <form #editCategoryForm="ngForm" (ngSubmit)="updateCategory(editCategoryForm); $event.preventDefault()">
+          <div class="grid grid-cols-6 gap-4">
+            <!-- Sector Field -->
+            <div class="space-y-1 col-span-2">
+              <label class="text-xs font-medium text-gray-600">Sector*</label>
+              <input type="text" [(ngModel)]="editSector" name="editSector" #editSectorField="ngModel" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editSectorField.invalid && editSectorField.touched) || (editCategoryForm.submitted && editSectorField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editSectorField.invalid && editSectorField.touched) || (editCategoryForm.submitted && editSectorField.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Industry Field -->
+            <div class="space-y-1 col-span-2">
+              <label class="text-xs font-medium text-gray-600">Industry*</label>
+              <input type="text" [(ngModel)]="editIndustry" name="editIndustry" #editIndustryField="ngModel" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editIndustryField.invalid && editIndustryField.touched) || (editCategoryForm.submitted && editIndustryField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editIndustryField.invalid && editIndustryField.touched) || (editCategoryForm.submitted && editIndustryField.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Segment Field -->
+            <div class="space-y-1 col-span-2">
+              <label class="text-xs font-medium text-gray-600">Segment*</label>
+              <input type="text" [(ngModel)]="editDomain" name="editDomain" #editDomainField="ngModel" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editDomainField.invalid && editDomainField.touched) || (editCategoryForm.submitted && editDomainField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editDomainField.invalid && editDomainField.touched) || (editCategoryForm.submitted && editDomainField.invalid)">
+                Required
+              </span>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeEditModal()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Category
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+
+
+
   </div>
 
 </div>
