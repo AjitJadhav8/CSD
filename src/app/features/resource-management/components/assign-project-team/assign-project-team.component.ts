@@ -60,8 +60,8 @@ export class AssignProjectTeamComponent {
   }
 
   allocationPercentages = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  selectedBillingPercentage: number = 0; 
-  percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; 
+  selectedBillingPercentage: number = 0;
+  percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
   selectedCustomerId: number | null = null;
 
 
@@ -78,13 +78,13 @@ export class AssignProjectTeamComponent {
 
   toggleAllocationStatus(): void {
     this.selectedAllocationStatus = this.selectedAllocationStatus === 1 ? 0 : 1;
-    
+
     // When switching to Shadow mode, reset billing-related fields
     if (this.selectedAllocationStatus === 0) {
-        this.selectedBilledStatus = 0;
-        this.selectedBillingPercentage = 0;
+      this.selectedBilledStatus = 0;
+      this.selectedBillingPercentage = 0;
     }
-}
+  }
 
   selectedBilledStatus: number = 0; // Default to Not Billed (0)
 
@@ -96,14 +96,14 @@ export class AssignProjectTeamComponent {
 
     // When switching to Not Billed, reset billing percentage
     if (this.selectedBilledStatus === 0) {
-        this.selectedBillingPercentage = 0;
+      this.selectedBillingPercentage = 0;
     } else {
-        // When switching to Billed, set default if not set
-        if (this.selectedBillingPercentage === null || this.selectedBillingPercentage === 0) {
-            this.selectedBillingPercentage = this.percentageOptions[0] || 100;
-        }
+      // When switching to Billed, set default if not set
+      if (this.selectedBillingPercentage === null || this.selectedBillingPercentage === 0) {
+        this.selectedBillingPercentage = this.percentageOptions[0] || 100;
+      }
     }
-}
+  }
 
 
   selectedProjectId: number | null = null;
@@ -150,15 +150,15 @@ export class AssignProjectTeamComponent {
     if (this.selectedAllocationStatus === 1 && this.selectedBilledStatus === 1 &&
       (this.selectedBillingPercentage === null || this.selectedBillingPercentage <= 0)) {
       Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'warning',
-          title: 'Please select a valid billing percentage for Billed mode!',
-          showConfirmButton: false,
-          timer: 3000
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please select a valid billing percentage for Billed mode!',
+        showConfirmButton: false,
+        timer: 3000
       });
       return;
-  }
+    }
 
     // Validate dates
     if (this.tentativeEndDate && new Date(this.startDate) > new Date(this.tentativeEndDate)) {
@@ -622,15 +622,14 @@ export class AssignProjectTeamComponent {
       this.editSelectedBillingPercentage = 0;
     }
   }
- toggleEditAllocationStatus(): void {
-  this.editSelectedAllocationStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
-  if (this.editSelectedAllocationStatus === 0) {
-    this.editSelectedBilledStatus = 0;
-    this.editSelectedBillingPercentage = 0;
-}
+  toggleEditAllocationStatus(): void {
+    this.editSelectedAllocationStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
+    if (this.editSelectedAllocationStatus === 0) {
+      this.editSelectedBilledStatus = 0;
+      this.editSelectedBillingPercentage = 0;
+    }
 
-  // No longer resetting allocation percentage here
-}
+  }
 
 
   // Toggle Billed Status
@@ -654,12 +653,12 @@ export class AssignProjectTeamComponent {
 
 
 
-  assignedProjectTeams: any[] = []; 
+  assignedProjectTeams: any[] = [];
 
   currentPage: number = 1;
   totalItems: number = 0;
   itemsPerPage: number = 30;
-  maxPageButtons: number = 5; 
+  maxPageButtons: number = 5;
 
   filteredAssignedProjectTeams: any[] = [];
   paginatedAssignedProjectTeams: any[] = [];
