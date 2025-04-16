@@ -988,18 +988,39 @@ WHERE is_deleted = 0 AND is_RM = 1
                             });
                         }
 
+                        const assignInternalProjectQuery = `
+                        INSERT INTO trans_project_team (
+                            customer_id, project_id, employee_id, project_role_id, 
+                            project_manager_id, start_date, allocation_status, 
+                            allocation_percentage, billed_status, billing_percentage, 
+                            is_deleted
+                        ) VALUES (
+                            29, 22, ?, 5, 42, CURDATE(), 0, 0, 0, 0, 0
+                        )`;
+
+                    db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
+                        if (projectErr) {
+                            console.error('Error assigning to internal project:', projectErr);
+                            return res.status(500).json({
+                                message: 'Employee created but failed to assign to internal project',
+                                employeeId: userId,
+                                temporaryPassword: password
+                            });
+                        }
+
                         res.status(201).json({
-                            message: 'Employee saved successfully with default role',
+                            message: 'Employee saved successfully with default role and internal project assignment',
                             employeeId: userId,
-                            temporaryPassword: password // Send the generated password back
+                            temporaryPassword: password
                         });
                     });
                 });
             });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
     }
 
     async assignDetails(req: Request, res: Response): Promise<void> {

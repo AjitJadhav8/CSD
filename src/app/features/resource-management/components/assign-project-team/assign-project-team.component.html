@@ -16,139 +16,6 @@
       <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to assign team members to projects</p>
     </div>
 
-    <!-- <div class="grid grid-cols-5 gap-4 mt-8">
-        <div>
-            <label class="block mb-2 font-semibold">Customer Name*</label>
-            <ng-select [(ngModel)]="selectedCustomerId" name="customer" (change)="filterProjects()" [searchable]="true"
-                [clearable]="true" class="custom-ng-select">
-                <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                    {{ customer.customer_name }}
-                </ng-option>
-            </ng-select>
-        </div>
-
-
-        <div>
-            <label class="block mb-2 font-semibold">Project Name*</label>
-            <ng-select [(ngModel)]="selectedProjectId" [disabled]="!selectedCustomerId || filteredProjects.length === 0"
-                (change)="onProjectChange($event)" [searchable]="true" [clearable]="true" class="custom-ng-select">
-                <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
-                    {{ project.project_name }}
-                </ng-option>
-            </ng-select>
-        </div>
-
-
-        <div>
-            <label class="block mb-2 font-semibold">Project Manager*</label>
-            <input type="text" class="border p-2 w-full rounded-md bg-gray-100"
-                [value]="selectedProjectManagerName || 'Not Assigned'" readonly />
-        </div>
-
-
-        <div>
-            <label class="block mb-2 font-semibold">Employee Name*</label>
-            <ng-select [(ngModel)]="selectedEmployeeId" name="employee" [searchable]="true" [clearable]="true"
-                class="custom-ng-select">
-                <ng-option [value]="null" disabled hidden>Select Employee</ng-option>
-                <ng-option *ngFor="let employee of optionEmployees" [value]="employee.user_id">
-                    {{ employee.user_first_name }} {{ employee.user_last_name }}
-                </ng-option>
-            </ng-select>
-        </div>
-
-        <div>
-            <label class="block mb-2 font-semibold">Project Role*</label>
-            <ng-select [(ngModel)]="selectedProjectRoleId" name="projectRole" [searchable]="true" [clearable]="true"
-                class="custom-ng-select">
-                <ng-option [value]="null" disabled hidden>Select Project Role</ng-option>
-                <ng-option *ngFor="let role of optionProjectRoles" [value]="role.project_role_id">
-                    {{ role.project_role_name }}
-                </ng-option>
-            </ng-select>
-        </div>
-
-
-        <div>
-            <label class="block mb-2 font-semibold">Start Date*</label>
-            <input type="date" [(ngModel)]="startDate" name="startDate" class="border p-2 w-full rounded-md">
-        </div>
-
-        <div>
-            <label class="block mb-2 font-semibold">Tentative End Date*</label>
-            <input type="date" [(ngModel)]="tentativeEndDate" name="tentativeEndDate"
-                class="border p-2 w-full rounded-md">
-        </div>
-
-        <div>
-            <label class="block mb-2 font-semibold">Allocation Status*</label>
-            <div class="flex gap-4 items-center">
-                <span class="text-sm font-medium" [class.text-gray-500]="selectedAllocationStatus === 0"
-                    [class.text-green-600]="selectedAllocationStatus === 1">
-                    {{ selectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
-                </span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer" [checked]="selectedAllocationStatus === 1"
-                        (change)="toggleAllocationStatus()">
-                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                peer-checked:after:translate-x-full peer-checked:after:border-white
-                after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                peer-checked:bg-green-600">
-                    </div>
-                </label>
-            </div>
-
-        </div>
-
-        <div>
-            <label class="block mb-2 font-semibold">Allocation Percentage*</label>
-            <select [(ngModel)]="selectedAllocationPercentage" name="allocationPercentage"
-                class="border p-2 w-full rounded-md" [disabled]="selectedAllocationStatus === 0">
-                <option value="" disabled selected>Select Allocation Percentage</option>
-                <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
-                    {{ percentage }}%
-                </option>
-            </select>
-        </div>
-        <div>
-            <label class="block mb-2 font-semibold">Billed Status*</label>
-            <div class="flex gap-4 items-center">
-                <span class="text-sm font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
-                    [class.text-green-600]="selectedBilledStatus === 1">
-                    {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
-                </span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
-                        (change)="toggleBilledStatus()">
-                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                peer-checked:after:translate-x-full peer-checked:after:border-white
-                after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                peer-checked:bg-green-600">
-                    </div>
-                </label>
-            </div>
-        </div>
-
-
-        <div>
-            <label class="block mb-2 font-semibold">Billing Percentage*</label>
-            <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
-                class="border p-2 w-full rounded-md" [disabled]="selectedBilledStatus === 0">
-                <option value="" disabled selected>Select Billing Percentage</option>
-                <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
-            </select>
-        </div>
-
-
-    </div>
-
-    <div class="mt-6 flex justify-start">
-        <button (click)="submitAssignProjectTeam()" class="bg-blue-500 text-white px-4 py-2 rounded m-2">
-            Submit
-        </button>
-    </div> -->
 
     <div class="grid grid-cols-5 gap-4">
       <!-- Row 1 -->
@@ -273,39 +140,39 @@
           <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
         </select>
       </div> -->
-   <!-- Billed Status in Submit Form -->
-<div class="space-y-1">
-  <label class="text-xs font-medium text-gray-600">Billed Status*</label>
-  <div class="flex gap-2 items-center">
-      <span class="text-xs font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
-          [class.text-green-600]="selectedBilledStatus === 1">
-          {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
-      </span>
-      <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
+      <!-- Billed Status in Submit Form -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-600">Billed Status*</label>
+        <div class="flex gap-2 items-center">
+          <span class="text-xs font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
+            [class.text-green-600]="selectedBilledStatus === 1">
+            {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
+          </span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
               (change)="toggleBilledStatus()" [disabled]="selectedAllocationStatus === 0">
-          <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
+            <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
               peer-checked:after:translate-x-full peer-checked:after:border-white
               after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
               after:border after:rounded-full after:h-4 after:w-4 after:transition-all
               peer-checked:bg-green-600" [class.bg-gray-200]="selectedAllocationStatus === 0"
               [class.cursor-not-allowed]="selectedAllocationStatus === 0">
-          </div>
-      </label>
-  </div>
-</div>
+            </div>
+          </label>
+        </div>
+      </div>
 
-<!-- Billing Percentage in Submit Form -->
-<div class="space-y-1">
-  <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
-  <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
-      class="text-xs w-full px-2 py-1 border border-gray-300 rounded" 
-      [disabled]="selectedBilledStatus === 0 || selectedAllocationStatus === 0">
-      <option value="" disabled selected>Select Percentage</option>
-      <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
-  </select>
-</div>
-   
+      <!-- Billing Percentage in Submit Form -->
+      <div class="space-y-1">
+        <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
+        <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
+          class="text-xs w-full px-2 py-1 border border-gray-300 rounded"
+          [disabled]="selectedBilledStatus === 0 || selectedAllocationStatus === 0">
+          <option value="" disabled selected>Select Percentage</option>
+          <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
+        </select>
+      </div>
+
     </div>
 
     <!-- Submit Button -->
@@ -322,140 +189,6 @@
     </div>
   </div>
 
-
-  <!-- <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-        (click)="closeEditModal()">
-        <div class="bg-white p-6 rounded-lg w-1/2" (click)="$event.stopPropagation()">
-            <h3 class="text-xl font-semibold mb-4">Edit Assign Team</h3>
-            <form #editAssignTeamForm="ngForm"
-                (ngSubmit)="updateAssignTeam(editAssignTeamForm); $event.preventDefault()">
-                <div class="grid grid-cols-4 gap-4">
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Customer Name*</label>
-                        <ng-select [(ngModel)]="editSelectedCustomerId" name="editCustomer" [searchable]="true"
-                            [clearable]="true" class="custom-ng-select" required>
-                            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-                                {{ customer.customer_name }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Project Name*</label>
-                        <ng-select [(ngModel)]="editSelectedProjectId" name="editProject" [searchable]="true"
-                            [clearable]="true" [disabled]="!editSelectedCustomerId || filteredProjects.length === 0"
-                            class="custom-ng-select" required>
-                            <ng-option *ngFor="let project of filteredProjects" [value]="project.project_id">
-                                {{ project.project_name }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Employee Name*</label>
-                        <ng-select [(ngModel)]="editSelectedEmployeeId" name="editEmployee" [searchable]="true"
-                            [clearable]="true" class="custom-ng-select" required>
-                            <ng-option *ngFor="let employee of optionEmployees" [value]="employee.user_id">
-                                {{ employee.user_first_name }} {{ employee.user_last_name }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Project Role*</label>
-                        <ng-select [(ngModel)]="editSelectedProjectRoleId" name="editProjectRole" [searchable]="true"
-                            [clearable]="true" class="custom-ng-select" required>
-                            <ng-option *ngFor="let role of optionProjectRoles" [value]="role.project_role_id">
-                                {{ role.project_role_name }}
-                            </ng-option>
-                        </ng-select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Start Date*</label>
-                        <input type="date" [(ngModel)]="editStartDate" name="editStartDate"
-                            class="border p-2 w-full rounded-md" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Tentative End Date*</label>
-                        <input type="date" [(ngModel)]="editTentativeEndDate" name="editTentativeEndDate"
-                            class="border p-2 w-full rounded-md">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Allocation Status*</label>
-                        <div class="flex gap-4 items-center">
-                          <span class="text-sm font-medium" [class.text-gray-500]="editSelectedAllocationStatus === 0"
-                            [class.text-green-600]="editSelectedAllocationStatus === 1">
-                            {{ editSelectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
-                          </span>
-                          <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer"
-                              [checked]="editSelectedAllocationStatus === 1"
-                              (change)="toggleEditAllocationStatus()">
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                              peer-checked:after:translate-x-full peer-checked:after:border-white
-                              after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                              after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                              peer-checked:bg-green-600">
-                            </div>
-                          </label>
-                        </div>
-                      </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Allocation Percentage*</label>
-                        <select [(ngModel)]="editSelectedAllocationPercentage" name="editAllocationPercentage"
-                          class="border p-2 w-full rounded-md" [required]="true">
-                          <option value="" disabled selected>Select Allocation Percentage</option>
-                          <option *ngFor="let percentage of allocationPercentages" [value]="percentage">
-                            {{ percentage }}%
-                          </option>
-                        </select>
-                      </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Billed Status*</label>
-                        <div class="flex gap-4 items-center">
-                            <span class="text-sm font-medium" [class.text-gray-500]="editSelectedBilledStatus === 0"
-                                [class.text-green-600]="editSelectedBilledStatus === 1">
-                                {{ editSelectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
-                            </span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" [checked]="editSelectedBilledStatus === 1"
-                                    (change)="toggleEditBilledStatus()" [disabled]="editSelectedAllocationStatus === 0">
-                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer
-                 peer-checked:after:translate-x-full peer-checked:after:border-white
-                 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white
-                 after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                 peer-checked:bg-green-600" [class.bg-gray-200]="editSelectedAllocationStatus === 0"
-                                    [class.cursor-not-allowed]="editSelectedAllocationStatus === 0">
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="block mb-2 font-semibold">Billing Percentage*</label>
-                        <select [(ngModel)]="editSelectedBillingPercentage" name="editBillingPercentage"
-                            [disabled]="editSelectedBilledStatus === 0 || editSelectedAllocationStatus === 0"
-                            class="border p-2 w-full rounded-md" [required]="editSelectedBilledStatus === 1">
-                            <option *ngIf="editSelectedBilledStatus === 1" value="" disabled selected>Select Billing
-                                Percentage</option>
-                            <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                        Update
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div> -->
 
 
   <!-- Edit Assign Team Modal -->

@@ -397,74 +397,7 @@ export class AssignProjectTeamComponent {
   editSelectedBillingPercentage: number | null = null;
   editProjectTeamId: number | null = null;
 
-  // updateAssignTeam(form: NgForm): void {
-  //   const isAllocationValid = this.editSelectedAllocationStatus === 0 || 
-  //                          (this.editSelectedAllocationStatus === 1 && 
-  //                           this.editSelectedAllocationPercentage !== null &&
-  //                           this.editSelectedAllocationPercentage > 0);
 
-  //   const isBillingValid = this.editSelectedBilledStatus === 0 ||
-  //                         (this.editSelectedBilledStatus === 1 && 
-  //                          this.editSelectedBillingPercentage !== null &&
-  //                          this.editSelectedBillingPercentage > 0);
-
-  //   if (!this.editProjectTeamId || !isAllocationValid || !isBillingValid || 
-  //       !this.editSelectedCustomerId || !this.editSelectedProjectId || 
-  //       !this.editSelectedEmployeeId || !this.editSelectedProjectRoleId || 
-  //       !this.editStartDate) {
-  //     Swal.fire({
-  //       toast: true,
-  //       position: 'top-end',
-  //       icon: 'warning',
-  //       title: 'Please fill all required fields correctly!',
-  //       showConfirmButton: false,
-  //       timer: 3000
-  //     });
-  //     return;
-  //   }
-
-  //   const updateData = {
-  //     customer_id: this.editSelectedCustomerId,
-  //     project_id: this.editSelectedProjectId,
-  //     employee_id: this.editSelectedEmployeeId,
-  //     project_role_id: this.editSelectedProjectRoleId,
-  //     start_date: this.formatDate(this.editStartDate),
-  //     end_date: this.formatDate(this.editTentativeEndDate) || null,
-  //     allocation_status: this.editSelectedAllocationStatus,
-  //     allocation_percentage: this.editSelectedAllocationStatus === 0 ? 0 : Number(this.editSelectedAllocationPercentage),
-  //     billed_status: this.editSelectedBilledStatus,
-  //     billing_percentage: this.editSelectedBilledStatus === 0 ? 0 : Number(this.editSelectedBillingPercentage)
-  //   };
-  //   console.log("Update Data: ", updateData); 
-
-
-  //   this.rmgService.updateAssignTeam(this.editProjectTeamId, updateData).subscribe({
-  //     next: (response) => {
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'success',
-  //         title: 'Assign Team updated successfully!',
-  //         showConfirmButton: false,
-  //         timer: 3000
-  //       });
-
-  //       this.fetchAssignedProjectTeams(); 
-  //       this.closeEditModal();
-  //     },
-  //     error: (error) => {
-  //       console.error('Error updating assign team:', error);
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'error',
-  //         title: 'Failed to update assign team!',
-  //         showConfirmButton: false,
-  //         timer: 3000
-  //       });
-  //     }
-  //   });
-  // }
   updateAssignTeam(form: NgForm): void {
     // Validate required fields
     if (!this.editProjectTeamId || !this.editSelectedCustomerId ||
