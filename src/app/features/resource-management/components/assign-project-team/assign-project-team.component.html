@@ -214,25 +214,6 @@
           class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
-      <!-- <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Allocation Status*</label>
-          <div class="flex gap-2 items-center">
-            <span class="text-xs font-medium" [class.text-gray-500]="selectedAllocationStatus === 0"
-              [class.text-green-600]="selectedAllocationStatus === 1">
-              {{ selectedAllocationStatus === 1 ? '👨‍💼 Employee' : '👥 Shadow' }}
-            </span>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" class="sr-only peer" [checked]="selectedAllocationStatus === 1"
-                (change)="toggleAllocationStatus()">
-              <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
-                peer-checked:after:translate-x-full peer-checked:after:border-white
-                after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
-                after:border after:rounded-full after:h-4 after:w-4 after:transition-all
-                peer-checked:bg-green-600">
-              </div>
-            </label>
-          </div>
-        </div> -->
       <div class="space-y-1">
         <label class="text-xs font-medium text-gray-600">Allocation Status*</label>
         <div class="flex gap-2 items-center">
@@ -263,7 +244,8 @@
           </option>
         </select>
       </div>
-      <div class="space-y-1">
+
+      <!-- <div class="space-y-1">
         <label class="text-xs font-medium text-gray-600">Billed Status*</label>
         <div class="flex gap-2 items-center">
           <span class="text-xs font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
@@ -283,7 +265,6 @@
         </div>
       </div>
 
-      <!-- Billing Percentage -->
       <div class="space-y-1">
         <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
         <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
@@ -291,7 +272,40 @@
           <option value="" disabled selected>Select Percentage</option>
           <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
         </select>
-      </div>
+      </div> -->
+   <!-- Billed Status in Submit Form -->
+<div class="space-y-1">
+  <label class="text-xs font-medium text-gray-600">Billed Status*</label>
+  <div class="flex gap-2 items-center">
+      <span class="text-xs font-medium" [class.text-gray-500]="selectedBilledStatus === 0"
+          [class.text-green-600]="selectedBilledStatus === 1">
+          {{ selectedBilledStatus === 1 ? '💰 Billed' : '❌ Not Billed' }}
+      </span>
+      <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" class="sr-only peer" [checked]="selectedBilledStatus === 1"
+              (change)="toggleBilledStatus()" [disabled]="selectedAllocationStatus === 0">
+          <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer
+              peer-checked:after:translate-x-full peer-checked:after:border-white
+              after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white
+              after:border after:rounded-full after:h-4 after:w-4 after:transition-all
+              peer-checked:bg-green-600" [class.bg-gray-200]="selectedAllocationStatus === 0"
+              [class.cursor-not-allowed]="selectedAllocationStatus === 0">
+          </div>
+      </label>
+  </div>
+</div>
+
+<!-- Billing Percentage in Submit Form -->
+<div class="space-y-1">
+  <label class="text-xs font-medium text-gray-600">Billing Percentage*</label>
+  <select [(ngModel)]="selectedBillingPercentage" name="billingPercentage"
+      class="text-xs w-full px-2 py-1 border border-gray-300 rounded" 
+      [disabled]="selectedBilledStatus === 0 || selectedAllocationStatus === 0">
+      <option value="" disabled selected>Select Percentage</option>
+      <option *ngFor="let percent of percentageOptions" [value]="percent">{{ percent }}%</option>
+  </select>
+</div>
+   
     </div>
 
     <!-- Submit Button -->

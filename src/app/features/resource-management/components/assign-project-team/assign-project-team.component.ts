@@ -76,22 +76,34 @@ export class AssignProjectTeamComponent {
   selectedAllocationStatus: number = 0; // Default to Shadow (0)
 
 
-  toggleAllocationStatus() {
+  toggleAllocationStatus(): void {
     this.selectedAllocationStatus = this.selectedAllocationStatus === 1 ? 0 : 1;
-    // If switching to Shadow, auto-set billing to 0% and Not Billed
- 
-  }
+    
+    // When switching to Shadow mode, reset billing-related fields
+    if (this.selectedAllocationStatus === 0) {
+        this.selectedBilledStatus = 0;
+        this.selectedBillingPercentage = 0;
+    }
+}
 
   selectedBilledStatus: number = 0; // Default to Not Billed (0)
 
-  toggleBilledStatus() {
+  toggleBilledStatus(): void {
+    // Can't toggle if in Shadow mode
+    if (this.selectedAllocationStatus === 0) return;
+
     this.selectedBilledStatus = this.selectedBilledStatus === 1 ? 0 : 1;
 
-    // If Not Billed is selected, reset billing percentage to 0
+    // When switching to Not Billed, reset billing percentage
     if (this.selectedBilledStatus === 0) {
-      this.selectedBillingPercentage = 0;
+        this.selectedBillingPercentage = 0;
+    } else {
+        // When switching to Billed, set default if not set
+        if (this.selectedBillingPercentage === null || this.selectedBillingPercentage === 0) {
+            this.selectedBillingPercentage = this.percentageOptions[0] || 100;
+        }
     }
-  }
+}
 
 
   selectedProjectId: number | null = null;
@@ -101,118 +113,7 @@ export class AssignProjectTeamComponent {
   selectedAllocationPercentage: number = 0; // Default to 0%
   startDate: string | null = null;
   tentativeEndDate: string | null = null;
-  //submit assign project team
-  // submitAssignProjectTeam() {
-  //   if (!this.selectedCustomerId || !this.selectedProjectId || !this.selectedEmployeeId || !this.selectedProjectRoleId ||
-  //     this.selectedAllocationStatus === null || this.selectedAllocationStatus === undefined || // Updated check
-  //     this.selectedAllocationPercentage === undefined ||
-  //     this.selectedBilledStatus === null || this.selectedBilledStatus === undefined || // Updated check
-  //     this.selectedBillingPercentage === null) {
 
-  //     Swal.fire({
-  //       toast: true,
-  //       position: 'top-end',
-  //       icon: 'warning',
-  //       title: 'All fields are required!',
-  //       showConfirmButton: false,
-  //       timer: 3000
-  //     });
-  //     return;
-  //   }
-
-  //   const assignmentData = {
-  //     customer_id: this.selectedCustomerId,
-  //     project_id: this.selectedProjectId,
-  //     employee_id: this.selectedEmployeeId,
-  //     project_role_id: this.selectedProjectRoleId,
-  //     project_manager_id: this.selectedProjectManagerId,
-  //     start_date: this.startDate,
-  //     end_date: this.tentativeEndDate || null,
-  //     allocation_status: this.selectedAllocationStatus,
-  //     allocation_percentage: Number(this.selectedAllocationPercentage),
-  //     billed_status: this.selectedBilledStatus,
-  //     billing_percentage: Number(this.selectedBillingPercentage)
-  //   };
-
-  //   this.rmgService.submitAssignProjectTeam(assignmentData).subscribe({
-  //     next: (response) => {
-  //       Swal.fire({
-  //         toast: true,
-  //         position: 'top-end',
-  //         icon: 'success',
-  //         title: 'Project team assigned successfully!',
-  //         showConfirmButton: false,
-  //         timer: 3000
-  //       });
-
-  //       this.fetchAssignedProjectTeams(); // Refresh the list
-  //       this.clearAssignForm();
-
-  //     },
-  //     error: (error) => {
-  //       if (error.status === 400) {
-  //         const errorMessage = error.error.error;
-
-  //         if (errorMessage.includes('Employee is already assigned to this project')) {
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: 'Employee is already assigned to this project!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         } else if (errorMessage.includes('Only')) {
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: errorMessage, // Shows "Only X% allocation is remaining"
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         } else if (errorMessage.includes('start_date must be before or equal to end_date')) {
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: 'Start date must be before or equal to end date!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         } else if (errorMessage.includes('allocation_percentage must be a number between 0 and 100')) {
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: 'Allocation percentage must be between 0 and 100!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         } else {
-  //           Swal.fire({
-  //             toast: true,
-  //             position: 'top-end',
-  //             icon: 'error',
-  //             title: 'Failed to assign project team!',
-  //             showConfirmButton: false,
-  //             timer: 3000
-  //           });
-  //         }
-  //       } else {
-  //         Swal.fire({
-  //           toast: true,
-  //           position: 'top-end',
-  //           icon: 'error',
-  //           title: 'Failed to assign project team!',
-  //           showConfirmButton: false,
-  //           timer: 3000
-  //         });
-  //       }
-  //     }
-
-  //   });
-  // }
 
   submitAssignProjectTeam() {
     // Validate required fields
@@ -246,18 +147,18 @@ export class AssignProjectTeamComponent {
     }
 
     // Validate billing percentage if in Billed mode
-    if (this.selectedBilledStatus === 1 &&
+    if (this.selectedAllocationStatus === 1 && this.selectedBilledStatus === 1 &&
       (this.selectedBillingPercentage === null || this.selectedBillingPercentage <= 0)) {
       Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Please select a valid billing percentage for Billed mode!',
-        showConfirmButton: false,
-        timer: 3000
+          toast: true,
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Please select a valid billing percentage for Billed mode!',
+          showConfirmButton: false,
+          timer: 3000
       });
       return;
-    }
+  }
 
     // Validate dates
     if (this.tentativeEndDate && new Date(this.startDate) > new Date(this.tentativeEndDate)) {
@@ -721,13 +622,16 @@ export class AssignProjectTeamComponent {
       this.editSelectedBillingPercentage = 0;
     }
   }
-
-  // Toggle Allocation Status
-  // Toggle Allocation Status
  toggleEditAllocationStatus(): void {
   this.editSelectedAllocationStatus = this.editSelectedAllocationStatus === 1 ? 0 : 1;
+  if (this.editSelectedAllocationStatus === 0) {
+    this.editSelectedBilledStatus = 0;
+    this.editSelectedBillingPercentage = 0;
+}
+
   // No longer resetting allocation percentage here
 }
+
 
   // Toggle Billed Status
   toggleEditBilledStatus(): void {
