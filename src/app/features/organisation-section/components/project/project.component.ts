@@ -166,30 +166,64 @@ export class ProjectComponent {
 
     if (projectNgForm.invalid) {
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill all required fields correctly!',
-        toast: true,
-        position: 'top-end',
-        timer: 3000,
-        showConfirmButton: false
-      });
-      return; // Stop execution if form is invalid
-    }
-    // Ensure tentative_end_date is after planned_start_date
-    if (this.projectForm.tentative_end_date && this.projectForm.planned_start_date &&
-      new Date(this.projectForm.tentative_end_date) < new Date(this.projectForm.planned_start_date)) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Date Range',
-        text: 'Tentative End Date should be after Planned Start Date!',
-        toast: true,
-        position: 'top-end',
-        timer: 3000,
-        showConfirmButton: false
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please fill all required fields correctly!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
       });
       return;
-    }
+  }
+
+  // Date validation
+  const plannedStart = new Date(this.projectForm.planned_start_date);
+  const actualStart = this.projectForm.actual_start_date ? new Date(this.projectForm.actual_start_date) : null;
+  const tentativeEnd = this.projectForm.tentative_end_date ? new Date(this.projectForm.tentative_end_date) : null;
+
+  // Planned start must be ≤ actual start (if actual exists)
+  if (actualStart && plannedStart > actualStart) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Planned start date must be on or before actual start date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Actual start must be ≤ tentative end (if both exist)
+  if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Actual start date must be on or before tentative end date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Planned start must be ≤ tentative end (if tentative exists)
+  if (tentativeEnd && plannedStart > tentativeEnd) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Planned start date must be on or before tentative end date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
 
     this.dataService.addProject(this.projectForm).subscribe(
       (response) => {
@@ -337,16 +371,63 @@ export class ProjectComponent {
   updateProject(editProjectForm: NgForm): void {
     if (editProjectForm.invalid || !this.editProjectId) {
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill all required fields correctly!',
-        toast: true,
-        position: 'top-end',
-        timer: 3000,
-        showConfirmButton: false
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please fill all required fields correctly!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
       });
       return;
-    }
+  }
+
+  // Date validation
+  const plannedStart = new Date(this.editProjectFormData.planned_start_date);
+  const actualStart = this.editProjectFormData.actual_start_date ? new Date(this.editProjectFormData.actual_start_date) : null;
+  const tentativeEnd = this.editProjectFormData.tentative_end_date ? new Date(this.editProjectFormData.tentative_end_date) : null;
+
+  // Planned start must be ≤ actual start (if actual exists)
+  if (actualStart && plannedStart > actualStart) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Planned start date must be on or before actual start date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Actual start must be ≤ tentative end (if both exist)
+  if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Actual start date must be on or before tentative end date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
+
+  // Planned start must be ≤ tentative end (if tentative exists)
+  if (tentativeEnd && plannedStart > tentativeEnd) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Invalid Date',
+          text: 'Planned start date must be on or before tentative end date!',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+      });
+      return;
+  }
 
     this.dataService.updateProject(this.editProjectId, this.editProjectFormData).subscribe({
       next: (response) => {
