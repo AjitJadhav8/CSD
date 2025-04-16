@@ -735,9 +735,9 @@
             fill="currentColor">
             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
           </svg>
-          Add New Project Phase
+          Add New Project Task
         </h3>
-        <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project phase</p>
+        <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project Task</p>
       </div>
       <!-- <form #projectPhaseFormRef="ngForm" (ngSubmit)="submitProjectPhase(projectPhaseFormRef)">
       <div class="grid grid-cols-6 gap-4">
@@ -872,7 +872,7 @@
 
           <!-- Phase Name -->
           <div class="space-y-1">
-            <label class="text-xs font-medium text-gray-600">Phase Name*</label>
+            <label class="text-xs font-medium text-gray-600">Task Name*</label>
             <input type="text" [(ngModel)]="projectPhaseForm.project_phase_name" #phaseField="ngModel"
               name="project_phase_name" required placeholder="Enter phase name"
               class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -943,8 +943,8 @@
           <!-- Phase Filter -->
           <!-- Phase Filter -->
           <div class="relative w-full">
-            <label class="block text-xs font-medium mb-1">Phase</label>
-            <input type="text" [(ngModel)]="phaseNameFilter" (input)="applyPhaseFilters()" placeholder="Search Phase"
+            <label class="block text-xs font-medium mb-1">Task</label>
+            <input type="text" [(ngModel)]="phaseNameFilter" (input)="applyPhaseFilters()" placeholder="Search Task"
               class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
           </div>
 
@@ -976,7 +976,7 @@
               <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-              <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
               <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
             </tr>
           </thead>
@@ -1113,7 +1113,7 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
       (click)="closeEditPhaseModal()">
       <div class="bg-white p-6 rounded-lg w-1/2 max-w-2xl" (click)="$event.stopPropagation()">
-        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Project Phase</h3>
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Project Task</h3>
         <form #editPhaseForm="ngForm" (ngSubmit)="updateProjectPhase(editPhaseForm); $event.preventDefault()">
           <div class="grid grid-cols-2 gap-4">
             <!-- Customer Selection -->
@@ -1172,7 +1172,7 @@
 
             <!-- Phase Name Field -->
             <div class="space-y-1">
-              <label class="text-xs font-medium text-gray-600">Phase Name*</label>
+              <label class="text-xs font-medium text-gray-600">Task Name*</label>
               <input type="text" [(ngModel)]="editPhaseData.project_phase_name" #phaseNameField="ngModel"
                 name="project_phase_name" required
                 class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -1196,7 +1196,7 @@
                   d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                   clip-rule="evenodd" />
               </svg>
-              Update Phase
+              Update Task
             </button>
           </div>
         </form>

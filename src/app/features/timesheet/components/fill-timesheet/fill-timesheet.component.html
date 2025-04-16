@@ -112,11 +112,11 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Phase*</label>
+                    <label class="text-xs font-medium text-gray-600">Task*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedPhase" name="selectedPhase"
                         #selectedPhaseInput="ngModel" [disabled]="!selectedDeliverable" required
                         [ngClass]="{'border-red-500': (selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)}">
-                        <ng-option [value]="" disabled selected>Select Phase</ng-option>
+                        <ng-option [value]="" disabled selected>Select Task</ng-option>
                         <ng-option *ngFor="let phase of filterOptionPhases" [value]="phase.phase_id">
                             {{ phase.project_phase_name }}
                         </ng-option>
@@ -227,8 +227,8 @@
                         <th class="px-1 py-1 border border-gray-200 text-center">Customer</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Time</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
                         <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
@@ -532,7 +532,7 @@
 
                     <!-- Phase -->
                     <div class="space-y-1">
-                        <label class="text-xs font-medium text-gray-600">Phase*</label>
+                        <label class="text-xs font-medium text-gray-600">Task*</label>
                         <ng-select [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
                             #editSelectedPhaseInput="ngModel" [disabled]="!editSelectedDeliverable" required
                             [ngClass]="{'border-red-500': (editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched) || (editTimesheetForm.submitted && editSelectedPhaseInput.invalid)}"

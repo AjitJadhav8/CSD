@@ -119,10 +119,10 @@
 
 
             <div class="relative w-full">
-              <label class="block text-xs font-medium mb-1">Phase</label>
+              <label class="block text-xs font-medium mb-1">Task</label>
               <ng-select [(ngModel)]="phasesFilter" (change)="applyFilters()"
                 class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                <ng-option [value]="">Select Phase</ng-option>
+                <ng-option [value]="">Select Task</ng-option>
                 <ng-option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
                   {{ phases.project_phase_name }}
                 </ng-option>
@@ -197,7 +197,7 @@
               <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>
 
-              <th class="px-1 py-1 border border-gray-200 text-center">Project Phase</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Project Task</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Project Deliverable</th>
 
               <th class="px-1 py-1 border border-gray-200 text-center">Timesheet Date</th>

@@ -87,10 +87,10 @@
           </ng-select>
         </div>
         <div class="relative w-48">
-          <label class="block text-xs font-medium mb-1">Phase</label>
+          <label class="block text-xs font-medium mb-1">Task</label>
           <ng-select [(ngModel)]="phasesFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter w-full"
             [clearable]="true" [searchable]="true">
-            <ng-option [value]="null">Select Phase</ng-option>
+            <ng-option [value]="null">Select Task</ng-option>
             <ng-option *ngFor="let phases of optionPhases" [value]="phases.phase_id">
               {{ phases.project_phase_name }}
             </ng-option>
@@ -155,7 +155,7 @@
             <th class="border p-2">Customer Name</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Project Deliverable</th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Phase</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th> <!-- Added this column -->
             <th class="px-1 py-1 border border-gray-200 text-center">Task Description</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
