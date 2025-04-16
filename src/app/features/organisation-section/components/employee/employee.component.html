@@ -546,7 +546,7 @@
     </div>
 </div>
 
-    <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
+    <!-- <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
       class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
       <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto"
         (click)="$event.stopPropagation()">
@@ -733,7 +733,210 @@
 
 
       </div>
+    </div> -->
+    <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
+    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
+    <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto"
+        (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="text-lg font-semibold text-gray-800">
+                Assign Details for -
+                <span class="border p-1 rounded-md bg-gray-100 text-sm">
+                    {{ assignDetailsData.user_first_name }} {{ assignDetailsData.user_last_name }}
+                </span>
+            </h3>
+            <button class="text-gray-500 hover:text-gray-700 text-2xl"
+                (click)="toggleAssignDetailsModal()">&times;</button>
+        </div>
+
+        <div class="mt-4">
+            <form #assignDetailsForm="ngForm" (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()">
+                <div class="flex space-x-4 border-b">
+                    <button type="button" (click)="activeTab = 'personal'" 
+                        [class]="activeTab === 'personal' ? 
+                        'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
+                        'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
+                        Personal Details
+                    </button>
+                    <button type="button" (click)="activeTab = 'organizational'" 
+                        [class]="activeTab === 'organizational' ? 
+                        'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
+                        'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
+                        Organizational Details
+                    </button>
+                    <button type="button" (click)="activeTab = 'application'" 
+                        [class]="activeTab === 'application' ? 
+                        'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
+                        'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
+                        Application Related Data
+                    </button>
+                </div>
+
+                <!-- Personal Details Tab -->
+                <div *ngIf="activeTab === 'personal'" class="mt-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Emergency Contact</label>
+                            <input type="text" [(ngModel)]="assignDetailsData.user_emergency_contact" 
+                                name="user_emergency_contact"
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600 block">Passport Available?</label>
+                            <div class="flex space-x-4 mt-1">
+                                <label class="flex items-center text-xs">
+                                    <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" value="1"
+                                        (change)="onPassportChange($event)" class="mr-1" />
+                                    Yes
+                                </label>
+                                <label class="flex items-center text-xs">
+                                    <input type="radio" [(ngModel)]="assignDetailsData.is_passport" name="passport" value="0"
+                                        (change)="onPassportChange($event)" class="mr-1" />
+                                    No
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1" *ngIf="hasPassport">
+                            <label class="text-xs font-medium text-gray-600">Validity of Passport*</label>
+                            <input type="date" [(ngModel)]="assignDetailsData.passport_validity" #passportValidity="ngModel"
+                                name="passport_validity" required
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                [ngClass]="{'border-red-500': passportValidity.invalid && passportValidity.touched}">
+                            <span class="text-xs text-red-500" *ngIf="passportValidity.invalid && passportValidity.touched">
+                                Required
+                            </span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Current Address</label>
+                            <input type="text" [(ngModel)]="assignDetailsData.user_current_address" 
+                                name="user_current_address"
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Date of Birth</label>
+                            <input type="date" [(ngModel)]="assignDetailsData.user_DOB" name="user_DOB"
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Blood Group</label>
+                            <input type="text" [(ngModel)]="assignDetailsData.user_blood_group" name="user_blood_group"
+                                list="bloodGroupList" pattern="A\+|A-|B\+|B-|AB\+|AB-|O\+|O-|RH\+|RH-"
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <datalist id="bloodGroupList">
+                                <option value="A+"></option>
+                                <option value="A-"></option>
+                                <option value="B+"></option>
+                                <option value="B-"></option>
+                                <option value="AB+"></option>
+                                <option value="AB-"></option>
+                                <option value="O+"></option>
+                                <option value="O-"></option>
+                                <option value="RH+"></option>
+                                <option value="RH-"></option>
+                            </datalist>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Date of Joining*</label>
+                            <input type="date" [(ngModel)]="assignDetailsData.user_DOJ" #userDOJ="ngModel" name="user_DOJ"
+                                required
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                [ngClass]="{'border-red-500': userDOJ.invalid && userDOJ.touched}">
+                            <span class="text-xs text-red-500" *ngIf="userDOJ.invalid && userDOJ.touched">
+                                Required
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Organizational Details Tab -->
+                <div *ngIf="activeTab === 'organizational'" class="mt-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Reporting Manager</label>
+                            <ng-select [(ngModel)]="assignDetailsData.reporting_manager_id" name="reporting_manager_id" 
+                                [searchable]="true" [clearable]="true"
+                                class="text-xs custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                                <ng-option *ngFor="let manager of optionUsers" [value]="manager.user_id">
+                                    {{ manager.user_first_name }} {{ manager.user_last_name }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Designation</label>
+                            <ng-select [(ngModel)]="assignDetailsData.designation_id" name="designation_id"
+                                [searchable]="true" [clearable]="true"
+                                class="text-xs custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Designation</ng-option>
+                                <ng-option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                                    {{ designation.designation_name }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Timesheet Filling Required?</label>
+                            <ng-select [(ngModel)]="assignDetailsData.is_timesheet_required" name="is_timesheet_required"
+                                [searchable]="false" [clearable]="true"
+                                class="text-xs custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Option</ng-option>
+                                <ng-option [value]="1">Yes</ng-option>
+                                <ng-option [value]="0">No</ng-option>
+                            </ng-select>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Department</label>
+                            <ng-select [(ngModel)]="assignDetailsData.department_id" name="department_id"
+                                [searchable]="true" [clearable]="true"
+                                class="text-xs custom-ng-select">
+                                <ng-option [value]="" disabled selected>Select Department</ng-option>
+                                <ng-option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                                    {{ department.department_name }}
+                                </ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Related Data Tab -->
+                <div *ngIf="activeTab === 'application'" class="mt-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium text-gray-600">Role*</label>
+                            <select [(ngModel)]="assignDetailsData.role_id" #role="ngModel" name="role_id" required
+                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                [ngClass]="{'border-red-500': role.invalid && role.touched}">
+                                <option value="" disabled selected>Select Role</option>
+                                <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}</option>
+                            </select>
+                            <span class="text-xs text-red-500" *ngIf="role.invalid && role.touched">
+                                Required
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-center">
+                    <button type="submit"
+                        class="flex items-center text-xs bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-2 rounded-md hover:from-green-700 hover:to-green-800 transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Assign Details
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
   </div>
 
