@@ -272,8 +272,21 @@ export class CustomerComponent {
         });
         this.fetchCustomers();
         this.closeCustomerModule();
+        this.fetchOptions(); // Consistent with create functionality
+
       },
-      error: (error) => console.error('Error updating customer:', error)
+      error: (error) => {
+        console.error('Error updating customer:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'There was an error updating the customer',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
     });
   }
 
