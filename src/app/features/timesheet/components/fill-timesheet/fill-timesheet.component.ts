@@ -24,10 +24,10 @@ export class FillTimesheetComponent {
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
   ngOnInit(): void {
     // Fetch user ID from localStorage
-    const storedUserId = localStorage.getItem('user_id'); 
+    const storedUserId = localStorage.getItem('user_id');
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
-      this.userId = Number(storedUserId); 
+      this.userId = Number(storedUserId);
       console.log('User ID successfully set:', this.userId);
       this.timesheetService.getAssignedCustomersAndProjects(this.userId).subscribe(
         (response) => {
@@ -49,7 +49,7 @@ export class FillTimesheetComponent {
     this.dataService.getOptions().subscribe(
       (response) => {
         console.log('Fetched Data:', response);
-        this.optionProjectDeliverables = response.projectDeliverables; 
+        this.optionProjectDeliverables = response.projectDeliverables;
         this.optionPhases = response.phases
       },
       (error) => {
@@ -59,53 +59,53 @@ export class FillTimesheetComponent {
   }
   retainTimesheetEntry(timesheet: any): void {
     console.log('Retaining Timesheet Entry:', timesheet);
-    
+
     // Set the form values based on the selected timesheet
     this.selectedDate = this.formatDate(timesheet.timesheet_date);
     this.selectedCustomer = timesheet.customer_id;
-    
+
     // Trigger customer change to load projects
     this.onCustomerChange();
-    
+
     // Set project after a small delay to ensure projects are loaded
     setTimeout(() => {
-        this.selectedProject = timesheet.project_id;
-        
-        // Trigger project change to load deliverables
-        this.onProjectChange();
-        
+      this.selectedProject = timesheet.project_id;
+
+      // Trigger project change to load deliverables
+      this.onProjectChange();
+
+      setTimeout(() => {
+        this.selectedDeliverable = timesheet.pd_id;
+
+        // Trigger deliverable change to load phases
+        this.onDeliverableChange();
+
         setTimeout(() => {
-            this.selectedDeliverable = timesheet.pd_id;
-            
-            // Trigger deliverable change to load phases
-            this.onDeliverableChange();
-            
-            setTimeout(() => {
-                this.selectedPhase = timesheet.phase_id;
-                this.selectedHours = timesheet.hours;
-                this.selectedMinutes = timesheet.minutes;
-                this.selectedTaskStatus = timesheet.task_status;
-                this.taskDescription = timesheet.task_description;
-                
-                // Scroll to the form for better UX
-                const formElement = document.querySelector('.p-4');
-                if (formElement) {
-                    formElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 100);
+          this.selectedPhase = timesheet.phase_id;
+          this.selectedHours = timesheet.hours;
+          this.selectedMinutes = timesheet.minutes;
+          this.selectedTaskStatus = timesheet.task_status;
+          this.taskDescription = timesheet.task_description;
+
+          // Scroll to the form for better UX
+          const formElement = document.querySelector('.p-4');
+          if (formElement) {
+            formElement.scrollIntoView({ behavior: 'smooth' });
+          }
         }, 100);
+      }, 100);
     }, 100);
-    
+
     // Show success message
     Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: 'Timesheet entry retained!',
-        showConfirmButton: false,
-        timer: 2000
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: 'Timesheet entry retained!',
+      showConfirmButton: false,
+      timer: 2000
     });
-}
+  }
 
   isEditModalOpen = false;
   editTimesheetId: number | null = null;
@@ -263,7 +263,7 @@ export class FillTimesheetComponent {
     });
   }
 
- 
+
   onEditProjectChange(): void {
     if (this.editSelectedProject) {
       // Filter deliverables by selected project
@@ -456,34 +456,34 @@ export class FillTimesheetComponent {
   }
 
   // Add these methods to your component
-private checkDailyLimit(newHours: number, newMinutes: number): { valid: boolean, message?: string } {
-  const currentTotal = this.calculateTotalHours();
-  const newEntryHours = newHours + (newMinutes / 60);
-  const projectedTotal = currentTotal + newEntryHours;
+  private checkDailyLimit(newHours: number, newMinutes: number): { valid: boolean, message?: string } {
+    const currentTotal = this.calculateTotalHours();
+    const newEntryHours = newHours + (newMinutes / 60);
+    const projectedTotal = currentTotal + newEntryHours;
 
-  if (projectedTotal > 24) {
-    return {
-      valid: false,
-      message: `Total time would exceed 24 hours for this day (currently ${currentTotal.toFixed(2)}h)`
-    };
+    if (projectedTotal > 24) {
+      return {
+        valid: false,
+        message: `Total time would exceed 24 hours for this day (currently ${currentTotal.toFixed(2)}h)`
+      };
+    }
+    return { valid: true };
   }
-  return { valid: true };
-}
 
   calculateTotalTime(): { hours: number, minutes: number } {
     if (!this.timesheetData || this.timesheetData.length === 0) {
       return { hours: 0, minutes: 0 };
     }
-  
+
     let totalMinutes = 0;
-    
+
     this.timesheetData.forEach((entry: any) => {
       totalMinutes += (entry.hours * 60) + entry.minutes;
     });
-  
+
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    
+
     return { hours, minutes };
   }
   getHoursStatusText(): string {

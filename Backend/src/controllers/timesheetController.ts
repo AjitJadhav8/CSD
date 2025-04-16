@@ -233,12 +233,12 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
     async getUserFullTimesheet(req: Request, res: Response): Promise<void> {
         try {
             const userId = (req as any).user?.user_id;
-    
+
             if (!userId) {
                 res.status(400).json({ error: 'User ID is required' });
                 return;
             }
-    
+
             const query = `
             SELECT 
                 t.timesheet_id, 
@@ -267,7 +267,7 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             WHERE t.is_deleted = 0 
                 AND t.user_id = ? 
             ORDER BY t.timesheet_id DESC`;
-    
+
             db.query(query, [userId], (err, results) => {
                 if (err) {
                     console.error('Error fetching full timesheet:', err);
