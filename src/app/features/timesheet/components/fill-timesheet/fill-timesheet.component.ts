@@ -213,55 +213,75 @@ export class FillTimesheetComponent {
   }
 
   updateTimesheet(form: NgForm): void {
-    if (!form.valid || !this.editTimesheetId) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Please fill all required fields correctly!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
+    // Check form validity and required fields
+    if (!form.valid) {
+        console.error('Form is invalid');
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please fill all required fields!',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return;
+    }
+
+    if (!this.editTimesheetId || !this.userId) {
+        console.error('Timesheet ID or User ID not found');
+        return;
+    }
+
+    // Validate task status is set (0 or 1)
+    if (this.editSelectedTaskStatus === null || this.editSelectedTaskStatus === undefined) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please set task status!',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return;
     }
 
     const timesheetData = {
-      timesheet_date: this.editSelectedDate,
-      user_id: this.userId,
-      pd_id: this.editSelectedDeliverable,
-      phase_id: this.editSelectedPhase,
-      hours: this.editSelectedHours,
-      minutes: this.editSelectedMinutes,
-      task_status: this.editSelectedTaskStatus,
-      task_description: this.editTaskDescription,
+        timesheet_date: this.editSelectedDate,
+        user_id: this.userId,
+        pd_id: this.editSelectedDeliverable,
+        phase_id: this.editSelectedPhase,
+        hours: this.editSelectedHours,
+        minutes: this.editSelectedMinutes,
+        task_status: this.editSelectedTaskStatus,
+        task_description: this.editTaskDescription,
     };
 
     this.timesheetService.updateTimesheet(this.editTimesheetId, timesheetData).subscribe({
-      next: (response) => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Timesheet updated successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-        this.fetchTimesheets(this.editSelectedDate);
-        this.closeEditModal();
-      },
-      error: (error) => {
-        console.error('Error updating timesheet:', error);
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Failed to update timesheet!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
+        next: (response) => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Timesheet updated successfully!',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            this.fetchTimesheets(this.editSelectedDate);
+            this.closeEditModal();
+        },
+        error: (error) => {
+            console.error('Error updating timesheet:', error);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Failed to update timesheet!',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
     });
-  }
+}
 
 
   onEditProjectChange(): void {
