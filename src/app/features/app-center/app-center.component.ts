@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "../../components/shared/navbar/navbar.component";
 import { CommonModule } from '@angular/common';
+import { SecureStorageService } from '../../services/secureStorage-service/secure-storage.service';
 
 @Component({
   selector: 'app-app-center',
@@ -11,8 +12,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './app-center.component.css'
 })
 export class AppCenterComponent {
+
+  constructor(
+    private secureStorage: SecureStorageService
+  ){}
+
   userRole: string | null = null;
   ngOnInit(): void {
-    this.userRole = localStorage.getItem('role_id'); // Get the user's role_id
+    this.userRole = this.secureStorage.getItem('role_id'); // Get the user's role_id
   }
 }
