@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../config/db'; // Import MySQL database connection
+import bcrypt from 'bcrypt';
+const saltRounds = 10; // For bcrypt hashing
 
 class OrgController {
 
@@ -923,7 +925,9 @@ WHERE is_deleted = 0 AND is_RM = 1
             } = req.body;
 
             // Generate password: user_first_name@123
-            const password = `${user_first_name.toLowerCase()}@123`;
+            const tempPassword = `${user_first_name.toLowerCase()}@123`;
+            const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+
 
             // Check for duplicate user_code and user_email separately
             const checkQuery = `SELECT user_code, user_email 
@@ -959,7 +963,7 @@ WHERE is_deleted = 0 AND is_RM = 1
 
                 const values = [
                     user_code, user_first_name, user_middle_name, user_last_name,
-                    user_email, user_contact, password
+                    user_email, user_contact, hashedPassword
                 ];
 
                 // Insert the data into the database
@@ -984,7 +988,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             return res.status(500).json({
                                 message: 'Employee created but failed to assign default role',
                                 employeeId: userId,
-                                temporaryPassword: password // Send the generated password back
+                                // temporaryPassword: tempPassword 
                             });
                         }
 
@@ -1004,14 +1008,14 @@ WHERE is_deleted = 0 AND is_RM = 1
                             return res.status(500).json({
                                 message: 'Employee created but failed to assign to internal project',
                                 employeeId: userId,
-                                temporaryPassword: password
+                                // temporaryPassword: tempPassword 
                             });
                         }
 
                         res.status(201).json({
                             message: 'Employee saved successfully with default role and internal project assignment',
                             employeeId: userId,
-                            temporaryPassword: password
+                            // temporaryPassword: tempPassword 
                         });
                     });
                 });

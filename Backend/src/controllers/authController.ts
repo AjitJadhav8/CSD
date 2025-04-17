@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import * as crypto from 'crypto';
+import bcrypt from 'bcrypt';
+const saltRounds = 10; // For bcrypt hashing
+
 
 import db from '../config/db';
 import { generateToken } from '../config/jwt';
@@ -8,8 +11,6 @@ import { sendPasswordResetEmail } from '../utils/mailer';
 class AuthController {
 
 
-
-  // Add this method to your AuthController class
 async refreshToken(req: Request, res: Response): Promise<void> {
   try {
     // The user is attached by the protect middleware
@@ -37,11 +38,6 @@ async refreshToken(req: Request, res: Response): Promise<void> {
   }
 }
 
-
-
-
-
-
   async login(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
 
@@ -54,13 +50,13 @@ async refreshToken(req: Request, res: Response): Promise<void> {
                 mu.user_email,
                 mu.user_password,
                   mu.is_RM,
-        mu.is_PM,
+                  mu.is_PM,
                 tud.role_id
                 FROM master_user mu
             LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
             WHERE mu.user_email = ? AND mu.is_deleted = 0
         `;
-      db.query(query, [email], (err, results: any[]) => {
+      db.query(query, [email], async (err, results: any[]) => {
         if (err) {
           res.status(500).json({ message: 'Server error' });
           return;
@@ -78,11 +74,13 @@ async refreshToken(req: Request, res: Response): Promise<void> {
           return;
       }
 
-        // Compare plain passwords directly
-        if (password !== user.user_password) {
-          res.status(401).json({ message: 'Invalid credentials' });
-          return;
-        }
+       // Compare hashed passwords
+       const match = await bcrypt.compare(password, user.user_password);
+       if (!match) {
+         res.status(401).json({ message: 'Invalid credentials' });
+         return;
+       }
+
 
         // Generate JWT token
         const token = generateToken(user);
@@ -103,9 +101,6 @@ async refreshToken(req: Request, res: Response): Promise<void> {
     }
   }
 
-
-
-  // FORGOT PASSWORD FUNCTIONALITY
   async forgotPassword(req: Request, res: Response): Promise<void> {
     const { email } = req.body;
   
@@ -141,13 +136,12 @@ async refreshToken(req: Request, res: Response): Promise<void> {
     }
   }
 
-
   async resetPassword(req: Request, res: Response): Promise<void> {
     const { token, newPassword } = req.body;
   
     try {
       const query = 'SELECT * FROM master_user WHERE reset_token = ? AND reset_token_expiry > ? AND is_deleted = 0';
-      db.query(query, [token, Date.now()], (err, results: any[]) => {
+      db.query(query, [token, Date.now()], async (err, results: any[]) => {
         if (err) {
           res.status(500).json({ message: 'Server error' });
           return;
@@ -159,9 +153,10 @@ async refreshToken(req: Request, res: Response): Promise<void> {
         }
   
         const user = results[0];
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
   
         const updateQuery = 'UPDATE master_user SET user_password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE user_id = ?';
-        db.query(updateQuery, [newPassword, user.user_id], (err) => {
+        db.query(updateQuery, [hashedPassword, user.user_id], (err) => {
           if (err) {
             res.status(500).json({ message: 'Error updating password' });
             return;
@@ -179,9 +174,8 @@ async refreshToken(req: Request, res: Response): Promise<void> {
     const { userId, currentPassword, newPassword } = req.body;
   
     try {
-      // Fetch user from the database
       const query = 'SELECT * FROM master_user WHERE user_id = ? AND is_deleted = 0';
-      db.query(query, [userId], (err, results: any[]) => {
+      db.query(query, [userId], async (err, results: any[]) => {
         if (err) {
           res.status(500).json({ message: 'Server error' });
           return;
@@ -195,14 +189,18 @@ async refreshToken(req: Request, res: Response): Promise<void> {
         const user = results[0];
   
         // Verify current password
-        if (currentPassword !== user.user_password) {
+        const match = await bcrypt.compare(currentPassword, user.user_password);
+        if (!match) {
           res.status(401).json({ message: 'Current password is incorrect' });
           return;
         }
   
+        // Hash new password
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+  
         // Update password
         const updateQuery = 'UPDATE master_user SET user_password = ? WHERE user_id = ?';
-        db.query(updateQuery, [newPassword, userId], (err) => {
+        db.query(updateQuery, [hashedNewPassword, userId], (err) => {
           if (err) {
             res.status(500).json({ message: 'Error updating password' });
             return;
@@ -215,6 +213,7 @@ async refreshToken(req: Request, res: Response): Promise<void> {
       res.status(500).json({ message: 'Internal server error' });
     }
   }
+
   
 
 
