@@ -17,8 +17,9 @@ export class AppCenterComponent {
     private secureStorage: SecureStorageService
   ){}
 
-  userRole: string | null = null;
+  userRole: number | null = null;
   ngOnInit(): void {
     this.userRole = this.secureStorage.getItem('role_id'); // Get the user's role_id
+    
   }
 }

@@ -47,5 +47,23 @@ export const routes: Routes = [
         ),
       canActivate: [authGuard], // Protect the parent route
     },
+
+
+
+    {
+      path: 'developer-section',
+      loadChildren: () =>
+        import('./features/developer-section/developer-section.module').then(
+          (m) => m.DeveloperSectionModule
+        ),
+      canActivate: [authGuard],
+    },
+
+
+
+
+
     { path: '**', redirectTo: 'app-center' },
+
+    
   ];

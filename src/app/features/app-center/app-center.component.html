@@ -81,7 +81,7 @@
     </p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <ng-container *ngIf="userRole !== '4'">
+      <ng-container *ngIf="userRole !== 4">
         <a
           routerLink="/organisation"
           class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
@@ -125,7 +125,7 @@
         </div>
       </a>
 
-      <ng-container *ngIf="userRole !== '4'">
+      <ng-container *ngIf="userRole !== 4">
         <a
           routerLink="/resource-management"
           class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
@@ -147,6 +147,40 @@
           </div>
         </a>
       </ng-container>
+
+
+
+
+
+
+
+      <!-- Add this inside the grid container, after the existing cards -->
+<ng-container *ngIf="userRole === 5">
+  <a
+    routerLink="/developer-section"
+    class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
+    >
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="relative z-10 p-8 flex flex-col items-center">
+      <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-semibold text-gray-800 mb-2">Developer Tools</h2>
+      <p class="text-gray-600 text-center text-sm">Access developer-specific tools and features</p>
+      <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </div>
+    </div>
+  </a>
+</ng-container>
+
+
+
+
     </div>
   </div>
 </div>
