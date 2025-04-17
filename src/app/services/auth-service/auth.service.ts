@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { SecureStorageService } from '../secureStorage-service/secure-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,17 +11,17 @@ export class AuthService {
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private secureStorage: SecureStorageService) { }
   logout() {
     // Clear all auth-related items from storage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('first_name');
-    localStorage.removeItem('last_name');
-    localStorage.removeItem('role_id');
-    localStorage.removeItem('email');
-    localStorage.removeItem('is_RM');
-    localStorage.removeItem('is_PM');
+    this.secureStorage.removeItem('token');
+    this.secureStorage.removeItem('user_id');
+    this.secureStorage.removeItem('first_name');
+    this.secureStorage.removeItem('last_name');
+    this.secureStorage.removeItem('role_id');
+    this.secureStorage.removeItem('email');
+    this.secureStorage.removeItem('is_RM');
+    this.secureStorage.removeItem('is_PM');
   }
 
   login(credentials: { email: string; password: string }): Observable<any> {

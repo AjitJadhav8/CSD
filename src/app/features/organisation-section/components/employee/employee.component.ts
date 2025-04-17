@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 @Component({
@@ -15,12 +16,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './employee.component.css'
 })
 export class EmployeeComponent {
-  constructor(private dataService: DataService, private http: HttpClient) { }
+  constructor(private dataService: DataService, private http: HttpClient , private secureStorage: SecureStorageService) { }
 
   ngOnInit(): void {
     this.selectedSection = 'employee';
-    localStorage.setItem('selectedEmployeeSection', 'employee');
-    this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
+    this.secureStorage.setItem('selectedEmployeeSection', 'employee');
+    this.selectedSection = this.secureStorage.getItem('selectedEmployeeSection') || 'employee';
 
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
     this.fetchEmployees();
@@ -54,12 +55,12 @@ export class EmployeeComponent {
   }
 
   updateSectionFromStorage() {
-    this.selectedSection = localStorage.getItem('selectedEmployeeSection') || 'employee';
+    this.selectedSection = this.secureStorage.getItem('selectedEmployeeSection') || 'employee';
   }
 
   changeSection(section: string) {
     this.selectedSection = section;
-    localStorage.setItem('selectedEmployeeSection', section);
+    this.secureStorage.setItem('selectedEmployeeSection', section);
   }
 
   optioRoles: any[] = [];

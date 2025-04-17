@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
+import { SecureStorageService } from '../secureStorage-service/secure-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,14 @@ export class TimesheetService {
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private secureStorage: SecureStorageService) {
+    // Constructor logic if needed
   }
 
 
   // Method to get the token from localStorage
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // Retrieve token from storage
+    const token = this.secureStorage.getItem('token'); // Retrieve token from storage
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 

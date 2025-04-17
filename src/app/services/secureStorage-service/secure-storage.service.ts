@@ -16,7 +16,8 @@ export class SecureStorageService {
         localStorage.setItem(key, encryptedValue);
       } catch (e) {
         console.error(`Failed to store item ${key}`, e);
-        // Optionally fallback to plaintext with warning
+        // Fallback to plaintext storage with warning
+        console.warn('Storing data unencrypted due to encryption failure');
         localStorage.setItem(key, value);
       }
     }
@@ -24,20 +25,27 @@ export class SecureStorageService {
 
   getItem(key: string): any {
     if (typeof window !== 'undefined') {
+      const storedValue = localStorage.getItem(key);
+      if (!storedValue) return null;
+
+      // First try to decrypt
       try {
-        const encryptedValue = localStorage.getItem(key);
-        if (encryptedValue) {
-          const decryptedValue = this.encryptionService.decrypt(encryptedValue);
-          try {
-            return JSON.parse(decryptedValue);
-          } catch {
-            return decryptedValue;
-          }
+        const decrypted = this.encryptionService.decrypt(storedValue);
+        try {
+          return JSON.parse(decrypted);
+        } catch {
+          return decrypted;
         }
-      } catch (e) {
-        console.error(`Failed to retrieve item ${key}`, e);
-        // Fallback to plaintext if decryption fails
-        return localStorage.getItem(key);
+      } catch (decryptError) {
+        console.warn(`Decryption failed for ${key}, trying plaintext`);
+        
+        // If decryption fails, try to parse as plain JSON
+        try {
+          return JSON.parse(storedValue);
+        } catch (parseError) {
+          // Return as-is if not JSON
+          return storedValue;
+        }
       }
     }
     return null;

@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx'; // Import SheetJS
 import { saveAs } from 'file-saver';
 import { DataService } from '../../../../services/data-service/data.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 
@@ -18,10 +19,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class ExportMyTimesheetComponent {
 
-  constructor(private timesheetService: TimesheetService, private dataService: DataService) { }
+  constructor(private timesheetService: TimesheetService, private dataService: DataService, private secureStorage: SecureStorageService) { }
 
   ngOnInit(): void {
-    const storedUserId = localStorage.getItem('user_id');
+    const storedUserId = this.secureStorage.getItem('user_id');
     console.log(storedUserId);
     if (storedUserId) {
       this.userId = Number(storedUserId);

@@ -1,10 +1,14 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { SecureStorageService } from '../services/secureStorage-service/secure-storage.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
-    const roleId = localStorage.getItem('role_id'); // Get the user's role_id
+
+    const secureStorage = inject(SecureStorageService);
+
+    const token = secureStorage.getItem('token');
+    const roleId = secureStorage.getItem('role_id'); // Get the user's role_id
 
     if (!token) {
       // Redirect to login if no token exists

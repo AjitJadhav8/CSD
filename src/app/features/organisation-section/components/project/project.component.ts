@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 
@@ -17,14 +18,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class ProjectComponent {
 
-  constructor(private dataService: DataService, private http: HttpClient) { }
+  constructor(private dataService: DataService, private http: HttpClient, private secureStorage: SecureStorageService) { }
 
   ngOnInit(): void {
 
     this.selectedSection = 'project';
-    localStorage.setItem('selectedProjectSection', 'project');
+    this.secureStorage.setItem('selectedProjectSection', 'project');
 
-    this.selectedSection = localStorage.getItem('selectedProjectSection') || 'project';
+    this.selectedSection = this.secureStorage.getItem('selectedProjectSection') || 'project';
 
     // Listen for changes (e.g., when clicking Project Deliverable)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
@@ -72,12 +73,12 @@ export class ProjectComponent {
   }
 
   updateSectionFromStorage() {
-    this.selectedSection = localStorage.getItem('selectedProjectSection') || 'project';
+    this.selectedSection = this.secureStorage.getItem('selectedProjectSection') || 'project';
   }
 
   changeSection(section: string) {
     this.selectedSection = section;
-    localStorage.setItem('selectedProjectSection', section);
+    this.secureStorage.setItem('selectedProjectSection', section);
   }
   optionPhases: any[] = [];
 

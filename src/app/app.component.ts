@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth-service/auth.service';
+import { SecureStorageService } from './services/secureStorage-service/secure-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import { AuthService } from './services/auth-service/auth.service';
 })
 export class AppComponent {
   title = 'CSD';
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private secureStorage: SecureStorageService) {}
 
   ngOnInit() {
     this.checkTokenExpiration();
@@ -20,7 +21,7 @@ export class AppComponent {
   private checkTokenExpiration() {
     // 👇 Check if running in browser
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
+      const token = this.secureStorage.getItem('token');
       
       if (token) {
         try {

@@ -10,9 +10,10 @@ export class EncryptionService {
 
   private readonly encryptionKey: string;
 
+
   constructor() {
     // Get key from environment (fallback for development)
-    this.encryptionKey = environment.encryptionKey || 'your-strong-secret-key-here-12345';
+    this.encryptionKey = environment.encryptionKey;
     
     // Validate key length (AES requires specific key sizes)
     if (this.encryptionKey.length !== 16 && this.encryptionKey.length !== 24 && this.encryptionKey.length !== 32) {

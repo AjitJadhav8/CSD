@@ -10,14 +10,15 @@ import {
 import { Observable, catchError, throwError } from 'rxjs';
 import {AuthService} from '../services/auth-service/auth.service';
 import { Router } from '@angular/router';
+import { SecureStorageService } from '../services/secureStorage-service/secure-storage.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,  private secureStorage: SecureStorageService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Add authorization header if token exists
-    const token = localStorage.getItem('token');
+    const token = this.secureStorage.getItem('token');
     if (token) {
       request = request.clone({
         setHeaders: {

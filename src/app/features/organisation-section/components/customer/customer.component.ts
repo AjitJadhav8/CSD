@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 
@@ -17,13 +18,13 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class CustomerComponent {
 
-  constructor(private dataService: DataService, private http: HttpClient) { }
+  constructor(private dataService: DataService, private http: HttpClient, private secureStorage: SecureStorageService ) { }
 
   ngOnInit(): void {
     this.selectedSection = 'customer';
-    localStorage.setItem('selectedCustomerSection', 'customer');
+    this.secureStorage.setItem('selectedCustomerSection', 'customer');
     // Load section from localStorage
-    this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
+    this.selectedSection = this.secureStorage.getItem('selectedCustomerSection') || 'customer';
 
     // Listen for changes (e.g., when clicking Customer Categories)
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
@@ -74,12 +75,12 @@ export class CustomerComponent {
   }
 
   updateSectionFromStorage() {
-    this.selectedSection = localStorage.getItem('selectedCustomerSection') || 'customer';
+    this.selectedSection = this.secureStorage.getItem('selectedCustomerSection') || 'customer';
   }
 
   changeSection(section: string) {
     this.selectedSection = section;
-    localStorage.setItem('selectedCustomerSection', section);
+    this.secureStorage.setItem('selectedCustomerSection', section);
   }
 
 

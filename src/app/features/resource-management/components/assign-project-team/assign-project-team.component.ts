@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RmgService } from '../../../../services/rmg-service/rmg.service';
 import Swal from 'sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 @Component({
   selector: 'app-assign-project-team',
@@ -16,7 +17,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class AssignProjectTeamComponent {
   selectedProjectManagerName: string | undefined;
-  constructor(private dataService: DataService, private http: HttpClient, private rmgService: RmgService) { }
+  constructor(private dataService: DataService, private http: HttpClient, private rmgService: RmgService, private secureStorage: SecureStorageService) { }
 
   userId: number | null = null;
   optionCustomers: any[] = [];
@@ -30,7 +31,7 @@ export class AssignProjectTeamComponent {
   ngOnInit(): void {
     this.fetchAssignedProjectTeams();
 
-    const storedUserId = localStorage.getItem('user_id');
+    const storedUserId = this.secureStorage.getItem('user_id');
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
       this.userId = Number(storedUserId);

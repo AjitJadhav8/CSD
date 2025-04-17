@@ -23,7 +23,11 @@ import { SecureStorageService } from '../../services/secureStorage-service/secur
 
     constructor(private authService:AuthService, private router:Router,     private secureStorage: SecureStorageService    ) {
       this.loadRememberedEmail(); // Load remembered email on component initialization
-
+ // Clear old encrypted data on startup
+ if (typeof window !== 'undefined') {
+  localStorage.removeItem('rememberedEmail');
+}
+this.loadRememberedEmail();
     }
 
     // Load email from localStorage if "Remember Me" was previously checked

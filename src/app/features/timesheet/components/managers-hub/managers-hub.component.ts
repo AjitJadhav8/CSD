@@ -6,6 +6,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 export class ManagersHubComponent {
 
 
-  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
+  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService, private secureStorage: SecureStorageService) { }
 
   optionPhases: any[] = [];
   optionProject: any[] = [];
@@ -37,28 +38,28 @@ export class ManagersHubComponent {
   }
 
   updateSectionFromStorage() {
-    this.selectedSection = localStorage.getItem('selectedManagersHubSection') || 'projectPhases';
+    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectPhases';
   }
 
   changeSection(section: string) {
     this.selectedSection = section;
-    localStorage.setItem('selectedManagersHubSection', section);
+    this.secureStorage.setItem('selectedManagersHubSection', section);
     window.dispatchEvent(new Event('storage'));
   }
 
 
 
   selectedSection: string = 'projectPhases';
-  // currentManagerId = Number(localStorage.getItem('user_id')) || 0;
+  // currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
   currentManagerId: number = 0;
 
   ngOnInit(): void {
 
-    this.currentManagerId = Number(localStorage.getItem('user_id')) || 0;
+    this.currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
     console.log('Current Manager ID:', this.currentManagerId);
 
-    this.selectedSection = localStorage.getItem('selectedManagersHubSection') || 'projectPhases';
-    localStorage.setItem('selectedManagersHubSection', this.selectedSection);
+    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectPhases';
+    this.secureStorage.setItem('selectedManagersHubSection', this.selectedSection);
 
     this.fetchManagerProjects(); // Add this line
 
@@ -904,7 +905,7 @@ export class ManagersHubComponent {
   // Project Team Methods
   // Update the fetch method
   fetchProjectTeamData(): void {
-    const projectManagerId = Number(localStorage.getItem('user_id'));
+    const projectManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!projectManagerId) {
       console.error('User ID not found in local storage.');
       return;
@@ -1078,7 +1079,7 @@ export class ManagersHubComponent {
 
   // Add these methods
   fetchProjectTeamsTimesheet(): void {
-    const projectManagerId = Number(localStorage.getItem('user_id'));
+    const projectManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!projectManagerId) return;
 
     this.timesheetService.getProjectTeamsTimesheet(projectManagerId).subscribe(
@@ -1288,7 +1289,7 @@ export class ManagersHubComponent {
 
   // Fetch reporting team data
   fetchReportingTeamData(): void {
-    const reportingManagerId = Number(localStorage.getItem('user_id'));
+    const reportingManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!reportingManagerId) {
       console.error('User ID not found in local storage.');
       return;
@@ -1440,7 +1441,7 @@ export class ManagersHubComponent {
 
   // Fetch reporting team timesheets
   fetchReportingTeamsTimesheet(): void {
-    const reportingManagerId = Number(localStorage.getItem('user_id'));
+    const reportingManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!reportingManagerId) {
       console.error('User ID not found in local storage.');
       return;

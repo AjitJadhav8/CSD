@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { TimesheetService } from '../../../../services/timesheet-service/timesheet.service';
 import Swal from 'sweetalert2';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { SecureStorageService } from '../../../../services/secureStorage-service/secure-storage.service';
 
 
 @Component({
@@ -21,10 +22,10 @@ export class FillTimesheetComponent {
   maxDate: string = new Date().toISOString().split('T')[0]; // Today's date
   minDate: string = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]; // 7 days before today
 
-  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService) { }
+  constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService, private secureStorage: SecureStorageService) { }
   ngOnInit(): void {
     // Fetch user ID from localStorage
-    const storedUserId = localStorage.getItem('user_id');
+    const storedUserId = this.secureStorage.getItem('user_id');
     console.log('Stored User ID:', storedUserId);
     if (storedUserId) {
       this.userId = Number(storedUserId);
