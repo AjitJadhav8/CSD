@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router'
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { FormsModule } from '@angular/forms';
+import { SecureStorageService } from '../../../services/secureStorage-service/secure-storage.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -27,27 +28,27 @@ export class NavbarComponent {
   @Input() showResourceManagementLinks: boolean = false; // New Input
 
   navigateToCustomerSection(section: string) {
-    localStorage.setItem('selectedCustomerSection', section);
+    this.secureStorage.setItem('selectedCustomerSection', section);
     this.router.navigate(['/organisation/customer']).then(() => {
       // Force refresh customer component to detect changes
       window.dispatchEvent(new Event('storage'));
     });
   }
   isCustomerSectionActive(section: string): boolean {
-    return localStorage.getItem('selectedCustomerSection') === section;
+    return this.secureStorage.getItem('selectedCustomerSection') === section;
   }
   navigateToProjectSection(section: string) {
-    localStorage.setItem('selectedProjectSection', section);
+    this.secureStorage.setItem('selectedProjectSection', section);
     this.router.navigate(['/organisation/project']).then(() => {
       // Force refresh project component to detect changes
       window.dispatchEvent(new Event('storage'));
     });
   }
   isProjectSectionActive(section: string): boolean {
-    return localStorage.getItem('selectedProjectSection') === section;
+    return this.secureStorage.getItem('selectedProjectSection') === section;
   }
   navigateToEmployeeSection(section: string) {
-    localStorage.setItem('selectedEmployeeSection', section);
+    this.secureStorage.setItem('selectedEmployeeSection', section);
 
     this.router.navigate(['/organisation/employee']).then(() => {
       // Force refresh employee component to detect changes
@@ -55,10 +56,10 @@ export class NavbarComponent {
     });
   }
   isEmployeeSectionActive(section: string): boolean {
-    return localStorage.getItem('selectedEmployeeSection') === section;
+    return this.secureStorage.getItem('selectedEmployeeSection') === section;
   }
   navigateToManagersHubSection(section: string) {
-    localStorage.setItem('selectedManagersHubSection', section);
+    this.secureStorage.setItem('selectedManagersHubSection', section);
     this.router.navigate(['/timesheet/managers-hub']).then(() => {
       window.dispatchEvent(new Event('storage'));
     });
@@ -66,7 +67,7 @@ export class NavbarComponent {
 
 
   isManagersHubSectionActive(section: string): boolean {
-    return localStorage.getItem('selectedManagersHubSection') === section;
+    return this.secureStorage.getItem('selectedManagersHubSection') === section;
   }
 
   showDropdown = false;
@@ -139,17 +140,17 @@ export class NavbarComponent {
 
 
   setLoggedInUser() {
-    const firstName = localStorage.getItem('first_name') || '';
-    const lastName = localStorage.getItem('last_name') || '';
+    const firstName = this.secureStorage.getItem('first_name') || '';
+    const lastName = this.secureStorage.getItem('last_name') || '';
     this.loggedInUserName = firstName && lastName ? `${firstName} ${lastName}` : 'User';
   }
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private authService: AuthService, private secureStorage: SecureStorageService ) {
     this.setLoggedInUser();
       // Check localStorage for RM/PM status when component initializes
       if (typeof window !== 'undefined') {
-        this.isRM = localStorage.getItem('is_RM') === '1' || localStorage.getItem('is_RM') === 'true';
-        this.isPM = localStorage.getItem('is_PM') === '1' || localStorage.getItem('is_PM') === 'true';
+        this.isRM = this.secureStorage.getItem('is_RM') ;
+        this.isPM = this.secureStorage.getItem('is_PM') ;
       }
       console.log('Reporting ', this.isRM, 'Project ', this.isPM)
   }
@@ -163,24 +164,24 @@ export class NavbarComponent {
 
   logout(): void {
     // Clear all stored data from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('first_name');
-    localStorage.removeItem('last_name');
-    localStorage.removeItem('role_id');
-    localStorage.removeItem('email');
-    localStorage.removeItem('selectedCustomerSection');
-    localStorage.removeItem('selectedProjectSection');
-    localStorage.removeItem('selectedEmployeeSection');
-    localStorage.removeItem('selectedManagersHubSection');
+    this.secureStorage.removeItem('token');
+    this.secureStorage.removeItem('user_id');
+    this.secureStorage.removeItem('first_name');
+    this.secureStorage.removeItem('last_name');
+    this.secureStorage.removeItem('role_id');
+    this.secureStorage.removeItem('email');
+    this.secureStorage.removeItem('selectedCustomerSection');
+    this.secureStorage.removeItem('selectedProjectSection');
+    this.secureStorage.removeItem('selectedEmployeeSection');
+    this.secureStorage.removeItem('selectedManagersHubSection');
     
 
 
     // Optionally, keep the remembered email if the user chose "Remember Me"
-    const rememberedEmail = localStorage.getItem('rememberedEmail');
-    localStorage.clear(); // Clears all data
+    const rememberedEmail = this.secureStorage.getItem('rememberedEmail');
+    this.secureStorage.clear(); // Clears all data
     if (rememberedEmail) {
-      localStorage.setItem('rememberedEmail', rememberedEmail); // Restore remembered email
+      this.secureStorage.setItem('rememberedEmail', rememberedEmail); // Restore remembered email
     }
 
     // Redirect to login page and show logout confirmation
@@ -242,7 +243,7 @@ export class NavbarComponent {
       return;
     }
 
-    const userId = localStorage.getItem('user_id'); // Get logged-in user ID
+    const userId = this.secureStorage.getItem('user_id'); // Get logged-in user ID
     if (!userId) {
       Swal.fire({
         icon: 'error',

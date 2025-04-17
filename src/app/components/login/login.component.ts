@@ -4,6 +4,7 @@
   import { CommonModule } from '@angular/common';
   import { AuthService } from '../../services/auth-service/auth.service';
   import Swal from 'sweetalert2';
+import { SecureStorageService } from '../../services/secureStorage-service/secure-storage.service';
 
   @Component({
     selector: 'app-login',
@@ -17,40 +18,45 @@
     email = '';
     password = '';
     rememberMe = false; // Track Remember Me state
+    isSending = false; // Track loading state
 
-    constructor(private authService:AuthService, private router:Router ) {
+
+    constructor(private authService:AuthService, private router:Router,     private secureStorage: SecureStorageService    ) {
       this.loadRememberedEmail(); // Load remembered email on component initialization
 
     }
 
     // Load email from localStorage if "Remember Me" was previously checked
     loadRememberedEmail(): void {
-      if (typeof window !== 'undefined' && localStorage.getItem('rememberedEmail')) {
-        this.email = localStorage.getItem('rememberedEmail')!;
-        this.rememberMe = true;
+      if (typeof window !== 'undefined') {
+        const rememberedEmail = this.secureStorage.getItem('rememberedEmail');
+        if (rememberedEmail) {
+          this.email = rememberedEmail;
+          this.rememberMe = true;
+        }
       }
     }
     
   onSubmit(): void {
     if (typeof window !== 'undefined') {
       if (this.rememberMe) {
-        localStorage.setItem('rememberedEmail', this.email);
+        this.secureStorage.setItem('rememberedEmail', this.email);
       } else {
-        localStorage.removeItem('rememberedEmail');
+        this.secureStorage.removeItem('rememberedEmail');
       }
     }
   
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user_id', response.user.user_id);
-          localStorage.setItem('first_name', response.user.first_name);
-          localStorage.setItem('last_name', response.user.last_name);
-          localStorage.setItem('role_id', response.user.role_id);
-          localStorage.setItem('email', response.user.email);
-          localStorage.setItem('is_RM', response.user.is_RM);
-          localStorage.setItem('is_PM', response.user.is_PM);
+           this.secureStorage.setItem('token', response.token);
+           this.secureStorage.setItem('user_id', response.user.user_id);
+           this.secureStorage.setItem('first_name', response.user.first_name);
+           this.secureStorage.setItem('last_name', response.user.last_name);
+           this.secureStorage.setItem('role_id', response.user.role_id);
+           this.secureStorage.setItem('email', response.user.email);
+           this.secureStorage.setItem('is_RM', response.user.is_RM);
+           this.secureStorage.setItem('is_PM', response.user.is_PM);
         }
 
         Swal.fire({
@@ -75,7 +81,6 @@
       }
     });
   }
-    isSending = false; // Track loading state
 
     forgotPassword(): void {
       if (!this.email) {
