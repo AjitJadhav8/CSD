@@ -1,1 +1,42 @@
-<p>user-management works!</p>
+<!-- user-management.component.html -->
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">User Management</h2>
+    
+    <div *ngIf="isLoading" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      <p class="mt-2 text-gray-600">Loading user data...</p>
+    </div>
+  
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ errorMessage }}
+    </div>
+  
+    <div *ngIf="!isLoading && users.length > 0" class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let user of users" class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.user_id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              {{ user.user_first_name }} {{ user.user_last_name }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.user_email }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+              <span class="bg-gray-100 px-2 py-1 rounded">{{ user.user_password }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div *ngIf="!isLoading && users.length === 0" class="bg-white p-8 rounded-lg shadow text-center">
+      <p class="text-gray-600">No users found in the system.</p>
+    </div>
+  </div>

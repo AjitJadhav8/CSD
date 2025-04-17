@@ -1,5 +1,45 @@
 <div class="container mx-auto p-8">
-    <h1 class="text-3xl font-bold text-[#0071ac] mb-6">Developer Section</h1>
-    <p class="text-gray-700">Welcome to the developer tools section. This area is only accessible to developers.</p>
-    <!-- Add developer-specific components here -->
+  <h1 class="text-3xl font-bold text-[#0071ac] mb-6">Developer Section</h1>
+  <p class="text-gray-700 mb-6">Welcome to the developer tools section. This area is only accessible to developers.</p>
+  
+  <div class="space-y-4">
+    <button 
+      (click)="navigateToUserManagement()"
+      class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+    >
+      User Management
+    </button>
   </div>
+
+  <!-- Password Modal -->
+  <div *ngIf="showPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      <h2 class="text-xl font-semibold mb-4">Enter Developer Password</h2>
+      <input
+        type="password"
+        [(ngModel)]="passwordInput"
+        placeholder="Enter password"
+        class="w-full p-2 border rounded mb-4"
+        (keyup.enter)="verifyPassword()"
+      />
+      <div class="flex justify-end space-x-2">
+        <button 
+          (click)="closeModal()"
+          class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors"
+        >
+          Cancel
+        </button>
+        <button 
+          (click)="verifyPassword()"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  
+</div>
