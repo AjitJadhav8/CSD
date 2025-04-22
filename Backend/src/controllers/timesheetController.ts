@@ -130,37 +130,37 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
     async updateTimesheet(req: Request, res: Response): Promise<void> {
         try {
             const id = Number(req.params.id);
-            const { 
-                timesheet_date, 
-                user_id, 
-                pd_id, 
-                phase_id, 
-                hours, 
-                minutes, 
-                task_status, 
-                task_description 
+            const {
+                timesheet_date,
+                user_id,
+                pd_id,
+                phase_id,
+                hours,
+                minutes,
+                task_status,
+                task_description
             } = req.body;
-    
+
             // Validate required fields - same as submit
-            if (!timesheet_date || !user_id || !pd_id || !phase_id || 
-                hours === undefined || minutes === undefined || 
+            if (!timesheet_date || !user_id || !pd_id || !phase_id ||
+                hours === undefined || minutes === undefined ||
                 task_status === undefined || !task_description) {
                 res.status(400).json({ error: 'Missing required fields' });
                 return;
             }
-    
+
             // Validate hours and minutes range - same as submit
             if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
                 res.status(400).json({ error: 'Invalid hours or minutes value' });
                 return;
             }
-    
+
             // Validate task status is either 0 or 1 - same as submit
             if (task_status !== 0 && task_status !== 1) {
                 res.status(400).json({ error: 'Invalid task status' });
                 return;
             }
-    
+
             const updateQuery = `
                 UPDATE trans_timesheet
                 SET 
@@ -173,16 +173,16 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
                     task_description = ?,
                     updated_at = NOW()
                 WHERE timesheet_id = ? AND user_id = ?`;
-    
+
             db.query(updateQuery, [
-                timesheet_date, 
-                pd_id, 
+                timesheet_date,
+                pd_id,
                 phase_id,
-                hours, 
-                minutes, 
-                task_status, 
+                hours,
+                minutes,
+                task_status,
                 task_description,
-                id, 
+                id,
                 user_id
             ], (error: any, result: any) => {
                 if (error) {
@@ -190,12 +190,12 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
                     res.status(500).json({ error: 'Database Error', details: error.message });
                     return;
                 }
-    
+
                 if (result.affectedRows === 0) {
                     res.status(404).json({ error: 'Timesheet not found or not owned by user' });
                     return;
                 }
-    
+
                 res.status(200).json({ message: 'Timesheet updated successfully' });
             });
         } catch (error) {

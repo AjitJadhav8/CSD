@@ -1002,29 +1002,29 @@ WHERE is_deleted = 0 AND is_RM = 1
                             29, 22, ?, 5, 42, CURDATE(), 0, 0, 0, 0, 0
                         )`;
 
-                    db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
-                        if (projectErr) {
-                            console.error('Error assigning to internal project:', projectErr);
-                            return res.status(500).json({
-                                message: 'Employee created but failed to assign to internal project',
+                        db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
+                            if (projectErr) {
+                                console.error('Error assigning to internal project:', projectErr);
+                                return res.status(500).json({
+                                    message: 'Employee created but failed to assign to internal project',
+                                    employeeId: userId,
+                                    // temporaryPassword: tempPassword 
+                                });
+                            }
+
+                            res.status(201).json({
+                                message: 'Employee saved successfully with default role and internal project assignment',
                                 employeeId: userId,
                                 // temporaryPassword: tempPassword 
                             });
-                        }
-
-                        res.status(201).json({
-                            message: 'Employee saved successfully with default role and internal project assignment',
-                            employeeId: userId,
-                            // temporaryPassword: tempPassword 
                         });
                     });
                 });
             });
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 
     async assignDetails(req: Request, res: Response): Promise<void> {
@@ -1796,7 +1796,7 @@ WHERE is_deleted = 0 AND is_RM = 1
     //     }
     // }
 
-   
+
     // async addProject(req: Request, res: Response): Promise<void> {
     //     try {
     //         const {
@@ -1804,40 +1804,40 @@ WHERE is_deleted = 0 AND is_RM = 1
     //             type_of_project_id, type_of_engagement_id, project_manager_id,
     //             project_status_id, tentative_end_date, project_description
     //         } = req.body;
-    
+
     //         // Validate required fields
     //         if (!customer_id || !project_name || !planned_start_date || 
     //             !type_of_project_id || !type_of_engagement_id || 
     //             !project_manager_id || !project_status_id) {
     //              res.status(400).json({ error: 'Missing required fields' });
     //         }
-    
+
     //         // Date validation
     //         const plannedStart = new Date(planned_start_date);
     //         const actualStart = actual_start_date ? new Date(actual_start_date) : null;
     //         const tentativeEnd = tentative_end_date ? new Date(tentative_end_date) : null;
-    
+
     //         // Validate planned start ≤ actual start (if actual exists)
     //         if (actualStart && plannedStart > actualStart) {
     //              res.status(400).json({ 
     //                 error: 'Planned start date must be on or before actual start date' 
     //             });
     //         }
-    
+
     //         // Validate actual start ≤ tentative end (if both exist)
     //         if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
     //              res.status(400).json({ 
     //                 error: 'Actual start date must be on or before tentative end date' 
     //             });
     //         }
-    
+
     //         // Validate planned start ≤ tentative end (if tentative exists)
     //         if (tentativeEnd && plannedStart > tentativeEnd) {
     //              res.status(400).json({ 
     //                 error: 'Planned start date must be on or before tentative end date' 
     //             });
     //         }
-    
+
     //         // Insert the project
     //         const insertQuery = `
     //             INSERT INTO master_project 
@@ -1848,32 +1848,32 @@ WHERE is_deleted = 0 AND is_RM = 1
     //             ) 
     //             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     //         `;
-    
+
     //         const insertValues = [
     //             customer_id, project_name, planned_start_date, actual_start_date,
     //             type_of_project_id, type_of_engagement_id, project_manager_id,
     //             project_status_id, tentative_end_date, project_description
     //         ];
-    
+
     //         db.query(insertQuery, insertValues, (err: any, result: any) => {
     //             if (err) {
     //                 console.error('Error adding project:', err);
     //                 return res.status(500).json({ error: 'Error adding project' });
     //             }
-    
+
     //             // Update the is_PM flag for the assigned project manager
     //             const updateIsPmQuery = `
     //                 UPDATE master_user
     //                 SET is_PM = 1
     //                 WHERE user_id = ?
     //             `;
-    
+
     //             db.query(updateIsPmQuery, [project_manager_id], (updateErr: any, updateResult: any) => {
     //                 if (updateErr) {
     //                     console.error('Error updating is_PM flag:', updateErr);
     //                     return res.status(500).json({ error: 'Error updating is_PM flag' });
     //                 }
-    
+
     //                 res.status(201).json({ 
     //                     message: 'Project added successfully', 
     //                     projectId: result.insertId 
@@ -1918,10 +1918,10 @@ WHERE is_deleted = 0 AND is_RM = 1
                         WHERE project_id = ?
                         AND end_date IS NULL
                     `;
-                    
+
                     db.query(closeAllHistoryQuery, [projectId], (closeErr: any) => {
                         if (closeErr) console.error('Error closing history:', closeErr);
-                        
+
                         // Check if the project manager is still assigned to any project
                         const checkManagerQuery = `
                             SELECT COUNT(*) AS project_count
@@ -1964,7 +1964,7 @@ WHERE is_deleted = 0 AND is_RM = 1
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
-    }   
+    }
     async addProject(req: Request, res: Response): Promise<void> {
         try {
             const {
@@ -1974,10 +1974,10 @@ WHERE is_deleted = 0 AND is_RM = 1
             } = req.body;
 
             // Validate required fields
-            if (!customer_id || !project_name || !planned_start_date || 
-                !type_of_project_id || !type_of_engagement_id || 
+            if (!customer_id || !project_name || !planned_start_date ||
+                !type_of_project_id || !type_of_engagement_id ||
                 !project_manager_id || !project_status_id) {
-                 res.status(400).json({ error: 'Missing required fields' });
+                res.status(400).json({ error: 'Missing required fields' });
             }
 
             // Date validation
@@ -1987,22 +1987,22 @@ WHERE is_deleted = 0 AND is_RM = 1
 
             // Validate planned start ≤ actual start (if actual exists)
             if (actualStart && plannedStart > actualStart) {
-                 res.status(400).json({ 
-                    error: 'Planned start date must be on or before actual start date' 
+                res.status(400).json({
+                    error: 'Planned start date must be on or before actual start date'
                 });
             }
 
             // Validate actual start ≤ tentative end (if both exist)
             if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
-                 res.status(400).json({ 
-                    error: 'Actual start date must be on or before tentative end date' 
+                res.status(400).json({
+                    error: 'Actual start date must be on or before tentative end date'
                 });
             }
 
             // Validate planned start ≤ tentative end (if tentative exists)
             if (tentativeEnd && plannedStart > tentativeEnd) {
-                 res.status(400).json({ 
-                    error: 'Planned start date must be on or before tentative end date' 
+                res.status(400).json({
+                    error: 'Planned start date must be on or before tentative end date'
                 });
             }
 
@@ -2035,7 +2035,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                     (project_id, user_id, start_date)
                     VALUES (?, ?, NOW())
                 `;
-                
+
                 db.query(historyQuery, [result.insertId, project_manager_id], (historyErr: any) => {
                     if (historyErr) {
                         console.error('Error adding project manager history:', historyErr);
@@ -2053,9 +2053,9 @@ WHERE is_deleted = 0 AND is_RM = 1
                             console.error('Error updating is_PM flag:', updateErr);
                             return res.status(500).json({ error: 'Error updating is_PM flag' });
                         }
-                        res.status(201).json({ 
-                            message: 'Project added successfully', 
-                            projectId: result.insertId 
+                        res.status(201).json({
+                            message: 'Project added successfully',
+                            projectId: result.insertId
                         });
                     });
                 });
@@ -2065,7 +2065,7 @@ WHERE is_deleted = 0 AND is_RM = 1
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-  
+
 
     async updateProject(req: Request, res: Response): Promise<void> {
         try {
@@ -2077,10 +2077,10 @@ WHERE is_deleted = 0 AND is_RM = 1
             } = req.body;
 
             // Validate required fields
-            if (!customer_id || !project_name || !planned_start_date || 
-                !type_of_project_id || !type_of_engagement_id || 
+            if (!customer_id || !project_name || !planned_start_date ||
+                !type_of_project_id || !type_of_engagement_id ||
                 !project_manager_id || !project_status_id) {
-                 res.status(400).json({ error: 'Missing required fields' });
+                res.status(400).json({ error: 'Missing required fields' });
             }
 
             // Date validation
@@ -2090,22 +2090,22 @@ WHERE is_deleted = 0 AND is_RM = 1
 
             // Validate planned start ≤ actual start (if actual exists)
             if (actualStart && plannedStart > actualStart) {
-                 res.status(400).json({ 
-                    error: 'Planned start date must be on or before actual start date' 
+                res.status(400).json({
+                    error: 'Planned start date must be on or before actual start date'
                 });
             }
 
             // Validate actual start ≤ tentative end (if both exist)
             if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
-                 res.status(400).json({ 
-                    error: 'Actual start date must be on or before tentative end date' 
+                res.status(400).json({
+                    error: 'Actual start date must be on or before tentative end date'
                 });
             }
 
             // Validate planned start ≤ tentative end (if tentative exists)
             if (tentativeEnd && plannedStart > tentativeEnd) {
-                 res.status(400).json({ 
-                    error: 'Planned start date must be on or before tentative end date' 
+                res.status(400).json({
+                    error: 'Planned start date must be on or before tentative end date'
                 });
             }
 
@@ -2129,7 +2129,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                         AND user_id = ?
                         AND end_date IS NULL
                     `;
-                    
+
                     db.query(closeHistoryQuery, [projectId, oldProjectManagerId], (closeErr: any) => {
                         if (closeErr) console.error('Error closing history:', closeErr);
 
@@ -2139,7 +2139,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             (project_id, user_id, start_date)
                             VALUES (?, ?, NOW())
                         `;
-                        
+
                         db.query(newHistoryQuery, [projectId, project_manager_id], (newHistoryErr: any) => {
                             if (newHistoryErr) console.error('Error adding new history:', newHistoryErr);
                         });
@@ -2230,7 +2230,7 @@ WHERE is_deleted = 0 AND is_RM = 1
     async getProjectManagerHistory(req: Request, res: Response): Promise<void> {
         try {
             const { projectId } = req.params;
-            
+
             const query = `
                 SELECT 
                     h.history_id,
@@ -2258,8 +2258,8 @@ WHERE is_deleted = 0 AND is_RM = 1
         }
     }
 
-   
-   
+
+
     // async updateProject(req: Request, res: Response): Promise<void> {
     //     try {
     //         const { projectId } = req.params;
@@ -2268,44 +2268,44 @@ WHERE is_deleted = 0 AND is_RM = 1
     //             type_of_project_id, type_of_engagement_id, project_manager_id,
     //             project_status_id, tentative_end_date, project_description
     //         } = req.body;
-    
+
     //         if (!customer_id || !project_name || !planned_start_date || 
     //             !type_of_project_id || !type_of_engagement_id || 
     //             !project_manager_id || !project_status_id) {
     //              res.status(400).json({ error: 'Missing required fields' });
     //         }
-    
+
     //         const plannedStart = new Date(planned_start_date);
     //         const actualStart = actual_start_date ? new Date(actual_start_date) : null;
     //         const tentativeEnd = tentative_end_date ? new Date(tentative_end_date) : null;
-    
+
     //         if (actualStart && plannedStart > actualStart) {
     //              res.status(400).json({ 
     //                 error: 'Planned start date must be on or before actual start date' 
     //             });
     //         }
-    
+
     //         if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
     //              res.status(400).json({ 
     //                 error: 'Actual start date must be on or before tentative end date' 
     //             });
     //         }
-    
+
     //         if (tentativeEnd && plannedStart > tentativeEnd) {
     //              res.status(400).json({ 
     //                 error: 'Planned start date must be on or before tentative end date' 
     //             });
     //         }
-    
+
     //         const getOldManagerQuery = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
     //         db.query(getOldManagerQuery, [projectId], (oldManagerErr: any, oldManagerResult: any) => {
     //             if (oldManagerErr) {
     //                 console.error('Error fetching old project manager:', oldManagerErr);
     //                 return res.status(500).json({ error: 'Error fetching old project manager' });
     //             }
-    
+
     //             const oldProjectManagerId = oldManagerResult[0].project_manager_id;
-    
+
     //             const updateProjectQuery = `
     //                 UPDATE master_project 
     //                 SET 
@@ -2314,37 +2314,37 @@ WHERE is_deleted = 0 AND is_RM = 1
     //                     project_status_id = ?, tentative_end_date = ?, project_description = ?
     //                 WHERE project_id = ?
     //             `;
-    
+
     //             const updateValues = [
     //                 customer_id, project_name, planned_start_date, actual_start_date,
     //                 type_of_project_id, type_of_engagement_id, project_manager_id,
     //                 project_status_id, tentative_end_date, project_description, projectId
     //             ];
-    
+
     //             db.query(updateProjectQuery, updateValues, (updateErr: any, updateResult: any) => {
     //                 if (updateErr) {
     //                     console.error('Error updating project:', updateErr);
     //                     return res.status(500).json({ error: 'Error updating project' });
     //                 }
-    
+
     //                 if (updateResult.affectedRows === 0) {
     //                     return res.status(404).json({ error: 'Project not found' });
     //                 }
-    
+
     //                 const checkManagerQuery = `
     //                     SELECT COUNT(*) AS project_count
     //                     FROM master_project
     //                     WHERE project_manager_id = ? AND is_deleted = 0
     //                 `;
-    
+
     //                 db.query(checkManagerQuery, [oldProjectManagerId], (checkErr: any, checkResult: any) => {
     //                     if (checkErr) {
     //                         console.error('Error checking project manager assignments:', checkErr);
     //                         return res.status(500).json({ error: 'Error checking project manager assignments' });
     //                     }
-    
+
     //                     const projectCount = checkResult[0].project_count;
-    
+
     //                     // If the old project manager is no longer assigned to any project, set is_PM to 0
     //                     if (projectCount === 0) {
     //                         const updateIsPmQuery = `
@@ -2352,7 +2352,7 @@ WHERE is_deleted = 0 AND is_RM = 1
     //                             SET is_PM = 0
     //                             WHERE user_id = ?
     //                         `;
-    
+
     //                         db.query(updateIsPmQuery, [oldProjectManagerId], (updateIsPmErr: any, updateIsPmResult: any) => {
     //                             if (updateIsPmErr) {
     //                                 console.error('Error updating is_PM flag:', updateIsPmErr);
@@ -2361,20 +2361,20 @@ WHERE is_deleted = 0 AND is_RM = 1
     //                         });
     //                     }
     //                 });
-    
+
     //                 // Update the is_PM flag for the new project manager
     //                 const updateNewManagerQuery = `
     //                     UPDATE master_user
     //                     SET is_PM = 1
     //                     WHERE user_id = ?
     //                 `;
-    
+
     //                 db.query(updateNewManagerQuery, [project_manager_id], (updateNewManagerErr: any, updateNewManagerResult: any) => {
     //                     if (updateNewManagerErr) {
     //                         console.error('Error updating is_PM flag for new manager:', updateNewManagerErr);
     //                         return res.status(500).json({ error: 'Error updating is_PM flag for new manager' });
     //                     }
-    
+
     //                     res.status(200).json({ message: 'Project updated successfully' });
     //                 });
     //             });

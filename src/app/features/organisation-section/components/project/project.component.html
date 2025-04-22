@@ -13,7 +13,7 @@
         </h3>
         <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new project</p>
       </div>
-      
+
       <form #projectNgForm="ngForm" (ngSubmit)="submitProject(projectNgForm); $event.preventDefault()">
         <div class="grid grid-cols-6 gap-4">
           <!-- Customer Name -->
@@ -561,7 +561,7 @@
     <div *ngIf="isEditProjectModalOpen"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
       (click)="closeEditProjectModal()">
-      
+
       <div class="bg-white p-6 rounded-lg w-1/2 max-w-4xl" (click)="$event.stopPropagation()">
         <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Project</h3>
         <form #editProjectForm="ngForm" (ngSubmit)="updateProject(editProjectForm); $event.preventDefault()">
@@ -705,14 +705,16 @@
           </div>
 
           <div class="mt-6 flex justify-end space-x-3">
-            <button type="button" 
-        class="flex items-center text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-        (click)="openHistoryModal()">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    View Manager History
-</button>
+            <button type="button"
+              class="flex items-center text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="openHistoryModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              View Manager History
+            </button>
             <button type="button"
               class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
               (click)="closeEditProjectModal()">
@@ -735,44 +737,47 @@
     </div>
 
     <!-- Manager History Modal -->
-<div *ngIf="showHistoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]" (click)="closeHistoryModal()">
-  <div class="bg-white p-6 rounded-lg w-1/2 max-w-4xl" (click)="$event.stopPropagation()">
-      <div class="flex justify-between items-center mb-4">
+    <div *ngIf="showHistoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+      (click)="closeHistoryModal()">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-4xl" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-gray-800">Project Manager History</h3>
           <button (click)="closeHistoryModal()" class="text-gray-500 hover:text-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
-      </div>
-      
-      <div class="overflow-x-auto">
+        </div>
+
+        <div class="overflow-x-auto">
           <table class="min-w-full text-xs border-collapse">
-              <thead>
-                  <tr class="bg-gray-50">
-                      <th class="px-3 py-2 border border-gray-200 text-left">Manager</th>
-                      <th class="px-3 py-2 border border-gray-200 text-left">Start Date</th>
-                      <th class="px-3 py-2 border border-gray-200 text-left">End Date</th>
-                      <th class="px-3 py-2 border border-gray-200 text-left">Duration</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr *ngFor="let entry of managerHistory" class="hover:bg-gray-50">
-                      <td class="px-3 py-2 border border-gray-200">{{ entry.manager_name }}</td>
-                      <td class="px-3 py-2 border border-gray-200">{{ entry.start_date | date:'mediumDate' }}</td>
-                      <td class="px-3 py-2 border border-gray-200">{{ entry.end_date ? (entry.end_date | date:'mediumDate') : 'Current' }}</td>
-                      <td class="px-3 py-2 border border-gray-200">
-                          {{ calculateDuration(entry.start_date, entry.end_date) }}
-                      </td>
-                  </tr>
-                  <tr *ngIf="managerHistory.length === 0">
-                      <td colspan="4" class="px-3 py-2 border border-gray-200 text-center">No history available</td>
-                  </tr>
-              </tbody>
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="px-3 py-2 border border-gray-200 text-left">Manager</th>
+                <th class="px-3 py-2 border border-gray-200 text-left">Start Date</th>
+                <th class="px-3 py-2 border border-gray-200 text-left">End Date</th>
+                <th class="px-3 py-2 border border-gray-200 text-left">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let entry of managerHistory" class="hover:bg-gray-50">
+                <td class="px-3 py-2 border border-gray-200">{{ entry.manager_name }}</td>
+                <td class="px-3 py-2 border border-gray-200">{{ entry.start_date | date:'mediumDate' }}</td>
+                <td class="px-3 py-2 border border-gray-200">{{ entry.end_date ? (entry.end_date | date:'mediumDate') :
+                  'Current' }}</td>
+                <td class="px-3 py-2 border border-gray-200">
+                  {{ calculateDuration(entry.start_date, entry.end_date) }}
+                </td>
+              </tr>
+              <tr *ngIf="managerHistory.length === 0">
+                <td colspan="4" class="px-3 py-2 border border-gray-200 text-center">No history available</td>
+              </tr>
+            </tbody>
           </table>
+        </div>
       </div>
-  </div>
-</div>
+    </div>
   </div>
 
   <div *ngIf="selectedSection === 'projectPhases'">

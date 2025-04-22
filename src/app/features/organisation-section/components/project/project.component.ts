@@ -96,7 +96,7 @@ export class ProjectComponent {
 
   projectCurrentPage: number = 1;
   projectTotalItems: number = 0;
-  projectItemsPerPage: number = 30; 
+  projectItemsPerPage: number = 30;
   projectMaxPageButtons: number = 5; // Show only 5 page numbers at a time
   paginatedProjects: any[] = [];
 
@@ -116,23 +116,23 @@ export class ProjectComponent {
   project = {
     project_id: null,
     project_name: '',
-    customer_id: 'null', 
+    customer_id: 'null',
     customer_name: '',
-    project_manager_id: null, 
+    project_manager_id: null,
     project_manager: '',
-    type_of_project_id: null, 
+    type_of_project_id: null,
     type_of_project: '',
-    type_of_engagement_id: null, 
+    type_of_engagement_id: null,
     type_of_engagement: '',
-    project_status_id: null, 
+    project_status_id: null,
     project_status: '',
-    planned_start_date: '', 
-    actual_start_date: '', 
-    tentative_end_date: '', 
+    planned_start_date: '',
+    actual_start_date: '',
+    tentative_end_date: '',
     project_description: '',
-    is_deleted: null, 
-    created_at: '', 
-    updated_at: '' 
+    is_deleted: null,
+    created_at: '',
+    updated_at: ''
   };
   projects: any[] = [];  // Store the project data
   // Define form object
@@ -167,63 +167,63 @@ export class ProjectComponent {
 
     if (projectNgForm.invalid) {
       Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Please fill all required fields correctly!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Date validation
-  const plannedStart = new Date(this.projectForm.planned_start_date);
-  const actualStart = this.projectForm.actual_start_date ? new Date(this.projectForm.actual_start_date) : null;
-  const tentativeEnd = this.projectForm.tentative_end_date ? new Date(this.projectForm.tentative_end_date) : null;
+    // Date validation
+    const plannedStart = new Date(this.projectForm.planned_start_date);
+    const actualStart = this.projectForm.actual_start_date ? new Date(this.projectForm.actual_start_date) : null;
+    const tentativeEnd = this.projectForm.tentative_end_date ? new Date(this.projectForm.tentative_end_date) : null;
 
-  // Planned start must be ≤ actual start (if actual exists)
-  if (actualStart && plannedStart > actualStart) {
+    // Planned start must be ≤ actual start (if actual exists)
+    if (actualStart && plannedStart > actualStart) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Planned start date must be on or before actual start date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Planned start date must be on or before actual start date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Actual start must be ≤ tentative end (if both exist)
-  if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
+    // Actual start must be ≤ tentative end (if both exist)
+    if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Actual start date must be on or before tentative end date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Actual start date must be on or before tentative end date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Planned start must be ≤ tentative end (if tentative exists)
-  if (tentativeEnd && plannedStart > tentativeEnd) {
+    // Planned start must be ≤ tentative end (if tentative exists)
+    if (tentativeEnd && plannedStart > tentativeEnd) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Planned start date must be on or before tentative end date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Planned start date must be on or before tentative end date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
 
     this.dataService.addProject(this.projectForm).subscribe(
@@ -375,63 +375,63 @@ export class ProjectComponent {
   updateProject(editProjectForm: NgForm): void {
     if (editProjectForm.invalid || !this.editProjectId) {
       Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Please fill all required fields correctly!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Date validation
-  const plannedStart = new Date(this.editProjectFormData.planned_start_date);
-  const actualStart = this.editProjectFormData.actual_start_date ? new Date(this.editProjectFormData.actual_start_date) : null;
-  const tentativeEnd = this.editProjectFormData.tentative_end_date ? new Date(this.editProjectFormData.tentative_end_date) : null;
+    // Date validation
+    const plannedStart = new Date(this.editProjectFormData.planned_start_date);
+    const actualStart = this.editProjectFormData.actual_start_date ? new Date(this.editProjectFormData.actual_start_date) : null;
+    const tentativeEnd = this.editProjectFormData.tentative_end_date ? new Date(this.editProjectFormData.tentative_end_date) : null;
 
-  // Planned start must be ≤ actual start (if actual exists)
-  if (actualStart && plannedStart > actualStart) {
+    // Planned start must be ≤ actual start (if actual exists)
+    if (actualStart && plannedStart > actualStart) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Planned start date must be on or before actual start date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Planned start date must be on or before actual start date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Actual start must be ≤ tentative end (if both exist)
-  if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
+    // Actual start must be ≤ tentative end (if both exist)
+    if (actualStart && tentativeEnd && actualStart > tentativeEnd) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Actual start date must be on or before tentative end date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Actual start date must be on or before tentative end date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
-  // Planned start must be ≤ tentative end (if tentative exists)
-  if (tentativeEnd && plannedStart > tentativeEnd) {
+    // Planned start must be ≤ tentative end (if tentative exists)
+    if (tentativeEnd && plannedStart > tentativeEnd) {
       Swal.fire({
-          icon: 'error',
-          title: 'Invalid Date',
-          text: 'Planned start date must be on or before tentative end date!',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
+        icon: 'error',
+        title: 'Invalid Date',
+        text: 'Planned start date must be on or before tentative end date!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
       });
       return;
-  }
+    }
 
     this.dataService.updateProject(this.editProjectId, this.editProjectFormData).subscribe({
       next: (response) => {
@@ -455,7 +455,7 @@ export class ProjectComponent {
 
 
 
-  filteredProjects: any[] = []; 
+  filteredProjects: any[] = [];
 
   // Method to filter projects based on selected customer
   filterProjects(): void {
@@ -586,59 +586,59 @@ export class ProjectComponent {
   }
 
   managerHistory: any[] = [];
-showHistoryModal = false;
+  showHistoryModal = false;
 
-// Add this method to fetch manager history
-fetchManagerHistory(projectId: number): void {
+  // Add this method to fetch manager history
+  fetchManagerHistory(projectId: number): void {
     this.dataService.getProjectManagerHistory(projectId).subscribe(
-        (response) => {
-            this.managerHistory = response;
-        },
-        (error) => {
-            console.error('Error fetching manager history:', error);
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'Error fetching manager history',
-                showConfirmButton: false,
-                timer: 3000
-            });
-        }
+      (response) => {
+        this.managerHistory = response;
+      },
+      (error) => {
+        console.error('Error fetching manager history:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error fetching manager history',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
     );
-}
-// Add these methods to manage the history modal
-openHistoryModal(): void {
-  this.showHistoryModal = true;
-}
-
-closeHistoryModal(): void {
-  this.showHistoryModal = false;
-}
-calculateDuration(startDate: string, endDate: string | null): string {
-  if (!startDate) return '-';
-  
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : new Date();
-  
-  const diffInMs = end.getTime() - start.getTime();
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-  
-  if (diffInDays < 1) return 'Less than a day';
-  if (diffInDays < 30) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''}`;
-  
-  const diffInMonths = Math.floor(diffInDays / 30);
-  const remainingDays = diffInDays % 30;
-  
-  if (diffInMonths < 12) {
-      return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''}${remainingDays > 0 ? ` ${remainingDays} day${remainingDays !== 1 ? 's' : ''}` : ''}`;
   }
-  
-  const diffInYears = Math.floor(diffInMonths / 12);
-  const remainingMonths = diffInMonths % 12;
-  
-  return `${diffInYears} year${diffInYears !== 1 ? 's' : ''}${remainingMonths > 0 ? ` ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}` : ''}`;
-}
+  // Add these methods to manage the history modal
+  openHistoryModal(): void {
+    this.showHistoryModal = true;
+  }
+
+  closeHistoryModal(): void {
+    this.showHistoryModal = false;
+  }
+  calculateDuration(startDate: string, endDate: string | null): string {
+    if (!startDate) return '-';
+
+    const start = new Date(startDate);
+    const end = endDate ? new Date(endDate) : new Date();
+
+    const diffInMs = end.getTime() - start.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays < 1) return 'Less than a day';
+    if (diffInDays < 30) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''}`;
+
+    const diffInMonths = Math.floor(diffInDays / 30);
+    const remainingDays = diffInDays % 30;
+
+    if (diffInMonths < 12) {
+      return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''}${remainingDays > 0 ? ` ${remainingDays} day${remainingDays !== 1 ? 's' : ''}` : ''}`;
+    }
+
+    const diffInYears = Math.floor(diffInMonths / 12);
+    const remainingMonths = diffInMonths % 12;
+
+    return `${diffInYears} year${diffInYears !== 1 ? 's' : ''}${remainingMonths > 0 ? ` ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}` : ''}`;
+  }
 
 
   // ------------------Project Deliverable------------------------
@@ -877,331 +877,331 @@ calculateDuration(startDate: string, endDate: string | null): string {
 
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
-// Edit deliverable related properties
-isEditDeliverableModalOpen = false;
-editDeliverableData: any = {
+  // Edit deliverable related properties
+  isEditDeliverableModalOpen = false;
+  editDeliverableData: any = {
     pd_id: null,
     customer_name: '',
     project_name: '',
     project_deliverable_name: '',
     customer_id: null,
     project_id: null
-};
-// Open edit modal with deliverable data
-openEditDeliverableModal(deliverable: any): void {
-  this.editDeliverableData = {
+  };
+  // Open edit modal with deliverable data
+  openEditDeliverableModal(deliverable: any): void {
+    this.editDeliverableData = {
       pd_id: deliverable.pd_id,
       customer_id: deliverable.customer_id,
       project_id: deliverable.project_id,
       project_deliverable_name: deliverable.project_deliverable_name,
       customer_name: deliverable.customer_name,
       project_name: deliverable.project_name
-  };
-  
-  // Filter projects for the current customer
-  this.filteredEditProjects = this.optionProject.filter(
+    };
+
+    // Filter projects for the current customer
+    this.filteredEditProjects = this.optionProject.filter(
       project => project.customer_id == this.editDeliverableData.customer_id
-  );
-  
-  this.isEditDeliverableModalOpen = true;
-}
+    );
+
+    this.isEditDeliverableModalOpen = true;
+  }
 
 
-// Close edit modal
-closeEditDeliverableModal(): void {
-  this.isEditDeliverableModalOpen = false;
-  this.editDeliverableData = {
+  // Close edit modal
+  closeEditDeliverableModal(): void {
+    this.isEditDeliverableModalOpen = false;
+    this.editDeliverableData = {
       pd_id: null,
       customer_name: '',
       project_name: '',
       project_deliverable_name: '',
       customer_id: null,
       project_id: null
-  };
-}
-
-// Update project deliverable
-updateProjectDeliverable(form: NgForm): void {
-  if (form.invalid || !this.editDeliverableData.pd_id) {
-      Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'warning',
-          title: 'Please fill all required fields!',
-          showConfirmButton: false,
-          timer: 3000
-      });
-      return;
+    };
   }
 
-  const payload = {
+  // Update project deliverable
+  updateProjectDeliverable(form: NgForm): void {
+    if (form.invalid || !this.editDeliverableData.pd_id) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    const payload = {
       customer_id: this.editDeliverableData.customer_id,
       project_id: this.editDeliverableData.project_id,
       project_deliverable_name: this.editDeliverableData.project_deliverable_name
-  };
+    };
 
-  this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
+    this.dataService.updateProjectDeliverable(this.editDeliverableData.pd_id, payload).subscribe(
       () => {
-          Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Project deliverable updated successfully!',
-              showConfirmButton: false,
-              timer: 3000
-          });
-          this.fetchProjectDeliverables();
-          this.closeEditDeliverableModal();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project deliverable updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchProjectDeliverables();
+        this.closeEditDeliverableModal();
       },
       (error) => {
-          console.error('Error updating project deliverable:', error);
-          Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'error',
-              title: 'Error updating project deliverable!',
-              showConfirmButton: false,
-              timer: 3000
-          });
+        console.error('Error updating project deliverable:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error updating project deliverable!',
+          showConfirmButton: false,
+          timer: 3000
+        });
       }
-  );
-}
-filteredEditProjects: any[] = [];
-onEditCustomerChange(): void {
-  this.editDeliverableData.project_id = null;
-  this.filteredEditProjects = this.optionProject.filter(
+    );
+  }
+  filteredEditProjects: any[] = [];
+  onEditCustomerChange(): void {
+    this.editDeliverableData.project_id = null;
+    this.filteredEditProjects = this.optionProject.filter(
       project => project.customer_id == this.editDeliverableData.customer_id
-  );
-}
+    );
+  }
 
 
 
   // ----------- project Phase ------------------
 
   // Add these to your component class
-    filteredDeliverables: any[] = [];
-    optionDeliverables: any[] = [];
+  filteredDeliverables: any[] = [];
+  optionDeliverables: any[] = [];
 
 
-    // For Project Phases
-    filterProjectsForPhases(): void {
-      if (this.projectPhaseForm.customer_id) {
-        this.filteredProjects = this.optionProject.filter(
-          project => project.customer_id == this.projectPhaseForm.customer_id
-        );
-      } else {
-        this.filteredProjects = [];
-        this.projectPhaseForm.project_id = null;
-        this.filteredDeliverables = [];
-        this.projectPhaseForm.pd_id = null;
-      }
-    }
-
-    filterDeliverablesForPhases(): void {
-      if (this.projectPhaseForm.project_id) {
-        this.filteredDeliverables = this.optionDeliverables.filter(
-          deliverable => deliverable.project_id == this.projectPhaseForm.project_id
-        );
-      } else {
-        this.filteredDeliverables = [];
-        this.projectPhaseForm.pd_id = null;
-      }
-    }
-    // Pagination and Filtering Variables
-    phaseCurrentPage: number = 1;
-    phaseTotalItems: number = 0;
-    phaseItemsPerPage: number = 30;
-    phaseMaxPageButtons: number = 5;
-    filteredProjectPhases: any[] = [];
-    paginatedProjectPhases: any[] = [];
-
-    // Filters for Project Phases
-    phaseNameFilter: string = '';
-
-    // Form Model
-    projectPhaseForm: any = {
-      customer_id: null,
-      project_id: null,
-      pd_id: null,
-      project_phase_name: ''
-    };
-
-    // Data Storage
-    projectPhases: any[] = [];
-
-    fetchProjectPhases(): void {
-      this.dataService.getAllProjectPhases().subscribe(
-        (response) => {
-          this.projectPhases = response;
-          this.filteredProjectPhases = [...this.projectPhases];
-          this.phaseTotalItems = this.filteredProjectPhases.length;
-          this.updatePhasePage();
-        },
-        (error) => {
-          console.error('Error fetching project phases:', error);
-        }
+  // For Project Phases
+  filterProjectsForPhases(): void {
+    if (this.projectPhaseForm.customer_id) {
+      this.filteredProjects = this.optionProject.filter(
+        project => project.customer_id == this.projectPhaseForm.customer_id
       );
+    } else {
+      this.filteredProjects = [];
+      this.projectPhaseForm.project_id = null;
+      this.filteredDeliverables = [];
+      this.projectPhaseForm.pd_id = null;
     }
+  }
 
-    submitProjectPhase(projectPhaseFormRef: NgForm): void {
-      if (projectPhaseFormRef.invalid) return;
-
-      this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
-        (response) => {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Project phase added successfully!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-          this.fetchProjectPhases();
-          projectPhaseFormRef.resetForm();
-          this.fetchOptions();
-        },
-        (error) => {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error adding project phase!',
-            showConfirmButton: false,
-            timer: 3000
-          });
-        }
+  filterDeliverablesForPhases(): void {
+    if (this.projectPhaseForm.project_id) {
+      this.filteredDeliverables = this.optionDeliverables.filter(
+        deliverable => deliverable.project_id == this.projectPhaseForm.project_id
       );
+    } else {
+      this.filteredDeliverables = [];
+      this.projectPhaseForm.pd_id = null;
     }
+  }
+  // Pagination and Filtering Variables
+  phaseCurrentPage: number = 1;
+  phaseTotalItems: number = 0;
+  phaseItemsPerPage: number = 30;
+  phaseMaxPageButtons: number = 5;
+  filteredProjectPhases: any[] = [];
+  paginatedProjectPhases: any[] = [];
 
-    deleteProjectPhase(phaseId: number): void {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'This project phase will be deleted!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.dataService.deleteProjectPhase(phaseId).subscribe(
-            (response) => {
-              Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Project phase deleted successfully!',
-                showConfirmButton: false,
-                timer: 3000
-              });
-              this.fetchProjectPhases();
-            },
-            (error) => {
-              Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'Error deleting project phase!',
-                showConfirmButton: false,
-                timer: 3000
-              });
-            }
-          );
-        }
-      });
-    }
+  // Filters for Project Phases
+  phaseNameFilter: string = '';
 
-    applyPhaseFilters(): void {
-      this.filteredProjectPhases = this.projectPhases.filter(phase => {
-        return (
-          (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
-          (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
-          (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
-          (!this.phaseNameFilter ||
-            phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
+  // Form Model
+  projectPhaseForm: any = {
+    customer_id: null,
+    project_id: null,
+    pd_id: null,
+    project_phase_name: ''
+  };
+
+  // Data Storage
+  projectPhases: any[] = [];
+
+  fetchProjectPhases(): void {
+    this.dataService.getAllProjectPhases().subscribe(
+      (response) => {
+        this.projectPhases = response;
+        this.filteredProjectPhases = [...this.projectPhases];
+        this.phaseTotalItems = this.filteredProjectPhases.length;
+        this.updatePhasePage();
+      },
+      (error) => {
+        console.error('Error fetching project phases:', error);
+      }
+    );
+  }
+
+  submitProjectPhase(projectPhaseFormRef: NgForm): void {
+    if (projectPhaseFormRef.invalid) return;
+
+    this.dataService.addProjectPhase(this.projectPhaseForm).subscribe(
+      (response) => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project phase added successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchProjectPhases();
+        projectPhaseFormRef.resetForm();
+        this.fetchOptions();
+      },
+      (error) => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error adding project phase!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    );
+  }
+
+  deleteProjectPhase(phaseId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This project phase will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dataService.deleteProjectPhase(phaseId).subscribe(
+          (response) => {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Project phase deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+            this.fetchProjectPhases();
+          },
+          (error) => {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Error deleting project phase!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
         );
-      });
+      }
+    });
+  }
 
-      this.phaseTotalItems = this.filteredProjectPhases.length;
-      this.phaseCurrentPage = 1;
+  applyPhaseFilters(): void {
+    this.filteredProjectPhases = this.projectPhases.filter(phase => {
+      return (
+        (!this.phaseCustomerFilter || phase.customer_name === this.phaseCustomerFilter) &&
+        (!this.phaseProjectFilter || phase.project_name === this.phaseProjectFilter) &&
+        (!this.phaseDeliverableFilter || phase.project_deliverable_name === this.phaseDeliverableFilter) &&
+        (!this.phaseNameFilter ||
+          phase.project_phase_name.toLowerCase().includes(this.phaseNameFilter.toLowerCase()))
+      );
+    });
+
+    this.phaseTotalItems = this.filteredProjectPhases.length;
+    this.phaseCurrentPage = 1;
+    this.updatePhasePage();
+  }
+
+  clearPhaseFilters(): void {
+    this.phaseNameFilter = '';
+    this.phaseCustomerFilter = '';
+    this.phaseProjectFilter = '';
+    this.phaseDeliverableFilter = '';
+    this.applyPhaseFilters();
+  }
+
+
+  clearPhaseFilter(filterName: string): void {
+    switch (filterName) {
+      case 'phaseNameFilter':
+        this.phaseNameFilter = '';
+        break;
+      case 'customerNameFilter':
+        this.customerNameFilter = '';
+        break;
+      case 'projectNameFilter':
+        this.projectNameFilter = '';
+        break;
+    }
+    this.applyPhaseFilters();
+  }
+
+  updatePhasePage(): void {
+    const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
+    const endIndex = startIndex + this.phaseItemsPerPage;
+    this.paginatedProjectPhases = this.filteredProjectPhases.slice(startIndex, endIndex);
+  }
+
+  changePhasePage(page: number): void {
+    if (page >= 1 && page <= this.phaseTotalPages) {
+      this.phaseCurrentPage = page;
       this.updatePhasePage();
     }
+  }
 
-    clearPhaseFilters(): void {
-      this.phaseNameFilter = '';
-      this.phaseCustomerFilter = '';
-      this.phaseProjectFilter = '';
-      this.phaseDeliverableFilter='';
-      this.applyPhaseFilters();
-    }
-    
+  get phaseTotalPages(): number {
+    return Math.ceil(this.filteredProjectPhases.length / this.phaseItemsPerPage);
+  }
 
-    clearPhaseFilter(filterName: string): void {
-      switch (filterName) {
-        case 'phaseNameFilter':
-          this.phaseNameFilter = '';
-          break;
-        case 'customerNameFilter':
-          this.customerNameFilter = '';
-          break;
-        case 'projectNameFilter':
-          this.projectNameFilter = '';
-          break;
-      }
-      this.applyPhaseFilters();
+  getVisiblePhasePageNumbers(): number[] {
+    const totalPages = this.phaseTotalPages;
+    const halfRange = Math.floor(this.phaseMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.phaseCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.phaseMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.phaseMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.phaseMaxPageButtons + 1);
     }
 
-    updatePhasePage(): void {
-      const startIndex = (this.phaseCurrentPage - 1) * this.phaseItemsPerPage;
-      const endIndex = startIndex + this.phaseItemsPerPage;
-      this.paginatedProjectPhases = this.filteredProjectPhases.slice(startIndex, endIndex);
-    }
-
-    changePhasePage(page: number): void {
-      if (page >= 1 && page <= this.phaseTotalPages) {
-        this.phaseCurrentPage = page;
-        this.updatePhasePage();
-      }
-    }
-
-    get phaseTotalPages(): number {
-      return Math.ceil(this.filteredProjectPhases.length / this.phaseItemsPerPage);
-    }
-
-    getVisiblePhasePageNumbers(): number[] {
-      const totalPages = this.phaseTotalPages;
-      const halfRange = Math.floor(this.phaseMaxPageButtons / 2);
-
-      let startPage = Math.max(1, this.phaseCurrentPage - halfRange);
-      let endPage = Math.min(totalPages, startPage + this.phaseMaxPageButtons - 1);
-
-      if (endPage - startPage + 1 < this.phaseMaxPageButtons) {
-        startPage = Math.max(1, endPage - this.phaseMaxPageButtons + 1);
-      }
-
-      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-    }
-    isEditPhaseModalOpen = false;
-    editPhaseData: any = {
-      phase_id: null,
-      customer_id: null,
-      project_id: null,
-      pd_id: null,
-      project_phase_name: '',
-      // Display fields (optional)
-      customer_name: '',
-      project_name: '',
-      project_deliverable_name: ''
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+  isEditPhaseModalOpen = false;
+  editPhaseData: any = {
+    phase_id: null,
+    customer_id: null,
+    project_id: null,
+    pd_id: null,
+    project_phase_name: '',
+    // Display fields (optional)
+    customer_name: '',
+    project_name: '',
+    project_deliverable_name: ''
   };
-  
-
-filteredEditDeliverables: any[] = [];
 
 
+  filteredEditDeliverables: any[] = [];
 
-// Open edit modal with phase data
-openEditPhaseModal(phase: any): void {
-  this.editPhaseData = {
+
+
+  // Open edit modal with phase data
+  openEditPhaseModal(phase: any): void {
+    this.editPhaseData = {
       phase_id: phase.phase_id,
       customer_id: phase.customer_id,
       project_id: phase.project_id,
@@ -1211,95 +1211,95 @@ openEditPhaseModal(phase: any): void {
       customer_name: phase.customer_name,
       project_name: phase.project_name,
       project_deliverable_name: phase.project_deliverable_name
-  };
-  
-  // Initialize filtered lists
-  this.filteredEditProjects = this.optionProject.filter(
+    };
+
+    // Initialize filtered lists
+    this.filteredEditProjects = this.optionProject.filter(
       p => p.customer_id == phase.customer_id
-  );
-  this.filteredEditDeliverables = this.optionDeliverables.filter(
+    );
+    this.filteredEditDeliverables = this.optionDeliverables.filter(
       d => d.project_id == phase.project_id
-  );
-  
-  this.isEditPhaseModalOpen = true;
-}
+    );
 
-onEditCustomerChangePhase(): void {
-  this.editPhaseData.project_id = null;
-  this.editPhaseData.pd_id = null;
-  this.filteredEditProjects = this.optionProject.filter(
+    this.isEditPhaseModalOpen = true;
+  }
+
+  onEditCustomerChangePhase(): void {
+    this.editPhaseData.project_id = null;
+    this.editPhaseData.pd_id = null;
+    this.filteredEditProjects = this.optionProject.filter(
       p => p.customer_id == this.editPhaseData.customer_id
-  );
-  this.filteredEditDeliverables = [];
-}
+    );
+    this.filteredEditDeliverables = [];
+  }
 
-onEditProjectChangePhase(): void {
-  this.editPhaseData.pd_id = null;
-  this.filteredEditDeliverables = this.optionDeliverables.filter(
+  onEditProjectChangePhase(): void {
+    this.editPhaseData.pd_id = null;
+    this.filteredEditDeliverables = this.optionDeliverables.filter(
       d => d.project_id == this.editPhaseData.project_id
-  );
-}
+    );
+  }
 
 
 
-// Close edit modal
-closeEditPhaseModal(): void {
-  this.isEditPhaseModalOpen = false;
-  this.editPhaseData = {
+  // Close edit modal
+  closeEditPhaseModal(): void {
+    this.isEditPhaseModalOpen = false;
+    this.editPhaseData = {
       phase_id: null,
       customer_name: '',
       project_name: '',
       project_deliverable_name: '',
       project_phase_name: '',
       pd_id: null
-  };
-}
-
-// Update project phase
-updateProjectPhase(form: NgForm): void {
-  if (form.invalid || !this.editPhaseData.phase_id) {
-      Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'warning',
-          title: 'Please fill all required fields!',
-          showConfirmButton: false,
-          timer: 3000
-      });
-      return;
+    };
   }
 
-  const payload = {
+  // Update project phase
+  updateProjectPhase(form: NgForm): void {
+    if (form.invalid || !this.editPhaseData.phase_id) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    const payload = {
       pd_id: this.editPhaseData.pd_id,
       project_phase_name: this.editPhaseData.project_phase_name
-  };
+    };
 
-  this.dataService.updateProjectPhase(this.editPhaseData.phase_id, payload).subscribe(
+    this.dataService.updateProjectPhase(this.editPhaseData.phase_id, payload).subscribe(
       () => {
-          Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Project phase updated successfully!',
-              showConfirmButton: false,
-              timer: 3000
-          });
-          this.fetchProjectPhases();
-          this.closeEditPhaseModal();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Project phase updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchProjectPhases();
+        this.closeEditPhaseModal();
       },
       (error) => {
-          console.error('Error updating project phase:', error);
-          Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'error',
-              title: 'Error updating project phase!',
-              showConfirmButton: false,
-              timer: 3000
-          });
+        console.error('Error updating project phase:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error updating project phase!',
+          showConfirmButton: false,
+          timer: 3000
+        });
       }
-  );
-}
+    );
+  }
 
 
 

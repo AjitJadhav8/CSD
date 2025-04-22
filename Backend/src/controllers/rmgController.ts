@@ -45,27 +45,27 @@ class RmgController {
 
   // Add these helper functions to your service
 
-async getCurrentProjectManager(projectId: number): Promise<number> {
-  return new Promise((resolve, reject) => {
+  async getCurrentProjectManager(projectId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
       const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
       db.query(query, [projectId], (err: any, results: any) => {
-          if (err) return reject(err);
-          if (results.length === 0) return reject(new Error('Project not found'));
-          resolve(results[0].project_manager_id);
+        if (err) return reject(err);
+        if (results.length === 0) return reject(new Error('Project not found'));
+        resolve(results[0].project_manager_id);
       });
-  });
-}
+    });
+  }
 
-async validateCurrentManager(projectId: number, userId: number): Promise<boolean> {
-  return new Promise((resolve, reject) => {
+  async validateCurrentManager(projectId: number, userId: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
       const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
       db.query(query, [projectId], (err: any, results: any) => {
-          if (err) return reject(err);
-          if (results.length === 0) return reject(new Error('Project not found'));
-          resolve(results[0].project_manager_id === userId);
+        if (err) return reject(err);
+        if (results.length === 0) return reject(new Error('Project not found'));
+        resolve(results[0].project_manager_id === userId);
       });
-  });
-}
+    });
+  }
 
   // async assignProjectTeam(req: Request, res: Response): Promise<void> {
   //   try {
@@ -155,108 +155,108 @@ async validateCurrentManager(projectId: number, userId: number): Promise<boolean
 
 
   // Fetch all assigned project teams
- 
- 
- 
+
+
+
   async assignProjectTeam(req: Request, res: Response): Promise<void> {
     try {
-        const { customer_id, project_id, employee_id, project_role_id, start_date, end_date, 
-                allocation_status, allocation_percentage, billed_status, billing_percentage } = req.body;
+      const { customer_id, project_id, employee_id, project_role_id, start_date, end_date,
+        allocation_status, allocation_percentage, billed_status, billing_percentage } = req.body;
 
-        // Validate required fields
-        if (!customer_id || !project_id || !employee_id || !project_role_id || !start_date || 
-            allocation_status === undefined || allocation_percentage === undefined || 
-            billed_status === undefined || billing_percentage === undefined) {
-            res.status(400).json({ error: 'Missing required fields' });
-            return;
-        }
+      // Validate required fields
+      if (!customer_id || !project_id || !employee_id || !project_role_id || !start_date ||
+        allocation_status === undefined || allocation_percentage === undefined ||
+        billed_status === undefined || billing_percentage === undefined) {
+        res.status(400).json({ error: 'Missing required fields' });
+        return;
+      }
 
-        // Get current project manager
-        const currentManagerId = await this.getCurrentProjectManager(project_id);
+      // Get current project manager
+      const currentManagerId = await this.getCurrentProjectManager(project_id);
 
-        // Validate allocation_percentage
-        if (isNaN(allocation_percentage) || allocation_percentage < 0 || allocation_percentage > 100) {
-            res.status(400).json({ error: 'allocation_percentage must be a number between 0 and 100' });
-            return;
-        }
+      // Validate allocation_percentage
+      if (isNaN(allocation_percentage) || allocation_percentage < 0 || allocation_percentage > 100) {
+        res.status(400).json({ error: 'allocation_percentage must be a number between 0 and 100' });
+        return;
+      }
 
-        // Validate dates
-        if (end_date && new Date(start_date) > new Date(end_date)) {
-            res.status(400).json({ error: 'start_date must be before or equal to end_date' });
-            return;
-        }
+      // Validate dates
+      if (end_date && new Date(start_date) > new Date(end_date)) {
+        res.status(400).json({ error: 'start_date must be before or equal to end_date' });
+        return;
+      }
 
-        // Check if employee is already assigned
-        const checkAssignmentQuery = `
+      // Check if employee is already assigned
+      const checkAssignmentQuery = `
             SELECT COUNT(*) AS assignment_count
             FROM trans_project_team
             WHERE employee_id = ? AND project_id = ? AND is_deleted = 0`;
 
-        db.query(checkAssignmentQuery, [employee_id, project_id], async (error, results: any) => {
-            if (error) {
-                console.error('Database Error:', error);
-                res.status(500).json({ error: 'Database Error', details: error.message });
-                return;
-            }
+      db.query(checkAssignmentQuery, [employee_id, project_id], async (error, results: any) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
 
-            const assignmentCount = results[0]?.assignment_count || 0;
-            if (assignmentCount > 0) {
-                res.status(400).json({ error: 'Employee is already assigned to this project' });
-                return;
-            }
+        const assignmentCount = results[0]?.assignment_count || 0;
+        if (assignmentCount > 0) {
+          res.status(400).json({ error: 'Employee is already assigned to this project' });
+          return;
+        }
 
-            // Check current allocation
-            try {
-                const currentAllocation = await this.getEmployeeAllocation(employee_id);
-                console.log(`Current allocation for employee ${employee_id}:`, currentAllocation);
-                console.log(`Requested allocation:`, allocation_percentage);
+        // Check current allocation
+        try {
+          const currentAllocation = await this.getEmployeeAllocation(employee_id);
+          console.log(`Current allocation for employee ${employee_id}:`, currentAllocation);
+          console.log(`Requested allocation:`, allocation_percentage);
 
-                if (currentAllocation + allocation_percentage > 100) {
-                    const remainingAllocation = Math.max(0, 100 - currentAllocation);
-                    res.status(400).json({
-                        error: `Employee allocation exceeds 100%. Only ${remainingAllocation}% allocation is remaining.`
-                    });
-                    return;
-                }
+          if (currentAllocation + allocation_percentage > 100) {
+            const remainingAllocation = Math.max(0, 100 - currentAllocation);
+            res.status(400).json({
+              error: `Employee allocation exceeds 100%. Only ${remainingAllocation}% allocation is remaining.`
+            });
+            return;
+          }
 
-                // Insert the new assignment with current manager
-                const insertQuery = `
+          // Insert the new assignment with current manager
+          const insertQuery = `
                     INSERT INTO trans_project_team 
                     (customer_id, project_id, employee_id, project_role_id, project_manager_id, 
                      start_date, end_date, allocation_status, allocation_percentage, 
                      billed_status, billing_percentage, is_deleted, created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
 
-                db.query(insertQuery, [
-                    customer_id, project_id, employee_id, project_role_id, currentManagerId,
-                    start_date, end_date, allocation_status, allocation_percentage, 
-                    billed_status, billing_percentage
-                ], (error, result) => {
-                    if (error) {
-                        console.error('Database Error:', error);
-                        res.status(500).json({ error: 'Database Error', details: error.message });
-                        return;
-                    }
-
-                    console.log('Project Team Insert Result:', result);
-                    res.status(201).json({ message: 'Project team assigned successfully' });
-                });
-            } catch (err) {
-                console.error('Error getting employee allocation:', err);
-                res.status(500).json({ error: 'Internal Server Error' });
+          db.query(insertQuery, [
+            customer_id, project_id, employee_id, project_role_id, currentManagerId,
+            start_date, end_date, allocation_status, allocation_percentage,
+            billed_status, billing_percentage
+          ], (error, result) => {
+            if (error) {
+              console.error('Database Error:', error);
+              res.status(500).json({ error: 'Database Error', details: error.message });
+              return;
             }
-        });
+
+            console.log('Project Team Insert Result:', result);
+            res.status(201).json({ message: 'Project team assigned successfully' });
+          });
+        } catch (err) {
+          console.error('Error getting employee allocation:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      });
     } catch (error) {
-        console.error('Error assigning project team:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error assigning project team:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-}
- 
- 
- 
- 
- 
- 
+  }
+
+
+
+
+
+
   async getAllProjectTeams(req: Request, res: Response): Promise<void> {
     try {
       const query = `

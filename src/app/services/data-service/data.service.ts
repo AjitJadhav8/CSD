@@ -47,7 +47,7 @@ export class DataService {
   }
   updateCategory(categoryId: number, payload: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/category/${categoryId}`, payload);
-}
+  }
 
   // ------------------ Department ------------------------
 
@@ -186,7 +186,7 @@ export class DataService {
 
   getProjectManagerHistory(projectId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/projects/${projectId}/manager-history`);
-}
+  }
 
   // ------------------ Project Deliverable ------------------------
 
@@ -205,55 +205,55 @@ export class DataService {
 
   updateProjectDeliverable(deliverableId: number, payload: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
-}
+  }
 
 
 
-    // ------------------ Project Phases ------------------------
+  // ------------------ Project Phases ------------------------
 
 
   addProjectPhase(projectPhase: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase);
   }
-  
+
   getAllProjectPhases(): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/project-phases`);
   }
-  
+
   deleteProjectPhase(phaseId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`);
   }
   updateProjectPhase(phaseId: number, payload: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload);
-}
-
-
-getManagerProjectDeliverables(managerId: number): Observable<any> {
-  if (!managerId) {
-    throw new Error('Manager ID is required');
   }
-  return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-deliverables`);
-}
 
-getManagerProjectPhases(managerId: number): Observable<any> {
-  if (!managerId) {
-    throw new Error('Manager ID is required');
+
+  getManagerProjectDeliverables(managerId: number): Observable<any> {
+    if (!managerId) {
+      throw new Error('Manager ID is required');
+    }
+    return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-deliverables`);
   }
-  return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`);
-}
+
+  getManagerProjectPhases(managerId: number): Observable<any> {
+    if (!managerId) {
+      throw new Error('Manager ID is required');
+    }
+    return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`);
+  }
 
 
-getManagerProjects(managerId: number): Observable<any> {
-  return this.http.get<any>(`${this.apiUrl}/api/manager-projects/${managerId}`);
-}
+  getManagerProjects(managerId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/manager-projects/${managerId}`);
+  }
 
-addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
-  return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
-}
+  addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
+  }
 
-updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
-  return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
-}
+  updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
+  }
 
 
   // ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------
