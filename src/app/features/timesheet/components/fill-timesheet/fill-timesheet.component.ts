@@ -530,9 +530,13 @@ export class FillTimesheetComponent {
 
   clearTimesheetForm(form: NgForm) {
     // Reset form with default values
+      const currentSelectedDate = this.selectedDate;
+    
+    // Reset form but keep the selected date
     form.resetForm({
-      selectedDate: new Date().toISOString().split('T')[0], // Set to today's date
+      selectedDate: currentSelectedDate, // Keep the currently selected date
     });
+
 
     // Reset other variables if they are not bound to the form
     this.selectedCustomer = '';
