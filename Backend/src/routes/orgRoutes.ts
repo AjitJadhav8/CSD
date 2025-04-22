@@ -80,6 +80,8 @@ router.post('/project', orgController.addProject);
 router.get('/projects', orgController.getAllProjects);
 router.delete('/project/:projectId', orgController.softDeleteProject);
 router.put('/project/:projectId', orgController.updateProject);
+//project magaeer history
+router.get('/projects/:projectId/manager-history',  orgController.getProjectManagerHistory);
 
 // ---- Project Deliverable --------
 

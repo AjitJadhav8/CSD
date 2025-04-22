@@ -309,35 +309,37 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             }
 
             const query = `
-            SELECT 
-    pt.project_team_id,
-    c.customer_name,
-    p.project_name,
-    CONCAT(pmu.user_first_name, ' ', pmu.user_last_name) AS project_manager_name,
-    CONCAT(eu.user_first_name, ' ', eu.user_last_name) AS employee_name,
-    pr.project_role_name,
-    pt.start_date,
-    pt.end_date,
-    pt.allocation_status,
-    pt.allocation_percentage,
-    pt.billed_status
-FROM 
-    trans_project_team pt
-JOIN 
-    master_customer c ON pt.customer_id = c.customer_id
-JOIN 
-    master_project p ON pt.project_id = p.project_id
-JOIN 
-    master_user pmu ON pt.project_manager_id = pmu.user_id
-JOIN 
-    master_user eu ON pt.employee_id = eu.user_id
-JOIN 
-    master_project_role pr ON pt.project_role_id = pr.project_role_id
-WHERE 
-    pt.is_deleted = 0 
-    AND pt.project_manager_id = ?
-ORDER BY 
-    p.project_name, eu.user_first_name
+      SELECT 
+                pt.project_team_id,
+                c.customer_name,
+                p.project_name,
+                CONCAT(pmu.user_first_name, ' ', pmu.user_last_name) AS project_manager_name,
+                CONCAT(eu.user_first_name, ' ', eu.user_last_name) AS employee_name,
+                pr.project_role_name,
+                pt.start_date,
+                pt.end_date,
+                pt.allocation_status,
+                pt.allocation_percentage,
+                pt.billed_status
+            FROM 
+                trans_project_team pt
+            JOIN 
+                master_customer c ON pt.customer_id = c.customer_id
+            JOIN 
+                master_project p ON pt.project_id = p.project_id
+            /* Join with master_project to get current manager */
+            JOIN 
+                master_user pmu ON p.project_manager_id = pmu.user_id
+            JOIN 
+                master_user eu ON pt.employee_id = eu.user_id
+            JOIN 
+                master_project_role pr ON pt.project_role_id = pr.project_role_id
+            WHERE 
+                pt.is_deleted = 0 
+                /* Check against current manager from master_project */
+                AND p.project_manager_id = ?
+            ORDER BY 
+                p.project_name, eu.user_first_name
         `;
 
             db.query(query, [projectManagerId], (err, results) => {
@@ -367,39 +369,41 @@ ORDER BY
 
             const query = `
             SELECT 
-                t.timesheet_id,
-                t.timesheet_date,
-                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-                p.project_name,
-                ph.project_phase_name,
-                pd.project_deliverable_name,
-                pd.pd_id,
-                t.task_description,
-                t.hours,
-                t.minutes,
-                t.task_status,
-                t.user_id,
-                p.project_id,
-                ph.phase_id
-            FROM 
-                trans_timesheet t
-            JOIN 
-                master_user u ON t.user_id = u.user_id
-            JOIN 
-                master_project_deliverables pd ON t.pd_id = pd.pd_id
-            JOIN 
-                master_project_phases ph ON pd.pd_id = ph.pd_id  /* Changed join */
-            JOIN 
-                master_project p ON pd.project_id = p.project_id  /* Changed join */
-            JOIN 
-                trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
-            WHERE 
-                t.is_deleted = 0
-                AND pt.project_manager_id = ?
-                AND pt.is_deleted = 0
-            ORDER BY 
-                t.timesheet_date DESC, u.user_first_name
-            `;
+            t.timesheet_id,
+            t.timesheet_date,
+            CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+            p.project_name,
+            ph.project_phase_name,
+            pd.project_deliverable_name,
+            pd.pd_id,
+            t.task_description,
+            t.hours,
+            t.minutes,
+            t.task_status,
+            t.user_id,
+            p.project_id,
+            ph.phase_id,
+            CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name
+        FROM 
+            trans_timesheet t
+        JOIN 
+            master_user u ON t.user_id = u.user_id
+        JOIN 
+            master_project_deliverables pd ON t.pd_id = pd.pd_id
+        JOIN 
+            master_project_phases ph ON pd.pd_id = ph.pd_id
+        JOIN 
+            master_project p ON pd.project_id = p.project_id
+        JOIN 
+            master_user pm ON p.project_manager_id = pm.user_id
+        JOIN 
+            trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
+        WHERE 
+            t.is_deleted = 0
+            AND p.project_manager_id = ?  /* Changed to use current manager */
+            AND pt.is_deleted = 0
+        ORDER BY 
+            t.timesheet_date DESC, u.user_first_name            `;
 
             db.query(query, [projectManagerId], (err, results) => {
                 if (err) {

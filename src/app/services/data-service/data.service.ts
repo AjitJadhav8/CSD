@@ -181,6 +181,13 @@ export class DataService {
     return this.http.put(`${this.apiUrl}/api/project/${projectId}`, projectData);
   }
 
+  //manager history get
+
+
+  getProjectManagerHistory(projectId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/projects/${projectId}/manager-history`);
+}
+
   // ------------------ Project Deliverable ------------------------
 
 

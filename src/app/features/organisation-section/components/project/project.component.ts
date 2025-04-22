@@ -346,6 +346,9 @@ export class ProjectComponent {
     };
     this.editProjectId = project.project_id;
     this.isEditProjectModalOpen = true;
+
+    this.fetchManagerHistory(project.project_id);
+
     console.log('afsd', this.editProjectFormData)
   }
 
@@ -581,6 +584,61 @@ export class ProjectComponent {
 
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
+
+  managerHistory: any[] = [];
+showHistoryModal = false;
+
+// Add this method to fetch manager history
+fetchManagerHistory(projectId: number): void {
+    this.dataService.getProjectManagerHistory(projectId).subscribe(
+        (response) => {
+            this.managerHistory = response;
+        },
+        (error) => {
+            console.error('Error fetching manager history:', error);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error fetching manager history',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    );
+}
+// Add these methods to manage the history modal
+openHistoryModal(): void {
+  this.showHistoryModal = true;
+}
+
+closeHistoryModal(): void {
+  this.showHistoryModal = false;
+}
+calculateDuration(startDate: string, endDate: string | null): string {
+  if (!startDate) return '-';
+  
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+  
+  const diffInMs = end.getTime() - start.getTime();
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  
+  if (diffInDays < 1) return 'Less than a day';
+  if (diffInDays < 30) return `${diffInDays} day${diffInDays !== 1 ? 's' : ''}`;
+  
+  const diffInMonths = Math.floor(diffInDays / 30);
+  const remainingDays = diffInDays % 30;
+  
+  if (diffInMonths < 12) {
+      return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''}${remainingDays > 0 ? ` ${remainingDays} day${remainingDays !== 1 ? 's' : ''}` : ''}`;
+  }
+  
+  const diffInYears = Math.floor(diffInMonths / 12);
+  const remainingMonths = diffInMonths % 12;
+  
+  return `${diffInYears} year${diffInYears !== 1 ? 's' : ''}${remainingMonths > 0 ? ` ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}` : ''}`;
+}
 
 
   // ------------------Project Deliverable------------------------
@@ -1242,6 +1300,7 @@ updateProjectPhase(form: NgForm): void {
       }
   );
 }
+
 
 
   // ------------------Toggle Section ------------------------
