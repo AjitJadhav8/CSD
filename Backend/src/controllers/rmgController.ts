@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../config/db'; // Import MySQL database connection
+import { ResultSetHeader } from 'mysql2'; // Make sure to import this
 
 class RmgController {
 
@@ -45,27 +46,6 @@ class RmgController {
 
   // Add these helper functions to your service
 
-  async getCurrentProjectManager(projectId: number): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
-      db.query(query, [projectId], (err: any, results: any) => {
-        if (err) return reject(err);
-        if (results.length === 0) return reject(new Error('Project not found'));
-        resolve(results[0].project_manager_id);
-      });
-    });
-  }
-
-  async validateCurrentManager(projectId: number, userId: number): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
-      db.query(query, [projectId], (err: any, results: any) => {
-        if (err) return reject(err);
-        if (results.length === 0) return reject(new Error('Project not found'));
-        resolve(results[0].project_manager_id === userId);
-      });
-    });
-  }
 
   // async assignProjectTeam(req: Request, res: Response): Promise<void> {
   //   try {
@@ -157,6 +137,27 @@ class RmgController {
   // Fetch all assigned project teams
 
 
+  async getCurrentProjectManager(projectId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
+      db.query(query, [projectId], (err: any, results: any) => {
+        if (err) return reject(err);
+        if (results.length === 0) return reject(new Error('Project not found'));
+        resolve(results[0].project_manager_id);
+      });
+    });
+  }
+
+  async validateCurrentManager(projectId: number, userId: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT project_manager_id FROM master_project WHERE project_id = ?`;
+      db.query(query, [projectId], (err: any, results: any) => {
+        if (err) return reject(err);
+        if (results.length === 0) return reject(new Error('Project not found'));
+        resolve(results[0].project_manager_id === userId);
+      });
+    });
+  }
 
   async assignProjectTeam(req: Request, res: Response): Promise<void> {
     try {
@@ -251,90 +252,118 @@ class RmgController {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+  // Release employee from project
+async releaseEmployeeFromProject(req: Request, res: Response): Promise<void> {
+  try {
+    const { projectTeamId } = req.params;
 
-
-
-
-
-
-  async getAllProjectTeams(req: Request, res: Response): Promise<void> {
-    try {
-      const query = `
-SELECT 
-                    tpt.project_team_id,
-                    mc.customer_id, 
-                    mc.customer_name,
-                    mp.project_id, 
-                    mp.project_name,
-                    mu1.user_id AS employee_id, 
-                    CONCAT(mu1.user_first_name, ' ', mu1.user_last_name) AS employee_name,
-                    mpj.project_role_id AS project_role_id, 
-                    mpj.project_role_name AS project_role_name,
-                    mp.project_manager_id AS current_project_manager_id, 
-                    CONCAT(mu2.user_first_name, ' ', mu2.user_last_name) AS current_project_manager_name,
-                    tpt.project_manager_id AS assigned_by_manager_id,
-                    CONCAT(mu3.user_first_name, ' ', mu3.user_last_name) AS assigned_by_manager_name,
-                    tpt.start_date,
-                    tpt.end_date,
-                    tpt.allocation_status,
-                    tpt.allocation_percentage,
-                    tpt.billed_status,
-                    tpt.billing_percentage,
-                    tpt.created_at AS assignment_created_at
-                FROM trans_project_team tpt
-                LEFT JOIN master_customer mc ON tpt.customer_id = mc.customer_id
-                LEFT JOIN master_project mp ON tpt.project_id = mp.project_id
-                LEFT JOIN master_user mu1 ON tpt.employee_id = mu1.user_id
-                LEFT JOIN master_project_role mpj ON tpt.project_role_id = mpj.project_role_id
-                LEFT JOIN master_user mu2 ON mp.project_manager_id = mu2.user_id
-                LEFT JOIN master_user mu3 ON tpt.project_manager_id = mu3.user_id
-                WHERE tpt.is_deleted = 0
-                ORDER BY tpt.project_team_id DESC`;
-
-      db.query(query, (error, results) => {
-        if (error) {
-          console.error('Database Error:', error);
-          res.status(500).json({ error: 'Database Error', details: error.message });
-          return;
-        }
-        res.status(200).json(results);
-      });
-
-    } catch (error) {
-      console.error('Error fetching project teams:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    if (!projectTeamId) {
+      res.status(400).json({ error: 'Missing projectTeamId parameter' });
+      return;
     }
-  }
 
-  // Get Employee Allocation
+    const updateQuery = `
+      UPDATE trans_project_team
+      SET 
+        is_released = 1,
+        released_date = CURDATE(),
+        updated_at = NOW()
+      WHERE project_team_id = ? AND is_released = 0`;
 
-  async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
-    return new Promise((resolve, reject) => {
-      let query = `
-            SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
-            FROM trans_project_team
-            WHERE employee_id = ? AND is_deleted = 0`;
-
-      const params: any[] = [employeeId];
-
-      // Exclude the current assignment if `excludeProjectTeamId` is provided
-      if (excludeProjectTeamId) {
-        query += ` AND project_team_id != ?`;
-        params.push(excludeProjectTeamId);
+    db.query<ResultSetHeader>(updateQuery, [projectTeamId], (error, result) => {
+      if (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Database Error', details: error.message });
+        return;
       }
 
-      db.query(query, params, (error, results: any) => {
-        if (error) {
-          console.error('Database Error:', error);
-          reject(error);
-        } else {
-          const totalAllocation = Number(results[0]?.total_allocation) || 0;
-          console.log(`Employee ${employeeId} Current Allocation:`, totalAllocation);
-          resolve(totalAllocation);
-        }
-      });
+      if (result.affectedRows === 0) {
+        res.status(404).json({ error: 'Project assignment not found or already released' });
+        return;
+      }
+
+      res.status(200).json({ message: 'Employee successfully released from project' });
     });
+  } catch (error) {
+    console.error('Error releasing employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
+}
+
+
+async getAllProjectTeams(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        tpt.project_team_id,
+        mc.customer_id, 
+        mc.customer_name,
+        mp.project_id, 
+        mp.project_name,
+        mu1.user_id AS employee_id, 
+        CONCAT(mu1.user_first_name, ' ', mu1.user_last_name) AS employee_name,
+        mpj.project_role_id AS project_role_id, 
+        mpj.project_role_name AS project_role_name,
+        mp.project_manager_id AS current_project_manager_id, 
+        CONCAT(mu2.user_first_name, ' ', mu2.user_last_name) AS current_project_manager_name,
+        tpt.project_manager_id AS assigned_by_manager_id,
+        CONCAT(mu3.user_first_name, ' ', mu3.user_last_name) AS assigned_by_manager_name,
+        tpt.start_date,
+        tpt.end_date,
+        tpt.allocation_status,
+        tpt.allocation_percentage,
+        tpt.billed_status,
+        tpt.billing_percentage,
+        tpt.is_released,
+        tpt.released_date,
+        tpt.created_at AS assignment_created_at
+      FROM trans_project_team tpt
+      LEFT JOIN master_customer mc ON tpt.customer_id = mc.customer_id
+      LEFT JOIN master_project mp ON tpt.project_id = mp.project_id
+      LEFT JOIN master_user mu1 ON tpt.employee_id = mu1.user_id
+      LEFT JOIN master_project_role mpj ON tpt.project_role_id = mpj.project_role_id
+      LEFT JOIN master_user mu2 ON mp.project_manager_id = mu2.user_id
+      LEFT JOIN master_user mu3 ON tpt.project_manager_id = mu3.user_id
+      WHERE tpt.is_deleted = 0
+      ORDER BY tpt.project_team_id DESC`;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Database Error', details: error.message });
+        return;
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error fetching project teams:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    let query = `
+      SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
+      FROM trans_project_team
+      WHERE employee_id = ? AND is_deleted = 0 AND is_released = 0`;
+
+    const params: any[] = [employeeId];
+
+    if (excludeProjectTeamId) {
+      query += ` AND project_team_id != ?`;
+      params.push(excludeProjectTeamId);
+    }
+
+    db.query(query, params, (error, results: any) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(Number(results[0]?.total_allocation) || 0);
+      }
+    });
+  });
+}
+
 
   async updateAssignTeam(req: Request, res: Response): Promise<void> {
     try {
@@ -479,7 +508,29 @@ ORDER BY tt.timesheet_id DESC`;
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+// async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
+//   return new Promise((resolve, reject) => {
+//     let query = `
+//       SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
+//       FROM trans_project_team
+//       WHERE employee_id = ? AND is_deleted = 0 AND is_released = 0`;
 
+//     const params: any[] = [employeeId];
+
+//     if (excludeProjectTeamId) {
+//       query += ` AND project_team_id != ?`;
+//       params.push(excludeProjectTeamId);
+//     }
+
+//     db.query(query, params, (error, results: any) => {
+//       if (error) {
+//         reject(error);
+//       } else {
+//         resolve(Number(results[0]?.total_allocation) || 0);
+//       }
+//     });
+//   });
+// }
 
 
 

@@ -45,6 +45,13 @@ export class RmgService {
     }
 
     
+// In your RmgService class
+
+releaseEmployeeFromProject(projectTeamId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/api/rmg/project-team/${projectTeamId}/release`, {}, { headers });
+}
+
 
 
 }

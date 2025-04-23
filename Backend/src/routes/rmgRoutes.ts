@@ -12,6 +12,13 @@ router.put('/assignments/:id', protect, rmgController.updateAssignTeam);
 
 router.get('/timesheets', protect, rmgController.getAllTimesheets);
 
+// Update your routes to match the service endpoints
+router.put('/project-team/:projectTeamId/release', protect, rmgController.releaseEmployeeFromProject);
+
+
+
+
+
 
 
 

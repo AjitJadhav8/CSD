@@ -116,6 +116,53 @@ export class AssignProjectTeamComponent {
   tentativeEndDate: string | null = null;
 
 
+
+
+
+
+
+// Add to your AssignProjectTeamComponent
+
+releaseEmployee(projectTeamId: number): void {
+  Swal.fire({
+    title: 'Release Employee',
+    text: 'Are you sure you want to release this employee from the project?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, release',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.rmgService.releaseEmployeeFromProject(projectTeamId).subscribe({
+        next: (response) => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Employee released successfully!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          this.fetchAssignedProjectTeams();
+        },
+        error: (error) => {
+          console.error('Error releasing employee:', error);
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Failed to release employee',
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      });
+    }
+  });
+}
+
+
+
   submitAssignProjectTeam() {
     // Validate required fields
     if (!this.selectedCustomerId || !this.selectedProjectId || !this.selectedEmployeeId ||

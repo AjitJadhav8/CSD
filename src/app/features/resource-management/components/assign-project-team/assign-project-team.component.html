@@ -564,6 +564,11 @@
             <th class="px-1 py-1 border border-gray-200 text-center">Allocation %</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Billed Status</th>
             <th class="px-1 py-1 border border-gray-200 text-center">Billing Percentag</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+            <th class="px-1 py-1 border border-gray-200 text-center">Released Date</th>
+
+
+
             <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
           </tr>
         </thead>
@@ -591,6 +596,17 @@
               </span>
             </td>
             <td class="px-1 py-1 border border-gray-300 text-center">{{ team.billing_percentage }}%</td>
+
+            <td class="px-1 py-1 border border-gray-300 text-center">
+              <span *ngIf="team.is_released" class="text-orange-600">Released</span>
+              <span *ngIf="!team.is_released" class="text-green-600">Active</span>
+            </td>
+            <td class="px-1 py-1 border border-gray-300 text-center">
+              <span *ngIf="team.released_date" class="text-orange-600">{{ team.released_date | date:'dd-MMM-yyyy' }}</span>
+              <span *ngIf="!team.released_date" class="text-gray-500">Not Release</span>
+              </td>
+
+
             <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
               <button (click)="openEditModal(team)" class="text-green-600 hover:text-green-800 p-1" title="Edit">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -599,6 +615,16 @@
                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
+
+                <!-- Release button (only show if not already released) -->
+                <button *ngIf="!team.is_released" (click)="releaseEmployee(team.project_team_id)" 
+                class="text-orange-600 hover:text-orange-800 p-1" title="Release">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+              </button>
+
+
               <button (click)="deleteAssignProjectTeam(team.project_team_id)"
                 class="text-red-600 hover:text-red-800 p-1" title="Delete">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
