@@ -188,10 +188,14 @@ class RmgController {
       }
 
       // Check if employee is already assigned
+      // const checkAssignmentQuery = `
+      //       SELECT COUNT(*) AS assignment_count
+      //       FROM trans_project_team
+      //       WHERE employee_id = ? AND project_id = ? AND is_deleted = 0`;
       const checkAssignmentQuery = `
-            SELECT COUNT(*) AS assignment_count
-            FROM trans_project_team
-            WHERE employee_id = ? AND project_id = ? AND is_deleted = 0`;
+  SELECT COUNT(*) AS assignment_count
+  FROM trans_project_team
+  WHERE employee_id = ? AND project_id = ? AND is_deleted = 0 AND is_released = 0`;
 
       db.query(checkAssignmentQuery, [employee_id, project_id], async (error, results: any) => {
         if (error) {
@@ -364,7 +368,6 @@ async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): 
   });
 }
 
-
   async updateAssignTeam(req: Request, res: Response): Promise<void> {
     try {
       const id = Number(req.params.id);
@@ -395,10 +398,15 @@ async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): 
       }
 
       // Check if the employee is already assigned to the same project (excluding the current assignment)
-      const checkAssignmentQuery = `
-            SELECT COUNT(*) AS assignment_count
-            FROM trans_project_team
-            WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0`;
+      // const checkAssignmentQuery = `
+      //       SELECT COUNT(*) AS assignment_count
+      //       FROM trans_project_team
+      //       WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0`;
+
+            const checkAssignmentQuery = `
+  SELECT COUNT(*) AS assignment_count
+  FROM trans_project_team
+  WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0 AND is_released = 0`;
 
       db.query(checkAssignmentQuery, [employee_id, project_id, id], (error, results: any) => {
         if (error) {

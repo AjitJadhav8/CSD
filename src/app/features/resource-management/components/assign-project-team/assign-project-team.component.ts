@@ -658,7 +658,7 @@ releaseEmployee(projectTeamId: number): void {
   endDateFilter: string = '';
   allocationPercentageFilter: number | null = null;
   billingPercentageFilter: number | null = null;
-
+  showReleased: boolean | null = null; // null means show both
 
   formatDate(dateString: string): string {
     if (!dateString) return '';
@@ -682,8 +682,8 @@ releaseEmployee(projectTeamId: number): void {
         (this.allocationStatusFilter !== null ? team.allocation_status === this.allocationStatusFilter : true) &&
         (this.allocationPercentageFilter !== null ? team.allocation_percentage === this.allocationPercentageFilter : true) &&
         (this.billedStatusFilter !== null ? team.billed_status === this.billedStatusFilter : true) &&
-        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true)
-      );
+        (this.billingPercentageFilter !== null ? team.billing_percentage === this.billingPercentageFilter : true) &&
+        (this.showReleased === null ? true : this.showReleased ? team.is_released === 1 : team.is_released === 0)      );
     });
 
     this.totalItems = this.filteredAssignedProjectTeams.length;
@@ -709,6 +709,7 @@ releaseEmployee(projectTeamId: number): void {
     this.allocationPercentageFilter = null;
     this.billedStatusFilter = null;
     this.billingPercentageFilter = null;
+    this.showReleased=null;
     this.applyFilters();
   }
   // Clear Individual Filter

@@ -526,6 +526,15 @@
           </button>
         </div>
 
+        <div class="relative w-full">
+          <label class="block text-xs font-medium mb-1">Show Released</label>
+          <ng-select [(ngModel)]="showReleased" (change)="applyFilters()"
+            class="text-xs custom-ng-select-filter w-full" [clearable]="false">
+            <ng-option [value]="false">Active</ng-option>
+            <ng-option [value]="true">Released</ng-option>
+          </ng-select>
+        </div>
+
         <!-- Clear All Filters -->
         <!-- <button (click)="clearFilters()"
                     class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 focus:outline-none flex-grow-0">Clear
