@@ -1,56 +1,57 @@
 import orgController from '../controllers/orgController';
 import express from 'express';
+import { protect } from '../middlewares/authMiddleware';
 const router = express.Router();
 
-router.get('/roles-and-departments', orgController.getOptions);
+router.get('/roles-and-departments',protect, orgController.getOptions);
 
 
 // ---- Customer --------
 
 // Route for creating a new customer
-router.post('/customer', orgController.createCustomer);
-router.get('/customers', orgController.getCustomers);
-router.delete('/customer/:customerId', orgController.softDeleteCustomer);
-router.put('/customer/:customerId', orgController.updateCustomer);
+router.post('/customer', protect, orgController.createCustomer);
+router.get('/customers', protect, orgController.getCustomers);
+router.delete('/customer/:customerId',protect, orgController.softDeleteCustomer);
+router.put('/customer/:customerId', protect, orgController.updateCustomer);
 
 // ---- Category --------
 
 
-router.post('/category', orgController.addCategory);
-router.get('/master/categories', orgController.getMasterCategories);
-router.delete('/customer/category/:categoryId', orgController.softDeleteCategory);
-router.put('/category/:categoryId', orgController.updateCategory);
+router.post('/category', protect, orgController.addCategory);
+router.get('/master/categories', protect, orgController.getMasterCategories);
+router.delete('/customer/category/:categoryId', protect, orgController.softDeleteCategory);
+router.put('/category/:categoryId', protect, orgController.updateCategory);
 
 
 // ----------------------------------------------EMPLOYEE SECTION----------------------------------------------
 
 // ---- Department --------
 
-router.post('/department', orgController.addDepartment);
-router.get('/departments', orgController.getAllDepartments);
-router.delete('/departments/:departmentId', orgController.softDeleteDepartment);
-router.put('/departments/:departmentId', orgController.updateDepartment);
+router.post('/department', protect, orgController.addDepartment);
+router.get('/departments', protect, orgController.getAllDepartments);
+router.delete('/departments/:departmentId', protect, orgController.softDeleteDepartment);
+router.put('/departments/:departmentId', protect, orgController.updateDepartment);
 
 // ---- Project Role --------
 
-router.post('/project-role', orgController.addProjectRole);
-router.get('/project-roles', orgController.getAllProjectRoles);
-router.delete('/project-roles/:projectRoleId', orgController.softDeleteProjectRole);
-router.put('/project-roles/:projectRoleId', orgController.updateProjectRole);
+router.post('/project-role', protect, orgController.addProjectRole);
+router.get('/project-roles', protect, orgController.getAllProjectRoles);
+router.delete('/project-roles/:projectRoleId', protect, orgController.softDeleteProjectRole);
+router.put('/project-roles/:projectRoleId', protect, orgController.updateProjectRole);
 
 // ---- Designation --------
 
-router.post('/designation', orgController.addDesignation);
-router.get('/designations', orgController.getAllDesignations);
-router.delete('/designations/:designationId', orgController.softDeleteDesignation);
-router.put('/designations/:designationId', orgController.updateDesignation);
+router.post('/designation', protect, orgController.addDesignation);
+router.get('/designations', protect, orgController.getAllDesignations);
+router.delete('/designations/:designationId', protect, orgController.softDeleteDesignation);
+router.put('/designations/:designationId', protect, orgController.updateDesignation);
 
 // ---- Skills --------
 
-router.post('/skill', orgController.addSkill);
-router.get('/skills', orgController.getAllSkills);
-router.delete('/skills/:skillId', orgController.softDeleteSkill);
-router.put('/skills/:skillId', orgController.updateSkill);
+router.post('/skill', protect, orgController.addSkill);
+router.get('/skills', protect, orgController.getAllSkills);
+router.delete('/skills/:skillId', protect, orgController.softDeleteSkill);
+router.put('/skills/:skillId', protect, orgController.updateSkill);
 
 
 
@@ -59,48 +60,48 @@ router.put('/skills/:skillId', orgController.updateSkill);
 
 // ---- employee --------
 
-router.post('/employee', orgController.addEmployee);
-router.get('/employees', orgController.getAllEmployees);
-router.delete('/employee/:employeeId', orgController.softDeleteEmployee);
+router.post('/employee', protect, orgController.addEmployee);
+router.get('/employees', protect, orgController.getAllEmployees);
+router.delete('/employee/:employeeId', protect, orgController.softDeleteEmployee);
 
-router.post('/assign-details', orgController.assignDetails);
-router.get('/employees/:userId', orgController.getEmployeeDetails);
-router.put('/employee/:employeeId', orgController.updateEmployee);
+router.post('/assign-details', protect, orgController.assignDetails);
+router.get('/employees/:userId', protect, orgController.getEmployeeDetails);
+router.put('/employee/:employeeId', protect, orgController.updateEmployee);
 
 // ---- Reporting Manager History --------
 
-router.post('/reporting-manager-history', orgController.addReportingManagerHistory);
-router.get('/reporting-manager-history', orgController.getReportingManagerHistory);
-router.delete('/reporting-manager-history/:managerId', orgController.softDeleteReportingManager);
-router.put('/reporting-manager-history/:managerId', orgController.updateReportingManagerHistory);
+router.post('/reporting-manager-history', protect, orgController.addReportingManagerHistory);
+router.get('/reporting-manager-history', protect, orgController.getReportingManagerHistory);
+router.delete('/reporting-manager-history/:managerId', protect, orgController.softDeleteReportingManager);
+router.put('/reporting-manager-history/:managerId', protect, orgController.updateReportingManagerHistory);
 
 // ---- Project --------
 
-router.post('/project', orgController.addProject);
-router.get('/projects', orgController.getAllProjects);
-router.delete('/project/:projectId', orgController.softDeleteProject);
-router.put('/project/:projectId', orgController.updateProject);
+router.post('/project', protect, orgController.addProject);
+router.get('/projects', protect, orgController.getAllProjects);
+router.delete('/project/:projectId', protect, orgController.softDeleteProject);
+router.put('/project/:projectId', protect, orgController.updateProject);
 //project magaeer history
-router.get('/projects/:projectId/manager-history', orgController.getProjectManagerHistory);
+router.get('/projects/:projectId/manager-history', protect, orgController.getProjectManagerHistory);
 
 // ---- Project Deliverable --------
 
-router.post('/project-deliverable', orgController.addProjectDeliverable);
-router.get('/project-deliverables', orgController.getProjectDeliverables);
-router.delete('/project-deliverables/:deliverableId', orgController.softDeleteProjectDeliverable);
-router.put('/project-deliverables/:deliverableId', orgController.updateProjectDeliverable);
+router.post('/project-deliverable', protect, orgController.addProjectDeliverable);
+router.get('/project-deliverables', protect, orgController.getProjectDeliverables);
+router.delete('/project-deliverables/:deliverableId', protect, orgController.softDeleteProjectDeliverable);
+router.put('/project-deliverables/:deliverableId', protect, orgController.updateProjectDeliverable);
 
 // ---- Project Phases --------
-router.post('/project-phase', orgController.addProjectPhase);
-router.get('/project-phases', orgController.getProjectPhases);
-router.delete('/project-phases/:phaseId', orgController.softDeleteProjectPhase);
-router.put('/project-phases/:phaseId', orgController.updateProjectPhase);
+router.post('/project-phase', protect, orgController.addProjectPhase);
+router.get('/project-phases', protect, orgController.getProjectPhases);
+router.delete('/project-phases/:phaseId', protect, orgController.softDeleteProjectPhase);
+router.put('/project-phases/:phaseId', protect, orgController.updateProjectPhase);
 
-router.get('/manager/:managerId/project-deliverables', orgController.getManagerProjectDeliverables);
-router.get('/manager/:managerId/project-phases', orgController.getManagerProjectPhases);
-router.post('/project-deliverable', orgController.addProjectDeliverableManager);
-router.get('/manager-projects/:managerId', orgController.getManagerProjects);
-router.put('/project-deliverables/:deliverableId', orgController.updateProjectDeliverableManager);
+router.get('/manager/:managerId/project-deliverables', protect, orgController.getManagerProjectDeliverables);
+router.get('/manager/:managerId/project-phases', protect, orgController.getManagerProjectPhases);
+router.post('/project-deliverable', protect, orgController.addProjectDeliverableManager);
+router.get('/manager-projects/:managerId', protect, orgController.getManagerProjects);
+router.put('/project-deliverables/:deliverableId', protect, orgController.updateProjectDeliverableManager);
 
 
 export default router;
