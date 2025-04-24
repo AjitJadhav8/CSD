@@ -62,12 +62,12 @@ export class AuthService {
       { headers: this.getAuthHeaders() }  // Add auth headers for authenticated request
     );
   }
-  refreshToken(): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}/api/auth/refresh`, 
-      {},  // Empty body since refresh token should be in cookies
-      { headers: this.getAuthHeaders() }  // Current token in headers
-    );
-  }
+  // refreshToken(): Observable<any> {
+  //   return this.http.post(
+  //     `${this.apiUrl}/api/auth/refresh`, 
+  //     {},  // Empty body since refresh token should be in cookies
+  //     { headers: this.getAuthHeaders() }  // Current token in headers
+  //   );
+  // }
 
 }
