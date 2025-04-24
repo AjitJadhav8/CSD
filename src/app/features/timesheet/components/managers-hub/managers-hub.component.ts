@@ -922,6 +922,9 @@ export class ManagersHubComponent {
       }
     );
   }
+
+  teamAssignmentStatusFilter: number | null = null; // null = all, 0 = active, 1 = released
+
   applyTeamFilters(): void {
     this.filteredProjectTeamData = this.projectTeamData.filter(member => {
 
@@ -949,6 +952,16 @@ export class ManagersHubComponent {
       const matchesBilledStatus = this.teamBilledStatusFilter === null ||
         (this.teamBilledStatusFilter === true && member.billed_status === 1) ||
         (this.teamBilledStatusFilter === false && member.billed_status === 0);
+
+
+         // Add this new condition for assignment status
+         const matchesAssignmentStatus = this.teamAssignmentStatusFilter === null ||
+         (this.teamAssignmentStatusFilter === 0 && !member.is_released) ||
+         (this.teamAssignmentStatusFilter === 1 && member.is_released);
+
+
+
+
       const formatDate = (dateString: string) => {
         if (!dateString) return '';
 
@@ -977,6 +990,8 @@ export class ManagersHubComponent {
         matchesRole &&
         matchesAllocationStatus &&
         matchesBilledStatus &&
+        matchesAssignmentStatus && // Include the new condition
+
         matchesStartDate &&
         matchesEndDate;
 
@@ -1002,6 +1017,8 @@ export class ManagersHubComponent {
     this.teamRoleFilter = '';
     this.teamAllocationStatusFilter = null;
     this.teamBilledStatusFilter = null;
+    this.teamAssignmentStatusFilter = null; // Add this line
+
     this.teamStartDateFrom = '';
     this.teamEndDateTo = '';
     this.applyTeamFilters();
@@ -1155,6 +1172,7 @@ export class ManagersHubComponent {
     });
     return Array.from(uniqueMap.values());
   }
+  timesheetAssignmentStatusFilter: number | null = null; // null = all, 1 = active, 0 = released
 
   applyTimesheetFilters(): void {
     this.filteredTimesheetData = this.timesheetData.filter(timesheet => {
@@ -1180,6 +1198,10 @@ export class ManagersHubComponent {
       const matchesStatus = this.timesheetStatusFilter === null ||
         timesheet.task_status === this.timesheetStatusFilter;
 
+          // Assignment status filter
+          const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null ||
+          timesheet.is_active_assignment == this.timesheetAssignmentStatusFilter;
+
       // Date filtering
       // Single date filter (exact match)
       const matchesDate = !this.timesheetDateFilter ||
@@ -1187,7 +1209,7 @@ export class ManagersHubComponent {
         this.formatDate(this.timesheetDateFilter);
 
       return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
-        matchesStatus && matchesDate;
+        matchesStatus && matchesDate && matchesAssignmentStatus;
     });
 
     this.timesheetCurrentPage = 1;
@@ -1201,6 +1223,8 @@ export class ManagersHubComponent {
     this.timesheetDeliverableFilter = '';
     this.timesheetDateFilter = '';
     this.timesheetStatusFilter = null;
+    this.timesheetAssignmentStatusFilter = null; // Add this line
+
     this.applyTimesheetFilters();
   }
 

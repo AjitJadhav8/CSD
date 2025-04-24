@@ -865,7 +865,6 @@
                         <label class="block text-xs font-medium mb-1">Customer</label>
                         <ng-select [(ngModel)]="teamCustomerFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Customers</ng-option>
                             <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_name">
                                 {{ customer.customer_name }}
                             </ng-option>
@@ -876,7 +875,6 @@
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="teamProjectFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Projects</ng-option>
                             <ng-option *ngFor="let project of optionProject" [value]="project.project_name">
                                 {{ project.project_name }}
                             </ng-option>
@@ -887,7 +885,6 @@
                         <label class="block text-xs font-medium mb-1">Project Manager</label>
                         <ng-select [(ngModel)]="teamManagerFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Managers</ng-option>
                             <ng-option *ngFor="let manager of optionProjectManagers"
                                 [value]="manager.user_first_name + ' ' + manager.user_last_name">
                                 {{ manager.user_first_name }} {{ manager.user_last_name }}
@@ -899,7 +896,6 @@
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="teamEmployeeFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Employees</ng-option>
                             <ng-option *ngFor="let user of optionUsers"
                                 [value]="user.user_first_name + ' ' + user.user_last_name">
                                 {{ user.user_first_name }} {{ user.user_last_name }}
@@ -912,7 +908,6 @@
                         <label class="block text-xs font-medium mb-1">Project Role</label>
                         <ng-select [(ngModel)]="teamRoleFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Roles</ng-option>
                             <ng-option *ngFor="let role of optionProjectRole" [value]="role.project_role_name">
                                 {{ role.project_role_name }}
                             </ng-option>
@@ -923,9 +918,8 @@
                         <label class="block text-xs font-medium mb-1">Allocation Status</label>
                         <ng-select [(ngModel)]="teamAllocationStatusFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true">
-                            <ng-option [value]="null">All Statuses</ng-option>
-                            <ng-option [value]="true">Active</ng-option>
-                            <ng-option [value]="false">Inactive</ng-option>
+                            <ng-option [value]="true">Employee</ng-option>
+                            <ng-option [value]="false">Shadow</ng-option>
                         </ng-select>
                     </div>
 
@@ -933,7 +927,6 @@
                         <label class="block text-xs font-medium mb-1">Billed Status</label>
                         <ng-select [(ngModel)]="teamBilledStatusFilter" (change)="applyTeamFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true">
-                            <ng-option [value]="">All Statuses</ng-option>
                             <ng-option [value]="true">Billed</ng-option>
                             <ng-option [value]="false">Not Billed</ng-option>
                         </ng-select>
@@ -951,6 +944,15 @@
                         <label class="block text-xs font-medium mb-1">End Date</label>
                         <input type="date" [(ngModel)]="teamEndDateTo" (change)="applyTeamFilters()"
                             class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+                    </div>
+
+                    <div class="relative w-48">
+                        <label class="block text-xs font-medium mb-1">Assignment Status</label>
+                        <ng-select [(ngModel)]="teamAssignmentStatusFilter" (change)="applyTeamFilters()"
+                            class="text-xs custom-ng-select-filter w-full" [clearable]="true">
+                            <ng-option [value]="0">Active</ng-option>
+                            <ng-option [value]="1">Released</ng-option>
+                        </ng-select>
                     </div>
 
                     <!-- Action Buttons -->
@@ -1120,7 +1122,6 @@
                         <label class="block text-xs font-medium mb-1">Employee</label>
                         <ng-select [(ngModel)]="timesheetEmployeeFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Employees</ng-option>
                             <ng-option *ngFor="let user of optionTeamMembers" [value]="user.id">
                                 {{ user.fullName }}
                             </ng-option>
@@ -1130,7 +1131,6 @@
                         <label class="block text-xs font-medium mb-1">Project</label>
                         <ng-select [(ngModel)]="timesheetProjectFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Projects</ng-option>
                             <ng-option *ngFor="let project of optionProjectsForTimesheet" [value]="project.id">
                                 {{ project.name }}
                             </ng-option>
@@ -1140,7 +1140,6 @@
                         <label class="block text-xs font-medium mb-1">Task</label>
                         <ng-select [(ngModel)]="timesheetPhaseFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Tasks</ng-option>
                             <ng-option *ngFor="let phase of optionPhasesForTimesheet" [value]="phase.id">
                                 {{ phase.name }}
                             </ng-option>
@@ -1151,7 +1150,6 @@
                         <label class="block text-xs font-medium mb-1">Deliverable</label>
                         <ng-select [(ngModel)]="timesheetDeliverableFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                            <ng-option [value]="">All Deliverables</ng-option>
                             <ng-option *ngFor="let deliverable of optionDeliverablesForTimesheet"
                                 [value]="deliverable.id">
                                 {{ deliverable.name }}
@@ -1169,9 +1167,16 @@
                         <label class="block text-xs font-medium mb-1">Task Status</label>
                         <ng-select [(ngModel)]="timesheetStatusFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true">
-                            <ng-option [value]="">All Statuses</ng-option>
                             <ng-option [value]="1">Completed</ng-option>
                             <ng-option [value]="0">In Progress</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="relative w-full">
+                        <label class="block text-xs font-medium mb-1">Assignment Status</label>
+                        <ng-select [(ngModel)]="timesheetAssignmentStatusFilter" (change)="applyTimesheetFilters()"
+                            class="text-xs custom-ng-select-filter w-full" [clearable]="true">
+                            <ng-option [value]="1">Active</ng-option>
+                            <ng-option [value]="0">Released</ng-option>
                         </ng-select>
                     </div>
 
