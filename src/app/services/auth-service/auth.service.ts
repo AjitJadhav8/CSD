@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -12,6 +12,19 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private secureStorage: SecureStorageService) { }
+
+
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.secureStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+
+
+
+
+
   logout() {
     // Clear all auth-related items from storage
     this.secureStorage.removeItem('token');
@@ -35,13 +48,26 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/api/auth/reset-password`, { token, newPassword });
   }
 
+  // changePassword(userId: string, currentPassword: string, newPassword: string): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/api/auth/change-password`, {
+  //     userId,
+  //     currentPassword,
+  //     newPassword
+  //   });
+  // }
   changePassword(userId: string, currentPassword: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/auth/change-password`, {
-      userId,
-      currentPassword,
-      newPassword
-    });
+    return this.http.post(
+      `${this.apiUrl}/api/auth/change-password`, 
+      { userId, currentPassword, newPassword },
+      { headers: this.getAuthHeaders() }  // Add auth headers for authenticated request
+    );
   }
-  
+  refreshToken(): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/api/auth/refresh`, 
+      {},  // Empty body since refresh token should be in cookies
+      { headers: this.getAuthHeaders() }  // Current token in headers
+    );
+  }
 
 }
