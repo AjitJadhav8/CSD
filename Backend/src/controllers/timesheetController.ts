@@ -4,47 +4,94 @@ import db from '../config/db'; // Import MySQL database connection
 
 class TimesheetController {
 
-    async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
-        try {
-            const { employee_id } = req.params; // Assuming you pass the employee_id as a parameter
+//     async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
+//         try {
+//             const { employee_id } = req.params; // Assuming you pass the employee_id as a parameter
 
-            const assignedQuery = `
-                SELECT 
-  tpt.customer_id, 
-  tpt.project_id, 
-  mc.customer_name, 
-  mp.project_name,
-  mp.customer_id -- Ensure this is included
-FROM trans_project_team tpt
-JOIN master_customer mc ON tpt.customer_id = mc.customer_id
-JOIN master_project mp ON tpt.project_id = mp.project_id
-WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
-            `;
+//             const assignedQuery = `
+//                 SELECT 
+//   tpt.customer_id, 
+//   tpt.project_id, 
+//   mc.customer_name, 
+//   mp.project_name,
+//   mp.customer_id -- Ensure this is included
+// FROM trans_project_team tpt
+// JOIN master_customer mc ON tpt.customer_id = mc.customer_id
+// JOIN master_project mp ON tpt.project_id = mp.project_id
+// WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
+//             `;
 
-            db.query(assignedQuery, [employee_id], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching assigned customers and projects:', err);
-                    res.status(500).json({ error: 'Internal Server Error' });
-                    return;
+//             db.query(assignedQuery, [employee_id], (err: any, results: any) => {
+//                 if (err) {
+//                     console.error('Error fetching assigned customers and projects:', err);
+//                     res.status(500).json({ error: 'Internal Server Error' });
+//                     return;
+//                 }
+
+//                 const assignedData = results.reduce((acc: any, row: any) => {
+//                     if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
+//                         acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
+//                     }
+//                     if (!acc.projects.some((p: any) => p.project_id === row.project_id)) {
+//                         acc.projects.push({ project_id: row.project_id, project_name: row.project_name, customer_id: row.customer_id });
+//                     }
+//                     return acc;
+//                 }, { customers: [], projects: [] });
+
+//                 res.status(200).json(assignedData);
+//             });
+//         } catch (error) {
+//             console.error('Error:', error);
+//             res.status(500).json({ error: 'Internal Server Error' });
+//         }
+//     }
+
+async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
+    try {
+        const { employee_id } = req.params;
+
+        const assignedQuery = `
+            SELECT 
+                tpt.customer_id, 
+                tpt.project_id, 
+                mc.customer_name, 
+                mp.project_name,
+                mp.customer_id
+            FROM trans_project_team tpt
+            JOIN master_customer mc ON tpt.customer_id = mc.customer_id
+            JOIN master_project mp ON tpt.project_id = mp.project_id
+            WHERE tpt.employee_id = ? 
+            AND tpt.is_deleted = 0 
+            AND tpt.is_released = 0`;  // Added is_released = 0 condition
+
+        db.query(assignedQuery, [employee_id], (err: any, results: any) => {
+            if (err) {
+                console.error('Error fetching assigned customers and projects:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            const assignedData = results.reduce((acc: any, row: any) => {
+                if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
+                    acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
                 }
+                if (!acc.projects.some((p: any) => p.project_id === row.project_id)) {
+                    acc.projects.push({ 
+                        project_id: row.project_id, 
+                        project_name: row.project_name, 
+                        customer_id: row.customer_id 
+                    });
+                }
+                return acc;
+            }, { customers: [], projects: [] });
 
-                const assignedData = results.reduce((acc: any, row: any) => {
-                    if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
-                        acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
-                    }
-                    if (!acc.projects.some((p: any) => p.project_id === row.project_id)) {
-                        acc.projects.push({ project_id: row.project_id, project_name: row.project_name, customer_id: row.customer_id });
-                    }
-                    return acc;
-                }, { customers: [], projects: [] });
-
-                res.status(200).json(assignedData);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+            res.status(200).json(assignedData);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+}
 
     async submitTimesheet(req: Request, res: Response): Promise<void> {
         try {
@@ -299,6 +346,7 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
 
     // ----------------------- Managers Hub ---------------------------
     // project.controller.ts
+
     async getProjectTeamByManager(req: Request, res: Response): Promise<void> {
         try {
             const projectManagerId = parseInt(req.params.projectManagerId);
@@ -311,6 +359,8 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             const query = `
       SELECT 
                 pt.project_team_id,
+                pt.is_released,
+                pt.released_date,
                 c.customer_name,
                 p.project_name,
                 CONCAT(pmu.user_first_name, ' ', pmu.user_last_name) AS project_manager_name,
@@ -327,7 +377,6 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
                 master_customer c ON pt.customer_id = c.customer_id
             JOIN 
                 master_project p ON pt.project_id = p.project_id
-            /* Join with master_project to get current manager */
             JOIN 
                 master_user pmu ON p.project_manager_id = pmu.user_id
             JOIN 
@@ -336,7 +385,6 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
                 master_project_role pr ON pt.project_role_id = pr.project_role_id
             WHERE 
                 pt.is_deleted = 0 
-                /* Check against current manager from master_project */
                 AND p.project_manager_id = ?
             ORDER BY 
                 p.project_name, eu.user_first_name
@@ -355,56 +403,182 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
         }
     }
 
+    // async getProjectTeamByManager(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const projectManagerId = parseInt(req.params.projectManagerId);
+    //         const { showReleased = false } = req.query; // New parameter
+    
+    //         if (!projectManagerId) {
+    //             res.status(400).json({ error: 'Project Manager ID is required' });
+    //             return;
+    //         }
+    
+    //         const query = `
+    //         SELECT 
+    //             pt.project_team_id,
+    //             c.customer_name,
+    //             p.project_name,
+    //             CONCAT(pmu.user_first_name, ' ', pmu.user_last_name) AS project_manager_name,
+    //             CONCAT(eu.user_first_name, ' ', eu.user_last_name) AS employee_name,
+    //             pr.project_role_name,
+    //             pt.start_date,
+    //             pt.end_date,
+    //             pt.allocation_status,
+    //             pt.allocation_percentage,
+    //             pt.billed_status,
+    //             pt.is_released,
+    //             pt.released_date,
+    //             CASE 
+    //                 WHEN pt.is_released = 1 THEN 'Released'
+    //                 WHEN pt.end_date IS NOT NULL AND pt.end_date < CURDATE() THEN 'Completed'
+    //                 ELSE 'Active'
+    //             END as assignment_status
+    //         FROM 
+    //             trans_project_team pt
+    //         JOIN 
+    //             master_customer c ON pt.customer_id = c.customer_id
+    //         JOIN 
+    //             master_project p ON pt.project_id = p.project_id
+    //         JOIN 
+    //             master_user pmu ON p.project_manager_id = pmu.user_id
+    //         JOIN 
+    //             master_user eu ON pt.employee_id = eu.user_id
+    //         JOIN 
+    //             master_project_role pr ON pt.project_role_id = pr.project_role_id
+    //         WHERE 
+    //             pt.is_deleted = 0 
+    //             AND p.project_manager_id = ?
+    //             ${showReleased ? '' : 'AND pt.is_released = 0'}
+    //         ORDER BY 
+    //             p.project_name, eu.user_first_name`;
+    
+    //         db.query(query, [projectManagerId], (err, results) => {
+    //             if (err) {
+    //                 console.error('Error fetching project team:', err);
+    //                 return res.status(500).json({ error: 'Error fetching project team' });
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
     // Add to your TimesheetController
 
+    // async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const projectManagerId = parseInt(req.params.projectManagerId);
+
+    //         if (!projectManagerId) {
+    //             res.status(400).json({ error: 'Project Manager ID is required' });
+    //             return;
+    //         }
+
+    //         const query = `
+    //         SELECT 
+    //         t.timesheet_id,
+    //         t.timesheet_date,
+    //         CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+    //         p.project_name,
+    //         ph.project_phase_name,
+    //         pd.project_deliverable_name,
+    //         pd.pd_id,
+    //         t.task_description,
+    //         t.hours,
+    //         t.minutes,
+    //         t.task_status,
+    //         t.user_id,
+    //         p.project_id,
+    //         ph.phase_id,
+    //         CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name
+    //     FROM 
+    //         trans_timesheet t
+    //     JOIN 
+    //         master_user u ON t.user_id = u.user_id
+    //     JOIN 
+    //         master_project_deliverables pd ON t.pd_id = pd.pd_id
+    //     JOIN 
+    //         master_project_phases ph ON pd.pd_id = ph.pd_id
+    //     JOIN 
+    //         master_project p ON pd.project_id = p.project_id
+    //     JOIN 
+    //         master_user pm ON p.project_manager_id = pm.user_id
+    //     JOIN 
+    //         trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
+    //     WHERE 
+    //         t.is_deleted = 0
+    //         AND p.project_manager_id = ?  /* Changed to use current manager */
+    //         AND pt.is_deleted = 0
+    //     ORDER BY 
+    //         t.timesheet_date DESC, u.user_first_name            `;
+
+    //         db.query(query, [projectManagerId], (err, results) => {
+    //             if (err) {
+    //                 console.error('Error fetching project team timesheets:', err);
+    //                 return res.status(500).json({ error: 'Error fetching project team timesheets' });
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
+
+
+    
     async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
         try {
             const projectManagerId = parseInt(req.params.projectManagerId);
-
-            if (!projectManagerId) {
-                res.status(400).json({ error: 'Project Manager ID is required' });
-                return;
-            }
-
+    
             const query = `
             SELECT 
-            t.timesheet_id,
-            t.timesheet_date,
-            CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-            p.project_name,
-            ph.project_phase_name,
-            pd.project_deliverable_name,
-            pd.pd_id,
-            t.task_description,
-            t.hours,
-            t.minutes,
-            t.task_status,
-            t.user_id,
-            p.project_id,
-            ph.phase_id,
-            CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name
-        FROM 
-            trans_timesheet t
-        JOIN 
-            master_user u ON t.user_id = u.user_id
-        JOIN 
-            master_project_deliverables pd ON t.pd_id = pd.pd_id
-        JOIN 
-            master_project_phases ph ON pd.pd_id = ph.pd_id
-        JOIN 
-            master_project p ON pd.project_id = p.project_id
-        JOIN 
-            master_user pm ON p.project_manager_id = pm.user_id
-        JOIN 
-            trans_project_team pt ON pt.employee_id = t.user_id AND pt.project_id = p.project_id
-        WHERE 
-            t.is_deleted = 0
-            AND p.project_manager_id = ?  /* Changed to use current manager */
-            AND pt.is_deleted = 0
-        ORDER BY 
-            t.timesheet_date DESC, u.user_first_name            `;
-
+                t.timesheet_id,
+                t.timesheet_date,
+                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+                p.project_name,
+                ph.project_phase_name,
+                pd.project_deliverable_name,
+                pd.pd_id,
+                t.task_description,
+                t.hours,
+                t.minutes,
+                t.task_status,
+                t.user_id,
+                p.project_id,
+                ph.phase_id,
+                CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name,
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM trans_project_team pt 
+                        WHERE pt.employee_id = t.user_id 
+                        AND pt.project_id = p.project_id 
+                        AND pt.is_deleted = 0 
+                        AND pt.is_released = 0
+                    ) THEN 1
+                    ELSE 0
+                END as is_active_assignment
+            FROM 
+                trans_timesheet t
+            JOIN 
+                master_user u ON t.user_id = u.user_id
+            JOIN 
+                master_project_deliverables pd ON t.pd_id = pd.pd_id
+            JOIN 
+                master_project_phases ph ON t.phase_id = ph.phase_id
+            JOIN 
+                master_project p ON pd.project_id = p.project_id
+            JOIN 
+                master_user pm ON p.project_manager_id = pm.user_id
+            WHERE 
+                t.is_deleted = 0
+                AND p.project_manager_id = ?
+            ORDER BY 
+                t.timesheet_date DESC, u.user_first_name
+            `;
+    
             db.query(query, [projectManagerId], (err, results) => {
                 if (err) {
                     console.error('Error fetching project team timesheets:', err);
@@ -417,7 +591,6 @@ WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-
 
     async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
         try {

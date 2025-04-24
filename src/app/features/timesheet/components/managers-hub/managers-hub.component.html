@@ -994,6 +994,11 @@
                             <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Start Date</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
+
+                            <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
+<th class="px-1 py-1 border border-gray-200 text-center">Released Date</th>
+
+
                         </tr>
                     </thead>
                     <tbody>
@@ -1031,6 +1036,20 @@
                                 date:'dd-MMM-yyyy' }}</td>
                             <td class="px-1 py-1 border border-gray-300 text-center">{{ member.end_date |
                                 date:'dd-MMM-yyyy' }}</td>
+
+
+<td class="px-1 py-1 border border-gray-300 text-center">
+    <span *ngIf="member.is_released" class="text-orange-600">Released</span>
+    <span *ngIf="!member.is_released" class="text-green-600">Active</span>
+</td>
+
+<!-- Released Date Column -->
+<td class="px-1 py-1 border border-gray-300 text-center">
+    <span *ngIf="member.released_date">{{ member.released_date | date:'dd-MMM-yyyy' }}</span>
+    <span *ngIf="!member.released_date">-</span>
+</td>
+
+
                         </tr>
                     </tbody>
                 </table>
@@ -1197,6 +1216,8 @@
                             <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
                             <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -1240,6 +1261,12 @@
                             </td>
                             <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date |
                                 date:'dd-MMM-yyyy' }}</td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                    <span [class.text-green-600]="timesheet.is_active_assignment" 
+                                          [class.text-orange-600]="!timesheet.is_active_assignment">
+                                        {{ timesheet.is_active_assignment ? 'Active' : 'Released' }}
+                                    </span>
+                                </td>
                         </tr>
                     </tbody>
                 </table>
