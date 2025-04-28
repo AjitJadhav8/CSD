@@ -3,15 +3,19 @@ import { RouterOutlet } from '@angular/router';
 import saveAs from 'file-saver';
 import { ReportService } from '../../../../services/report-service/report.service';
 import * as XLSX from 'xlsx'; // Import SheetJS
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @Component({
   selector: 'app-team-timesheet-report',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [FormsModule, CommonModule, NgSelectModule],
   templateUrl: './team-timesheet-report.component.html',
   styleUrl: './team-timesheet-report.component.css'
 })
+
 export class TeamTimesheetReportComponent implements OnInit {
   timesheets: any[] = [];
   filteredTimesheets: any[] = [];
@@ -54,7 +58,6 @@ export class TeamTimesheetReportComponent implements OnInit {
         this.filteredTimesheets = [...this.timesheets];
         this.updatePage();
         this.calculateFilteredTotalTime();
-        console.log('fetch timesheet', this.timesheets)
       },
       (error) => {
         console.error('Error fetching timesheets:', error);
@@ -71,7 +74,6 @@ export class TeamTimesheetReportComponent implements OnInit {
         this.optionProjectDeliverables = response.projectDeliverables;
         this.optionProjectManagers = response.projectManagers;
         this.optionPhases = response.phases;
-
       },
       (error) => {
         console.error('Error fetching options:', error);
