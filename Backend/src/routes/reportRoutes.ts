@@ -11,5 +11,8 @@ router.get('/options', protect, reportController.getReportOptions);
 // project team report
 router.get('/project-teams', protect, reportController.getAllProjectTeams);
 
+//employee report
+router.get('/employees', protect, reportController.getAllEmployees)
+
 
 export default router;

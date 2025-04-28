@@ -1,0 +1,171 @@
+<div class="p-4">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+      <div class="mb-4 pb-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+              Employee Report
+            </h3>
+            <p class="text-xs text-gray-500">View all employee records</p>
+          </div>
+          <div class="flex space-x-4">
+            <div class="text-center bg-blue-50 px-3 py-1 rounded border border-blue-100">
+              <div class="text-sm font-medium text-blue-800">Total Employees</div>
+              <div class="text-lg font-bold">{{ totalEmployees }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+        <!-- Filter Section -->
+        <div class="min-w-full relative">
+          <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto" style="overflow: visible;">
+            <!-- Employee Code Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Employee Code</label>
+              <input type="text" [(ngModel)]="employeeCodeFilter" (input)="applyFilters()" 
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+              <button *ngIf="employeeCodeFilter" (click)="clearFilter('employeeCodeFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+  
+            <!-- Name Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Name</label>
+              <ng-select [(ngModel)]="nameFilter" (change)="applyFilters()"
+                class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+                <ng-option [value]="">Select Employee</ng-option>
+                <ng-option *ngFor="let emp of optionEmployees" [value]="emp.user_id">
+                  {{ emp.user_first_name }} {{ emp.user_last_name }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Email Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Email</label>
+              <input type="text" [(ngModel)]="emailFilter" (input)="applyFilters()"
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+              <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+  
+            <!-- Department Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Department</label>
+              <ng-select [(ngModel)]="departmentFilter" (change)="applyFilters()"
+                class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+                <ng-option [value]="">Select Department</ng-option>
+                <ng-option *ngFor="let dept of optionDepartments" [value]="dept.department_id">
+                  {{ dept.department_name }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Designation Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Designation</label>
+              <ng-select [(ngModel)]="designationFilter" (change)="applyFilters()"
+                class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+                <ng-option [value]="">Select Designation</ng-option>
+                <ng-option *ngFor="let des of optionDesignations" [value]="des.designation_id">
+                  {{ des.designation_name }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Reporting Manager Filter -->
+            <div class="relative w-full">
+              <label class="block text-xs font-medium mb-1">Reporting Manager</label>
+              <ng-select [(ngModel)]="reportingManagerFilter" (change)="applyFilters()"
+                class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+                <ng-option [value]="">Select Manager</ng-option>
+                <ng-option *ngFor="let manager of optionManagers" [value]="manager.user_id">
+                  {{ manager.user_first_name }} {{ manager.user_last_name }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Clear Filters Button -->
+            <div class="relative w-28">
+              <div class="h-[1.325rem]"></div>
+              <button (click)="clearFilters()" title="Clear all filters"
+                class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span>Clear</span>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Table -->
+        <div class="rounded-lg w-full inline-block whitespace-nowrap">
+          <table class="min-w-full text-xs border-collapse">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Code</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Name</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Email</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Contact</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Department</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Designation</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Reporting Manager</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Join Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let emp of paginatedEmployees; let i = index" class="hover:bg-gray-50">
+                <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.user_code || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.user_first_name || '' }} {{ emp.user_last_name || '' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.user_email || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.user_contact || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.department_name || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ emp.designation_name || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">
+                  {{ emp.reporting_manager_first_name || '' }} {{ emp.reporting_manager_last_name || '-' }}
+                </td>
+                <td class="px-1 py-1 border border-gray-300 text-center">
+                  {{ emp.user_DOJ ? (emp.user_DOJ | date:'dd-MMM-yyyy') : '-' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Pagination -->
+        <div class="flex items-center justify-center mt-4 space-x-1">
+          <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="px-3 py-1 border rounded-md">
+            Previous
+          </button>
+          <button *ngIf="currentPage > 3" (click)="changePage(1)" class="px-3 py-1 border rounded-md">
+            1
+          </button>
+          <span *ngIf="currentPage > 4" class="px-2">...</span>
+          <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+            [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+            {{ page }}
+          </button>
+          <span *ngIf="currentPage < totalPages - 3" class="px-2">...</span>
+          <button *ngIf="currentPage < totalPages - 2" (click)="changePage(totalPages)" class="px-3 py-1 border rounded-md">
+            {{ totalPages }}
+          </button>
+          <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded-md">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

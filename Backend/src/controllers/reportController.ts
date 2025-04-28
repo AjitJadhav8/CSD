@@ -131,6 +131,49 @@ async getAllProjectTeams(req: Request, res: Response): Promise<void> {
   }
 }
 
+//employee report
+async getAllEmployees(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        u.user_id,
+        u.user_code,
+        u.user_first_name,
+        u.user_middle_name,
+        u.user_last_name, 
+        u.user_email, 
+        u.user_contact,
+        d.department_name,
+        d.department_id,
+        des.designation_name,
+        des.designation_id,
+        rm.user_id AS reporting_manager_id,
+        rm.user_first_name AS reporting_manager_first_name,
+        rm.user_last_name AS reporting_manager_last_name,
+        u.user_DOJ 
+      FROM master_user u
+      LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
+      LEFT JOIN master_department d ON tud.department_id = d.department_id
+      LEFT JOIN master_designation des ON tud.designation_id = des.designation_id
+      LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
+      WHERE u.is_deleted = 0
+      ORDER BY u.user_id DESC
+    `;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Database Error', details: error.message });
+        return;
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 
 
 }

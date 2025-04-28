@@ -40,8 +40,15 @@ getAllProjectTeams(): Observable<any> {
   return this.http.get(`${this.apiUrl}/api/reports/project-teams`, {
     headers: this.getAuthHeaders()
   });
+
 }
 
+// Employee Report
+getAllEmployees(): Observable<any>{
+  return this.http.get(`${this.apiUrl}/api/reports/employees`, {
+    headers: this.getAuthHeaders()
+  });
+}
 
 
 
