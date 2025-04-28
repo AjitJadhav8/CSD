@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes'; // Import auth routes
 import timesheetRoutes from './routes/timesheetRoutes';
 import rmgRoutes from './routes/rmgRoutes';
 import developerRoutes from './routes/developerRoutes';
+import reportRoutes from './routes/reportRoutes'; // Import report routes
 
 dotenv.config(); // Load environment variables
 
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/timesheet', timesheetRoutes);
 app.use('/api/rmg', rmgRoutes);
 app.use('/api/developer', developerRoutes);
+app.use('/api/reports', reportRoutes); // Add this line for report routes
 
 
 

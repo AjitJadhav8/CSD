@@ -26,6 +26,19 @@ export class NavbarComponent {
   @Input() showOrganisationLinks: boolean = false;
   @Input() showTimesheetLinks: boolean = false;
   @Input() showResourceManagementLinks: boolean = false; // New Input
+  @Input() showReportSectionLinks: boolean = false;
+
+  // Add navigation methods for report section
+  navigateToReportSection(section: string) {
+    this.secureStorage.setItem('selectedReportSection', section);
+    this.router.navigate(['/report-section', section]).then(() => {
+      window.dispatchEvent(new Event('storage'));
+    });
+  }
+
+  isReportSectionActive(section: string): boolean {
+    return this.secureStorage.getItem('selectedReportSection') === section;
+  }
 
   navigateToCustomerSection(section: string) {
     this.secureStorage.setItem('selectedCustomerSection', section);
@@ -37,6 +50,8 @@ export class NavbarComponent {
   isCustomerSectionActive(section: string): boolean {
     return this.secureStorage.getItem('selectedCustomerSection') === section;
   }
+
+
   navigateToProjectSection(section: string) {
     this.secureStorage.setItem('selectedProjectSection', section);
     this.router.navigate(['/organisation/project']).then(() => {
@@ -78,14 +93,18 @@ export class NavbarComponent {
   showProjectDropdown = false;
   showEmployeeDropdown = false;
   showManagersHubDropdown = false;
+  showReportDropdown = false; // Add this for report section dropdown
+
   isRM = false;
-  isPM = false;
+  isPM = false; 
 
   @ViewChild('customerDropdown') customerDropdown!: ElementRef;
   @ViewChild('projectDropdown') projectDropdown!: ElementRef;
   @ViewChild('employeeDropdown') employeeDropdown!: ElementRef;
   @ViewChild('managersHubDropdown') managersHubDropdown!: ElementRef;
   @ViewChild('userDropdown') userDropdown!: ElementRef;
+  @ViewChild('reportDropdown') reportDropdown!: ElementRef; // Add this for report section
+
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
@@ -108,6 +127,15 @@ export class NavbarComponent {
     if (this.managersHubDropdown && !this.managersHubDropdown.nativeElement.contains(event.target)) {
       this.showManagersHubDropdown = false;
     }
+
+        // Add this for report section dropdown
+        if (this.reportDropdown && !this.reportDropdown.nativeElement.contains(event.target)) {
+          this.showReportDropdown = false;
+        }
+
+
+
+
     if (this.userDropdown && !this.userDropdown.nativeElement.contains(event.target)) {
       this.showDropdown = false;
     }
@@ -135,6 +163,15 @@ export class NavbarComponent {
     this.showCustomerDropdown = false;
     this.showProjectDropdown = false;
     this.showEmployeeDropdown = false;
+  }
+
+  toggleReportDropdown() {
+    this.showReportDropdown = !this.showReportDropdown;
+    // Close other dropdowns
+    this.showCustomerDropdown = false;
+    this.showProjectDropdown = false;
+    this.showEmployeeDropdown = false;
+    this.showManagersHubDropdown = false;
   }
 
 

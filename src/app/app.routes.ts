@@ -59,8 +59,14 @@ export const routes: Routes = [
       canActivate: [authGuard],
     },
 
-
-
+    {
+      path: 'report-section',
+      loadChildren: () =>
+        import('./features/report-section/report-section.module').then(
+          (m) => m.ReportSectionModule
+        ),
+      canActivate: [authGuard], // If you want to protect it too
+    },
 
 
     { path: '**', redirectTo: 'app-center' },
