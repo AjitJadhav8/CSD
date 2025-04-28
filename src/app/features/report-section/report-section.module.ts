@@ -5,6 +5,7 @@ import { TeamTimesheetReportComponent } from './components/team-timesheet-report
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ReportSectionDashboardComponent } from './report-section-dashboard/report-section-dashboard.component';
+import { ProjectTeamReportComponent } from './components/project-team-report/project-team-report.component';
 
 const routes: Routes = [
   { 
@@ -12,6 +13,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'team-timesheet-report', pathMatch: 'full' },
       { path: 'team-timesheet-report', component: TeamTimesheetReportComponent },
+      { path: 'project-team-report', component: ProjectTeamReportComponent }, // Add this line
+
     ]
   }
 ];
@@ -27,6 +30,8 @@ const routes: Routes = [
     FormsModule,
     NgSelectModule,
     TeamTimesheetReportComponent,
-ReportSectionDashboardComponent]
+ReportSectionDashboardComponent,
+ProjectTeamReportComponent
+]
 })
 export class ReportSectionModule { }

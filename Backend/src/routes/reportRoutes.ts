@@ -8,4 +8,8 @@ const router = express.Router();
 router.get('/team-timesheets', protect, reportController.getAllTeamTimesheets);
 router.get('/options', protect, reportController.getReportOptions);
 
+// project team report
+router.get('/project-teams', protect, reportController.getAllProjectTeams);
+
+
 export default router;

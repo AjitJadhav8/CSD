@@ -79,6 +79,60 @@ class ReportController {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+// project team report
+
+// Add this method to your ReportController
+async getAllProjectTeams(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        pt.project_team_id,
+        c.customer_id,
+        c.customer_name,
+        p.project_id,
+        p.project_name,
+        u.user_id as employee_id,
+        CONCAT(u.user_first_name, ' ', u.user_last_name) as employee_name,
+        pr.project_role_id,
+        pr.project_role_name,
+        pm.user_id as project_manager_id,
+        CONCAT(pm.user_first_name, ' ', pm.user_last_name) as current_project_manager_name,
+        pt.start_date,
+        pt.end_date,
+        pt.allocation_status,
+        pt.allocation_percentage,
+        pt.billed_status,
+        pt.billing_percentage,
+        pt.is_released,
+        pt.released_date,
+        pt.created_at AS assignment_created_at
+      FROM trans_project_team pt
+      LEFT JOIN master_customer c ON pt.customer_id = c.customer_id
+      LEFT JOIN master_project p ON pt.project_id = p.project_id
+      LEFT JOIN master_user u ON pt.employee_id = u.user_id
+      LEFT JOIN master_project_role pr ON pt.project_role_id = pr.project_role_id
+      LEFT JOIN master_user pm ON p.project_manager_id = pm.user_id
+      WHERE pt.is_deleted = 0
+      ORDER BY pt.project_team_id DESC
+    `;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Database Error', details: error.message });
+        return;
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error fetching project teams:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
+
 }
 
 export default new ReportController();

@@ -31,4 +31,20 @@ export class ReportService {
       headers: this.getAuthHeaders()
     });
   }
+
+
+// Project team Report
+
+// Add this method to your existing ReportService
+getAllProjectTeams(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/project-teams`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+
+
+
+
+
 }
