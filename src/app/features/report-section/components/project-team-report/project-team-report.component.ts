@@ -3,6 +3,7 @@ import { ReportService } from '../../../../services/report-service/report.servic
 import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DataService } from '../../../../services/data-service/data.service';
 
 @Component({
   selector: 'app-project-team-report',
@@ -47,7 +48,7 @@ export class ProjectTeamReportComponent implements OnInit {
    billedEmployees: number = 0;
    notBilledEmployees: number = 0;
 
-  constructor(private reportService: ReportService) { }
+  constructor(private reportService: ReportService,  private dataService: DataService,) { }
 
   ngOnInit(): void {
     this.fetchProjectTeams();
@@ -69,12 +70,12 @@ export class ProjectTeamReportComponent implements OnInit {
   }
 
   fetchOptions(): void {
-    this.reportService.getReportOptions().subscribe(
+    this.dataService.getOptions().subscribe(
       (response) => {
         this.optionCustomers = response.customers;
         this.optionProjects = response.projects;
         this.optionEmployees = response.users;
-        this.optionProjectRoles = response.projectRoles;
+        this.optionProjectRoles = response.projectRole;
         this.optionProjectManagers = response.projectManagers;
       },
       (error) => {

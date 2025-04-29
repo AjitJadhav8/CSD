@@ -61,10 +61,10 @@ export class EmployeeReportComponent implements OnInit {
   fetchOptions(): void {
     this.dataService.getOptions().subscribe(
       (response) => {
-        this.optionEmployees = response.employees;
+        this.optionEmployees = response.users;
         this.optionDepartments = response.departments;
-        this.optionDesignations = response.designations;
-        this.optionManagers = response.managers;
+        this.optionDesignations = response.designation;
+        this.optionManagers = response.users;
       },
       (error) => {
         console.error('Error fetching options:', error);
