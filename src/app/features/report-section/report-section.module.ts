@@ -14,9 +14,10 @@ const routes: Routes = [
   { 
     path: '', component: ReportSectionDashboardComponent, 
     children: [
-      { path: '', redirectTo: 'team-timesheet-report', pathMatch: 'full' },
-      { path: 'team-timesheet-report', component: TeamTimesheetReportComponent },
+      { path: '', redirectTo: 'project-team-report', pathMatch: 'full' },
       { path: 'project-team-report', component: ProjectTeamReportComponent }, // Add this line
+
+      { path: 'team-timesheet-report', component: TeamTimesheetReportComponent },
       {path: 'employee-report', component:EmployeeReportComponent},
       {path: 'project-report', component : ProjectReportComponent},
       {path: 'customer-report', component : CustomerReportComponent}
