@@ -26,7 +26,9 @@ export class ProjectReportComponent implements OnInit {
   typeFilter: string = '';
   engagementFilter: string = '';
   statusFilter: string = '';
-  
+  plannedStartFilter: string = '';
+actualStartFilter: string = '';
+tentativeEndFilter: string = '';
   // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 30;
@@ -81,6 +83,16 @@ export class ProjectReportComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredProjects = this.projects.filter((project) => {
+      const plannedStartDate = this.plannedStartFilter 
+        ? new Date(this.plannedStartFilter) 
+        : null;
+      const actualStartDate = this.actualStartFilter 
+        ? new Date(this.actualStartFilter) 
+        : null;
+      const tentativeEndDate = this.tentativeEndFilter 
+        ? new Date(this.tentativeEndFilter) 
+        : null;
+  
       return (
         (this.projectNameFilter
           ? project.project_id === +this.projectNameFilter
@@ -99,7 +111,16 @@ export class ProjectReportComponent implements OnInit {
           : true) &&
         (this.statusFilter
           ? project.project_status_id === +this.statusFilter
-          : true)
+          : true) &&
+        (!plannedStartDate || 
+          (project.planned_start_date && 
+           new Date(project.planned_start_date).toDateString() === plannedStartDate.toDateString())) &&
+        (!actualStartDate || 
+          (project.actual_start_date && 
+           new Date(project.actual_start_date).toDateString() === actualStartDate.toDateString())) &&
+        (!tentativeEndDate || 
+          (project.tentative_end_date && 
+           new Date(project.tentative_end_date).toDateString() === tentativeEndDate.toDateString()))
       );
     });
     this.currentPage = 1;
@@ -113,6 +134,9 @@ export class ProjectReportComponent implements OnInit {
     this.typeFilter = '';
     this.engagementFilter = '';
     this.statusFilter = '';
+    this.plannedStartFilter = '';
+    this.actualStartFilter = '';
+    this.tentativeEndFilter = '';
     this.applyFilters();
   }
 

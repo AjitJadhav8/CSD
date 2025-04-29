@@ -30,6 +30,8 @@ export class EmployeeReportComponent implements OnInit {
   departmentFilter: string = '';
   designationFilter: string = '';
   reportingManagerFilter: string = '';
+  contactFilter: string = '';
+joinDateFilter: string = '';
   
   // Pagination
   currentPage: number = 1;
@@ -74,13 +76,17 @@ export class EmployeeReportComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredEmployees = this.employees.filter(emp => {
+      const joinDate = this.joinDateFilter ? new Date(this.joinDateFilter) : null;
+      
       return (
         (!this.employeeCodeFilter || (emp.user_code && emp.user_code.toLowerCase().includes(this.employeeCodeFilter.toLowerCase()))) &&
         (!this.nameFilter || emp.user_id == this.nameFilter) &&
         (!this.emailFilter || (emp.user_email && emp.user_email.toLowerCase().includes(this.emailFilter.toLowerCase()))) &&
+        (!this.contactFilter || (emp.user_contact && emp.user_contact.includes(this.contactFilter))) &&
         (!this.departmentFilter || emp.department_id == this.departmentFilter) &&
         (!this.designationFilter || emp.designation_id == this.designationFilter) &&
-        (!this.reportingManagerFilter || emp.reporting_manager_id == this.reportingManagerFilter)
+        (!this.reportingManagerFilter || emp.reporting_manager_id == this.reportingManagerFilter) &&
+        (!joinDate || (emp.user_DOJ && new Date(emp.user_DOJ).toDateString() === joinDate.toDateString()))
       );
     });
     this.currentPage = 1;
@@ -91,12 +97,13 @@ export class EmployeeReportComponent implements OnInit {
     this.employeeCodeFilter = '';
     this.nameFilter = '';
     this.emailFilter = '';
+    this.contactFilter = '';
     this.departmentFilter = '';
     this.designationFilter = '';
     this.reportingManagerFilter = '';
+    this.joinDateFilter = '';
     this.applyFilters();
   }
-
   clearFilter(filterName: string): void {
     (this as any)[filterName] = '';
     this.applyFilters();

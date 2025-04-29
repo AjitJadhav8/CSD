@@ -92,6 +92,27 @@
                 </ng-option>
               </ng-select>
             </div>
+
+            <!-- Planned Start Date Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Planned Start</label>
+  <input type="date" [(ngModel)]="plannedStartFilter" (change)="applyFilters()" 
+         class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+</div>
+
+<!-- Actual Start Date Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Actual Start</label>
+  <input type="date" [(ngModel)]="actualStartFilter" (change)="applyFilters()" 
+         class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+</div>
+
+<!-- Tentative End Date Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Tentative End</label>
+  <input type="date" [(ngModel)]="tentativeEndFilter" (change)="applyFilters()" 
+         class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6">
+</div>
   
             <!-- Clear All Filters Button -->
             <div class="relative w-28">
