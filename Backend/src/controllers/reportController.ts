@@ -174,7 +174,45 @@ async getAllEmployees(req: Request, res: Response): Promise<void> {
   }
 }
 
+//customer report
+// In reportController.ts
+async getCustomerReport(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        c.customer_id, 
+        c.customer_name, 
+        c.customer_company_website, 
+        c.customer_email, 
+        c.customer_phone, 
+        c.is_active, 
+        cat.sector, 
+        cat.industry, 
+        cat.domain, 
+        c.is_new, 
+        c.customer_city, 
+        c.customer_country
+      FROM master_customer c
+      LEFT JOIN master_category cat ON c.category_id = cat.category_id
+      WHERE c.is_deleted = 0
+      ORDER BY c.customer_id DESC
+    `;
 
+    db.query(query, (err: any, results: any) => {
+      if (err) {
+        console.error('Error fetching customer report:', err);
+        res.status(500).json({ error: 'Error fetching customer report' });
+        return;
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+// project repoert 
 
 }
 

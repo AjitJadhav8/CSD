@@ -50,6 +50,17 @@ getAllEmployees(): Observable<any>{
   });
 }
 
+//customer Report
+// In report.service.ts
+getCustomerReport(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/customers`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+// project repoert 
+
+
 
 
 

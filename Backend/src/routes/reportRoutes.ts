@@ -14,5 +14,11 @@ router.get('/project-teams', protect, reportController.getAllProjectTeams);
 //employee report
 router.get('/employees', protect, reportController.getAllEmployees)
 
+//customer report
+router.get('/customers', protect, reportController.getCustomerReport);
+
+// project repoert 
+
+
 
 export default router;

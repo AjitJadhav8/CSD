@@ -1,1 +1,176 @@
-<p>customer-report works!</p>
+<div class="p-4">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+      <!-- Title Section -->
+      <div class="mb-4 pb-4 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+              Customer Report
+            </h3>
+            <p class="text-xs text-gray-500">View all customer records</p>
+          </div>
+          <div class="flex space-x-4">
+            <div class="text-center bg-blue-50 px-3 py-1 rounded border border-blue-100">
+              <div class="text-sm font-medium text-blue-800">Total Customers</div>
+              <div class="text-lg font-bold">{{ filteredCustomers.length }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Filters and Table Section -->
+      <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+        <!-- Filters -->
+        <div class="min-w-full relative z-10">
+          <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto">
+            <!-- Customer Name Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Customer</label>
+              <ng-select [(ngModel)]="customerNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+                class="text-xs custom-ng-select-filter w-full">
+                <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+                  {{ customer.customer_name }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Company Website Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Company Website</label>
+              <input type="text" [(ngModel)]="companyWebsiteFilter" placeholder="Company Website" (input)="applyFilters()"
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6" />
+              <button *ngIf="companyWebsiteFilter" (click)="clearFilter('companyWebsiteFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+  
+            <!-- Email Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Customer Email</label>
+              <input type="text" [(ngModel)]="emailFilter" placeholder="Email" (input)="applyFilters()"
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
+              <button *ngIf="emailFilter" (click)="clearFilter('emailFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+  
+            <!-- Phone Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Phone</label>
+              <input type="text" [(ngModel)]="phoneFilter" placeholder="Phone" (input)="applyFilters()"
+                class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6 " />
+              <button *ngIf="phoneFilter" (click)="clearFilter('phoneFilter')"
+                class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+  
+            <!-- Status Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Status</label>
+              <ng-select [(ngModel)]="statusFilter" (change)="applyFilters()" [clearable]="true"
+                class="text-xs custom-ng-select-filter w-full">
+                <ng-option value="Active">Active</ng-option>
+                <ng-option value="Inactive">Inactive</ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Sector Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Sector</label>
+              <ng-select [(ngModel)]="sectorFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+                class="text-xs custom-ng-select-filter w-full">
+                <ng-option *ngFor="let sector of distinctSectors" [value]="sector">
+                  {{ sector }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Industry Filter -->
+            <div class="relative w-48">
+              <label class="block text-xs font-medium mb-1">Industry</label>
+              <ng-select [(ngModel)]="industryFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+                class="text-xs custom-ng-select-filter w-full">
+                <ng-option *ngFor="let industry of distinctIndustries" [value]="industry">
+                  {{ industry }}
+                </ng-option>
+              </ng-select>
+            </div>
+  
+            <!-- Clear All Filters Button -->
+            <div class="relative w-28">
+              <div class="h-[1.325rem]"></div>
+              <button (click)="clearFilters()" title="Clear all filters"
+                class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+                </svg>
+                <span>Clear</span>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Customer Table -->
+        <div class="rounded-lg w-full inline-block whitespace-nowrap">
+          <table class="min-w-full text-xs border-collapse">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Company Website</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Email</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Phone</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Sector</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Industry</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Segment</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Type</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">City</th>
+                <th class="px-1 py-1 border border-gray-200 text-center">Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customer of paginatedCustomers; let i = index" class="hover:bg-gray-50">
+                <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_name || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_company_website || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_email || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_phone || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_active ? 'Active' : 'Inactive' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.sector || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.industry || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.domain || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.is_new ? 'Potential' : 'Existing' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_city || '-' }}</td>
+                <td class="px-1 py-1 border border-gray-300 text-center">{{ customer.customer_country || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Pagination -->
+        <div class="flex items-center justify-center mt-4 space-x-1">
+          <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+            class="px-3 py-1 border rounded-md">
+            Previous
+          </button>
+          <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+            [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+            {{ page }}
+          </button>
+          <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded-md">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
