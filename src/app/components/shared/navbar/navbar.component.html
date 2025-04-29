@@ -1,17 +1,18 @@
 <!-- NAVBAR -->
 <div class="flex flex-col sm:flex-row items-center sm:justify-between p-2 bg-white">
-  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7"
-     />
+  <img src="credenca-logo.png" alt="Logo" class="h-10 w-auto mb-2 sm:mb-0 px-7" />
 
-    <!-- Home Button (Same Style as Other Navigation Buttons) -->
+  <!-- Home Button (Same Style as Other Navigation Buttons) -->
   <div *ngIf="!isAppCenterRoute()" class="flex gap-2 p-1 rounded-md">
     <a [routerLink]="['/app-center']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
       Home
-    
+
     </a>
   </div>
 
@@ -24,8 +25,10 @@
     <div class="relative" #employeeDropdown>
       <a (click)="toggleEmployeeDropdown()" [routerLink]="['/organisation', 'employee']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         Employee
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -41,23 +44,25 @@
         class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
         <a (click)="navigateToEmployeeSection('employee')" [class.active-link]="isEmployeeSectionActive('employee')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          
+
           Employee
         </a>
         <a (click)="navigateToEmployeeSection('department')" [class.active-link]="isEmployeeSectionActive('department')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Department
         </a>
-        
-        <a (click)="navigateToEmployeeSection('designation')" [class.active-link]="isEmployeeSectionActive('designation')"
+
+        <a (click)="navigateToEmployeeSection('designation')"
+          [class.active-link]="isEmployeeSectionActive('designation')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Designation
         </a>
-        <a (click)="navigateToEmployeeSection('project_role')" [class.active-link]="isEmployeeSectionActive('project_role')"
+        <a (click)="navigateToEmployeeSection('project_role')"
+          [class.active-link]="isEmployeeSectionActive('project_role')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Role
         </a>
-        
+
         <a (click)="navigateToEmployeeSection('skills')" [class.active-link]="isEmployeeSectionActive('skills')"
           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Skills
@@ -74,8 +79,10 @@
     <div class="relative" #customerDropdown>
       <a (click)="toggleCustomerDropdown()" [routerLink]="['/organisation', 'customer']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
         Customer
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -105,8 +112,10 @@
     <div class="relative" #projectDropdown>
       <a (click)="toggleProjectDropdown()" [routerLink]="['/organisation', 'project']" routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
         </svg>
         Project
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -131,10 +140,11 @@
           Project Deliverable
         </a>
 
-        <a (click)="navigateToProjectSection('projectPhases')" [class.active-link]="isProjectSectionActive('projectPhases')"
-      class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-      Project Tasks
-    </a>
+        <a (click)="navigateToProjectSection('projectPhases')"
+          [class.active-link]="isProjectSectionActive('projectPhases')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          Project Tasks
+        </a>
 
       </div>
     </div>
@@ -144,23 +154,30 @@
   <div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
     <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
       Fill Timesheet
     </a>
     <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
       </svg>
       Export My Timesheet
     </a>
     <div *ngIf="shouldShowManagersHub" class="relative" #managersHubDropdown>
-      <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']" routerLinkActive="active-link"
+      <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']"
+        routerLinkActive="active-link"
         class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         Manager's Hub
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
@@ -175,94 +192,195 @@
       <div *ngIf="showManagersHubDropdown"
         class="absolute left-0 mt-1 w-52 bg-white shadow-lg rounded-md border border-gray-200 z-10">
 
-        <a (click)="navigateToManagersHubSection('projectDeliverable')" 
-           [class.active-link]="isManagersHubSectionActive('projectDeliverable')"
-           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <a (click)="navigateToManagersHubSection('projectDeliverable')"
+          [class.active-link]="isManagersHubSectionActive('projectDeliverable')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Deliverable
         </a>
 
-        <a (click)="navigateToManagersHubSection('projectPhases')" 
-           [class.active-link]="isManagersHubSectionActive('projectPhases')"
-           class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <a (click)="navigateToManagersHubSection('projectPhases')"
+          [class.active-link]="isManagersHubSectionActive('projectPhases')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
           Project Tasks
         </a>
-        
-         <!-- Team Management Sections -->
-    <div class="border-t border-gray-200 my-1"></div>
-    <a (click)="navigateToManagersHubSection('viewMyProjectTeam')" 
-       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeam')"
-       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-      View My Project Team
-    </a>
-    <a (click)="navigateToManagersHubSection('viewMyProjectTeamsTimesheet')" 
-       [class.active-link]="isManagersHubSectionActive('viewMyProjectTeamsTimesheet')"
-       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-      View My Project Team's Timesheet
-    </a>
-    
-    <!-- Reporting Sections -->
-    <div class="border-t border-gray-200 my-1"></div>
-    <a (click)="navigateToManagersHubSection('viewMyReportingTeam')" 
-       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeam')"
-       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-      View My Reporting Team
-    </a>
-    <a (click)="navigateToManagersHubSection('viewMyReportingTeamsTimesheet')" 
-       [class.active-link]="isManagersHubSectionActive('viewMyReportingTeamsTimesheet')"
-       class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-      View My Reporting Team's Timesheet
-    </a>
-  
-    
+
+        <!-- Team Management Sections -->
+        <div class="border-t border-gray-200 my-1"></div>
+        <a (click)="navigateToManagersHubSection('viewMyProjectTeam')"
+          [class.active-link]="isManagersHubSectionActive('viewMyProjectTeam')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          View My Project Team
+        </a>
+        <a (click)="navigateToManagersHubSection('viewMyProjectTeamsTimesheet')"
+          [class.active-link]="isManagersHubSectionActive('viewMyProjectTeamsTimesheet')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          View My Project Team's Timesheet
+        </a>
+
+        <!-- Reporting Sections -->
+        <div class="border-t border-gray-200 my-1"></div>
+        <a (click)="navigateToManagersHubSection('viewMyReportingTeam')"
+          [class.active-link]="isManagersHubSectionActive('viewMyReportingTeam')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          View My Reporting Team
+        </a>
+        <a (click)="navigateToManagersHubSection('viewMyReportingTeamsTimesheet')"
+          [class.active-link]="isManagersHubSectionActive('viewMyReportingTeamsTimesheet')"
+          class="block px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          View My Reporting Team's Timesheet
+        </a>
+
+
       </div>
     </div>
   </div>
 
   <!-- Navbar Center (Resource Management Links - Conditionally Shown) -->
   <div *ngIf="showResourceManagementLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
-    
+
     <a [routerLink]="['/resource-management', 'assign-project-team']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
       Assign Project Team
     </a>
     <a [routerLink]="['/resource-management', 'all-teams-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
       </svg>
       All Teams Timesheet
     </a>
   </div>
   <!-- Add this to your navbar center section, similar to the Resource Management links -->
-<div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
-  <a [routerLink]="['/report-section', 'team-timesheet-report']" routerLinkActive="active-link"
-    class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-    </svg>
-    Team Timesheets Report
-  </a>
-  <a [routerLink]="['/report-section', 'project-team-report']" routerLinkActive="active-link"
-  class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-  </svg>
-  Project Team Report
-</a>
-<a [routerLink]="['/report-section', 'employee-report']" routerLinkActive="active-link"
-class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-</svg>
-Employee Report
-</a>
-
+  <div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
+    <!-- Project Reports Dropdown -->
+    <div class="relative" #projectReportsDropdown>
+      <a (click)="toggleProjectReportsDropdown()"
+        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        Project Reports
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showProjectReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
   
-  <!-- Add more report links here as needed -->
-</div>
+      <!-- Project Reports Dropdown Menu -->
+      <div *ngIf="showProjectReportsDropdown"
+        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+        <a (click)="navigateToReportSection('team-timesheet-report')"
+          [class.active-link]="isReportSectionActive('team-timesheet-report')"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          Team Timesheet Report
+        </a>
+        <a (click)="navigateToReportSection('project-team-report')"
+          [class.active-link]="isReportSectionActive('project-team-report')"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          Project Team Report
+        </a>
+        <a (click)="navigateToReportSection('project-report')"
+          [class.active-link]="isReportSectionActive('project-report')"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Project Report
+        </a>
+      </div>
+    </div>
+  
+    <!-- Employee Reports Dropdown -->
+    <div class="relative" #employeeReportsDropdown>
+      <a (click)="toggleEmployeeReportsDropdown()"
+        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        Employee Reports
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showEmployeeReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+  
+      <!-- Employee Reports Dropdown Menu -->
+      <div *ngIf="showEmployeeReportsDropdown"
+        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+        <a (click)="navigateToReportSection('employee-report')"
+          [class.active-link]="isReportSectionActive('employee-report')"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          Employee Report
+        </a>
+      </div>
+    </div>
+  
+    <!-- Customer Reports Dropdown -->
+    <div class="relative" #customerReportsDropdown>
+      <a (click)="toggleCustomerReportsDropdown()"
+        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        Customer Reports
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+          [class.rotate-180]="showCustomerReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </a>
+  
+      <!-- Customer Reports Dropdown Menu -->
+      <div *ngIf="showCustomerReportsDropdown"
+        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+        <a (click)="navigateToReportSection('customer-report')"
+          [class.active-link]="isReportSectionActive('customer-report')"
+          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Customer Report
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- Navbar Right Section -->
   <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 mt-2 sm:mt-0">
@@ -270,10 +388,11 @@ Employee Report
     <div class="relative" #userDropdown>
       <button (click)="toggleDropdown()"
         class="flex items-center text-gray-700 font-medium text-sm sm:text-base cursor-pointer px-4 py-2 rounded-lg transition-all hover:bg-gray-100">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-      </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
         <span>Welcome, {{ loggedInUserName }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
           [class.rotate-180]="showDropdown" viewBox="0 0 20 20" fill="currentColor">
@@ -288,18 +407,21 @@ Employee Report
         class="absolute right-0 mt-2 w-52 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 z-10">
         <button class="flex items-center w-full text-base text-gray-700 hover:bg-gray-100 transition px-4 py-3"
           (click)="showChangePasswordForm = !showChangePasswordForm" (click)="openChangePasswordModal()">
-          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-        </svg>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+            </path>
+          </svg>
           Change Password
         </button>
         <button class="flex items-center w-full text-base text-red-600 hover:bg-red-100 transition px-4 py-3"
           (click)="logout()">
-          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
           Logout
         </button>
       </div>

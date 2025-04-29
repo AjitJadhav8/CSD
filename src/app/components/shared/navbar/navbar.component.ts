@@ -28,17 +28,6 @@ export class NavbarComponent {
   @Input() showResourceManagementLinks: boolean = false; // New Input
   @Input() showReportSectionLinks: boolean = false;
 
-  // Add navigation methods for report section
-  navigateToReportSection(section: string) {
-    this.secureStorage.setItem('selectedReportSection', section);
-    this.router.navigate(['/report-section', section]).then(() => {
-      window.dispatchEvent(new Event('storage'));
-    });
-  }
-
-  isReportSectionActive(section: string): boolean {
-    return this.secureStorage.getItem('selectedReportSection') === section;
-  }
 
   navigateToCustomerSection(section: string) {
     this.secureStorage.setItem('selectedCustomerSection', section);
@@ -93,7 +82,44 @@ export class NavbarComponent {
   showProjectDropdown = false;
   showEmployeeDropdown = false;
   showManagersHubDropdown = false;
-  showReportDropdown = false; // Add this for report section dropdown
+
+  // Add these properties to your component class
+showProjectReportsDropdown = false;
+showEmployeeReportsDropdown = false;
+showCustomerReportsDropdown = false;
+
+// Add these methods to your component class
+toggleProjectReportsDropdown() {
+  this.showProjectReportsDropdown = !this.showProjectReportsDropdown;
+  // Close other dropdowns
+  this.showEmployeeReportsDropdown = false;
+  this.showCustomerReportsDropdown = false;
+}
+
+toggleEmployeeReportsDropdown() {
+  this.showEmployeeReportsDropdown = !this.showEmployeeReportsDropdown;
+  // Close other dropdowns
+  this.showProjectReportsDropdown = false;
+  this.showCustomerReportsDropdown = false;
+}
+
+toggleCustomerReportsDropdown() {
+  this.showCustomerReportsDropdown = !this.showCustomerReportsDropdown;
+  // Close other dropdowns
+  this.showProjectReportsDropdown = false;
+  this.showEmployeeReportsDropdown = false;
+}
+
+navigateToReportSection(section: string) {
+  this.secureStorage.setItem('selectedReportSection', section);
+  this.router.navigate(['/report-section', section]).then(() => {
+    window.dispatchEvent(new Event('storage'));
+  });
+}
+
+isReportSectionActive(section: string): boolean {
+  return this.secureStorage.getItem('selectedReportSection') === section;
+}
 
   isRM = false;
   isPM = false; 
@@ -103,7 +129,11 @@ export class NavbarComponent {
   @ViewChild('employeeDropdown') employeeDropdown!: ElementRef;
   @ViewChild('managersHubDropdown') managersHubDropdown!: ElementRef;
   @ViewChild('userDropdown') userDropdown!: ElementRef;
-  @ViewChild('reportDropdown') reportDropdown!: ElementRef; // Add this for report section
+
+  // Add these to your @ViewChild declarations
+@ViewChild('projectReportsDropdown') projectReportsDropdown!: ElementRef;
+@ViewChild('employeeReportsDropdown') employeeReportsDropdown!: ElementRef;
+@ViewChild('customerReportsDropdown') customerReportsDropdown!: ElementRef;
 
 
   @HostListener('document:click', ['$event'])
@@ -128,11 +158,18 @@ export class NavbarComponent {
       this.showManagersHubDropdown = false;
     }
 
-        // Add this for report section dropdown
-        if (this.reportDropdown && !this.reportDropdown.nativeElement.contains(event.target)) {
-          this.showReportDropdown = false;
-        }
-
+  // Close dropdowns if clicked outside
+  if (this.projectReportsDropdown && !this.projectReportsDropdown.nativeElement.contains(event.target)) {
+    this.showProjectReportsDropdown = false;
+  }
+  
+  if (this.employeeReportsDropdown && !this.employeeReportsDropdown.nativeElement.contains(event.target)) {
+    this.showEmployeeReportsDropdown = false;
+  }
+  
+  if (this.customerReportsDropdown && !this.customerReportsDropdown.nativeElement.contains(event.target)) {
+    this.showCustomerReportsDropdown = false;
+  }
 
 
 
@@ -165,14 +202,6 @@ export class NavbarComponent {
     this.showEmployeeDropdown = false;
   }
 
-  toggleReportDropdown() {
-    this.showReportDropdown = !this.showReportDropdown;
-    // Close other dropdowns
-    this.showCustomerDropdown = false;
-    this.showProjectDropdown = false;
-    this.showEmployeeDropdown = false;
-    this.showManagersHubDropdown = false;
-  }
 
 
 
@@ -211,7 +240,8 @@ export class NavbarComponent {
     this.secureStorage.removeItem('selectedProjectSection');
     this.secureStorage.removeItem('selectedEmployeeSection');
     this.secureStorage.removeItem('selectedManagersHubSection');
-    
+    this.secureStorage.removeItem('selectedReportSection'); // Add this line
+
 
 
     // Optionally, keep the remembered email if the user chose "Remember Me"
