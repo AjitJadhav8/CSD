@@ -18,7 +18,8 @@ router.get('/employees', protect, reportController.getAllEmployees)
 router.get('/customers', protect, reportController.getCustomerReport);
 
 // project repoert 
-
+// In reportRoutes.ts
+router.get('/projects', protect, reportController.getProjectReport);
 
 
 export default router;

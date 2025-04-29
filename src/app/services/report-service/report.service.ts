@@ -59,7 +59,12 @@ getCustomerReport(): Observable<any> {
 }
 
 // project repoert 
-
+// In report.service.ts
+getProjectReport(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/projects`, {
+    headers: this.getAuthHeaders()
+  });
+}
 
 
 

@@ -213,7 +213,45 @@ async getCustomerReport(req: Request, res: Response): Promise<void> {
 }
 
 // project repoert 
+// In reportController.ts
+async getProjectReport(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        p.project_id,
+        p.project_name,
+        c.customer_name,
+        CONCAT(u.user_first_name, ' ', u.user_last_name) AS project_manager,
+        tp.project_type_name AS type_of_project,
+        te.type_of_engagement_name AS type_of_engagement,
+        ps.status_name AS project_status,
+        p.planned_start_date,
+        p.actual_start_date,
+        p.tentative_end_date,
+        p.project_description
+      FROM master_project p
+      LEFT JOIN master_customer c ON p.customer_id = c.customer_id
+      LEFT JOIN master_user u ON p.project_manager_id = u.user_id
+      LEFT JOIN master_type_of_project tp ON p.type_of_project_id = tp.type_of_project_id
+      LEFT JOIN master_type_of_engagement te ON p.type_of_engagement_id = te.type_of_engagement_id
+      LEFT JOIN master_project_status ps ON p.project_status_id = ps.project_status_id
+      WHERE p.is_deleted = 0
+      ORDER BY p.project_id DESC
+    `;
 
+    db.query(query, (err: any, results: any) => {
+      if (err) {
+        console.error('Error fetching project report:', err);
+        res.status(500).json({ error: 'Error fetching project report' });
+        return;
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 }
 
 export default new ReportController();
