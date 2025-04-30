@@ -44,9 +44,7 @@ export class ProjectTeamReportComponent implements OnInit {
 
   //stat
    // Employee statistics
-   totalEmployees: number = 0;
-   billedEmployees: number = 0;
-   notBilledEmployees: number = 0;
+
 
   constructor(private reportService: ReportService,  private dataService: DataService,) { }
 
@@ -60,7 +58,7 @@ export class ProjectTeamReportComponent implements OnInit {
       (response) => {
         this.projectTeams = response;
         this.filteredProjectTeams = [...this.projectTeams];
-        this.updateEmployeeStatistics();
+        console.log('Project teams:', this.projectTeams);
         this.updatePage();
       },
       (error) => {
@@ -109,30 +107,10 @@ export class ProjectTeamReportComponent implements OnInit {
       });
       
       // Update employee statistics
-      this.updateEmployeeStatistics();
       this.currentPage = 1;
       this.updatePage();
     }
-    updateEmployeeStatistics(): void {
-      const uniqueEmployees = new Set();
-      let billedCount = 0;
-      let notBilledCount = 0;
-      
-      this.filteredProjectTeams.forEach(team => {
-        if (team.employee_id) {
-          uniqueEmployees.add(team.employee_id);
-          if (team.billed_status) {
-            billedCount++;
-          } else {
-            notBilledCount++;
-          }
-        }
-      });
-      
-      this.totalEmployees = uniqueEmployees.size;
-      this.billedEmployees = billedCount;
-      this.notBilledEmployees = notBilledCount;
-    }  
+
 
    // Modify clearFilters to reset new properties
    clearFilters(): void {

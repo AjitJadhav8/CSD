@@ -82,7 +82,6 @@ class ReportController {
 
 // project team report
 
-// Add this method to your ReportController
 async getAllProjectTeams(req: Request, res: Response): Promise<void> {
   try {
     const query = `
@@ -221,10 +220,15 @@ async getProjectReport(req: Request, res: Response): Promise<void> {
         p.project_id,
         p.project_name,
         c.customer_name,
+        c.customer_id,
+        u.user_id AS project_manager_id,
         CONCAT(u.user_first_name, ' ', u.user_last_name) AS project_manager,
         tp.project_type_name AS type_of_project,
+        tp.type_of_project_id,
         te.type_of_engagement_name AS type_of_engagement,
+        te.type_of_engagement_id,
         ps.status_name AS project_status,
+        ps.project_status_id,
         p.planned_start_date,
         p.actual_start_date,
         p.tentative_end_date,
