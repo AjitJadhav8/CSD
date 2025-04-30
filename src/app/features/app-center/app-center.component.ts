@@ -17,9 +17,31 @@ export class AppCenterComponent {
     private secureStorage: SecureStorageService
   ){}
 
+  showOrgMaster: boolean = false;
+  showTimesheet: boolean = true; // Always visible
+  showResourceMgmt: boolean = false;
+  showDeveloperTools: boolean = false;
+  showReports: boolean = false;
+
   userRole: number | null = null;
   ngOnInit(): void {
-    this.userRole = this.secureStorage.getItem('role_id'); // Get the user's role_id
+    this.userRole = this.secureStorage.getItem('role_id');
+    this.updateVisibility();
+  }
+
+  private updateVisibility(): void {
+    if (this.userRole === null) return;
     
+    // Organization Master - visible to all except role 4
+    this.showOrgMaster = this.userRole !== 4;
+    
+    // Resource Management - visible to all except role 4
+    this.showResourceMgmt = this.userRole !== 4;
+    
+    // Developer Tools - only for role 5
+    this.showDeveloperTools = this.userRole === 5;
+    
+    // Reports - only for role 5
+    this.showReports = this.userRole === 5;
   }
 }

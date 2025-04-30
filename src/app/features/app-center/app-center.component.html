@@ -1,75 +1,4 @@
-<!-- <app-navbar></app-navbar>
-
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">
-    <span class="text-[#0071ac]">CREDENCA</span> Application Center
-  </h1>  <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Access all your productivity tools in one place. Select an application to get started.</p>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <ng-container *ngIf="userRole !== '4'">
-      <a
-        routerLink="/organisation"
-        class="app-card group relative overflow-hidden bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-200"
-        >
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div class="relative z-10 p-8 flex flex-col items-center">
-          <div class="w-20 h-20 mb-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </div>
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">Organisation Master</h2>
-          <p class="text-gray-600 text-center text-sm">Manage your organization structure and settings</p>
-        </div>
-      </a>
-    </ng-container>
-
-    <a
-      routerLink="/timesheet"
-      class="app-card group relative overflow-hidden bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-200"
-      >
-      <div class="absolute inset-0 bg-gradient-to-br from-green-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="relative z-10 p-8 flex flex-col items-center">
-        <div class="w-20 h-20 mb-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Timesheet App</h2>
-        <p class="text-gray-600 text-center text-sm">Track and manage your work hours efficiently</p>
-      </div>
-    </a>
-
-    <ng-container *ngIf="userRole !== '4'">
-      <a
-        routerLink="/resource-management"
-        class="app-card group relative overflow-hidden bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-gray-200"
-        >
-        <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div class="relative z-10 p-8 flex flex-col items-center">
-          <div class="w-20 h-20 mb-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </div>
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">Resource Management</h2>
-          <p class="text-gray-600 text-center text-sm">Optimize and allocate your team resources</p>
-        </div>
-      </a>
-    </ng-container>
-  </div>
-</div>
-
-<div class="p-6">
-  <router-outlet></router-outlet>
-</div>
- -->
-
-
-
-
 <app-navbar></app-navbar>
-
 <div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
   <div class="max-w-6xl mx-auto">
     <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">
@@ -81,131 +10,132 @@
     </p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <ng-container *ngIf="userRole !== 4">
-        <a
-          routerLink="/organisation"
-          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
-          >
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <a *ngIf="showOrgMaster" routerLink="/organisation"
+          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
           <div class="relative z-10 p-8 flex flex-col items-center">
-            <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            <div
+              class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">Organisation Master</h2>
             <p class="text-gray-600 text-center text-sm">Manage your organization structure and settings</p>
             <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </div>
           </div>
         </a>
-      </ng-container>
 
-      <a
-        routerLink="/timesheet"
-        class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
-        >
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <a routerLink="/timesheet"
+        class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        </div>
         <div class="relative z-10 p-8 flex flex-col items-center">
-          <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div
+            class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <h2 class="text-xl font-semibold text-gray-800 mb-2">Timesheet App</h2>
           <p class="text-gray-600 text-center text-sm">Track and manage your work hours efficiently</p>
           <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </div>
         </div>
       </a>
 
-      <ng-container *ngIf="userRole !== 4">
-        <a
-          routerLink="/resource-management"
-          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
-          >
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <a *ngIf="showResourceMgmt" routerLink="/resource-management"
+          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
           <div class="relative z-10 p-8 flex flex-col items-center">
-            <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            <div
+              class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <h2 class="text-xl font-semibold text-gray-800 mb-2">Resource Management</h2>
             <p class="text-gray-600 text-center text-sm">Optimize and allocate your team resources</p>
             <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </div>
           </div>
         </a>
-      </ng-container>
-
-
-
-
-
-
 
       <!-- Add this inside the grid container, after the existing cards -->
-<ng-container *ngIf="userRole === 5">
-  <a
-    routerLink="/developer-section"
-    class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
-    >
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div class="relative z-10 p-8 flex flex-col items-center">
-      <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
-      </div>
-      <h2 class="text-xl font-semibold text-gray-800 mb-2">Developer Tools</h2>
-      <p class="text-gray-600 text-center text-sm">Access developer-specific tools and features</p>
-      <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </div>
-    </div>
-  </a>
-</ng-container>
+        <a *ngIf="showDeveloperTools" routerLink="/developer-section"
+          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <div class="relative z-10 p-8 flex flex-col items-center">
+            <div
+              class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Developer Tools</h2>
+            <p class="text-gray-600 text-center text-sm">Access developer-specific tools and features</p>
+            <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+        </a>
 
 
-<ng-container *ngIf="userRole === 5">
-  <a
-    routerLink="/report-section"
-    class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200"
-    >
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div class="relative z-10 p-8 flex flex-col items-center">
-      <div class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      </div>
-      <h2 class="text-xl font-semibold text-gray-800 mb-2">Reports</h2>
-      <p class="text-gray-600 text-center text-sm">View and analyze team performance reports</p>
-      <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </div>
-    </div>
-  </a>
-</ng-container>
-
-
-
-
-
+        <a *ngIf="showReports" routerLink="/report-section"
+          class="app-card group relative overflow-hidden bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          </div>
+          <div class="relative z-10 p-8 flex flex-col items-center">
+            <div
+              class="w-20 h-20 mb-6 rounded-full bg-blue-50 flex items-center justify-center text-[#0071ac] group-hover:bg-[#0071ac] group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Reports</h2>
+            <p class="text-gray-600 text-center text-sm">View and analyze team performance reports</p>
+            <div class="mt-4 text-[#FFBE04] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </div>
+          </div>
+        </a>
     </div>
   </div>
 </div>
