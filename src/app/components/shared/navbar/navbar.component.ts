@@ -96,6 +96,12 @@ toggleProjectReportsDropdown() {
   this.showCustomerReportsDropdown = false;
 }
 
+isAnyProjectReportActive(): boolean {
+  return this.isReportSectionActive('project-team-report') || 
+         this.isReportSectionActive('team-timesheet-report') || 
+         this.isReportSectionActive('project-report');
+}
+
 toggleEmployeeReportsDropdown() {
   this.showEmployeeReportsDropdown = !this.showEmployeeReportsDropdown;
   // Close other dropdowns
@@ -103,6 +109,7 @@ toggleEmployeeReportsDropdown() {
   this.showCustomerReportsDropdown = false;
 }
 
+// Customer Reports
 toggleCustomerReportsDropdown() {
   this.showCustomerReportsDropdown = !this.showCustomerReportsDropdown;
   // Close other dropdowns
@@ -114,11 +121,17 @@ navigateToReportSection(section: string) {
   this.secureStorage.setItem('selectedReportSection', section);
   this.router.navigate(['/report-section', section]).then(() => {
     window.dispatchEvent(new Event('storage'));
+    // Close all dropdowns after navigation
+    this.showProjectReportsDropdown = false;
+    this.showEmployeeReportsDropdown = false;
+    this.showCustomerReportsDropdown = false;
   });
 }
 
 isReportSectionActive(section: string): boolean {
-  return this.secureStorage.getItem('selectedReportSection') === section;
+  const currentRoute = this.router.url;
+  const storedSection = this.secureStorage.getItem('selectedReportSection');
+  return storedSection === section && currentRoute.includes(`/report-section/${section}`);
 }
 
   isRM = false;
@@ -241,9 +254,6 @@ isReportSectionActive(section: string): boolean {
     this.secureStorage.removeItem('selectedEmployeeSection');
     this.secureStorage.removeItem('selectedManagersHubSection');
     this.secureStorage.removeItem('selectedReportSection'); // Add this line
-
-
-
     // Optionally, keep the remembered email if the user chose "Remember Me"
     const rememberedEmail = this.secureStorage.getItem('rememberedEmail');
     this.secureStorage.clear(); // Clears all data

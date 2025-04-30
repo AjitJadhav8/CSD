@@ -258,131 +258,161 @@
     </a>
   </div>
   <!-- Add this to your navbar center section, similar to the Resource Management links -->
-  <div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
-    <!-- Project Reports Dropdown -->
-    <div class="relative" #projectReportsDropdown>
-      <a (click)="toggleProjectReportsDropdown()"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+  <!-- Report Section Links -->
+<div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
+  <!-- Project Reports Dropdown -->
+  <div class="relative" #projectReportsDropdown>
+    <a (click)="toggleProjectReportsDropdown()" 
+       [routerLink]="['/report-section', 'project-team-report']" 
+       routerLinkActive="active-link"
+       [class.active-link]="isAnyProjectReportActive()"
+       class="px-3 py-1 rounded transition cursor-pointer flex items-center"
+       [ngClass]="{
+         'bg-blue-500 text-white': isAnyProjectReportActive(),
+         'text-gray-700 hover:bg-blue-400 hover:text-white': !isAnyProjectReportActive()
+       }">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+           [ngClass]="{'text-white': isAnyProjectReportActive(), 'text-[#0071ac]': !isAnyProjectReportActive()}" 
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+      Project Reports
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+        [class.rotate-180]="showProjectReportsDropdown" 
+        [ngClass]="{'text-white': isAnyProjectReportActive(), 'text-gray-700': !isAnyProjectReportActive()}" 
+        viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd" />
+      </svg>
+    </a>
+
+    <!-- Project Reports Dropdown Menu -->
+    <div *ngIf="showProjectReportsDropdown"
+      class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+      <a (click)="navigateToReportSection('project-team-report')"
+        [class.active-link]="isReportSectionActive('project-team-report')"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
-        Project Reports
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
-          [class.rotate-180]="showProjectReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
-        </svg>
+        Project Team Report
       </a>
-  
-      <!-- Project Reports Dropdown Menu -->
-      <div *ngIf="showProjectReportsDropdown"
-        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
-
-        <a (click)="navigateToReportSection('project-team-report')"
-          [class.active-link]="isReportSectionActive('project-team-report')"
-          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          Project Team Report
-        </a>
-        <a (click)="navigateToReportSection('team-timesheet-report')"
-          [class.active-link]="isReportSectionActive('team-timesheet-report')"
-          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-          Team Timesheet Report
-        </a>
-        
-        <a (click)="navigateToReportSection('project-report')"
-          [class.active-link]="isReportSectionActive('project-report')"
-          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Project Report
-        </a>
-      </div>
-    </div>
-  
-    <!-- Employee Reports Dropdown -->
-    <div class="relative" #employeeReportsDropdown>
-      <a (click)="toggleEmployeeReportsDropdown()"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
+      <a (click)="navigateToReportSection('team-timesheet-report')"
+        [class.active-link]="isReportSectionActive('team-timesheet-report')"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+        Team Timesheet Report
+      </a>
+      
+      <a (click)="navigateToReportSection('project-report')"
+        [class.active-link]="isReportSectionActive('project-report')"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Project Report
+      </a>
+    </div>
+  </div>
+
+  <!-- Employee Reports Dropdown -->
+  <div class="relative" #employeeReportsDropdown>
+    <a (click)="toggleEmployeeReportsDropdown()" 
+       [routerLink]="['/report-section', 'employee-report']" 
+       routerLinkActive="active-link"
+       [class.active-link]="isReportSectionActive('employee-report')"
+       class="px-3 py-1 rounded transition cursor-pointer flex items-center"
+       [ngClass]="{
+         'bg-blue-500 text-white': isReportSectionActive('employee-report'),
+         'text-gray-700 hover:bg-blue-400 hover:text-white': !isReportSectionActive('employee-report')
+       }">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+           [ngClass]="{'text-white': isReportSectionActive('employee-report'), 'text-[#0071ac]': !isReportSectionActive('employee-report')}" 
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      Employee Reports
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+        [class.rotate-180]="showEmployeeReportsDropdown" 
+        [ngClass]="{'text-white': isReportSectionActive('employee-report'), 'text-gray-700': !isReportSectionActive('employee-report')}" 
+        viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd" />
+      </svg>
+    </a>
+
+    <!-- Employee Reports Dropdown Menu -->
+    <div *ngIf="showEmployeeReportsDropdown"
+      class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+      <a (click)="navigateToReportSection('employee-report')"
+        [class.active-link]="isReportSectionActive('employee-report')"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        Employee Reports
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
-          [class.rotate-180]="showEmployeeReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
-        </svg>
+        Employee Report
       </a>
-  
-      <!-- Employee Reports Dropdown Menu -->
-      <div *ngIf="showEmployeeReportsDropdown"
-        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
-        <a (click)="navigateToReportSection('employee-report')"
-          [class.active-link]="isReportSectionActive('employee-report')"
-          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          Employee Report
-        </a>
-      </div>
     </div>
-  
-    <!-- Customer Reports Dropdown -->
-    <div class="relative" #customerReportsDropdown>
-      <a (click)="toggleCustomerReportsDropdown()"
-        class="px-3 py-1 text-gray-700 hover:bg-blue-500 hover:text-white rounded transition cursor-pointer flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+  </div>
+
+  <!-- Customer Reports Dropdown -->
+  <div class="relative" #customerReportsDropdown>
+    <a (click)="toggleCustomerReportsDropdown()" 
+       [routerLink]="['/report-section', 'customer-report']" 
+       routerLinkActive="active-link"
+       [class.active-link]="isReportSectionActive('customer-report')"
+       class="px-3 py-1 rounded transition cursor-pointer flex items-center"
+       [ngClass]="{
+         'bg-blue-500 text-white': isReportSectionActive('customer-report'),
+         'text-gray-700 hover:bg-blue-400 hover:text-white': !isReportSectionActive('customer-report')
+       }">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" 
+           [ngClass]="{'text-white': isReportSectionActive('customer-report'), 'text-[#0071ac]': !isReportSectionActive('customer-report')}" 
+           fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      Customer Reports
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
+        [class.rotate-180]="showCustomerReportsDropdown" 
+        [ngClass]="{'text-white': isReportSectionActive('customer-report'), 'text-gray-700': !isReportSectionActive('customer-report')}" 
+        viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd" />
+      </svg>
+    </a>
+
+    <!-- Customer Reports Dropdown Menu -->
+    <div *ngIf="showCustomerReportsDropdown"
+      class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
+      <a (click)="navigateToReportSection('customer-report')"
+        [class.active-link]="isReportSectionActive('customer-report')"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
-        Customer Reports
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transition-transform"
-          [class.rotate-180]="showCustomerReportsDropdown" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd" />
-        </svg>
+        Customer Report
       </a>
-  
-      <!-- Customer Reports Dropdown Menu -->
-      <div *ngIf="showCustomerReportsDropdown"
-        class="absolute left-0 mt-1 w-56 bg-white shadow-lg rounded-md border border-gray-200 z-1000">
-        <a (click)="navigateToReportSection('customer-report')"
-          [class.active-link]="isReportSectionActive('customer-report')"
-          class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-400 hover:text-white cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          Customer Report
-        </a>
-      </div>
     </div>
   </div>
+</div>
 
   <!-- Navbar Right Section -->
   <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 mt-2 sm:mt-0">
