@@ -102,6 +102,27 @@
                 </ng-option>
               </ng-select>
             </div>
+
+            <!-- Segment Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Segment</label>
+  <ng-select [(ngModel)]="segmentFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+    class="text-xs custom-ng-select-filter w-full">
+    <ng-option *ngFor="let segment of distinctSegments" [value]="segment">
+      {{ segment }}
+    </ng-option>
+  </ng-select>
+</div>
+
+<!-- Type Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Type</label>
+  <ng-select [(ngModel)]="typeFilter" (change)="applyFilters()" [clearable]="true"
+    class="text-xs custom-ng-select-filter w-full">
+    <ng-option value="Potential">Potential</ng-option>
+    <ng-option value="Existing">Existing</ng-option>
+  </ng-select>
+</div>
   
             <!-- Clear All Filters Button -->
             <div class="relative w-28">

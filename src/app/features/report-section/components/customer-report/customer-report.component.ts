@@ -38,6 +38,9 @@ export class CustomerReportComponent implements OnInit {
   distinctSectors: string[] = [];
   distinctIndustries: string[] = [];
   optionMasterCategory: any[] = [];
+  segmentFilter: string = '';
+typeFilter: string = '';
+distinctSegments: string[] = [];
 
   constructor(
     private dataService: DataService,
@@ -57,6 +60,8 @@ export class CustomerReportComponent implements OnInit {
         this.optionCustomers = response.customers;
         this.distinctSectors = this.getDistinctValues('sector');
         this.distinctIndustries = this.getDistinctValues('industry');
+        this.distinctSegments = this.getDistinctValues('domain'); // Assuming 'domain' is the field for segment
+
       },
       (error) => {
         console.error('Error fetching options', error);
@@ -104,6 +109,12 @@ export class CustomerReportComponent implements OnInit {
           : true) &&
         (this.industryFilter
           ? customer.industry === this.industryFilter
+          : true) &&
+        (this.segmentFilter
+          ? customer.domain === this.segmentFilter
+          : true) &&
+        (this.typeFilter
+          ? (customer.is_new ? 'Potential' : 'Existing') === this.typeFilter
           : true)
       );
     });
@@ -119,6 +130,8 @@ export class CustomerReportComponent implements OnInit {
     this.statusFilter = '';
     this.sectorFilter = '';
     this.industryFilter = '';
+    this.segmentFilter = '';
+    this.typeFilter = '';
     this.applyFilters();
   }
 
