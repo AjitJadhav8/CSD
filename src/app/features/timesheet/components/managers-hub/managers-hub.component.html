@@ -1201,96 +1201,103 @@
             <!-- Timesheet Table -->
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
               <!-- Modify your table structure -->
-<table class="min-w-full text-xs border-collapse">
-    <thead>
-        <tr class="bg-gray-50">
-            <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50"></th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Total Hours</th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Entries</th>
-            <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <ng-container *ngFor="let timesheet of paginatedTimesheetData; let i = index">
-            <!-- Main aggregated row -->
-            <tr class="hover:bg-gray-50 cursor-pointer" 
-                (click)="toggleRowExpansion(timesheet.user_id, timesheet.timesheet_date)">
-                <td class="px-1 py-1 border border-gray-200 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        [class.transform.rotate-90]="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </td>
-                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}</td>
-                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                <td class="px-1 py-1 border border-gray-200 text-center">
-                    <span [ngClass]="{
-                        'text-red-600': (timesheet.total_hours || 0) < 6,
-                        'text-orange-500': (timesheet.total_hours || 0) >= 6 && (timesheet.total_hours || 0) <= 8,
-                        'text-green-600': (timesheet.total_hours || 0) > 8
-                    }">
-                        {{ timesheet.total_hours || 0 }}h 
-                        {{ (timesheet.total_minutes || 0) % 60 }}m
-                    </span>
-                </td>
-                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.entry_count }}</td>
-                <td class="px-1 py-1 border border-gray-200 text-center">
-                    <span [class.text-green-600]="timesheet.is_active_assignment" 
-                          [class.text-orange-600]="!timesheet.is_active_assignment">
-                        {{ timesheet.is_active_assignment ? 'Active' : 'Released' }}
-                    </span>
-                </td>
-            </tr>
-            
-            <!-- Detailed rows (shown when expanded) -->
-            <tr *ngIf="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)" 
-                class="bg-gray-50">
-                <td colspan="6" class="px-0 py-0 border border-gray-200">
-                    <table class="min-w-full text-xs bg-gray-50">
-                        <thead>
-                            <tr>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
-                                <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let detail of getDetailedEntries(timesheet.user_id, timesheet.timesheet_date)" 
-                                class="hover:bg-gray-100">
-                                <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_name }}</td>
-                                <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_phase_name }}</td>
-                                <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_deliverable_name }}</td>
-                                <td class="px-1 py-1 border border-gray-200 text-center">
-                                    <div class="group relative inline-block">
-                                        <span class="truncate max-w-[100px] inline-block">{{ detail.task_description || '-' }}</span>
-                                        <div *ngIf="detail.task_description"
-                                            class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
-                                            {{ detail.task_description }}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-1 py-1 border border-gray-200 text-center">
-                                    {{ detail.hours || 0 }}h {{ detail.minutes || 0 }}m
-                                </td>
-                                <td class="px-1 py-1 border border-gray-200 text-center">
-                                    <span [class.text-green-600]="detail.task_status" 
-                                          [class.text-yellow-600]="!detail.task_status">
-                                        {{ detail.task_status ? 'Completed' : 'In Progress' }}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </ng-container>
-    </tbody>
-</table>
+              <table class="min-w-full text-xs border-collapse">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50"></th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Projects</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Total Hours</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Entries</th>
+                        <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let timesheet of paginatedTimesheetData; let i = index">
+                        <!-- Main aggregated row -->
+                        <tr class="hover:bg-gray-50 cursor-pointer" 
+                            (click)="toggleRowExpansion(timesheet.user_id, timesheet.timesheet_date)">
+                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    [class.transform.rotate-90]="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                <span class="truncate max-w-[150px] inline-block" 
+                                      [title]="timesheet.projects">
+                                    {{ timesheet.projects || '-' }}
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                <span [ngClass]="{
+                                    'text-red-600': (timesheet.total_hours || 0) < 6,
+                                    'text-orange-500': (timesheet.total_hours || 0) >= 6 && (timesheet.total_hours || 0) <= 8,
+                                    'text-green-600': (timesheet.total_hours || 0) > 8
+                                }">
+                                    {{ timesheet.total_hours || 0 }}h 
+                                    {{ (timesheet.total_minutes || 0) % 60 }}m
+                                </span>
+                            </td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.entry_count }}</td>
+                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                <span [class.text-green-600]="timesheet.is_active_assignment" 
+                                      [class.text-orange-600]="!timesheet.is_active_assignment">
+                                    {{ timesheet.is_active_assignment ? 'Active' : 'Released' }}
+                                </span>
+                            </td>
+                        </tr>
+                        
+                        <!-- Detailed rows (shown when expanded) -->
+                        <tr *ngIf="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)" 
+                            class="bg-gray-50">
+                            <td colspan="7" class="px-0 py-0 border border-gray-200">
+                                <table class="min-w-full text-xs bg-gray-50">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+                                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let detail of getDetailedEntries(timesheet.user_id, timesheet.timesheet_date)" 
+                                            class="hover:bg-gray-100">
+                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_name }}</td>
+                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_phase_name }}</td>
+                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_deliverable_name }}</td>
+                                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                                <div class="group relative inline-block">
+                                                    <span class="truncate max-w-[100px] inline-block">{{ detail.task_description || '-' }}</span>
+                                                    <div *ngIf="detail.task_description"
+                                                        class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                                                        {{ detail.task_description }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                                {{ detail.hours || 0 }}h {{ detail.minutes || 0 }}m
+                                            </td>
+                                            <td class="px-1 py-1 border border-gray-200 text-center">
+                                                <span [class.text-green-600]="detail.task_status" 
+                                                      [class.text-yellow-600]="!detail.task_status">
+                                                    {{ detail.task_status ? 'Completed' : 'In Progress' }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
                 <!-- Pagination Controls -->
                 <div class="flex items-center justify-center mt-4 space-x-1">
                     <button (click)="changeTimesheetPage(timesheetCurrentPage - 1)"

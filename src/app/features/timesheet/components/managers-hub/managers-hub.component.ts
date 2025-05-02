@@ -1253,44 +1253,67 @@ private getDetailedEntriesForAggregatedRow(aggregatedEntry: any): any[] {
   applyTimesheetFilters(): void {
     // 1. Filter the detailed data based on user selections
     this.filteredTimesheetDetailedData = this.timesheetDetailedData.filter(detail => {
-      const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
-      const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
-      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
-      const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
-      const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
-      const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
-      const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
-  
-      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable && matchesStatus && matchesAssignmentStatus && matchesDate;
+        const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
+        const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
+        const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+        const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
+        const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
+        const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
+        const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
+
+        return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable && 
+               matchesStatus && matchesAssignmentStatus && matchesDate;
     });
-  
+
     // 2. Aggregate filtered details into user-date groups
     const aggregationMap = new Map<string, any>();
     this.filteredTimesheetDetailedData.forEach(detail => {
-      const key = `${detail.user_id}-${this.formatDate(detail.timesheet_date)}`;
-      if (!aggregationMap.has(key)) {
-        aggregationMap.set(key, {
-          user_id: detail.user_id,
-          employee_name: detail.employee_name,
-          timesheet_date: detail.timesheet_date,
-          total_hours: 0,
-          total_minutes: 0,
-          entry_count: 0,
-          is_active_assignment: detail.is_active_assignment
-        });
-      }
-      const entry = aggregationMap.get(key);
-      entry.total_hours += detail.hours;
-      entry.total_minutes += detail.minutes;
-      entry.entry_count += 1;
+        const key = `${detail.user_id}-${this.formatDate(detail.timesheet_date)}`;
+        if (!aggregationMap.has(key)) {
+            aggregationMap.set(key, {
+                user_id: detail.user_id,
+                employee_name: detail.employee_name,
+                timesheet_date: detail.timesheet_date,
+                total_hours: 0,
+                total_minutes: 0,
+                entry_count: 0,
+                is_active_assignment: detail.is_active_assignment,
+                projects: new Set<string>(), // Track unique projects
+                project_ids: new Set<string>() // Track unique project IDs
+            });
+        }
+        const entry = aggregationMap.get(key);
+        
+        // Safely add hours and minutes
+        const detailHours = Number(detail.hours) || 0;
+        const detailMinutes = Number(detail.minutes) || 0;
+        
+        entry.total_hours += detailHours;
+        entry.total_minutes += detailMinutes;
+        
+        // Handle overflow (convert 60+ minutes to hours)
+        if (entry.total_minutes >= 60) {
+            entry.total_hours += Math.floor(entry.total_minutes / 60);
+            entry.total_minutes = entry.total_minutes % 60;
+        }
+        
+        entry.entry_count += 1;
+        entry.projects.add(detail.project_name);
+        entry.project_ids.add(detail.project_id);
     });
-  
-    // 3. Update aggregated view and totals
-    this.filteredTimesheetData = Array.from(aggregationMap.values());
+
+    // 3. Convert Sets to comma-separated strings and prepare final data
+    this.filteredTimesheetData = Array.from(aggregationMap.values()).map(entry => ({
+        ...entry,
+        projects: Array.from(entry.projects).join(', '),
+        project_ids: Array.from(entry.project_ids).join(',')
+    }));
+
+    // 4. Update totals and pagination
     this.updateTotalCalculations();
     this.timesheetCurrentPage = 1;
     this.updateTimesheetPage();
-  }
+}
 
   clearTimesheetFilters(): void {
     this.timesheetEmployeeFilter = '';
@@ -1352,8 +1375,6 @@ toggleRowExpansion(userId: string, date: string): void {
   }
 }
 
-
-
 // Add this method to get detailed entries for a row
 getDetailedEntries(userId: string, date: string): any[] {
   // Start with all detailed data for this user/date
@@ -1361,7 +1382,7 @@ getDetailedEntries(userId: string, date: string): any[] {
     detail.user_id.toString() === userId.toString() && 
     this.formatDate(detail.timesheet_date) === this.formatDate(date)
   );
-
+  
 
   // Apply other filters (except employee and date which we've already handled)
   return entries.filter(detail => {

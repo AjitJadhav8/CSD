@@ -672,7 +672,9 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
                     AND pt.is_released = 0
                 ) THEN 1
                 ELSE 0
-            END) as is_active_assignment
+            END) as is_active_assignment,
+            GROUP_CONCAT(DISTINCT p.project_name ORDER BY p.project_name SEPARATOR ', ') as projects,
+            GROUP_CONCAT(DISTINCT p.project_id ORDER BY p.project_id SEPARATOR ',') as project_ids
         FROM 
             trans_timesheet t
         JOIN 
