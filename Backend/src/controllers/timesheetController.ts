@@ -304,32 +304,32 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
 
             const query = `
             SELECT 
-                t.timesheet_id, 
-                t.user_id, 
-                t.pd_id, 
-                t.task_description,
-                mpd.project_deliverable_name, 
-                mp.project_id,  
-                mp.project_name, 
-                mc.customer_id,
-                mc.customer_name, 
-                mpp.phase_id,
-                mpp.project_phase_name,
-                t.hours, 
-                t.minutes, 
-                t.task_status, 
-                t.timesheet_date,
-                pm.user_id as project_manager_id, 
-                CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name 
-            FROM trans_timesheet t
-            LEFT JOIN master_project_deliverables mpd ON t.pd_id = mpd.pd_id
-            LEFT JOIN master_project_phases mpp ON mpd.pd_id = mpp.pd_id  /* Changed to join on pd_id */
-            LEFT JOIN master_project mp ON mpd.project_id = mp.project_id  /* Changed to join through deliverables */
-            LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id  /* Changed to join through deliverables */
-            LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id
-            WHERE t.is_deleted = 0 
-                AND t.user_id = ? 
-            ORDER BY t.timesheet_id DESC`;
+    t.timesheet_id, 
+    t.user_id, 
+    t.pd_id, 
+    t.task_description,
+    mpd.project_deliverable_name, 
+    mp.project_id,  
+    mp.project_name, 
+    mc.customer_id,
+    mc.customer_name, 
+    mpp.phase_id,
+    mpp.project_phase_name,
+    t.hours, 
+    t.minutes, 
+    t.task_status, 
+    t.timesheet_date,
+    pm.user_id as project_manager_id, 
+    CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name 
+FROM trans_timesheet t
+LEFT JOIN master_project_deliverables mpd ON t.pd_id = mpd.pd_id
+LEFT JOIN master_project_phases mpp ON t.phase_id = mpp.phase_id  /* Changed to join on timesheet's phase_id */
+LEFT JOIN master_project mp ON mpd.project_id = mp.project_id
+LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id
+WHERE t.is_deleted = 0 
+    AND t.user_id = ? 
+ORDER BY t.timesheet_id DESC`;
 
             db.query(query, [userId], (err, results) => {
                 if (err) {

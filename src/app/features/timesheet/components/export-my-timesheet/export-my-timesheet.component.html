@@ -22,13 +22,13 @@
     <div class="flex flex-wrap items-center gap-4">
       <div class="flex items-center space-x-2">
         <label class="text-sm font-medium text-gray-700">From:</label>
-        <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()"
+        <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()"
           class="text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
       <div class="flex items-center space-x-2">
         <label class="text-sm font-medium text-gray-700">To:</label>
-        <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()"
+        <input type="date" [(ngModel)]="toDate" (change)="applyFilters()"
           class="text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
