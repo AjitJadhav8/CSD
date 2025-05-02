@@ -1094,49 +1094,125 @@ export class ManagersHubComponent {
   optionPhasesForTimesheet: any[] = [];
   optionDeliverablesForTimesheet: any[] = []; // Populate this with your deliverables data
 
-  // Add these methods
+  
+
   fetchProjectTeamsTimesheet(): void {
     const projectManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!projectManagerId) return;
 
+    // Show loading indicator
+    this.isLoading = true;
+
     this.timesheetService.getProjectTeamsTimesheet(projectManagerId).subscribe(
-      (response) => {
-        this.timesheetData = response;
+        (response: any) => {
+            // Store both aggregated and detailed data
+            this.timesheetAggregatedData = response.aggregated;
+            this.timesheetDetailedData = response.detailed;
 
-        // Process all filter options
-        this.optionTeamMembers = this.getUniqueTeamMembers(this.timesheetData);
-        this.optionProjectsForTimesheet = this.getUniqueSimpleItems(
-          this.timesheetData,
-          'project_name',
-          'project_id'
-        );
-        this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
-          this.timesheetData,
-          'project_phase_name',
-          'phase_id'
-        );
-        // Add deliverables filter options
-        this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
-          this.timesheetData,
-          'project_deliverable_name',
-          'pd_id' // or whatever your deliverable ID field is called
-        );
+            // Process filter options from detailed data (since it has all possible values)
+            this.processFilterOptions();
 
-        console.log('Processed options:', {
-          teamMembers: this.optionTeamMembers,
-          projects: this.optionProjectsForTimesheet,
-          phases: this.optionPhasesForTimesheet,
-          deliverables: this.optionDeliverablesForTimesheet // Added deliverables to log
+            // Initialize filtered data with aggregated data
+            this.filteredTimesheetData = [...this.timesheetAggregatedData];
+            
+            // Calculate initial totals
+            this.updateTotalCalculations();
 
-        });
+            // Update pagination
+            this.timesheetCurrentPage = 1;
+            this.updateTimesheetPage();
 
-        this.filteredTimesheetData = [...this.timesheetData];
-        this.updateTimesheetPage();
-      },
-      (error) => console.error(error)
+            // Hide loading indicator
+            this.isLoading = false;
+        },
+        (error) => {
+            console.error('Error fetching timesheet data:', error);
+            this.isLoading = false;
+            // Optionally show error message to user
+        }
     );
+}
+
+// Helper method to process all filter options
+private processFilterOptions(): void {
+  // Process team members
+  this.optionTeamMembers = this.getUniqueTeamMembers(this.timesheetDetailedData);
+  
+  // Process projects
+  this.optionProjectsForTimesheet = this.getUniqueSimpleItems(
+      this.timesheetDetailedData,
+      'project_name',
+      'project_id'
+  );
+  
+  // Process phases
+  this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
+      this.timesheetDetailedData,
+      'project_phase_name',
+      'phase_id'
+  );
+  
+  // Process deliverables
+  this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
+      this.timesheetDetailedData,
+      'project_deliverable_name',
+      'pd_id'
+  );
+
+  // Log processed options for debugging
+  console.log('Processed filter options:', {
+      teamMembers: this.optionTeamMembers,
+      projects: this.optionProjectsForTimesheet,
+      phases: this.optionPhasesForTimesheet,
+      deliverables: this.optionDeliverablesForTimesheet
+  });
+}
+filteredTimesheetDetailedData: any[] = [];
+
+// Helper method to update total calculations
+private updateTotalCalculations(): void {
+  let totalMinutes = this.filteredTimesheetDetailedData.reduce((sum, detail) => 
+    sum + (detail.hours * 60) + (detail.minutes || 0), 0);
+  
+  this.totalHours = Math.floor(totalMinutes / 60);
+  this.totalMinutes = totalMinutes % 60;
+  this.totalEntries = this.filteredTimesheetData.length;
+}
+
+// Modified calculateTimesheetTotalTime to work with aggregated data
+calculateTimesheetTotalTime(): { hours: number, minutes: number } {
+  if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
+    return { hours: 0, minutes: 0 };
   }
-  // For team members (needs name handling)
+
+  let totalMinutes = 0;
+  
+  this.filteredTimesheetData.forEach(entry => {
+    // Safely parse the values to numbers
+    const hours = Number(entry.total_hours) || 0;
+    const minutes = Number(entry.total_minutes) || 0;
+    
+    // Add to total
+    totalMinutes += (hours * 60) + minutes;
+  });
+
+  // Convert total minutes back to hours and minutes
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return { hours, minutes };
+}
+
+// New method to get detailed entries for an aggregated row
+private getDetailedEntriesForAggregatedRow(aggregatedEntry: any): any[] {
+  if (!this.timesheetDetailedData) return [];
+  
+  return this.timesheetDetailedData.filter(detail => 
+      detail.user_id === aggregatedEntry.user_id && 
+      this.formatDate(detail.timesheet_date) === this.formatDate(aggregatedEntry.timesheet_date)
+  );
+}
+
   private getUniqueTeamMembers(data: any[]): any[] {
     const uniqueMap = new Map();
 
@@ -1175,43 +1251,43 @@ export class ManagersHubComponent {
   timesheetAssignmentStatusFilter: number | null = null; // null = all, 1 = active, 0 = released
 
   applyTimesheetFilters(): void {
-    this.filteredTimesheetData = this.timesheetData.filter(timesheet => {
-
-      // Debug status values first
-      // Employee filter - compare by ID
-      const matchesEmployee = !this.timesheetEmployeeFilter ||
-        timesheet.user_id == this.timesheetEmployeeFilter;
-
-      const matchesProject = !this.timesheetProjectFilter ||
-        timesheet.project_id == this.timesheetProjectFilter;
-
-      // Phase filter - compare by ID
-      const matchesPhase = !this.timesheetPhaseFilter ||
-        timesheet.phase_id == this.timesheetPhaseFilter;
-
-      // New Deliverable filter
-      const matchesDeliverable = !this.timesheetDeliverableFilter ||
-        timesheet.pd_id == this.timesheetDeliverableFilter;
-
-
-
-      const matchesStatus = this.timesheetStatusFilter === null ||
-        timesheet.task_status === this.timesheetStatusFilter;
-
-          // Assignment status filter
-          const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null ||
-          timesheet.is_active_assignment == this.timesheetAssignmentStatusFilter;
-
-      // Date filtering
-      // Single date filter (exact match)
-      const matchesDate = !this.timesheetDateFilter ||
-        this.formatDate(timesheet.timesheet_date) ===
-        this.formatDate(this.timesheetDateFilter);
-
-      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
-        matchesStatus && matchesDate && matchesAssignmentStatus;
+    // 1. Filter the detailed data based on user selections
+    this.filteredTimesheetDetailedData = this.timesheetDetailedData.filter(detail => {
+      const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
+      const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
+      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+      const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
+      const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
+      const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
+      const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
+  
+      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable && matchesStatus && matchesAssignmentStatus && matchesDate;
     });
-
+  
+    // 2. Aggregate filtered details into user-date groups
+    const aggregationMap = new Map<string, any>();
+    this.filteredTimesheetDetailedData.forEach(detail => {
+      const key = `${detail.user_id}-${this.formatDate(detail.timesheet_date)}`;
+      if (!aggregationMap.has(key)) {
+        aggregationMap.set(key, {
+          user_id: detail.user_id,
+          employee_name: detail.employee_name,
+          timesheet_date: detail.timesheet_date,
+          total_hours: 0,
+          total_minutes: 0,
+          entry_count: 0,
+          is_active_assignment: detail.is_active_assignment
+        });
+      }
+      const entry = aggregationMap.get(key);
+      entry.total_hours += detail.hours;
+      entry.total_minutes += detail.minutes;
+      entry.entry_count += 1;
+    });
+  
+    // 3. Update aggregated view and totals
+    this.filteredTimesheetData = Array.from(aggregationMap.values());
+    this.updateTotalCalculations();
     this.timesheetCurrentPage = 1;
     this.updateTimesheetPage();
   }
@@ -1259,20 +1335,6 @@ export class ManagersHubComponent {
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
 
-  calculateTimesheetTotalTime(): { hours: number, minutes: number } {
-    if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
-      return { hours: 0, minutes: 0 };
-    }
-
-    let totalMinutes = this.filteredTimesheetData.reduce((sum, entry) => {
-      return sum + (entry.hours * 60) + entry.minutes;
-    }, 0);
-
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    return { hours, minutes };
-  }
 
   calculateTimesheetTotalHours(): number {
     const totalTime = this.calculateTimesheetTotalTime();
@@ -1280,12 +1342,51 @@ export class ManagersHubComponent {
   }
 
 
+// Add this method to toggle row expansion
+toggleRowExpansion(userId: string, date: string): void {
+  const key = `${userId}-${date}`;
+  if (this.expandedRows.has(key)) {
+      this.expandedRows.delete(key);
+  } else {
+      this.expandedRows.add(key);
+  }
+}
 
 
 
+// Add this method to get detailed entries for a row
+getDetailedEntries(userId: string, date: string): any[] {
+  // Start with all detailed data for this user/date
+  let entries = this.timesheetDetailedData.filter(detail => 
+    detail.user_id.toString() === userId.toString() && 
+    this.formatDate(detail.timesheet_date) === this.formatDate(date)
+  );
 
 
+  // Apply other filters (except employee and date which we've already handled)
+  return entries.filter(detail => {
+    const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
+    const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+    const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
+    const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
+    const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
 
+    return matchesProject && matchesPhase && matchesDeliverable && 
+           matchesStatus && matchesAssignmentStatus;
+  });
+}
+
+// Add this method to make Math available in your template
+// Alternatively, you can modify the template to use the global Math object
+
+
+  expandedRows: Set<string> = new Set(); // Tracks which rows are expanded
+  timesheetAggregatedData: any[] = [];
+  timesheetDetailedData: any[] = [];
+  isLoading: boolean = false;
+  totalEntries: number = 0;
+  totalHours: number = 0;
+  totalMinutes: number = 0;
 
 
 

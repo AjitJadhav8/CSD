@@ -529,68 +529,7 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
 
 
     
-    async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
-        try {
-            const projectManagerId = parseInt(req.params.projectManagerId);
-    
-            const query = `
-            SELECT 
-                t.timesheet_id,
-                t.timesheet_date,
-                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-                p.project_name,
-                ph.project_phase_name,
-                pd.project_deliverable_name,
-                pd.pd_id,
-                t.task_description,
-                t.hours,
-                t.minutes,
-                t.task_status,
-                t.user_id,
-                p.project_id,
-                ph.phase_id,
-                CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name,
-                CASE 
-                    WHEN EXISTS (
-                        SELECT 1 FROM trans_project_team pt 
-                        WHERE pt.employee_id = t.user_id 
-                        AND pt.project_id = p.project_id 
-                        AND pt.is_deleted = 0 
-                        AND pt.is_released = 0
-                    ) THEN 1
-                    ELSE 0
-                END as is_active_assignment
-            FROM 
-                trans_timesheet t
-            JOIN 
-                master_user u ON t.user_id = u.user_id
-            JOIN 
-                master_project_deliverables pd ON t.pd_id = pd.pd_id
-            JOIN 
-                master_project_phases ph ON t.phase_id = ph.phase_id
-            JOIN 
-                master_project p ON pd.project_id = p.project_id
-            JOIN 
-                master_user pm ON p.project_manager_id = pm.user_id
-            WHERE 
-                t.is_deleted = 0
-                AND p.project_manager_id = ?
-            ORDER BY 
-                t.timesheet_date DESC, u.user_first_name
-            `;
-    
-            db.query(query, [projectManagerId], (err, results) => {
-                if (err) {
-                    console.error('Error fetching project team timesheets:', err);
-                    return res.status(500).json({ error: 'Error fetching project team timesheets' });
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+   
 
     async getReportingTeamByManager(req: Request, res: Response): Promise<void> {
         try {
@@ -648,6 +587,187 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+    // async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const projectManagerId = parseInt(req.params.projectManagerId);
+    
+    //         const query = `
+    //         SELECT 
+    //             t.timesheet_id,
+    //             t.timesheet_date,
+    //             CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+    //             p.project_name,
+    //             ph.project_phase_name,
+    //             pd.project_deliverable_name,
+    //             pd.pd_id,
+    //             t.task_description,
+    //             t.hours,
+    //             t.minutes,
+    //             t.task_status,
+    //             t.user_id,
+    //             p.project_id,
+    //             ph.phase_id,
+    //             CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS current_project_manager_name,
+    //             CASE 
+    //                 WHEN EXISTS (
+    //                     SELECT 1 FROM trans_project_team pt 
+    //                     WHERE pt.employee_id = t.user_id 
+    //                     AND pt.project_id = p.project_id 
+    //                     AND pt.is_deleted = 0 
+    //                     AND pt.is_released = 0
+    //                 ) THEN 1
+    //                 ELSE 0
+    //             END as is_active_assignment
+    //         FROM 
+    //             trans_timesheet t
+    //         JOIN 
+    //             master_user u ON t.user_id = u.user_id
+    //         JOIN 
+    //             master_project_deliverables pd ON t.pd_id = pd.pd_id
+    //         JOIN 
+    //             master_project_phases ph ON t.phase_id = ph.phase_id
+    //         JOIN 
+    //             master_project p ON pd.project_id = p.project_id
+    //         JOIN 
+    //             master_user pm ON p.project_manager_id = pm.user_id
+    //         WHERE 
+    //             t.is_deleted = 0
+    //             AND p.project_manager_id = ?
+    //         ORDER BY 
+    //             t.timesheet_date DESC, u.user_first_name
+    //         `;
+    
+    //         db.query(query, [projectManagerId], (err, results) => {
+    //             if (err) {
+    //                 console.error('Error fetching project team timesheets:', err);
+    //                 return res.status(500).json({ error: 'Error fetching project team timesheets' });
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
+    async getProjectTeamsTimesheet(req: Request, res: Response): Promise<void> {
+    try {
+        const projectManagerId = parseInt(req.params.projectManagerId);
+
+        // Query for aggregated data (totals by employee and date)
+        const aggregatedQuery = `
+        SELECT 
+            t.user_id,
+            CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+            t.timesheet_date,
+            SUM(t.hours) AS total_hours,
+            SUM(t.minutes) AS total_minutes,
+            COUNT(*) AS entry_count,
+            MIN(CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM trans_project_team pt 
+                    WHERE pt.employee_id = t.user_id 
+                    AND pt.project_id = p.project_id 
+                    AND pt.is_deleted = 0 
+                    AND pt.is_released = 0
+                ) THEN 1
+                ELSE 0
+            END) as is_active_assignment
+        FROM 
+            trans_timesheet t
+        JOIN 
+            master_user u ON t.user_id = u.user_id
+        JOIN 
+            master_project_deliverables pd ON t.pd_id = pd.pd_id
+        JOIN 
+            master_project_phases ph ON t.phase_id = ph.phase_id
+        JOIN 
+            master_project p ON pd.project_id = p.project_id
+        JOIN 
+            master_user pm ON p.project_manager_id = pm.user_id
+        WHERE 
+            t.is_deleted = 0
+            AND p.project_manager_id = ?
+        GROUP BY 
+            t.user_id, u.user_first_name, u.user_last_name, t.timesheet_date
+        ORDER BY 
+            t.timesheet_date DESC, u.user_first_name
+        `;
+
+        // Query for detailed data (all entries)
+        const detailedQuery = `
+        SELECT 
+            t.timesheet_id,
+            t.timesheet_date,
+            t.user_id,
+            CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+            p.project_name,
+            ph.project_phase_name,
+            pd.project_deliverable_name,
+            pd.pd_id,
+            t.task_description,
+            t.hours,
+            t.minutes,
+            t.task_status,
+            p.project_id,
+            ph.phase_id,
+            CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM trans_project_team pt 
+                    WHERE pt.employee_id = t.user_id 
+                    AND pt.project_id = p.project_id 
+                    AND pt.is_deleted = 0 
+                    AND pt.is_released = 0
+                ) THEN 1
+                ELSE 0
+            END as is_active_assignment
+        FROM 
+            trans_timesheet t
+        JOIN 
+            master_user u ON t.user_id = u.user_id
+        JOIN 
+            master_project_deliverables pd ON t.pd_id = pd.pd_id
+        JOIN 
+            master_project_phases ph ON t.phase_id = ph.phase_id
+        JOIN 
+            master_project p ON pd.project_id = p.project_id
+        JOIN 
+            master_user pm ON p.project_manager_id = pm.user_id
+        WHERE 
+            t.is_deleted = 0
+            AND p.project_manager_id = ?
+        ORDER BY 
+            t.timesheet_date DESC, u.user_first_name
+        `;
+
+        // Execute both queries in parallel
+        Promise.all([
+            new Promise((resolve, reject) => {
+                db.query(aggregatedQuery, [projectManagerId], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            }),
+            new Promise((resolve, reject) => {
+                db.query(detailedQuery, [projectManagerId], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            })
+        ]).then(([aggregatedData, detailedData]) => {
+            res.status(200).json({
+                aggregated: aggregatedData,
+                detailed: detailedData
+            });
+        }).catch(error => {
+            console.error('Error fetching timesheet data:', error);
+            res.status(500).json({ error: 'Error fetching timesheet data' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
     async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
