@@ -125,7 +125,10 @@ async refreshToken(req: Request, res: Response): Promise<void> {
         const updateQuery = 'UPDATE master_user SET reset_token = ?, reset_token_expiry = ? WHERE user_email = ?';
         db.query(updateQuery, [resetToken, expiryTime, email]);
   
-        const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
+        // const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
+
+        const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
+
   
         await sendPasswordResetEmail(email, resetLink);
   

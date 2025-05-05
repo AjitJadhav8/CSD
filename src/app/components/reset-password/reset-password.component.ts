@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../services/auth-service/auth.service';
+
 import Swal from 'sweetalert2';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-reset-password',

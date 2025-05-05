@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { AppCenterComponent } from './features/app-center/app-center.component';
 import { authGuard } from './guards/auth.guard'; // Correct import
-import { ResetPasswordComponent } from './components/reset-password/reset-password/reset-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 
 // export const routes: Routes = [
