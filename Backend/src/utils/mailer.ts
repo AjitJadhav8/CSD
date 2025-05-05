@@ -15,7 +15,6 @@ interface TokenResponse {
   ext_expires_in: number;
 }
 
-// Get Access Token
 async function getAccessToken(): Promise<string> {
   const url = `https://login.microsoftonline.com/${config.tenantId}/oauth2/v2.0/token`;
   
