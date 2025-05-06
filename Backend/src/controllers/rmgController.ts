@@ -468,7 +468,6 @@ async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): 
     }
   }
 
-  // all teams timesheet
 
   // Fetch all timesheet entries
   async getAllTimesheets(req: Request, res: Response): Promise<void> {

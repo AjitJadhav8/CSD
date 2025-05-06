@@ -676,7 +676,7 @@ releaseEmployee(projectTeamId: number): void {
         (this.projectNameFilter ? team.project_id === this.projectNameFilter : true) &&
         (this.employeeNameFilter ? team.employee_id === this.employeeNameFilter : true) &&
         (this.projectRoleFilter ? team.project_role_id === this.projectRoleFilter : true) &&
-        (this.projectManagerFilter ? team.project_manager_id === this.projectManagerFilter : true) &&
+        (this.projectManagerFilter ? team.current_project_manager_id === this.projectManagerFilter : true) &&
         (this.startDateFilter ? this.formatDate(team.start_date) == this.startDateFilter : true) &&
         (this.endDateFilter ? this.formatDate(team.end_date) == this.endDateFilter : true) &&
         (this.allocationStatusFilter !== null ? team.allocation_status === this.allocationStatusFilter : true) &&
