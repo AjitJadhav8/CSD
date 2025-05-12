@@ -19,6 +19,329 @@ import { SecureStorageService } from '../../../../services/secureStorage-service
 export class ManagersHubComponent {
 
 
+
+  // Calendar View Properties
+  calendarEmployees: {id: string, name: string}[] = [];
+  calendarDays: {date: Date, isCurrentMonth: boolean}[] = [];
+  calendarData: Map<string, Map<string, number>> = new Map();
+  currentMonth: Date = new Date();
+ // Add this method to format dates
+
+ private formatDateFromDate(date: Date): string {
+  if (!date) return '';
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate.toISOString().split('T')[0];
+}
+
+  initializeCalendarView() {
+    this.generateCalendarDays();
+    this.prepareCalendarData();
+  }
+
+  private generateCalendarDays(): void {
+    this.calendarDays = [];
+    
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    
+    // Get first and last day of month
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Get days from previous month to start the week
+    const startDay = new Date(firstDay);
+    startDay.setDate(startDay.getDate() - startDay.getDay());
+    
+    // Get days from next month to complete the grid
+    const endDay = new Date(lastDay);
+    endDay.setDate(endDay.getDate() + (6 - endDay.getDay()));
+    
+    // Generate all days for the calendar view
+    const currentDate = new Date(startDay);
+    while (currentDate <= endDay) {
+      this.calendarDays.push({
+        date: new Date(currentDate),
+        isCurrentMonth: currentDate.getMonth() === month
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  }
+private prepareCalendarData(): void {
+  // Use the main detailed data instead of filtered data
+  if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
+    console.warn('No timesheet data available for calendar view');
+    return;
+  }
+
+  this.calendarEmployees = [];
+  this.calendarData.clear();
+
+  const currentYear = this.currentMonth.getFullYear();
+  const currentMonthNum = this.currentMonth.getMonth();
+  const employeeMap = new Map<string, {id: string, name: string}>();
+
+  // Use timesheetDetailedData instead of filteredTimesheetDetailedData
+  this.timesheetDetailedData.forEach(entry => {
+    if (!entry.timesheet_date) {
+      console.warn('Entry missing timesheet_date:', entry);
+      return;
+    }
+
+    const entryDate = new Date(entry.timesheet_date);
+    if (entryDate.getFullYear() === currentYear && entryDate.getMonth() === currentMonthNum) {
+      const dateStr = this.formatDate(entry.timesheet_date);
+      
+      if (!employeeMap.has(entry.user_id)) {
+        employeeMap.set(entry.user_id, {
+          id: entry.user_id,
+          name: entry.employee_name
+        });
+      }
+
+      const hours = (Number(entry.hours) || 0) + (Number(entry.minutes) || 0) / 60;
+      
+      if (!this.calendarData.has(entry.user_id)) {
+        this.calendarData.set(entry.user_id, new Map());
+      }
+      
+      const employeeDates = this.calendarData.get(entry.user_id);
+      if (employeeDates) {
+        const currentHours = employeeDates.get(dateStr) || 0;
+        employeeDates.set(dateStr, currentHours + hours);
+      }
+    }
+  });
+
+  this.calendarEmployees = Array.from(employeeMap.values())
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  console.log('Calendar data loaded:', {
+    employees: this.calendarEmployees,
+    dates: this.calendarDays,
+    data: this.calendarData
+  });
+}
+
+  // Navigation methods
+  previousMonth(): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() - 1,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  nextMonth(): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  changeMonth(months: number): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + months,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  // Helper methods
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() && 
+           date.getMonth() === today.getMonth() && 
+           date.getFullYear() === today.getFullYear();
+  }
+
+  getWorkingDaysCount(): number {
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    let count = 0;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const current = new Date(year, month, day);
+      if (current.getDay() !== 0 && current.getDay() !== 6) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  getHoursForCell(employeeId: string, date: Date): string {
+const dateStr = this.formatDateFromDate(date); // Changed from formatDate to formatDateFromDate
+    const employeeData = this.calendarData.get(employeeId);
+    if (!employeeData) return '';
+    
+    const hours = employeeData.get(dateStr);
+    return hours ? hours.toFixed(1) + 'h' : '';
+  }
+
+  getEntryCount(employeeId: string, date: Date): number {
+const dateStr = this.formatDateFromDate(date); // Changed from formatDate to formatDateFromDate
+    return this.filteredTimesheetDetailedData.filter(entry => 
+      entry.user_id === employeeId && 
+      this.formatDate(entry.timesheet_date) === dateStr
+    ).length;
+  }
+
+
+  
+
+// Make sure this method exists in your component
+
+
+
+
+
+// ----------------------------------------------------
+
+
+// Backdate Request Properties
+backdateRequests: any[] = [];
+filteredBackdateRequests: any[] = [];
+paginatedBackdateRequests: any[] = [];
+backdateRequestCurrentPage: number = 1;
+backdateRequestTotalItems: number = 0;
+backdateRequestItemsPerPage: number = 10;
+backdateRequestMaxPageButtons: number = 5;
+
+// Filter Properties
+backdateRequestProjectFilter: string = '';
+backdateRequestStatusFilter: string = '';
+backdateRequestDateFilter: string = '';
+
+fetchBackdateRequests(): void {
+  this.timesheetService.getPendingBackdateRequestsForManager(this.currentManagerId).subscribe({
+    next: (response) => {
+      this.backdateRequests = response;
+      this.filteredBackdateRequests = [...this.backdateRequests];
+      this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
+      this.updateBackdateRequestPage();
+    },
+    error: (error) => {
+      console.error('Error fetching backdate requests:', error);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error loading backdate requests',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    }
+  });
+}
+
+applyBackdateRequestFilters(): void {
+  this.filteredBackdateRequests = this.backdateRequests.filter(request => {
+    const matchesProject = !this.backdateRequestProjectFilter || 
+      request.project_id == this.backdateRequestProjectFilter;
+    const matchesStatus = !this.backdateRequestStatusFilter || 
+      request.status === this.backdateRequestStatusFilter;
+    const matchesDate = !this.backdateRequestDateFilter || 
+      new Date(request.requested_date).toDateString() === new Date(this.backdateRequestDateFilter).toDateString();
+    
+    return matchesProject && matchesStatus && matchesDate;
+  });
+
+  this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
+  this.backdateRequestCurrentPage = 1;
+  this.updateBackdateRequestPage();
+}
+
+clearBackdateRequestFilters(): void {
+  this.backdateRequestProjectFilter = '';
+  this.backdateRequestStatusFilter = '';
+  this.backdateRequestDateFilter = '';
+  this.applyBackdateRequestFilters();
+}
+
+updateBackdateRequestPage(): void {
+  const startIndex = (this.backdateRequestCurrentPage - 1) * this.backdateRequestItemsPerPage;
+  const endIndex = startIndex + this.backdateRequestItemsPerPage;
+  this.paginatedBackdateRequests = this.filteredBackdateRequests.slice(startIndex, endIndex);
+}
+
+changeBackdateRequestPage(page: number): void {
+  if (page >= 1 && page <= this.backdateRequestTotalPages) {
+    this.backdateRequestCurrentPage = page;
+    this.updateBackdateRequestPage();
+  }
+}
+
+get backdateRequestTotalPages(): number {
+  return Math.ceil(this.filteredBackdateRequests.length / this.backdateRequestItemsPerPage);
+}
+
+getVisibleBackdateRequestPageNumbers(): number[] {
+  const totalPages = this.backdateRequestTotalPages;
+  const halfRange = Math.floor(this.backdateRequestMaxPageButtons / 2);
+
+  let startPage = Math.max(1, this.backdateRequestCurrentPage - halfRange);
+  let endPage = Math.min(totalPages, startPage + this.backdateRequestMaxPageButtons - 1);
+
+  if (endPage - startPage + 1 < this.backdateRequestMaxPageButtons) {
+    startPage = Math.max(1, endPage - this.backdateRequestMaxPageButtons + 1);
+  }
+
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void {
+  const actionText = action === 'approved' ? 'approve' : 'reject';
+  
+  Swal.fire({
+    title: `Are you sure you want to ${actionText} this request?`,
+    text: 'This action cannot be undone',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: `Yes, ${actionText} it!`
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.timesheetService.processBackdateRequest(requestId, action, this.currentManagerId).subscribe({
+        next: (response) => {
+          // Update the status of the request in our local array instead of refetching
+          const index = this.backdateRequests.findIndex(r => r.request_id === requestId);
+          if (index !== -1) {
+            this.backdateRequests[index].status = action;
+            this.backdateRequests[index].processed_by = this.currentManagerId;
+            this.backdateRequests[index].processed_at = new Date().toISOString();
+            this.applyBackdateRequestFilters(); // Reapply filters to update the view
+          }
+          
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `Request ${actionText}d successfully!`,
+            showConfirmButton: false,
+            timer: 3000
+          });
+        },
+        error: (error) => {
+          console.error(`Error ${actionText}ing request:`, error);
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: `Error ${actionText}ing request`,
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      });
+    }
+  });
+}
+
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService, private secureStorage: SecureStorageService) { }
 
   optionPhases: any[] = [];
@@ -55,6 +378,7 @@ export class ManagersHubComponent {
 
   ngOnInit(): void {
 
+
     this.currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
     console.log('Current Manager ID:', this.currentManagerId);
 
@@ -62,6 +386,7 @@ export class ManagersHubComponent {
     this.secureStorage.setItem('selectedManagersHubSection', this.selectedSection);
 
     this.fetchManagerProjects(); // Add this line
+    this.fetchBackdateRequests();
 
 
     window.addEventListener('storage', this.updateSectionFromStorage.bind(this));
@@ -73,6 +398,10 @@ export class ManagersHubComponent {
     this.fetchReportingTeamData();
     this.fetchReportingTeamsTimesheet();
     this.fetchOptions();
+
+        this.initializeCalendarView();
+
+
   }
 
   managerProjects: any[] = [];
@@ -383,23 +712,7 @@ export class ManagersHubComponent {
   };
   filteredEditProjects: any[] = [];
 
-  // Add these methods
-  // openEditDeliverableModal(deliverable: any): void {
-  //   this.editDeliverableData = {
-  //     pd_id: deliverable.pd_id,
-  //     customer_id: deliverable.customer_id,
-  //     project_id: deliverable.project_id,
-  //     project_deliverable_name: deliverable.project_deliverable_name,
-  //     customer_name: deliverable.customer_name,
-  //     project_name: deliverable.project_name
-  //   };
 
-  //   this.filteredEditProjects = this.optionProject.filter(
-  //     p => p.customer_id == deliverable.customer_id
-  //   );
-
-  //   this.isEditDeliverableModalOpen = true;
-  // }
 
   // Update the open modal methods
   openEditDeliverableModal(deliverable: any): void {
@@ -1108,6 +1421,7 @@ export class ManagersHubComponent {
             // Store both aggregated and detailed data
             this.timesheetAggregatedData = response.aggregated;
             this.timesheetDetailedData = response.detailed;
+            
 
             // Process filter options from detailed data (since it has all possible values)
             this.processFilterOptions();
@@ -1123,6 +1437,8 @@ export class ManagersHubComponent {
             this.updateTimesheetPage();
 
             // Hide loading indicator
+      // this.initializeCalendarView(); // Initialize after data loads
+
             this.isLoading = false;
         },
         (error) => {
@@ -1203,15 +1519,7 @@ calculateTimesheetTotalTime(): { hours: number, minutes: number } {
   return { hours, minutes };
 }
 
-// New method to get detailed entries for an aggregated row
-private getDetailedEntriesForAggregatedRow(aggregatedEntry: any): any[] {
-  if (!this.timesheetDetailedData) return [];
-  
-  return this.timesheetDetailedData.filter(detail => 
-      detail.user_id === aggregatedEntry.user_id && 
-      this.formatDate(detail.timesheet_date) === this.formatDate(aggregatedEntry.timesheet_date)
-  );
-}
+
 
   private getUniqueTeamMembers(data: any[]): any[] {
     const uniqueMap = new Map();
@@ -1313,6 +1621,8 @@ private getDetailedEntriesForAggregatedRow(aggregatedEntry: any): any[] {
     this.updateTotalCalculations();
     this.timesheetCurrentPage = 1;
     this.updateTimesheetPage();
+    
+
 }
 
   clearTimesheetFilters(): void {

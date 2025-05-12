@@ -1,5 +1,174 @@
 <div class="p-4">
 
+
+    <div *ngIf="selectedSection === 'backdateRequests'">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <div class="mb-6 pb-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Backdate Timesheet Requests
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Approve or reject employee requests for backdated timesheet
+                    entries</p>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="flex flex-wrap items-center gap-2 mb-4 py-2 bg-gray-50 rounded shadow-sm">
+                <!-- Project Filter -->
+                <div class="relative w-full md:w-auto">
+                    <label class="block text-xs font-medium mb-1">Project</label>
+                    <ng-select [(ngModel)]="backdateRequestProjectFilter" (change)="applyBackdateRequestFilters()"
+                        class="text-xs custom-ng-select-filter" [clearable]="true" [searchable]="true">
+                        <ng-option [value]="">All Projects</ng-option>
+                        <ng-option *ngFor="let project of managerProjects" [value]="project.project_id">
+                            {{ project.project_name }}
+                        </ng-option>
+                    </ng-select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="relative w-full md:w-auto">
+                    <label class="block text-xs font-medium mb-1">Status</label>
+                    <ng-select [(ngModel)]="backdateRequestStatusFilter" (change)="applyBackdateRequestFilters()"
+                        class="text-xs custom-ng-select-filter" [clearable]="true">
+                        <ng-option [value]="">All Statuses</ng-option>
+                        <ng-option value="pending">Pending</ng-option>
+                        <ng-option value="approved">Approved</ng-option>
+                        <ng-option value="rejected">Rejected</ng-option>
+                    </ng-select>
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="relative w-full md:w-auto">
+                    <label class="block text-xs font-medium mb-1">Requested Date</label>
+                    <input type="date" [(ngModel)]="backdateRequestDateFilter" (change)="applyBackdateRequestFilters()"
+                        class="text-xs border border-gray-300 rounded px-2 py-1 w-full">
+                </div>
+
+                <!-- Clear Filters Button -->
+                <div class="relative w-full md:w-auto self-end">
+                    <button (click)="clearBackdateRequestFilters()" title="Clear all filters"
+                        class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Requests Table -->
+            <div class="rounded-lg w-full overflow-x-auto">
+                <table class="min-w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-2 py-2 border border-gray-200 text-center">#</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Employee</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Project</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Requested Date</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Reason</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Status</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Valid Until</th>
+                            <th class="px-2 py-2 border border-gray-200 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let request of paginatedBackdateRequests; let i = index" class="hover:bg-gray-50">
+                            <td class="px-2 py-2 border border-gray-300 text-center">{{ i + 1 }}</td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">{{ request.user_name }}</td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">{{ request.project_name }}</td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">{{ request.requested_date |
+                                date:'dd-MMM-yyyy' }}</td>
+                            <td class="px-2 py-2 border border-gray-300 text-center max-w-xs truncate">{{ request.reason
+                                }}</td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">
+                                <span [ngClass]="{
+                      'bg-yellow-100 text-yellow-800': request.status === 'pending',
+                      'bg-green-100 text-green-800': request.status === 'approved',
+                      'bg-red-100 text-red-800': request.status === 'rejected'
+                    }" class="px-2 py-1 rounded-full text-xs">
+                                    {{ request.status | titlecase }}
+                                </span>
+                            </td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">
+                                {{ request.valid_until | date:'dd-MMM-yyyy' }}
+                            </td>
+                            <td class="px-2 py-2 border border-gray-300 text-center">
+                                <div *ngIf="request.status === 'pending'" class="flex justify-center space-x-1">
+                                    <button (click)="processBackdateRequest(request.request_id, 'approved')"
+                                        class="text-green-600 hover:text-green-800 p-1" title="Approve">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </button>
+                                    <button (click)="processBackdateRequest(request.request_id, 'rejected')"
+                                        class="text-red-600 hover:text-red-800 p-1" title="Reject">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div *ngIf="request.status !== 'pending'" class="text-xs">
+                                    <span class="block">{{ request.status | titlecase }}</span>
+                                    <span *ngIf="request.processed_by_name" class="block text-gray-500">by {{
+                                        request.processed_by_name }}</span>
+                                    <span *ngIf="request.processed_at" class="block text-gray-500 text-xs">
+                                        on {{ request.processed_at | date:'shortDate' }}
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="backdateRequests.length === 0">
+                            <td colspan="8" class="px-4 py-4 text-center text-gray-500">No backdate requests found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-center mt-4 space-x-1">
+                <button (click)="changeBackdateRequestPage(backdateRequestCurrentPage - 1)"
+                    [disabled]="backdateRequestCurrentPage === 1" class="px-3 py-1 border rounded-md">
+                    Previous
+                </button>
+                <button *ngFor="let page of getVisibleBackdateRequestPageNumbers()"
+                    (click)="changeBackdateRequestPage(page)" [class.bg-blue-500]="backdateRequestCurrentPage === page"
+                    [class.text-white]="backdateRequestCurrentPage === page" class="px-3 py-1 border rounded-md">
+                    {{ page }}
+                </button>
+                <button (click)="changeBackdateRequestPage(backdateRequestCurrentPage + 1)"
+                    [disabled]="backdateRequestCurrentPage === backdateRequestTotalPages"
+                    class="px-3 py-1 border rounded-md">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div *ngIf="selectedSection === 'projectDeliverable'">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
 
@@ -998,7 +1167,7 @@
                             <th class="px-1 py-1 border border-gray-200 text-center">Tentative End Date</th>
 
                             <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
-<th class="px-1 py-1 border border-gray-200 text-center">Released Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Released Date</th>
 
 
                         </tr>
@@ -1040,16 +1209,17 @@
                                 date:'dd-MMM-yyyy' }}</td>
 
 
-<td class="px-1 py-1 border border-gray-300 text-center">
-    <span *ngIf="member.is_released" class="text-orange-600">Released</span>
-    <span *ngIf="!member.is_released" class="text-green-600">Active</span>
-</td>
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span *ngIf="member.is_released" class="text-orange-600">Released</span>
+                                <span *ngIf="!member.is_released" class="text-green-600">Active</span>
+                            </td>
 
-<!-- Released Date Column -->
-<td class="px-1 py-1 border border-gray-300 text-center">
-    <span *ngIf="member.released_date">{{ member.released_date | date:'dd-MMM-yyyy' }}</span>
-    <span *ngIf="!member.released_date">-</span>
-</td>
+                            <!-- Released Date Column -->
+                            <td class="px-1 py-1 border border-gray-300 text-center">
+                                <span *ngIf="member.released_date">{{ member.released_date | date:'dd-MMM-yyyy'
+                                    }}</span>
+                                <span *ngIf="!member.released_date">-</span>
+                            </td>
 
 
                         </tr>
@@ -1200,104 +1370,116 @@
 
             <!-- Timesheet Table -->
             <div class="rounded-lg w-full inline-block whitespace-nowrap">
-              <!-- Modify your table structure -->
-              <table class="min-w-full text-xs border-collapse">
-                <thead>
-                    <tr class="bg-gray-50">
-                        <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50"></th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Projects</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Total Hours</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Entries</th>
-                        <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ng-container *ngFor="let timesheet of paginatedTimesheetData; let i = index">
-                        <!-- Main aggregated row -->
-                        <tr class="hover:bg-gray-50 cursor-pointer" 
-                            (click)="toggleRowExpansion(timesheet.user_id, timesheet.timesheet_date)">
-                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    [class.transform.rotate-90]="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}</td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                <span class="truncate max-w-[150px] inline-block" 
-                                      [title]="timesheet.projects">
-                                    {{ timesheet.projects || '-' }}
-                                </span>
-                            </td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                <span [ngClass]="{
+                <!-- Modify your table structure -->
+                <table class="min-w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th
+                                class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">
+                            </th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Employee Name</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Date</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Projects</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Total Hours</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Entries</th>
+                            <th class="px-1 py-1 border border-gray-200 text-center">Assignment Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let timesheet of paginatedTimesheetData; let i = index">
+                            <!-- Main aggregated row -->
+                            <tr class="hover:bg-gray-50 cursor-pointer"
+                                (click)="toggleRowExpansion(timesheet.user_id, timesheet.timesheet_date)">
+                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor"
+                                        [class.transform.rotate-90]="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.employee_name }}
+                                </td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.timesheet_date |
+                                    date:'dd-MMM-yyyy' }}</td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                    <span class="truncate max-w-[150px] inline-block" [title]="timesheet.projects">
+                                        {{ timesheet.projects || '-' }}
+                                    </span>
+                                </td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                    <span [ngClass]="{
                                     'text-red-600': (timesheet.total_hours || 0) < 6,
                                     'text-orange-500': (timesheet.total_hours || 0) >= 6 && (timesheet.total_hours || 0) <= 8,
                                     'text-green-600': (timesheet.total_hours || 0) > 8
                                 }">
-                                    {{ timesheet.total_hours || 0 }}h 
-                                    {{ (timesheet.total_minutes || 0) % 60 }}m
-                                </span>
-                            </td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.entry_count }}</td>
-                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                <span [class.text-green-600]="timesheet.is_active_assignment" 
-                                      [class.text-orange-600]="!timesheet.is_active_assignment">
-                                    {{ timesheet.is_active_assignment ? 'Active' : 'Released' }}
-                                </span>
-                            </td>
-                        </tr>
-                        
-                        <!-- Detailed rows (shown when expanded) -->
-                        <tr *ngIf="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)" 
-                            class="bg-gray-50">
-                            <td colspan="7" class="px-0 py-0 border border-gray-200">
-                                <table class="min-w-full text-xs bg-gray-50">
-                                    <thead>
-                                        <tr>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Deliverable</th>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
-                                            <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let detail of getDetailedEntries(timesheet.user_id, timesheet.timesheet_date)" 
-                                            class="hover:bg-gray-100">
-                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_name }}</td>
-                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_phase_name }}</td>
-                                            <td class="px-1 py-1 border border-gray-200 text-center">{{ detail.project_deliverable_name }}</td>
-                                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                                <div class="group relative inline-block">
-                                                    <span class="truncate max-w-[100px] inline-block">{{ detail.task_description || '-' }}</span>
-                                                    <div *ngIf="detail.task_description"
-                                                        class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
-                                                        {{ detail.task_description }}
+                                        {{ timesheet.total_hours || 0 }}h
+                                        {{ (timesheet.total_minutes || 0) % 60 }}m
+                                    </span>
+                                </td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">{{ timesheet.entry_count }}
+                                </td>
+                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                    <span [class.text-green-600]="timesheet.is_active_assignment"
+                                        [class.text-orange-600]="!timesheet.is_active_assignment">
+                                        {{ timesheet.is_active_assignment ? 'Active' : 'Released' }}
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <!-- Detailed rows (shown when expanded) -->
+                            <tr *ngIf="expandedRows.has(timesheet.user_id + '-' + timesheet.timesheet_date)"
+                                class="bg-gray-50">
+                                <td colspan="7" class="px-0 py-0 border border-gray-200">
+                                    <table class="min-w-full text-xs bg-gray-50">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Project</th>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Task</th>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Deliverable
+                                                </th>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Description
+                                                </th>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+                                                <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let detail of getDetailedEntries(timesheet.user_id, timesheet.timesheet_date)"
+                                                class="hover:bg-gray-100">
+                                                <td class="px-1 py-1 border border-gray-200 text-center">{{
+                                                    detail.project_name }}</td>
+                                                <td class="px-1 py-1 border border-gray-200 text-center">{{
+                                                    detail.project_phase_name }}</td>
+                                                <td class="px-1 py-1 border border-gray-200 text-center">{{
+                                                    detail.project_deliverable_name }}</td>
+                                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                                    <div class="group relative inline-block">
+                                                        <span class="truncate max-w-[100px] inline-block">{{
+                                                            detail.task_description || '-' }}</span>
+                                                        <div *ngIf="detail.task_description"
+                                                            class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+                                                            {{ detail.task_description }}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                                {{ detail.hours || 0 }}h {{ detail.minutes || 0 }}m
-                                            </td>
-                                            <td class="px-1 py-1 border border-gray-200 text-center">
-                                                <span [class.text-green-600]="detail.task_status" 
-                                                      [class.text-yellow-600]="!detail.task_status">
-                                                    {{ detail.task_status ? 'Completed' : 'In Progress' }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </ng-container>
-                </tbody>
-            </table>
+                                                </td>
+                                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                                    {{ detail.hours || 0 }}h {{ detail.minutes || 0 }}m
+                                                </td>
+                                                <td class="px-1 py-1 border border-gray-200 text-center">
+                                                    <span [class.text-green-600]="detail.task_status"
+                                                        [class.text-yellow-600]="!detail.task_status">
+                                                        {{ detail.task_status ? 'Completed' : 'In Progress' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
                 <!-- Pagination Controls -->
                 <div class="flex items-center justify-center mt-4 space-x-1">
                     <button (click)="changeTimesheetPage(timesheetCurrentPage - 1)"
@@ -1756,6 +1938,143 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Add this new section -->
+    <div *ngIf="selectedSection === 'timesheetCalendarView'">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+            <!-- Header Section with Month Navigation -->
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Timesheet Calendar View
+                    </h3>
+                    <p class="text-xs text-gray-500">View team timesheets in monthly calendar format</p>
+                </div>
+
+                <!-- Month Navigation and Stats -->
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-2">
+                        <button (click)="previousMonth()" class="p-1 rounded-full hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <div class="text-center min-w-[120px]">
+                            <div class="font-semibold">{{ currentMonth | date:'MMMM yyyy' }}</div>
+                        </div>
+                        <button (click)="nextMonth()" class="p-1 rounded-full hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center">
+                            <div class="text-xs text-gray-500">Working Days</div>
+                            <div class="font-semibold">{{ getWorkingDaysCount() }}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs text-gray-500">Total Hours</div>
+                            <div class="font-semibold text-blue-600">
+                                {{ calculateTimesheetTotalTime().hours }}h {{ calculateTimesheetTotalTime().minutes }}m
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xs text-gray-500">Team Members</div>
+                            <div class="font-semibold">{{ calendarEmployees.length }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div *ngIf="calendarEmployees.length > 0 && calendarDays.length > 0; else noDataTemplate"
+                class="overflow-x-auto pb-4">
+                <!-- <table class="w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="sticky left-0 px-4 py-2 bg-gray-50 border border-gray-200 text-center z-10 w-40">
+                                Employee
+                            </th>
+                            <th *ngFor="let day of calendarDays"
+                                class="px-2 py-2 border border-gray-200 text-center whitespace-nowrap w-12"
+                                [class.bg-blue-50]="isToday(day.date)" [class.text-blue-600]="isToday(day.date)">
+                                {{ day.date | date:'dd' }}<br>
+                                <span [class.font-bold]="isToday(day.date)">
+                                    {{ day.date | date:'EEE' }}
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let employee of calendarEmployees" class="hover:bg-gray-50">
+                            <td class="sticky left-0 px-4 py-2 bg-white border border-gray-200 z-10 w-40">
+                                <div class="flex items-center">
+                                    <span class="truncate">{{ employee.name }}</span>
+                                </div>
+                            </td>
+                            <td *ngFor="let day of calendarDays"
+                                class="px-2 py-2 border border-gray-200 text-center relative group"
+                                [class.bg-gray-100]="!day.isCurrentMonth" [class.text-gray-400]="!day.isCurrentMonth"
+                                [class.bg-blue-50]="isToday(day.date)">
+                                <div class="h-8 flex items-center justify-center">
+                                    <span *ngIf="day.isCurrentMonth"
+                                        [class.font-bold]="getHoursForCell(employee.id, day.date) > '8h'"
+                                        [class.text-green-600]="getHoursForCell(employee.id, day.date) > '8h'"
+                                        [class.text-orange-500]="getHoursForCell(employee.id, day.date) <= '8h' && getHoursForCell(employee.id, day.date) >= '6h'"
+                                        [class.text-red-600]="getHoursForCell(employee.id, day.date) < '6h'">
+                                        {{ getHoursForCell(employee.id, day.date) || '-' }}
+                                    </span>
+                                </div>
+                                <div *ngIf="day.isCurrentMonth && getHoursForCell(employee.id, day.date)"
+                                    class="absolute hidden group-hover:block bg-white p-2 border rounded shadow-lg z-20 min-w-[180px]">
+                                    <div class="text-xs">
+                                        <div class="font-semibold">{{ employee.name }}'s Timesheet</div>
+                                        <div>Date: {{ day.date | date:'dd MMM yyyy' }}</div>
+                                        <div>Total Hours: {{ getHoursForCell(employee.id, day.date) }}</div>
+                                        <div>Entries: {{ getEntryCount(employee.id, day.date) }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+
+            <!-- No Data Template -->
+            <ng-template #noDataTemplate>
+                <div class="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h4 class="mt-2 text-lg font-medium text-gray-700">No Timesheet Data Available</h4>
+                    <p class="mt-1 text-sm text-gray-500">There are no timesheet entries for {{ currentMonth |
+                        date:'MMMM yyyy' }}.</p>
+                    <button (click)="changeMonth(0)"
+                        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                        Show Current Month
+                    </button>
+                </div>
+            </ng-template>
         </div>
     </div>
 

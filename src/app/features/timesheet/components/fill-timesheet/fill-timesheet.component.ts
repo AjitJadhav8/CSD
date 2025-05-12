@@ -46,6 +46,7 @@ export class FillTimesheetComponent {
     }
 
     this.fetchTimesheets(this.selectedDate);
+    this.initializeBackdateSystem();
 
     this.dataService.getOptions().subscribe(
       (response) => {
@@ -58,6 +59,349 @@ export class FillTimesheetComponent {
       }
     );
   }
+
+
+
+  approvedBackdates: any[] = [];
+  activeApprovedBackdates: any[] = [];
+  pendingBackdateRequests: any[] = [];
+  backdateRequestValidityDays = 3;
+  maxBackdateDays = 90; // Maximum 90 days in past
+
+
+  // Backdate Request Methods
+  initializeBackdateSystem(): void {
+    this.loadApprovedBackdates();
+    // Check for expired approvals daily
+    setInterval(() => this.updateActiveApprovedBackdates(), 24 * 60 * 60 * 1000);
+  }
+
+  loadApprovedBackdates(): void {
+    if (!this.userId) return;
+
+    this.timesheetService.getApprovedBackdates(this.userId).subscribe({
+      next: (backdates) => {
+        this.approvedBackdates = backdates;
+        this.updateActiveApprovedBackdates();
+      },
+      error: (error) => {
+        console.error('Error loading approved backdates:', error);
+      }
+    });
+  }
+
+  updateActiveApprovedBackdates(): void {
+    const today = new Date();
+    this.activeApprovedBackdates = this.approvedBackdates.filter(backdate => {
+      const validUntil = new Date(backdate.valid_until);
+      return validUntil >= today;
+    });
+  }
+
+  isDateApproved(date: string): boolean {
+    if (!date) return false;
+
+    const dateObj = new Date(date);
+    const today = new Date();
+
+    // Check if there's any active approval that covers today
+    const hasActiveApproval = this.activeApprovedBackdates.some(backdate =>
+      new Date(backdate.valid_until) >= today
+    );
+
+    // If there's an active approval, allow any date within 90 days
+    if (hasActiveApproval) {
+      const minDate = new Date();
+      minDate.setDate(today.getDate() - 90);
+      return dateObj >= minDate && dateObj <= today;
+    }
+
+    return false;
+  }
+
+  hasApprovedBackdates(): boolean {
+    return this.activeApprovedBackdates.length > 0;
+  }
+
+  showRequestBackdateButton(): boolean {
+    if (!this.selectedDate) return false;
+
+    const selectedDate = new Date(this.selectedDate);
+    const today = new Date();
+    const defaultMinDate = new Date(new Date().setDate(today.getDate() - 7));
+
+    return selectedDate < defaultMinDate &&
+      !this.isDateApproved(this.selectedDate);
+  }
+
+  hasPendingRequestForDate(date: string): boolean {
+    return false; // Always return false to bypass the check
+  }
+
+  getMinDate(): string {
+    const today = new Date();
+    const defaultMinDate = new Date(new Date().setDate(today.getDate() - 7));
+
+    // If there are approved backdates that are still valid
+    if (this.activeApprovedBackdates.length > 0) {
+      const today = new Date();
+      const validApprovalExists = this.activeApprovedBackdates.some(backdate =>
+        new Date(backdate.valid_until) >= today
+      );
+
+      if (validApprovalExists) {
+        const maxAllowedDate = new Date();
+        maxAllowedDate.setDate(today.getDate() - 90);
+        return maxAllowedDate.toISOString().split('T')[0];
+      }
+    }
+
+    return defaultMinDate.toISOString().split('T')[0];
+  }
+
+  openBackdateRequestModal(): void {
+    const today = new Date().toISOString().split('T')[0];
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() - 90);
+
+    Swal.fire({
+      title: 'Request Backdate Access',
+      html: `
+      <div class="text-left">
+        <div class="mb-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Requesting access to fill past timesheets</label>
+          <div class="text-xs p-2 bg-gray-100 rounded">
+            <p>You're requesting access to fill timesheets for dates up to 90 days in the past.</p>
+            <p class="mt-1">If approved, you'll have 3 days to submit your past timesheets.</p>
+          </div>
+        </div>
+        
+        <div class="mb-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Request Date</label>
+          <input type="text" 
+            class="text-xs w-full px-2 py-1 border border-gray-300 rounded bg-gray-100"
+            value="${today}" readonly>
+        </div>
+        
+        <div class="mb-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Customer*</label>
+          <select id="backdateCustomer" class="text-xs w-full px-2 py-1 border border-gray-300 rounded">
+            <option value="">Select Customer</option>
+            ${this.optionCustomers.map(c => `<option value="${c.customer_id}">${c.customer_name}</option>`).join('')}
+          </select>
+        </div>
+        
+        <div class="mb-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Project*</label>
+          <select id="backdateProject" class="text-xs w-full px-2 py-1 border border-gray-300 rounded">
+            <option value="">Select Project</option>
+          </select>
+        </div>
+        
+        <div class="mb-2">
+          <label class="block text-xs font-medium text-gray-700 mb-1">Reason*</label>
+          <textarea id="backdateReason" class="text-xs w-full px-2 py-1 border border-gray-300 rounded" 
+            placeholder="Explain why you need to fill past timesheets..."></textarea>
+        </div>
+      </div>
+    `,
+      showCancelButton: true,
+      confirmButtonText: 'Submit Request',
+      cancelButtonText: 'Cancel',
+      didOpen: () => {
+        // Handle project dropdown based on customer selection
+        const customerSelect = document.getElementById('backdateCustomer') as HTMLSelectElement;
+        const projectSelect = document.getElementById('backdateProject') as HTMLSelectElement;
+
+        customerSelect.addEventListener('change', () => {
+          const customerId = customerSelect.value;
+          projectSelect.innerHTML = '<option value="">Select Project</option>';
+
+          if (customerId) {
+            const projects = this.optionProjects.filter(p => p.customer_id == customerId);
+            projects.forEach(p => {
+              projectSelect.innerHTML += `<option value="${p.project_id}">${p.project_name}</option>`;
+            });
+          }
+        });
+      },
+      preConfirm: () => {
+        const customerSelect = document.getElementById('backdateCustomer') as HTMLSelectElement;
+        const projectSelect = document.getElementById('backdateProject') as HTMLSelectElement;
+        const reasonInput = document.getElementById('backdateReason') as HTMLTextAreaElement;
+
+        if (!customerSelect.value || !projectSelect.value || !reasonInput.value) {
+          Swal.showValidationMessage('Please fill all required fields');
+          return false;
+        }
+
+        return {
+          customerId: customerSelect.value,
+          projectId: projectSelect.value,
+          reason: reasonInput.value
+        };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.submitBackdateRequest(result.value.reason, result.value.projectId);
+      }
+    });
+  }
+
+  // getMinBackdateDate(): string {
+  //   const today = new Date();
+  //   const maxAllowedDate = new Date();
+  //   maxAllowedDate.setDate(today.getDate() - this.maxBackdateDays);
+  //   return maxAllowedDate.toISOString().split('T')[0];
+  // }
+
+  // getMaxBackdateDate(): string {
+  //   const today = new Date();
+  //   const yesterday = new Date(today);
+  //   yesterday.setDate(today.getDate() - 1);
+  //   return yesterday.toISOString().split('T')[0];
+  // }
+
+  submitBackdateRequest(reason: string, projectId: string): void {
+    if (!this.userId) return;
+
+    const requestData = {
+        user_id: this.userId,
+        project_id: projectId,
+        reason: reason,
+        status: 'pending'
+    };
+
+    this.timesheetService.submitBackdateRequest(requestData).subscribe({
+        next: (response) => {
+            this.pendingBackdateRequests.push({
+                id: response.request_id,
+                status: 'pending'
+            });
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Backdate request submitted!',
+                text: 'Your manager will review your request',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        },
+        error: (error) => {
+            console.error('Error submitting backdate request:', error);
+            
+            if (error.error?.error === 'Duplicate request') {
+                // Show specific message for duplicate requests
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Duplicate Request',
+                    html: `
+                        <div class="text-left">
+                            <p>${error.error.message}</p>
+                            ${error.error.existingRequest.status === 'approved' ? 
+                                `<p class="mt-2"><strong>Approval Details:</strong></p>
+                                 <ul class="list-disc pl-5">
+                                    <li>Project: ${error.error.existingRequest.project_name}</li>
+                                    <li>Manager: ${error.error.existingRequest.manager_name || 'Not specified'}</li>
+                                    <li>Valid Until: ${error.error.existingRequest.formatted_valid_until}</li>
+                                 </ul>` 
+                                : ''}
+                        </div>
+                    `,
+                });
+            } else {
+                Swal.fire('Error', 'Failed to submit request', 'error');
+            }
+        }
+    });
+}
+
+  fetchTimesheets(date?: string): void {
+    if (!this.userId) {
+      console.error('User ID not found fetch');
+      return;
+    }
+
+    const fetchDate = date || this.selectedDate;
+
+    this.timesheetService.getUserTimesheets(this.userId, fetchDate).subscribe(
+      (response) => {
+        console.log('User Timesheets Updated:', response);
+        this.timesheetData = response; // Update the table data
+        this.calculateTotalTime();
+
+      },
+      (error) => {
+        console.error('Error fetching timesheets:', error);
+      }
+    );
+  }
+
+  submitTimesheet(timesheetForm: NgForm) {  // Add NgForm parameter
+    if (!timesheetForm.valid) {
+      console.error('Form is invalid');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    if (!this.userId) {
+      console.error('User ID not found');
+      return;
+    }
+
+    const timesheetData = {
+      timesheet_date: this.selectedDate,
+      user_id: this.userId,
+      pd_id: this.selectedDeliverable,
+      phase_id: this.selectedPhase,
+      hours: this.selectedHours,
+      minutes: this.selectedMinutes,
+      task_status: this.selectedTaskStatus,
+      task_description: this.taskDescription,
+    };
+
+    this.timesheetService.submitTimesheet(timesheetData).subscribe({
+      next: (response) => {
+        console.log('Timesheet Submitted:', response);
+        this.clearTimesheetForm(timesheetForm);  // Pass the form reference
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Timesheet submitted successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchTimesheets(this.selectedDate);
+        this.calculateTotalTime();
+      },
+      error: (error) => {
+        console.error('Error submitting timesheet:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to submit timesheet!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    });
+  }
+
+
+
+
+
   retainTimesheetEntry(timesheet: any): void {
     console.log('Retaining Timesheet Entry:', timesheet);
 
@@ -216,73 +560,73 @@ export class FillTimesheetComponent {
   updateTimesheet(form: NgForm): void {
     // Check form validity and required fields
     if (!form.valid) {
-        console.error('Form is invalid');
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'warning',
-            title: 'Please fill all required fields!',
-            showConfirmButton: false,
-            timer: 3000
-        });
-        return;
+      console.error('Form is invalid');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
     }
 
     if (!this.editTimesheetId || !this.userId) {
-        console.error('Timesheet ID or User ID not found');
-        return;
+      console.error('Timesheet ID or User ID not found');
+      return;
     }
 
     // Validate task status is set (0 or 1)
     if (this.editSelectedTaskStatus === null || this.editSelectedTaskStatus === undefined) {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'warning',
-            title: 'Please set task status!',
-            showConfirmButton: false,
-            timer: 3000
-        });
-        return;
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please set task status!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
     }
 
     const timesheetData = {
-        timesheet_date: this.editSelectedDate,
-        user_id: this.userId,
-        pd_id: this.editSelectedDeliverable,
-        phase_id: this.editSelectedPhase,
-        hours: this.editSelectedHours,
-        minutes: this.editSelectedMinutes,
-        task_status: this.editSelectedTaskStatus,
-        task_description: this.editTaskDescription,
+      timesheet_date: this.editSelectedDate,
+      user_id: this.userId,
+      pd_id: this.editSelectedDeliverable,
+      phase_id: this.editSelectedPhase,
+      hours: this.editSelectedHours,
+      minutes: this.editSelectedMinutes,
+      task_status: this.editSelectedTaskStatus,
+      task_description: this.editTaskDescription,
     };
 
     this.timesheetService.updateTimesheet(this.editTimesheetId, timesheetData).subscribe({
-        next: (response) => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Timesheet updated successfully!',
-                showConfirmButton: false,
-                timer: 3000
-            });
-            this.fetchTimesheets(this.editSelectedDate);
-            this.closeEditModal();
-        },
-        error: (error) => {
-            console.error('Error updating timesheet:', error);
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'Failed to update timesheet!',
-                showConfirmButton: false,
-                timer: 3000
-            });
-        }
+      next: (response) => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Timesheet updated successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.fetchTimesheets(this.editSelectedDate);
+        this.closeEditModal();
+      },
+      error: (error) => {
+        console.error('Error updating timesheet:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to update timesheet!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
     });
-}
+  }
 
 
   onEditProjectChange(): void {
@@ -347,85 +691,6 @@ export class FillTimesheetComponent {
     }
   }
 
-  fetchTimesheets(date?: string): void {
-    if (!this.userId) {
-      console.error('User ID not found fetch');
-      return;
-    }
-
-    const fetchDate = date || this.selectedDate;
-
-    this.timesheetService.getUserTimesheets(this.userId, fetchDate).subscribe(
-      (response) => {
-        console.log('User Timesheets Updated:', response);
-        this.timesheetData = response; // Update the table data
-        this.calculateTotalTime();
-
-      },
-      (error) => {
-        console.error('Error fetching timesheets:', error);
-      }
-    );
-  }
-
-  submitTimesheet(timesheetForm: NgForm) {  // Add NgForm parameter
-    if (!timesheetForm.valid) {
-      console.error('Form is invalid');
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Please fill all required fields!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
-    }
-
-    if (!this.userId) {
-      console.error('User ID not found');
-      return;
-    }
-
-    const timesheetData = {
-      timesheet_date: this.selectedDate,
-      user_id: this.userId,
-      pd_id: this.selectedDeliverable,
-      phase_id: this.selectedPhase,
-      hours: this.selectedHours,
-      minutes: this.selectedMinutes,
-      task_status: this.selectedTaskStatus,
-      task_description: this.taskDescription,
-    };
-
-    this.timesheetService.submitTimesheet(timesheetData).subscribe({
-      next: (response) => {
-        console.log('Timesheet Submitted:', response);
-        this.clearTimesheetForm(timesheetForm);  // Pass the form reference
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Timesheet submitted successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-        this.fetchTimesheets(this.selectedDate);
-        this.calculateTotalTime();
-      },
-      error: (error) => {
-        console.error('Error submitting timesheet:', error);
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Failed to submit timesheet!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    });
-  }
 
 
 
@@ -530,8 +795,8 @@ export class FillTimesheetComponent {
 
   clearTimesheetForm(form: NgForm) {
     // Reset form with default values
-      const currentSelectedDate = this.selectedDate;
-    
+    const currentSelectedDate = this.selectedDate;
+
     // Reset form but keep the selected date
     form.resetForm({
       selectedDate: currentSelectedDate, // Keep the currently selected date

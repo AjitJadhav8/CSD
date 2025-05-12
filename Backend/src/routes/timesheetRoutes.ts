@@ -28,4 +28,23 @@ router.get('/reporting-team-timesheets/:reportingManagerId', protect, TimesheetC
 
 router.put('/timesheets/:id', protect, TimesheetController.updateTimesheet);
 
+
+
+
+
+
+
+
+// Backdate request routes
+router.post('/backdate-requests', protect, TimesheetController.submitBackdateRequest);
+router.get('/users/:userId/approved-backdates', protect, TimesheetController.getApprovedBackdates);
+router.get('/backdate-requests/pending', protect, TimesheetController.getPendingBackdateRequests);
+
+
+// Get pending backdate requests for a manager
+router.get('/backdate-requests/manager/:managerId', protect, TimesheetController.getPendingBackdateRequestsForManager);
+
+// Process a backdate request (approve/reject)
+router.put('/backdate-requests/:requestId/process', protect, TimesheetController.processBackdateRequest);
+
 export default router;

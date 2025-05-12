@@ -92,4 +92,47 @@ updateTimesheet(timesheetId: number, timesheetData: any): Observable<any> {
 }
 
 
+
+
+
+submitBackdateRequest(requestData: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.post(`${this.apiUrl}/api/timesheet/backdate-requests`, requestData, { headers });
+}
+
+getApprovedBackdates(userId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get<any[]>(`${this.apiUrl}/api/timesheet/users/${userId}/approved-backdates`, { headers });
+}
+
+
+
+getPendingBackdateRequests(): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get<any[]>(`${this.apiUrl}/api/timesheet/backdate-requests/pending`, { headers });
+}
+
+
+
+// Change from POST to GET
+getPendingBackdateRequestsForManager(managerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/backdate-requests/manager/${managerId}`, { headers });
+}
+
+
+
+processBackdateRequest(requestId: number, action: string, managerId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/api/timesheet/backdate-requests/${requestId}/process`, {
+    status: action,
+    processed_by: managerId
+  }, { headers });
+}
+
+
+
+
+
+
 }

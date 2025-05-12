@@ -4,47 +4,231 @@ import db from '../config/db'; // Import MySQL database connection
 
 class TimesheetController {
 
-//     async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
-//         try {
-//             const { employee_id } = req.params; // Assuming you pass the employee_id as a parameter
 
-//             const assignedQuery = `
-//                 SELECT 
-//   tpt.customer_id, 
-//   tpt.project_id, 
-//   mc.customer_name, 
-//   mp.project_name,
-//   mp.customer_id -- Ensure this is included
-// FROM trans_project_team tpt
-// JOIN master_customer mc ON tpt.customer_id = mc.customer_id
-// JOIN master_project mp ON tpt.project_id = mp.project_id
-// WHERE tpt.employee_id = ? AND tpt.is_deleted = 0
-//             `;
+    async submitBackdateRequest(req: Request, res: Response): Promise<void> {
+        try {
+            const { reason, project_id } = req.body;
+            const user_id = (req as any).user?.user_id;
+            
+            // Validate inputs
+            if (!reason || !project_id) {
+                res.status(400).json({ error: 'Missing required fields' });
+                return;
+            }
+            
+            // Check for existing active requests for this user and project
+            const checkQuery = `
+                SELECT 
+                    r.*, 
+                    p.project_name, 
+                    CONCAT(u.user_first_name, ' ', u.user_last_name) as manager_name,
+                    DATE_FORMAT(r.valid_until, '%W, %b %d %Y') as formatted_valid_until
+                FROM trans_backdate_requests r
+                JOIN master_project p ON r.project_id = p.project_id
+                JOIN master_user u ON p.project_manager_id = u.user_id
+                WHERE r.user_id = ? AND r.project_id = ? 
+                AND (r.status = 'pending' OR (r.status = 'approved' AND r.valid_until >= CURDATE()))
+                ORDER BY r.created_at DESC
+                LIMIT 1`;
+            
+            db.query(checkQuery, [user_id, project_id], (checkErr: any, checkResults: any) => {
+                if (checkErr) {
+                    console.error('Error checking existing requests:', checkErr);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+                
+                if (checkResults.length > 0) {
+                    const existingRequest = checkResults[0];
+                    const message = existingRequest.status === 'pending' 
+                        ? `You already have a pending request for project "${existingRequest.project_name}" with manager ${existingRequest.manager_name}`
+                        : `You already have an active approval for project "${existingRequest.project_name}" (valid until ${existingRequest.formatted_valid_until})`;
+                    
+                    res.status(400).json({ 
+                        error: 'Duplicate request',
+                        message: message,
+                        existingRequest: {
+                            ...existingRequest,
+                            formatted_valid_until: existingRequest.formatted_valid_until
+                        }
+                    });
+                    return;
+                }
+                
+                // Proceed with new request if no active ones exist
+                const today = new Date();
+                const valid_until = new Date();
+                valid_until.setDate(today.getDate() + 3);
+                
+                const insertQuery = `
+                    INSERT INTO trans_backdate_requests 
+                    (user_id, project_id, requested_date, reason, status, valid_until, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, 'pending', ?, NOW(), NOW())`;
+                
+                db.query(insertQuery, 
+                    [user_id, project_id, today.toISOString().split('T')[0], reason, valid_until.toISOString().split('T')[0]],
+                    (err: any, results: any) => {
+                        if (err) {
+                            console.error('Error submitting backdate request:', err);
+                            res.status(500).json({ error: 'Internal Server Error' });
+                            return;
+                        }
+                        
+                        res.status(201).json({ 
+                            message: 'Backdate request submitted successfully',
+                            requestId: results.insertId
+                        });
+                    }
+                );
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async getPendingBackdateRequestsForManager(req: Request, res: Response): Promise<void> {
+        try {
+          const { managerId } = req.params;
+          
+          const query = `
+            SELECT 
+              r.*,
+              CONCAT(u.user_first_name, ' ', IFNULL(u.user_middle_name, ''), ' ', u.user_last_name) as user_name,
+              u.user_email as user_email,
+              p.project_name,
+              c.customer_name,
+              CONCAT(pm.user_first_name, ' ', IFNULL(pm.user_middle_name, ''), ' ', pm.user_last_name) as processed_by_name
+            FROM trans_backdate_requests r
+            JOIN master_user u ON r.user_id = u.user_id
+            JOIN master_project p ON r.project_id = p.project_id
+            JOIN master_customer c ON p.customer_id = c.customer_id
+            LEFT JOIN master_user pm ON r.processed_by = pm.user_id
+            WHERE p.project_manager_id = ?
+            ORDER BY 
+              CASE WHEN r.status = 'pending' THEN 0 ELSE 1 END,
+              r.created_at DESC`;
+          
+          db.query(query, [managerId], (err: any, results: any) => {
+            if (err) {
+              console.error('Error fetching backdate requests:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            res.status(200).json(results);
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+      }
+      
+      async processBackdateRequest(req: Request, res: Response): Promise<void> {
+        try {
+            const { requestId } = req.params;
+            const { status, processed_by } = req.body;
+        
+            if (!['approved', 'rejected'].includes(status)) {
+                res.status(400).json({ error: 'Invalid status' });
+                return;
+            }
+        
+            // First get the request to check its current status
+            const request = await new Promise<any>((resolve) => {
+                db.query(
+                    `SELECT * FROM trans_backdate_requests WHERE request_id = ?`,
+                    [requestId],
+                    (err: any, results: any) => resolve(results[0])
+                );
+            });
+        
+            if (!request) {
+                res.status(404).json({ error: 'Request not found' });
+                return;
+            }
+        
+            if (request.status !== 'pending') {
+                res.status(400).json({ error: 'Request already processed' });
+                return;
+            }
+        
+            // For approved requests, set valid_until to 3 days from today (approval date)
+            let validUntil = new Date();
+            if (status === 'approved') {
+                validUntil.setDate(validUntil.getDate() + 3);
+            }
+        
+            const updateQuery = `
+                UPDATE trans_backdate_requests 
+                SET status = ?, processed_by = ?, processed_at = NOW(), valid_until = ?
+                WHERE request_id = ?`;
+        
+            db.query(updateQuery, 
+                [status, processed_by, status === 'approved' ? validUntil.toISOString().split('T')[0] : null, requestId], 
+                (err: any, results: any) => {
+                    if (err) {
+                        console.error('Error processing backdate request:', err);
+                        return res.status(500).json({ error: 'Internal Server Error' });
+                    }
+            
+                    res.status(200).json({ 
+                        message: `Request ${status} successfully`,
+                        valid_until: status === 'approved' ? validUntil.toISOString().split('T')[0] : null
+                    });
+                }
+            );
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+    async getApprovedBackdates(req: Request, res: Response): Promise<void> {
+        try {
+            const { userId } = req.params;
+            const currentDate = new Date().toISOString().split('T')[0];
+    
+            const query = `
+                SELECT * FROM trans_backdate_requests 
+                WHERE user_id = ? AND status = 'approved' AND (valid_until >= ? OR valid_until IS NULL)
+                ORDER BY requested_date ASC`;
+    
+            db.query(query, [userId, currentDate], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching approved backdates:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
-//             db.query(assignedQuery, [employee_id], (err: any, results: any) => {
-//                 if (err) {
-//                     console.error('Error fetching assigned customers and projects:', err);
-//                     res.status(500).json({ error: 'Internal Server Error' });
-//                     return;
-//                 }
+    async getPendingBackdateRequests(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
+                SELECT 
+                    r.*, 
+                    u.name as user_name, 
+                    u.email as user_email
+                FROM trans_backdate_requests r
+                JOIN master_user u ON r.user_id = u.user_id
+                WHERE r.status = 'pending'
+                ORDER BY r.created_at ASC`;
 
-//                 const assignedData = results.reduce((acc: any, row: any) => {
-//                     if (!acc.customers.some((c: any) => c.customer_id === row.customer_id)) {
-//                         acc.customers.push({ customer_id: row.customer_id, customer_name: row.customer_name });
-//                     }
-//                     if (!acc.projects.some((p: any) => p.project_id === row.project_id)) {
-//                         acc.projects.push({ project_id: row.project_id, project_name: row.project_name, customer_id: row.customer_id });
-//                     }
-//                     return acc;
-//                 }, { customers: [], projects: [] });
-
-//                 res.status(200).json(assignedData);
-//             });
-//         } catch (error) {
-//             console.error('Error:', error);
-//             res.status(500).json({ error: 'Internal Server Error' });
-//         }
-//     }
+            db.query(query, (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching pending backdate requests:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 
 async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void> {
     try {
@@ -829,6 +1013,11 @@ ORDER BY t.timesheet_id DESC`;
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+
+
+
+    
 
 
 
