@@ -18,7 +18,40 @@ import { SecureStorageService } from '../../../../services/secureStorage-service
 })
 export class ManagersHubComponent {
 
+  
+// Add to your component class
+selectedCell: {employeeId: string, date: Date} | null = null;
+selectedEntries: any[] = [];
 
+onCellClick(employeeId: string, date: Date): void {
+  if (!this.timesheetDetailedData) {
+    this.selectedCell = null;
+    this.selectedEntries = [];
+    return;
+  }
+
+  if (this.selectedCell && 
+      this.selectedCell.employeeId === employeeId && 
+      this.selectedCell.date.getTime() === date.getTime()) {
+    this.selectedCell = null;
+    this.selectedEntries = [];
+    return;
+  }
+
+  this.selectedCell = { employeeId, date };
+  const dateStr = this.formatDateFromDate(date);
+  this.selectedEntries = this.timesheetDetailedData.filter(entry => {
+    if (!entry.timesheet_date) return false;
+    const entryDateStr = this.formatDate(entry.timesheet_date);
+    return entry.user_id === employeeId && entryDateStr === dateStr;
+  });
+}
+
+// Helper to get employee name
+getEmployeeName(employeeId: string): string {
+  const employee = this.calendarEmployees.find(e => e.id === employeeId);
+  return employee ? employee.name : 'Unknown';
+}
 
   // Calendar View Properties
   calendarEmployees: {id: string, name: string}[] = [];
@@ -164,15 +197,19 @@ private prepareCalendarData(): void {
   }
 
   getHoursForCell(employeeId: string, date: Date): string {
-const dateStr = this.formatDateFromDate(date); // Changed from formatDate to formatDateFromDate
-    const employeeData = this.calendarData.get(employeeId);
-    if (!employeeData) return '';
-    
-    const hours = employeeData.get(dateStr);
-    return hours ? hours.toFixed(1) + 'h' : '';
-  }
+  const dateStr = this.formatDateFromDate(date);
+  const employeeData = this.calendarData.get(employeeId);
+  
+  // This will now work for all employees since we initialized calendarData for everyone
+  if (!employeeData) return '';
+  
+  const hours = employeeData.get(dateStr);
+  return hours ? hours.toFixed(1) + 'h' : '';
+}
 
  getEntryCount(employeeId: string, date: Date): number {
+  if (!this.timesheetDetailedData) return 0;
+  
   const dateStr = this.formatDateFromDate(date);
   return this.timesheetDetailedData.filter(entry => {
     if (!entry.timesheet_date) return false;
