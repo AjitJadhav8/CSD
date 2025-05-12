@@ -38,34 +38,24 @@ export class ManagersHubComponent {
     this.prepareCalendarData();
   }
 
-  private generateCalendarDays(): void {
-    this.calendarDays = [];
-    
-    const year = this.currentMonth.getFullYear();
-    const month = this.currentMonth.getMonth();
-    
-    // Get first and last day of month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Get days from previous month to start the week
-    const startDay = new Date(firstDay);
-    startDay.setDate(startDay.getDate() - startDay.getDay());
-    
-    // Get days from next month to complete the grid
-    const endDay = new Date(lastDay);
-    endDay.setDate(endDay.getDate() + (6 - endDay.getDay()));
-    
-    // Generate all days for the calendar view
-    const currentDate = new Date(startDay);
-    while (currentDate <= endDay) {
-      this.calendarDays.push({
-        date: new Date(currentDate),
-        isCurrentMonth: currentDate.getMonth() === month
-      });
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+ private generateCalendarDays(): void {
+  this.calendarDays = [];
+  
+  const year = this.currentMonth.getFullYear();
+  const month = this.currentMonth.getMonth();
+  
+  // Get number of days in current month
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  // Generate only days for the current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    this.calendarDays.push({
+      date: date,
+      isCurrentMonth: true // All days will be current month now
+    });
   }
+}
 private prepareCalendarData(): void {
   // Use the main detailed data instead of filtered data
   if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
@@ -182,14 +172,14 @@ const dateStr = this.formatDateFromDate(date); // Changed from formatDate to for
     return hours ? hours.toFixed(1) + 'h' : '';
   }
 
-  getEntryCount(employeeId: string, date: Date): number {
-const dateStr = this.formatDateFromDate(date); // Changed from formatDate to formatDateFromDate
-    return this.filteredTimesheetDetailedData.filter(entry => 
-      entry.user_id === employeeId && 
-      this.formatDate(entry.timesheet_date) === dateStr
-    ).length;
-  }
-
+ getEntryCount(employeeId: string, date: Date): number {
+  const dateStr = this.formatDateFromDate(date);
+  return this.timesheetDetailedData.filter(entry => {
+    if (!entry.timesheet_date) return false;
+    const entryDateStr = this.formatDate(entry.timesheet_date);
+    return entry.user_id === employeeId && entryDateStr === dateStr;
+  }).length;
+}
 
   
 
@@ -1422,6 +1412,8 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
             this.timesheetAggregatedData = response.aggregated;
             this.timesheetDetailedData = response.detailed;
             
+                  this.filteredTimesheetDetailedData = [...this.timesheetDetailedData]; // Initialize filtered data
+
 
             // Process filter options from detailed data (since it has all possible values)
             this.processFilterOptions();
@@ -1431,6 +1423,9 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
             
             // Calculate initial totals
             this.updateTotalCalculations();
+
+                  this.initializeCalendarView();
+
 
             // Update pagination
             this.timesheetCurrentPage = 1;
