@@ -66,10 +66,13 @@ getEmployeeName(employeeId: string): string {
   return localDate.toISOString().split('T')[0];
 }
 
-  initializeCalendarView() {
-    this.generateCalendarDays();
-    this.prepareCalendarData();
+ initializeCalendarView() {
+  if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
+    return;
   }
+  this.generateCalendarDays();
+  this.prepareCalendarData();
+}
 
  private generateCalendarDays(): void {
   this.calendarDays = [];
@@ -404,8 +407,6 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
   currentManagerId: number = 0;
 
   ngOnInit(): void {
-
-
     this.currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
     console.log('Current Manager ID:', this.currentManagerId);
 
@@ -1470,6 +1471,7 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
 
             // Hide loading indicator
       // this.initializeCalendarView(); // Initialize after data loads
+      this.initializeCalendarView();
 
             this.isLoading = false;
         },
