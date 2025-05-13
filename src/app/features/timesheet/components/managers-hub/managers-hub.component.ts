@@ -18,359 +18,155 @@ import { SecureStorageService } from '../../../../services/secureStorage-service
 })
 export class ManagersHubComponent {
 
-  
-// Add to your component class
-selectedCell: {employeeId: string, date: Date} | null = null;
-selectedEntries: any[] = [];
 
-onCellClick(employeeId: string, date: Date): void {
-  if (!this.timesheetDetailedData) {
-    this.selectedCell = null;
-    this.selectedEntries = [];
-    return;
-  }
 
-  if (this.selectedCell && 
-      this.selectedCell.employeeId === employeeId && 
-      this.selectedCell.date.getTime() === date.getTime()) {
-    this.selectedCell = null;
-    this.selectedEntries = [];
-    return;
-  }
 
-  this.selectedCell = { employeeId, date };
-  const dateStr = this.formatDateFromDate(date);
-  this.selectedEntries = this.timesheetDetailedData.filter(entry => {
-    if (!entry.timesheet_date) return false;
-    const entryDateStr = this.formatDate(entry.timesheet_date);
-    return entry.user_id === employeeId && entryDateStr === dateStr;
-  });
-}
 
-// Helper to get employee name
-getEmployeeName(employeeId: string): string {
-  const employee = this.calendarEmployees.find(e => e.id === employeeId);
-  return employee ? employee.name : 'Unknown';
-}
 
-  // Calendar View Properties
-  calendarEmployees: {id: string, name: string}[] = [];
-  calendarDays: {date: Date, isCurrentMonth: boolean}[] = [];
-  calendarData: Map<string, Map<string, number>> = new Map();
-  currentMonth: Date = new Date();
- // Add this method to format dates
 
- private formatDateFromDate(date: Date): string {
-  if (!date) return '';
-  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return localDate.toISOString().split('T')[0];
-}
 
- initializeCalendarView() {
-  if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
-    return;
-  }
-  this.generateCalendarDays();
-  this.prepareCalendarData();
-}
+  // ------------- Backdated Request ---------------------------------------
 
- private generateCalendarDays(): void {
-  this.calendarDays = [];
-  
-  const year = this.currentMonth.getFullYear();
-  const month = this.currentMonth.getMonth();
-  
-  // Get number of days in current month
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
-  // Generate only days for the current month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    this.calendarDays.push({
-      date: date,
-      isCurrentMonth: true // All days will be current month now
-    });
-  }
-}
-private prepareCalendarData(): void {
-  // Use the main detailed data instead of filtered data
-  if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
-    console.warn('No timesheet data available for calendar view');
-    return;
-  }
 
-  this.calendarEmployees = [];
-  this.calendarData.clear();
+  // Backdate Request Properties
+  backdateRequests: any[] = [];
+  filteredBackdateRequests: any[] = [];
+  paginatedBackdateRequests: any[] = [];
+  backdateRequestCurrentPage: number = 1;
+  backdateRequestTotalItems: number = 0;
+  backdateRequestItemsPerPage: number = 10;
+  backdateRequestMaxPageButtons: number = 5;
 
-  const currentYear = this.currentMonth.getFullYear();
-  const currentMonthNum = this.currentMonth.getMonth();
-  const employeeMap = new Map<string, {id: string, name: string}>();
+  // Filter Properties
+  backdateRequestProjectFilter: string = '';
+  backdateRequestStatusFilter: string = '';
+  backdateRequestDateFilter: string = '';
 
-  // Use timesheetDetailedData instead of filteredTimesheetDetailedData
-  this.timesheetDetailedData.forEach(entry => {
-    if (!entry.timesheet_date) {
-      console.warn('Entry missing timesheet_date:', entry);
-      return;
-    }
-
-    const entryDate = new Date(entry.timesheet_date);
-    if (entryDate.getFullYear() === currentYear && entryDate.getMonth() === currentMonthNum) {
-      const dateStr = this.formatDate(entry.timesheet_date);
-      
-      if (!employeeMap.has(entry.user_id)) {
-        employeeMap.set(entry.user_id, {
-          id: entry.user_id,
-          name: entry.employee_name
+  fetchBackdateRequests(): void {
+    this.timesheetService.getPendingBackdateRequestsForManager(this.currentManagerId).subscribe({
+      next: (response) => {
+        this.backdateRequests = response;
+        this.filteredBackdateRequests = [...this.backdateRequests];
+        this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
+        this.updateBackdateRequestPage();
+      },
+      error: (error) => {
+        console.error('Error fetching backdate requests:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Error loading backdate requests',
+          showConfirmButton: false,
+          timer: 3000
         });
       }
-
-      const hours = (Number(entry.hours) || 0) + (Number(entry.minutes) || 0) / 60;
-      
-      if (!this.calendarData.has(entry.user_id)) {
-        this.calendarData.set(entry.user_id, new Map());
-      }
-      
-      const employeeDates = this.calendarData.get(entry.user_id);
-      if (employeeDates) {
-        const currentHours = employeeDates.get(dateStr) || 0;
-        employeeDates.set(dateStr, currentHours + hours);
-      }
-    }
-  });
-
-  this.calendarEmployees = Array.from(employeeMap.values())
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  console.log('Calendar data loaded:', {
-    employees: this.calendarEmployees,
-    dates: this.calendarDays,
-    data: this.calendarData
-  });
-}
-
-  // Navigation methods
-  previousMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() - 1,
-      1
-    );
-    this.initializeCalendarView();
+    });
   }
 
-  nextMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() + 1,
-      1
-    );
-    this.initializeCalendarView();
-  }
+  applyBackdateRequestFilters(): void {
+    this.filteredBackdateRequests = this.backdateRequests.filter(request => {
+      const matchesProject = !this.backdateRequestProjectFilter ||
+        request.project_id == this.backdateRequestProjectFilter;
+      const matchesStatus = !this.backdateRequestStatusFilter ||
+        request.status === this.backdateRequestStatusFilter;
+      const matchesDate = !this.backdateRequestDateFilter ||
+        new Date(request.requested_date).toDateString() === new Date(this.backdateRequestDateFilter).toDateString();
 
-  changeMonth(months: number): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() + months,
-      1
-    );
-    this.initializeCalendarView();
-  }
+      return matchesProject && matchesStatus && matchesDate;
+    });
 
-  // Helper methods
-  isToday(date: Date): boolean {
-    const today = new Date();
-    return date.getDate() === today.getDate() && 
-           date.getMonth() === today.getMonth() && 
-           date.getFullYear() === today.getFullYear();
-  }
-
-  getWorkingDaysCount(): number {
-    const year = this.currentMonth.getFullYear();
-    const month = this.currentMonth.getMonth();
-    let count = 0;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const current = new Date(year, month, day);
-      if (current.getDay() !== 0 && current.getDay() !== 6) {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  getHoursForCell(employeeId: string, date: Date): string {
-  const dateStr = this.formatDateFromDate(date);
-  const employeeData = this.calendarData.get(employeeId);
-  
-  // This will now work for all employees since we initialized calendarData for everyone
-  if (!employeeData) return '';
-  
-  const hours = employeeData.get(dateStr);
-  return hours ? hours.toFixed(1) + 'h' : '';
-}
-
- getEntryCount(employeeId: string, date: Date): number {
-  if (!this.timesheetDetailedData) return 0;
-  
-  const dateStr = this.formatDateFromDate(date);
-  return this.timesheetDetailedData.filter(entry => {
-    if (!entry.timesheet_date) return false;
-    const entryDateStr = this.formatDate(entry.timesheet_date);
-    return entry.user_id === employeeId && entryDateStr === dateStr;
-  }).length;
-}
-
-  
-
-// Make sure this method exists in your component
-
-
-
-
-
-// ----------------------------------------------------
-
-
-// Backdate Request Properties
-backdateRequests: any[] = [];
-filteredBackdateRequests: any[] = [];
-paginatedBackdateRequests: any[] = [];
-backdateRequestCurrentPage: number = 1;
-backdateRequestTotalItems: number = 0;
-backdateRequestItemsPerPage: number = 10;
-backdateRequestMaxPageButtons: number = 5;
-
-// Filter Properties
-backdateRequestProjectFilter: string = '';
-backdateRequestStatusFilter: string = '';
-backdateRequestDateFilter: string = '';
-
-fetchBackdateRequests(): void {
-  this.timesheetService.getPendingBackdateRequestsForManager(this.currentManagerId).subscribe({
-    next: (response) => {
-      this.backdateRequests = response;
-      this.filteredBackdateRequests = [...this.backdateRequests];
-      this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
-      this.updateBackdateRequestPage();
-    },
-    error: (error) => {
-      console.error('Error fetching backdate requests:', error);
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: 'Error loading backdate requests',
-        showConfirmButton: false,
-        timer: 3000
-      });
-    }
-  });
-}
-
-applyBackdateRequestFilters(): void {
-  this.filteredBackdateRequests = this.backdateRequests.filter(request => {
-    const matchesProject = !this.backdateRequestProjectFilter || 
-      request.project_id == this.backdateRequestProjectFilter;
-    const matchesStatus = !this.backdateRequestStatusFilter || 
-      request.status === this.backdateRequestStatusFilter;
-    const matchesDate = !this.backdateRequestDateFilter || 
-      new Date(request.requested_date).toDateString() === new Date(this.backdateRequestDateFilter).toDateString();
-    
-    return matchesProject && matchesStatus && matchesDate;
-  });
-
-  this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
-  this.backdateRequestCurrentPage = 1;
-  this.updateBackdateRequestPage();
-}
-
-clearBackdateRequestFilters(): void {
-  this.backdateRequestProjectFilter = '';
-  this.backdateRequestStatusFilter = '';
-  this.backdateRequestDateFilter = '';
-  this.applyBackdateRequestFilters();
-}
-
-updateBackdateRequestPage(): void {
-  const startIndex = (this.backdateRequestCurrentPage - 1) * this.backdateRequestItemsPerPage;
-  const endIndex = startIndex + this.backdateRequestItemsPerPage;
-  this.paginatedBackdateRequests = this.filteredBackdateRequests.slice(startIndex, endIndex);
-}
-
-changeBackdateRequestPage(page: number): void {
-  if (page >= 1 && page <= this.backdateRequestTotalPages) {
-    this.backdateRequestCurrentPage = page;
+    this.backdateRequestTotalItems = this.filteredBackdateRequests.length;
+    this.backdateRequestCurrentPage = 1;
     this.updateBackdateRequestPage();
   }
-}
 
-get backdateRequestTotalPages(): number {
-  return Math.ceil(this.filteredBackdateRequests.length / this.backdateRequestItemsPerPage);
-}
-
-getVisibleBackdateRequestPageNumbers(): number[] {
-  const totalPages = this.backdateRequestTotalPages;
-  const halfRange = Math.floor(this.backdateRequestMaxPageButtons / 2);
-
-  let startPage = Math.max(1, this.backdateRequestCurrentPage - halfRange);
-  let endPage = Math.min(totalPages, startPage + this.backdateRequestMaxPageButtons - 1);
-
-  if (endPage - startPage + 1 < this.backdateRequestMaxPageButtons) {
-    startPage = Math.max(1, endPage - this.backdateRequestMaxPageButtons + 1);
+  clearBackdateRequestFilters(): void {
+    this.backdateRequestProjectFilter = '';
+    this.backdateRequestStatusFilter = '';
+    this.backdateRequestDateFilter = '';
+    this.applyBackdateRequestFilters();
   }
 
-  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-}
+  updateBackdateRequestPage(): void {
+    const startIndex = (this.backdateRequestCurrentPage - 1) * this.backdateRequestItemsPerPage;
+    const endIndex = startIndex + this.backdateRequestItemsPerPage;
+    this.paginatedBackdateRequests = this.filteredBackdateRequests.slice(startIndex, endIndex);
+  }
 
-processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void {
-  const actionText = action === 'approved' ? 'approve' : 'reject';
-  
-  Swal.fire({
-    title: `Are you sure you want to ${actionText} this request?`,
-    text: 'This action cannot be undone',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: `Yes, ${actionText} it!`
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.timesheetService.processBackdateRequest(requestId, action, this.currentManagerId).subscribe({
-        next: (response) => {
-          // Update the status of the request in our local array instead of refetching
-          const index = this.backdateRequests.findIndex(r => r.request_id === requestId);
-          if (index !== -1) {
-            this.backdateRequests[index].status = action;
-            this.backdateRequests[index].processed_by = this.currentManagerId;
-            this.backdateRequests[index].processed_at = new Date().toISOString();
-            this.applyBackdateRequestFilters(); // Reapply filters to update the view
-          }
-          
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: `Request ${actionText}d successfully!`,
-            showConfirmButton: false,
-            timer: 3000
-          });
-        },
-        error: (error) => {
-          console.error(`Error ${actionText}ing request:`, error);
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: `Error ${actionText}ing request`,
-            showConfirmButton: false,
-            timer: 3000
-          });
-        }
-      });
+  changeBackdateRequestPage(page: number): void {
+    if (page >= 1 && page <= this.backdateRequestTotalPages) {
+      this.backdateRequestCurrentPage = page;
+      this.updateBackdateRequestPage();
     }
-  });
-}
+  }
+
+  get backdateRequestTotalPages(): number {
+    return Math.ceil(this.filteredBackdateRequests.length / this.backdateRequestItemsPerPage);
+  }
+
+  getVisibleBackdateRequestPageNumbers(): number[] {
+    const totalPages = this.backdateRequestTotalPages;
+    const halfRange = Math.floor(this.backdateRequestMaxPageButtons / 2);
+
+    let startPage = Math.max(1, this.backdateRequestCurrentPage - halfRange);
+    let endPage = Math.min(totalPages, startPage + this.backdateRequestMaxPageButtons - 1);
+
+    if (endPage - startPage + 1 < this.backdateRequestMaxPageButtons) {
+      startPage = Math.max(1, endPage - this.backdateRequestMaxPageButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+  processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void {
+    const actionText = action === 'approved' ? 'approve' : 'reject';
+
+    Swal.fire({
+      title: `Are you sure you want to ${actionText} this request?`,
+      text: 'This action cannot be undone',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, ${actionText} it!`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.timesheetService.processBackdateRequest(requestId, action, this.currentManagerId).subscribe({
+          next: (response) => {
+            // Update the status of the request in our local array instead of refetching
+            const index = this.backdateRequests.findIndex(r => r.request_id === requestId);
+            if (index !== -1) {
+              this.backdateRequests[index].status = action;
+              this.backdateRequests[index].processed_by = this.currentManagerId;
+              this.backdateRequests[index].processed_at = new Date().toISOString();
+              this.applyBackdateRequestFilters(); // Reapply filters to update the view
+            }
+
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: `Request ${actionText}d successfully!`,
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          error: (error) => {
+            console.error(`Error ${actionText}ing request:`, error);
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: `Error ${actionText}ing request`,
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        });
+      }
+    });
+  }
 
   constructor(private dataService: DataService, private http: HttpClient, private timesheetService: TimesheetService, private secureStorage: SecureStorageService) { }
 
@@ -427,7 +223,7 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
     this.fetchReportingTeamsTimesheet();
     this.fetchOptions();
 
-        this.initializeCalendarView();
+    this.initializeCalendarView();
 
 
   }
@@ -1295,10 +1091,10 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
         (this.teamBilledStatusFilter === false && member.billed_status === 0);
 
 
-         // Add this new condition for assignment status
-         const matchesAssignmentStatus = this.teamAssignmentStatusFilter === null ||
-         (this.teamAssignmentStatusFilter === 0 && !member.is_released) ||
-         (this.teamAssignmentStatusFilter === 1 && member.is_released);
+      // Add this new condition for assignment status
+      const matchesAssignmentStatus = this.teamAssignmentStatusFilter === null ||
+        (this.teamAssignmentStatusFilter === 0 && !member.is_released) ||
+        (this.teamAssignmentStatusFilter === 1 && member.is_released);
 
 
 
@@ -1435,7 +1231,7 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
   optionPhasesForTimesheet: any[] = [];
   optionDeliverablesForTimesheet: any[] = []; // Populate this with your deliverables data
 
-  
+
 
   fetchProjectTeamsTimesheet(): void {
     const projectManagerId = Number(this.secureStorage.getItem('user_id'));
@@ -1445,113 +1241,113 @@ processBackdateRequest(requestId: number, action: 'approved' | 'rejected'): void
     this.isLoading = true;
 
     this.timesheetService.getProjectTeamsTimesheet(projectManagerId).subscribe(
-        (response: any) => {
-            // Store both aggregated and detailed data
-            this.timesheetAggregatedData = response.aggregated;
-            this.timesheetDetailedData = response.detailed;
-            
-                  this.filteredTimesheetDetailedData = [...this.timesheetDetailedData]; // Initialize filtered data
+      (response: any) => {
+        // Store both aggregated and detailed data
+        this.timesheetAggregatedData = response.aggregated;
+        this.timesheetDetailedData = response.detailed;
+
+        this.filteredTimesheetDetailedData = [...this.timesheetDetailedData]; // Initialize filtered data
 
 
-            // Process filter options from detailed data (since it has all possible values)
-            this.processFilterOptions();
+        // Process filter options from detailed data (since it has all possible values)
+        this.processFilterOptions();
 
-            // Initialize filtered data with aggregated data
-            this.filteredTimesheetData = [...this.timesheetAggregatedData];
-            
-            // Calculate initial totals
-            this.updateTotalCalculations();
+        // Initialize filtered data with aggregated data
+        this.filteredTimesheetData = [...this.timesheetAggregatedData];
 
-                  this.initializeCalendarView();
+        // Calculate initial totals
+        this.updateTotalCalculations();
+
+        this.initializeCalendarView();
 
 
-            // Update pagination
-            this.timesheetCurrentPage = 1;
-            this.updateTimesheetPage();
+        // Update pagination
+        this.timesheetCurrentPage = 1;
+        this.updateTimesheetPage();
 
-            // Hide loading indicator
-      // this.initializeCalendarView(); // Initialize after data loads
-      this.initializeCalendarView();
+        // Hide loading indicator
+        // this.initializeCalendarView(); // Initialize after data loads
+        this.initializeCalendarView();
 
-            this.isLoading = false;
-        },
-        (error) => {
-            console.error('Error fetching timesheet data:', error);
-            this.isLoading = false;
-            // Optionally show error message to user
-        }
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error fetching timesheet data:', error);
+        this.isLoading = false;
+        // Optionally show error message to user
+      }
     );
-}
+  }
 
-// Helper method to process all filter options
-private processFilterOptions(): void {
-  // Process team members
-  this.optionTeamMembers = this.getUniqueTeamMembers(this.timesheetDetailedData);
-  
-  // Process projects
-  this.optionProjectsForTimesheet = this.getUniqueSimpleItems(
+  // Helper method to process all filter options
+  private processFilterOptions(): void {
+    // Process team members
+    this.optionTeamMembers = this.getUniqueTeamMembers(this.timesheetDetailedData);
+
+    // Process projects
+    this.optionProjectsForTimesheet = this.getUniqueSimpleItems(
       this.timesheetDetailedData,
       'project_name',
       'project_id'
-  );
-  
-  // Process phases
-  this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
+    );
+
+    // Process phases
+    this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
       this.timesheetDetailedData,
       'project_phase_name',
       'phase_id'
-  );
-  
-  // Process deliverables
-  this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
+    );
+
+    // Process deliverables
+    this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
       this.timesheetDetailedData,
       'project_deliverable_name',
       'pd_id'
-  );
+    );
 
-  // Log processed options for debugging
-  console.log('Processed filter options:', {
+    // Log processed options for debugging
+    console.log('Processed filter options:', {
       teamMembers: this.optionTeamMembers,
       projects: this.optionProjectsForTimesheet,
       phases: this.optionPhasesForTimesheet,
       deliverables: this.optionDeliverablesForTimesheet
-  });
-}
-filteredTimesheetDetailedData: any[] = [];
+    });
+  }
+  filteredTimesheetDetailedData: any[] = [];
 
-// Helper method to update total calculations
-private updateTotalCalculations(): void {
-  let totalMinutes = this.filteredTimesheetDetailedData.reduce((sum, detail) => 
-    sum + (detail.hours * 60) + (detail.minutes || 0), 0);
-  
-  this.totalHours = Math.floor(totalMinutes / 60);
-  this.totalMinutes = totalMinutes % 60;
-  this.totalEntries = this.filteredTimesheetData.length;
-}
+  // Helper method to update total calculations
+  private updateTotalCalculations(): void {
+    let totalMinutes = this.filteredTimesheetDetailedData.reduce((sum, detail) =>
+      sum + (detail.hours * 60) + (detail.minutes || 0), 0);
 
-// Modified calculateTimesheetTotalTime to work with aggregated data
-calculateTimesheetTotalTime(): { hours: number, minutes: number } {
-  if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
-    return { hours: 0, minutes: 0 };
+    this.totalHours = Math.floor(totalMinutes / 60);
+    this.totalMinutes = totalMinutes % 60;
+    this.totalEntries = this.filteredTimesheetData.length;
   }
 
-  let totalMinutes = 0;
-  
-  this.filteredTimesheetData.forEach(entry => {
-    // Safely parse the values to numbers
-    const hours = Number(entry.total_hours) || 0;
-    const minutes = Number(entry.total_minutes) || 0;
-    
-    // Add to total
-    totalMinutes += (hours * 60) + minutes;
-  });
+  // Modified calculateTimesheetTotalTime to work with aggregated data
+  calculateTimesheetTotalTime(): { hours: number, minutes: number } {
+    if (!this.filteredTimesheetData || this.filteredTimesheetData.length === 0) {
+      return { hours: 0, minutes: 0 };
+    }
 
-  // Convert total minutes back to hours and minutes
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+    let totalMinutes = 0;
 
-  return { hours, minutes };
-}
+    this.filteredTimesheetData.forEach(entry => {
+      // Safely parse the values to numbers
+      const hours = Number(entry.total_hours) || 0;
+      const minutes = Number(entry.total_minutes) || 0;
+
+      // Add to total
+      totalMinutes += (hours * 60) + minutes;
+    });
+
+    // Convert total minutes back to hours and minutes
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return { hours, minutes };
+  }
 
 
 
@@ -1595,69 +1391,69 @@ calculateTimesheetTotalTime(): { hours: number, minutes: number } {
   applyTimesheetFilters(): void {
     // 1. Filter the detailed data based on user selections
     this.filteredTimesheetDetailedData = this.timesheetDetailedData.filter(detail => {
-        const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
-        const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
-        const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
-        const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
-        const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
-        const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
-        const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
+      const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
+      const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
+      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+      const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
+      const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
+      const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
+      const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
 
-        return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable && 
-               matchesStatus && matchesAssignmentStatus && matchesDate;
+      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
+        matchesStatus && matchesAssignmentStatus && matchesDate;
     });
 
     // 2. Aggregate filtered details into user-date groups
     const aggregationMap = new Map<string, any>();
     this.filteredTimesheetDetailedData.forEach(detail => {
-        const key = `${detail.user_id}-${this.formatDate(detail.timesheet_date)}`;
-        if (!aggregationMap.has(key)) {
-            aggregationMap.set(key, {
-                user_id: detail.user_id,
-                employee_name: detail.employee_name,
-                timesheet_date: detail.timesheet_date,
-                total_hours: 0,
-                total_minutes: 0,
-                entry_count: 0,
-                is_active_assignment: detail.is_active_assignment,
-                projects: new Set<string>(), // Track unique projects
-                project_ids: new Set<string>() // Track unique project IDs
-            });
-        }
-        const entry = aggregationMap.get(key);
-        
-        // Safely add hours and minutes
-        const detailHours = Number(detail.hours) || 0;
-        const detailMinutes = Number(detail.minutes) || 0;
-        
-        entry.total_hours += detailHours;
-        entry.total_minutes += detailMinutes;
-        
-        // Handle overflow (convert 60+ minutes to hours)
-        if (entry.total_minutes >= 60) {
-            entry.total_hours += Math.floor(entry.total_minutes / 60);
-            entry.total_minutes = entry.total_minutes % 60;
-        }
-        
-        entry.entry_count += 1;
-        entry.projects.add(detail.project_name);
-        entry.project_ids.add(detail.project_id);
+      const key = `${detail.user_id}-${this.formatDate(detail.timesheet_date)}`;
+      if (!aggregationMap.has(key)) {
+        aggregationMap.set(key, {
+          user_id: detail.user_id,
+          employee_name: detail.employee_name,
+          timesheet_date: detail.timesheet_date,
+          total_hours: 0,
+          total_minutes: 0,
+          entry_count: 0,
+          is_active_assignment: detail.is_active_assignment,
+          projects: new Set<string>(), // Track unique projects
+          project_ids: new Set<string>() // Track unique project IDs
+        });
+      }
+      const entry = aggregationMap.get(key);
+
+      // Safely add hours and minutes
+      const detailHours = Number(detail.hours) || 0;
+      const detailMinutes = Number(detail.minutes) || 0;
+
+      entry.total_hours += detailHours;
+      entry.total_minutes += detailMinutes;
+
+      // Handle overflow (convert 60+ minutes to hours)
+      if (entry.total_minutes >= 60) {
+        entry.total_hours += Math.floor(entry.total_minutes / 60);
+        entry.total_minutes = entry.total_minutes % 60;
+      }
+
+      entry.entry_count += 1;
+      entry.projects.add(detail.project_name);
+      entry.project_ids.add(detail.project_id);
     });
 
     // 3. Convert Sets to comma-separated strings and prepare final data
     this.filteredTimesheetData = Array.from(aggregationMap.values()).map(entry => ({
-        ...entry,
-        projects: Array.from(entry.projects).join(', '),
-        project_ids: Array.from(entry.project_ids).join(',')
+      ...entry,
+      projects: Array.from(entry.projects).join(', '),
+      project_ids: Array.from(entry.project_ids).join(',')
     }));
 
     // 4. Update totals and pagination
     this.updateTotalCalculations();
     this.timesheetCurrentPage = 1;
     this.updateTimesheetPage();
-    
 
-}
+
+  }
 
   clearTimesheetFilters(): void {
     this.timesheetEmployeeFilter = '';
@@ -1709,41 +1505,37 @@ calculateTimesheetTotalTime(): { hours: number, minutes: number } {
   }
 
 
-// Add this method to toggle row expansion
-toggleRowExpansion(userId: string, date: string): void {
-  const key = `${userId}-${date}`;
-  if (this.expandedRows.has(key)) {
+  // Add this method to toggle row expansion
+  toggleRowExpansion(userId: string, date: string): void {
+    const key = `${userId}-${date}`;
+    if (this.expandedRows.has(key)) {
       this.expandedRows.delete(key);
-  } else {
+    } else {
       this.expandedRows.add(key);
+    }
   }
-}
 
-// Add this method to get detailed entries for a row
-getDetailedEntries(userId: string, date: string): any[] {
-  // Start with all detailed data for this user/date
-  let entries = this.timesheetDetailedData.filter(detail => 
-    detail.user_id.toString() === userId.toString() && 
-    this.formatDate(detail.timesheet_date) === this.formatDate(date)
-  );
-  
+  // Add this method to get detailed entries for a row
+  getDetailedEntries(userId: string, date: string): any[] {
+    // Start with all detailed data for this user/date
+    let entries = this.timesheetDetailedData.filter(detail =>
+      detail.user_id.toString() === userId.toString() &&
+      this.formatDate(detail.timesheet_date) === this.formatDate(date)
+    );
 
-  // Apply other filters (except employee and date which we've already handled)
-  return entries.filter(detail => {
-    const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
-    const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
-    const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
-    const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
-    const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
 
-    return matchesProject && matchesPhase && matchesDeliverable && 
-           matchesStatus && matchesAssignmentStatus;
-  });
-}
+    // Apply other filters (except employee and date which we've already handled)
+    return entries.filter(detail => {
+      const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
+      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+      const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
+      const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
+      const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
 
-// Add this method to make Math available in your template
-// Alternatively, you can modify the template to use the global Math object
-
+      return matchesProject && matchesPhase && matchesDeliverable &&
+        matchesStatus && matchesAssignmentStatus;
+    });
+  }
 
   expandedRows: Set<string> = new Set(); // Tracks which rows are expanded
   timesheetAggregatedData: any[] = [];
@@ -1755,7 +1547,212 @@ getDetailedEntries(userId: string, date: string): any[] {
 
 
 
-  //reporting manager 
+  //-------------------- // Calendar View Methods -------------
+
+  selectedCell: { employeeId: string, date: Date } | null = null;
+  selectedEntries: any[] = [];
+
+  onCellClick(employeeId: string, date: Date): void {
+    if (!this.timesheetDetailedData) {
+      this.selectedCell = null;
+      this.selectedEntries = [];
+      return;
+    }
+
+    if (this.selectedCell &&
+      this.selectedCell.employeeId === employeeId &&
+      this.selectedCell.date.getTime() === date.getTime()) {
+      this.selectedCell = null;
+      this.selectedEntries = [];
+      return;
+    }
+
+    this.selectedCell = { employeeId, date };
+    const dateStr = this.formatDateFromDate(date);
+    this.selectedEntries = this.timesheetDetailedData.filter(entry => {
+      if (!entry.timesheet_date) return false;
+      const entryDateStr = this.formatDate(entry.timesheet_date);
+      return entry.user_id === employeeId && entryDateStr === dateStr;
+    });
+  }
+
+  getEmployeeName(employeeId: string): string {
+    const employee = this.calendarEmployees.find(e => e.id === employeeId);
+    return employee ? employee.name : 'Unknown';
+  }
+
+  // Calendar View Properties
+  calendarEmployees: { id: string, name: string }[] = [];
+  calendarDays: { date: Date, isCurrentMonth: boolean }[] = [];
+  calendarData: Map<string, Map<string, number>> = new Map();
+  currentMonth: Date = new Date();
+
+  private formatDateFromDate(date: Date): string {
+    if (!date) return '';
+    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return localDate.toISOString().split('T')[0];
+  }
+
+  initializeCalendarView() {
+    if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
+      return;
+    }
+    this.generateCalendarDays();
+    this.prepareCalendarData();
+  }
+
+  private generateCalendarDays(): void {
+    this.calendarDays = [];
+
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      this.calendarDays.push({
+        date: date,
+        isCurrentMonth: true
+      });
+    }
+  }
+  private prepareCalendarData(): void {
+    if (!this.timesheetDetailedData || this.timesheetDetailedData.length === 0) {
+      console.warn('No timesheet data available for calendar view');
+      return;
+    }
+
+    this.calendarEmployees = [];
+    this.calendarData.clear();
+
+    const currentYear = this.currentMonth.getFullYear();
+    const currentMonthNum = this.currentMonth.getMonth();
+    const employeeMap = new Map<string, { id: string, name: string }>();
+
+    this.timesheetDetailedData.forEach(entry => {
+      if (!entry.timesheet_date) {
+        console.warn('Entry missing timesheet_date:', entry);
+        return;
+      }
+
+      const entryDate = new Date(entry.timesheet_date);
+      if (entryDate.getFullYear() === currentYear && entryDate.getMonth() === currentMonthNum) {
+        const dateStr = this.formatDate(entry.timesheet_date);
+
+        if (!employeeMap.has(entry.user_id)) {
+          employeeMap.set(entry.user_id, {
+            id: entry.user_id,
+            name: entry.employee_name
+          });
+        }
+
+        const hours = (Number(entry.hours) || 0) + (Number(entry.minutes) || 0) / 60;
+
+        if (!this.calendarData.has(entry.user_id)) {
+          this.calendarData.set(entry.user_id, new Map());
+        }
+
+        const employeeDates = this.calendarData.get(entry.user_id);
+        if (employeeDates) {
+          const currentHours = employeeDates.get(dateStr) || 0;
+          employeeDates.set(dateStr, currentHours + hours);
+        }
+      }
+    });
+
+    this.calendarEmployees = Array.from(employeeMap.values())
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    console.log('Calendar data loaded:', {
+      employees: this.calendarEmployees,
+      dates: this.calendarDays,
+      data: this.calendarData
+    });
+  }
+
+  // Navigation methods
+  previousMonth(): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() - 1,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  nextMonth(): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  changeMonth(months: number): void {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + months,
+      1
+    );
+    this.initializeCalendarView();
+  }
+
+  // Helper methods
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear();
+  }
+
+  getWorkingDaysCount(): number {
+    const year = this.currentMonth.getFullYear();
+    const month = this.currentMonth.getMonth();
+    let count = 0;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const current = new Date(year, month, day);
+      if (current.getDay() !== 0 && current.getDay() !== 6) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  getHoursForCell(employeeId: string, date: Date): string {
+    const dateStr = this.formatDateFromDate(date);
+    const employeeData = this.calendarData.get(employeeId);
+
+    if (!employeeData) return '';
+
+    const hours = employeeData.get(dateStr);
+    return hours ? hours.toFixed(1) + 'h' : '';
+  }
+
+  getEntryCount(employeeId: string, date: Date): number {
+    if (!this.timesheetDetailedData) return 0;
+
+    const dateStr = this.formatDateFromDate(date);
+    return this.timesheetDetailedData.filter(entry => {
+      if (!entry.timesheet_date) return false;
+      const entryDateStr = this.formatDate(entry.timesheet_date);
+      return entry.user_id === employeeId && entryDateStr === dateStr;
+    }).length;
+  }
+
+
+
+
+
+
+
+
+
+
+
+  // --------------- reporting manager ------------- 
 
 
   // For View My Reporting Team section
