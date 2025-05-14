@@ -109,123 +109,123 @@ export class ExportMyTimesheetComponent {
   }
 
 
-  // exportToExcel(): void {
-  //   if (this.filteredTimesheetData.length === 0) {
-  //     alert('No data available for the selected date range.');
-  //     return;
-  //   }
-
-  //   const worksheet = XLSX.utils.json_to_sheet(
-  //     this.filteredTimesheetData.map((item, index) => ({
-  //       'S.No.': index + 1,
-  //       'Project Deliverable': item.project_deliverable_name,
-  //       'Project Name': item.project_name,
-  //       'Customer Name': item.customer_name,
-  //       'Phase': item.project_phase_name,
-  //       'Task Description': item.task_description,
-  //       'Hours': item.hours,
-  //       'Minutes': item.minutes,
-  //       'Task Status': item.task_status === 0 ? 'In Progress' : 'Completed',
-  //       'Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-  //     }))
-  //   );
-
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet Data');
-
-  //   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  //   const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-
-  //   saveAs(data, 'TimesheetData.xlsx');
-  // }
-
-
-
   exportToExcel(): void {
     if (this.filteredTimesheetData.length === 0) {
       alert('No data available for the selected date range.');
       return;
     }
-  
-    // Group timesheet entries by date
-    const groupedByDate: {[key: string]: any[]} = {};
-    this.filteredTimesheetData.forEach(item => {
-      const dateKey = new Date(item.timesheet_date).toLocaleDateString('en-GB', {
-        day: '2-digit', month: 'short', year: 'numeric'
-      });
-      if (!groupedByDate[dateKey]) {
-        groupedByDate[dateKey] = [];
-      }
-      groupedByDate[dateKey].push(item);
-    });
-  
-    // Prepare the data in the required format
-    const excelData = [];
-    let srNo = 1;
-    let totalHours = 0;
-  
-    // Get sorted dates
-    const sortedDates = Object.keys(groupedByDate).sort((a, b) => 
-      new Date(a).getTime() - new Date(b).getTime()
+
+    const worksheet = XLSX.utils.json_to_sheet(
+      this.filteredTimesheetData.map((item, index) => ({
+        'S.No.': index + 1,
+        'Project Deliverable': item.project_deliverable_name,
+        'Project Name': item.project_name,
+        'Customer Name': item.customer_name,
+        'Phase': item.project_phase_name,
+        'Task Description': item.task_description,
+        'Hours': item.hours,
+        'Minutes': item.minutes,
+        'Task Status': item.task_status === 0 ? 'In Progress' : 'Completed',
+        'Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      }))
     );
-  
-    for (const dateStr of sortedDates) {
-      const date = new Date(dateStr);
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-      const entries = groupedByDate[dateStr];
-  
-      // Calculate total hours for the day
-      const dailyHours = entries.reduce((sum, entry) => {
-        return sum + (parseInt(entry.hours) || 0) + ((parseInt(entry.minutes) || 0) / 60);
-      }, 0);
-  
-      // Format the task descriptions with numbering
-      const taskDescriptions = entries.map((entry, idx) => {
-        return `${idx + 1}. ${entry.task_description || 'No description'}`;
-      }).join('\n');
-  
-      excelData.push({
-        'SR. NO': srNo++,
-        'DATE': dateStr,
-        'DAY': dayName,
-        'EFFORTS (Hours)': dailyHours.toFixed(2),
-        'TASK DESCRIPTION': taskDescriptions
-      });
-  
-      totalHours += dailyHours;
-    }
-  
-    // Add total row
-    excelData.push({
-      'SR. NO': 'Total',
-      'DATE': '',
-      'DAY': '',
-      'EFFORTS (Hours)': totalHours.toFixed(2),
-      'TASK DESCRIPTION': ''
-    });
-  
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-  
-    // Set column widths
-    const wscols = [
-      { wch: 8 },  // SR. NO
-      { wch: 12 }, // DATE
-      { wch: 12 }, // DAY
-      { wch: 15 }, // EFFORTS (Hours)
-      { wch: 100 } // TASK DESCRIPTION
-    ];
-    worksheet['!cols'] = wscols;
-  
-    // Create workbook and export
+
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet');
-  
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet Data');
+
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  
-    saveAs(data, 'Timesheet_Report.xlsx');
+
+    saveAs(data, 'TimesheetData.xlsx');
   }
+
+
+
+  // exportToExcel(): void {
+  //   if (this.filteredTimesheetData.length === 0) {
+  //     alert('No data available for the selected date range.');
+  //     return;
+  //   }
+  
+  //   // Group timesheet entries by date
+  //   const groupedByDate: {[key: string]: any[]} = {};
+  //   this.filteredTimesheetData.forEach(item => {
+  //     const dateKey = new Date(item.timesheet_date).toLocaleDateString('en-GB', {
+  //       day: '2-digit', month: 'short', year: 'numeric'
+  //     });
+  //     if (!groupedByDate[dateKey]) {
+  //       groupedByDate[dateKey] = [];
+  //     }
+  //     groupedByDate[dateKey].push(item);
+  //   });
+  
+  //   // Prepare the data in the required format
+  //   const excelData = [];
+  //   let srNo = 1;
+  //   let totalHours = 0;
+  
+  //   // Get sorted dates
+  //   const sortedDates = Object.keys(groupedByDate).sort((a, b) => 
+  //     new Date(a).getTime() - new Date(b).getTime()
+  //   );
+  
+  //   for (const dateStr of sortedDates) {
+  //     const date = new Date(dateStr);
+  //     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+  //     const entries = groupedByDate[dateStr];
+  
+  //     // Calculate total hours for the day
+  //     const dailyHours = entries.reduce((sum, entry) => {
+  //       return sum + (parseInt(entry.hours) || 0) + ((parseInt(entry.minutes) || 0) / 60);
+  //     }, 0);
+  
+  //     // Format the task descriptions with numbering
+  //     const taskDescriptions = entries.map((entry, idx) => {
+  //       return `${idx + 1}. ${entry.task_description || 'No description'}`;
+  //     }).join('\n');
+  
+  //     excelData.push({
+  //       'SR. NO': srNo++,
+  //       'DATE': dateStr,
+  //       'DAY': dayName,
+  //       'EFFORTS (Hours)': dailyHours.toFixed(2),
+  //       'TASK DESCRIPTION': taskDescriptions
+  //     });
+  
+  //     totalHours += dailyHours;
+  //   }
+  
+  //   // Add total row
+  //   excelData.push({
+  //     'SR. NO': 'Total',
+  //     'DATE': '',
+  //     'DAY': '',
+  //     'EFFORTS (Hours)': totalHours.toFixed(2),
+  //     'TASK DESCRIPTION': ''
+  //   });
+  
+  //   // Create worksheet
+  //   const worksheet = XLSX.utils.json_to_sheet(excelData);
+  
+  //   // Set column widths
+  //   const wscols = [
+  //     { wch: 8 },  // SR. NO
+  //     { wch: 12 }, // DATE
+  //     { wch: 12 }, // DAY
+  //     { wch: 15 }, // EFFORTS (Hours)
+  //     { wch: 100 } // TASK DESCRIPTION
+  //   ];
+  //   worksheet['!cols'] = wscols;
+  
+  //   // Create workbook and export
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet');
+  
+  //   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  //   const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  
+  //   saveAs(data, 'Timesheet_Report.xlsx');
+  // }
 
   fetchFullTimesheets(): void {
     if (!this.userId) {

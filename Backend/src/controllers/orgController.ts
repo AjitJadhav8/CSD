@@ -999,7 +999,7 @@ WHERE is_deleted = 0 AND is_RM = 1
                             allocation_percentage, billed_status, billing_percentage, 
                             is_deleted
                         ) VALUES (
-                            29, 22, ?, 21, 42, CURDATE(), 0, 0, 0, 0, 0
+                            29, 22, ?, 27, 42, CURDATE(), 0, 0, 0, 0, 0
                         )`;
 
                         db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
