@@ -4,7 +4,7 @@ import axios from 'axios';
 const config = {
   tenantId: '',
   clientId: '',
-  clientSecret: '',
+  
   userEmail: 'donotreply@credenca.com' // The mailbox you're sending from
 };
 
