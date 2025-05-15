@@ -2,10 +2,10 @@ import axios from 'axios';
 
 // Configuration
 const config = {
-  tenantId: '218328fe-0cd2-41d6-8f7d-67529d9c3514',
-  clientId: 'bd62d563-66c9-4f00-b4e3-3f2e7bb8353e',
-  clientSecret: 'S0P8Q~s3Q~uRoL3F8jzNlJoGYHUroTBuxTb4BaR7',
-  userEmail: 'contact@prominotech.com' // The mailbox you're sending from
+  tenantId: '80c1821a-374b-4708-932a-09257bbfa0b9',
+  clientId: '3ec506a0-5103-480c-8d76-e9eb77639ad7',
+  clientSecret: 'Jri8Q~k~QNuSEoF0CdJ3u5tHbYc5vP18sTjQYatQ',
+  userEmail: 'donotreply@credenca.com' // The mailbox you're sending from
 };
 
 interface TokenResponse {
@@ -75,7 +75,7 @@ export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
                 <tr>
                   <td style="padding: 20px; text-align: center; background-color: #f4f4f4; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; color: #888888; font-size: 12px;">
                     © 2025 Credenca. All rights reserved.<br>
-                    If you need assistance, contact us at <a href="mailto:contact@prominotech.com" style="color: #0071AC;">contact@prominotech.com</a>
+                    If you need assistance, contact us at <a href="mailto:donotreply@credenca.com" style="color: #0071AC;">donotreply@credenca.com</a>
                   </td>
                 </tr>
               </table>
