@@ -2,9 +2,9 @@ import axios from 'axios';
 
 // Configuration
 const config = {
-  tenantId: '80c1821a-374b-4708-932a-09257bbfa0b9',
-  clientId: '3ec506a0-5103-480c-8d76-e9eb77639ad7',
-  clientSecret: 'Jri8Q~k~QNuSEoF0CdJ3u5tHbYc5vP18sTjQYatQ',
+  tenantId: '',
+  clientId: '',
+  clientSecret: '',
   userEmail: 'donotreply@credenca.com' // The mailbox you're sending from
 };
 
