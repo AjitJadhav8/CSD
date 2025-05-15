@@ -8,6 +8,7 @@ const config = {
   userEmail: 'donotreply@credenca.com' // The mailbox you're sending from
 };
 
+
 interface TokenResponse {
   access_token: string;
   token_type: string;
