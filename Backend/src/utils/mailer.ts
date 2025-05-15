@@ -1,11 +1,14 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Configuration
 const config = {
-  tenantId: '',
-  clientId: '',
-  
-  userEmail: 'donotreply@credenca.com' // The mailbox you're sending from
+ tenantId: process.env.AZURE_TENANT_ID || '',
+  clientId: process.env.AZURE_CLIENT_ID || '',
+  clientSecret: process.env.AZURE_CLIENT_SECRET || '',
+  userEmail: process.env.AZURE_USER_EMAIL || 'donotreply@credenca.com'
 };
 
 
