@@ -1725,6 +1725,12 @@ export class ManagersHubComponent {
     const hours = employeeData.get(dateStr);
     return hours ? hours.toFixed(1) + 'h' : '';
   }
+  
+  getHoursValue(employeeId: string, date: Date): number {
+    const hoursString = this.getHoursForCell(employeeId, date);
+    if (!hoursString || hoursString === '-') return 0;
+    return parseFloat(hoursString.replace('h', ''));
+}
 
   getEntryCount(employeeId: string, date: Date): number {
     if (!this.timesheetDetailedData) return 0;

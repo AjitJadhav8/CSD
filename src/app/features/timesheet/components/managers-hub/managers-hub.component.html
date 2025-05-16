@@ -2038,10 +2038,10 @@
                                 (click)="onCellClick(employee.id, day.date)">
                                 <div class="h-8 flex items-center justify-center">
                                     <span *ngIf="day.isCurrentMonth"
-                                        [class.font-bold]="getHoursForCell(employee.id, day.date) > '8h'"
-                                        [class.text-green-600]="getHoursForCell(employee.id, day.date) > '8h'"
-                                        [class.text-orange-500]="getHoursForCell(employee.id, day.date) <= '8h' && getHoursForCell(employee.id, day.date) >= '6h'"
-                                        [class.text-red-600]="getHoursForCell(employee.id, day.date) < '6h'">
+                                        [class.font-bold]="getHoursValue(employee.id, day.date) > 8"
+                                        [class.text-green-600]="getHoursValue(employee.id, day.date) > 8"
+                                        [class.text-orange-500]="getHoursValue(employee.id, day.date) <= 8 && getHoursValue(employee.id, day.date) >= 6"
+                                        [class.text-red-600]="getHoursValue(employee.id, day.date) < 6">
                                         {{ getHoursForCell(employee.id, day.date) || '-' }}
                                     </span>
                                 </div>
@@ -2137,7 +2137,7 @@
                     <h4 class="mt-2 text-lg font-medium text-gray-700">No Timesheet Data Available</h4>
                     <p class="mt-1 text-sm text-gray-500">There are no timesheet entries for {{ currentMonth |
                         date:'MMMM yyyy' }}.</p>
-           
+
                 </div>
             </ng-template>
         </div>
