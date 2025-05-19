@@ -26,7 +26,8 @@ class ReportController {
       FROM trans_timesheet tt
       LEFT JOIN master_user mu ON tt.user_id = mu.user_id
       LEFT JOIN master_project_deliverables mpd ON tt.pd_id = mpd.pd_id
-      LEFT JOIN master_project_phases mpp ON mpd.pd_id = mpp.pd_id
+      LEFT JOIN master_project_phases mpp ON tt.phase_id = mpp.phase_id
+
       LEFT JOIN master_project mp ON mpd.project_id = mp.project_id
       LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id
       LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id

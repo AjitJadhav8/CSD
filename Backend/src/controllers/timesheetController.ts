@@ -988,7 +988,7 @@ ORDER BY t.timesheet_id DESC`;
             JOIN 
                 master_project_deliverables pd ON t.pd_id = pd.pd_id
             JOIN 
-                master_project_phases ph ON pd.pd_id = ph.pd_id  /* Changed join */
+                       master_project_phases ph ON t.phase_id = ph.phase_id  -- ✅ FIXED JOIN
             JOIN 
                 master_project p ON pd.project_id = p.project_id  /* Changed join */
             JOIN 
