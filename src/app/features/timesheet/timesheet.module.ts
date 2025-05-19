@@ -9,6 +9,7 @@ import { FillTimesheetComponent } from './components/fill-timesheet/fill-timeshe
 import { ViewTimesheetComponent } from './components/view-timesheet/view-timesheet.component';
 import { ExportMyTimesheetComponent } from './components/export-my-timesheet/export-my-timesheet.component';
 import { ManagersHubComponent } from './components/managers-hub/managers-hub.component';
+import { PmTimesheetComponent } from './components/pm-timesheet/pm-timesheet.component';
 
 
 
@@ -23,9 +24,12 @@ const routes: Routes = [
       { path: 'fill-backdated-timesheet', component: FillBackdatedTimesheetComponent },
       { path: 'view-my-projects', component: ViewMyProjectsComponent },
       { path: 'fill-timesheet', component: FillTimesheetComponent },
+            { path: 'pm-timesheet', component: PmTimesheetComponent }, // Add this route
+
       { path: 'view-timesheet', component: ViewTimesheetComponent },
       { path: 'export-my-timesheet', component: ExportMyTimesheetComponent },
       { path: 'managers-hub', component: ManagersHubComponent },
+
     ]
   }
 ];

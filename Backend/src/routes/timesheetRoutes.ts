@@ -47,4 +47,17 @@ router.get('/backdate-requests/manager/:managerId', protect, TimesheetController
 // Process a backdate request (approve/reject)
 router.put('/backdate-requests/:requestId/process', protect, TimesheetController.processBackdateRequest);
 
+
+
+// ----------------- Project Manager Timesheet -------------------
+// New PM Timesheet routes
+router.delete('/pm-timesheet/:id', protect, TimesheetController.deletePmTimesheet);
+router.post('/submit-pm', protect, TimesheetController.submitPmTimesheet);
+
+// router.put('/pm-timesheet/:id', protect, TimesheetController.updatePmTimesheet);
+
+router.get('/pm-timesheets', protect, TimesheetController.getPmTimesheets);
+router.get('/managed-projects/:userId', protect, TimesheetController.getManagedProjects);
+
+
 export default router;

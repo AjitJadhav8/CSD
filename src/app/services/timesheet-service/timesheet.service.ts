@@ -130,8 +130,34 @@ processBackdateRequest(requestId: number, action: string, managerId: number): Ob
   }, { headers });
 }
 
+// ----------------- Project Manager -------------------
+// New PM Timesheet methods
+  submitPmTimesheet(pmTimesheetData: any): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/api/timesheet/submit-pm`, pmTimesheetData, { headers });
+  }
 
+  getPmTimesheets(userId: number, date?: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams().set('userId', userId.toString());
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.apiUrl}/api/timesheet/pm-timesheets`, { headers, params });
+  }
 
+  getManagedProjects(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/timesheet/managed-projects/${userId}`, { headers });
+  }
+  // Add this to your TimesheetService class
+deletePmTimesheet(id: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.delete(`${this.apiUrl}/api/timesheet/pm-timesheet/${id}`, { headers });
+}
+
+updatePmTimesheet(id: number, data: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/api/timesheet/pm-timesheet/${id}`, data, { headers });
+}
 
 
 
