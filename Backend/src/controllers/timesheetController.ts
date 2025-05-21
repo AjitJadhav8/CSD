@@ -1107,70 +1107,66 @@ async submitPmTimesheet(req: Request, res: Response): Promise<void> {
     }
 }
 
-// async updatePmTimesheet(req: Request, res: Response): Promise<void> {
-//     try {
-//         const { id } = req.params;
-//         const { timesheet_date, user_id, customer_id, project_id, hours, minutes, description } = req.body;
 
-//         // Validate required fields
-//         if (!timesheet_date || !user_id || !customer_id || !project_id || 
-//             hours === undefined || minutes === undefined) {
-//             res.status(400).json({ error: 'Missing required fields' });
-//             return;
-//         }
+async updatePmTimesheet(req: Request, res: Response): Promise<void> {
+    try {
+        const { id } = req.params;
+        const { timesheet_date, user_id, customer_id, project_id, hours, minutes, description } = req.body;
 
-//         // Validate hours and minutes
-//         if (hours < 0 || hours > 8 || minutes < 0 || minutes > 59) {
-//             res.status(400).json({ error: 'Invalid hours or minutes value' });
-//             return;
-//         }
+        // Validate required fields
+        if (!timesheet_date || !user_id || !customer_id || !project_id || 
+            hours === undefined || minutes === undefined) {
+            res.status(400).json({ error: 'Missing required fields' });
+            return;
+        }
 
-//         // Verify timesheet ownership
-//         const verifyQuery = `SELECT 1 FROM trans_pm_timesheet WHERE pm_timesheet_id = ? AND user_id = ?`;
+        // Validate hours and minutes
+        if (hours < 0 || hours > 8 || minutes < 0 || minutes > 59) {
+            res.status(400).json({ error: 'Invalid hours or minutes value' });
+            return;
+        }
+
+        // Verify user owns this timesheet
+        const verifyQuery = `SELECT 1 FROM trans_pm_timesheet WHERE pm_timesheet_id = ? AND user_id = ?`;
         
-//         const verifyResults: any[] = await new Promise((resolve, reject) => {
-//             db.query(verifyQuery, [id, user_id], (err, results) => {
-//                 if (err) reject(err);
-//                 else resolve(results);
-//             });
-//         });
+        db.query(verifyQuery, [id, user_id], (verifyError, verifyResults: any[]) => {
+            if (verifyError) {
+                console.error('Error verifying timesheet ownership:', verifyError);
+                return res.status(500).json({ error: 'Error verifying timesheet ownership' });
+            }
 
-//         if (verifyResults.length === 0) {
-//              res.status(403).json({ error: 'You are not authorized to edit this timesheet' });
-//         }
+            if (verifyResults.length === 0) {
+                return res.status(403).json({ error: 'You are not authorized to edit this timesheet' });
+            }
 
-//         // Update the timesheet
-//         const updateQuery = `
-//             UPDATE trans_pm_timesheet 
-//             SET 
-//                 timesheet_date = ?,
-//                 customer_id = ?,
-//                 project_id = ?,
-//                 hours = ?,
-//                 minutes = ?,
-//                 description = ?,
-//                 updated_at = NOW()
-//             WHERE pm_timesheet_id = ? AND user_id = ?`;
+            // Update the timesheet
+            const updateQuery = `
+                UPDATE trans_pm_timesheet 
+                SET 
+                    timesheet_date = ?,
+                    customer_id = ?,
+                    project_id = ?,
+                    hours = ?,
+                    minutes = ?,
+                    description = ?,
+                    updated_at = NOW()
+                WHERE pm_timesheet_id = ? AND user_id = ?`;
 
-//         const result: any = await new Promise((resolve, reject) => {
-//             db.query(updateQuery, 
-//                 [timesheet_date, customer_id, project_id, hours, minutes, description || null, id, user_id], 
-//                 (err, result) => {
-//                     if (err) reject(err);
-//                     else resolve(result);
-//                 });
-//         });
-
-//         if (result.affectedRows === 0) {
-//              res.status(404).json({ error: 'Timesheet not found or update failed' });
-//         }
-
-//         res.status(200).json({ message: 'PM timesheet updated successfully' });
-//     } catch (error) {
-//         console.error('Error updating PM timesheet:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
+            db.query(updateQuery, 
+                [timesheet_date, customer_id, project_id, hours, minutes, description || null, id, user_id], 
+                (updateError) => {
+                    if (updateError) {
+                        console.error('Error updating PM timesheet:', updateError);
+                        return res.status(500).json({ error: 'Error updating PM timesheet' });
+                    }
+                    res.status(200).json({ message: 'PM timesheet updated successfully' });
+                });
+        });
+    } catch (error) {
+        console.error('Error updating PM timesheet:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 
@@ -1223,52 +1219,53 @@ async submitPmTimesheet(req: Request, res: Response): Promise<void> {
         }
     }
 
-    async getManagedProjects(req: Request, res: Response): Promise<void> {
-        try {
-            const userId = parseInt(req.params.userId);
-            
-            if (!userId) {
-                res.status(400).json({ error: 'User ID is required' });
-                return;
+   async getManagedProjects(req: Request, res: Response): Promise<void> {
+    try {
+        const userId = parseInt(req.params.userId);
+        
+        if (!userId) {
+            res.status(400).json({ error: 'User ID is required' });
+            return;
+        }
+
+        // Get all customers managed by this PM
+        const customersQuery = `
+            SELECT DISTINCT c.customer_id, c.customer_name
+            FROM master_project p
+            JOIN master_customer c ON p.customer_id = c.customer_id
+            WHERE p.project_manager_id = ? AND p.is_deleted = 0 AND c.is_deleted = 0
+            ORDER BY c.customer_name`;
+
+        // Get all projects managed by this PM
+        const projectsQuery = `
+            SELECT p.project_id, p.project_name, p.customer_id
+            FROM master_project p
+            WHERE p.project_manager_id = ? AND p.is_deleted = 0
+            ORDER BY p.project_name`;
+
+        db.query(customersQuery, [userId], (err, customers) => {
+            if (err) {
+                console.error('Error fetching managed customers:', err);
+                return res.status(500).json({ error: 'Error fetching managed customers' });
             }
 
-            // Get customers and projects managed by this PM
-            const customersQuery = `
-                SELECT DISTINCT c.customer_id, c.customer_name
-                FROM master_project p
-                JOIN master_customer c ON p.customer_id = c.customer_id
-                WHERE p.project_manager_id = ? AND p.is_deleted = 0 AND c.is_deleted = 0
-                ORDER BY c.customer_name`;
-
-            const projectsQuery = `
-                SELECT p.project_id, p.project_name, p.customer_id
-                FROM master_project p
-                WHERE p.project_manager_id = ? AND p.is_deleted = 0
-                ORDER BY p.project_name`;
-
-            db.query(customersQuery, [userId], (err, customers) => {
+            db.query(projectsQuery, [userId], (err, projects) => {
                 if (err) {
-                    console.error('Error fetching managed customers:', err);
-                    return res.status(500).json({ error: 'Error fetching managed customers' });
+                    console.error('Error fetching managed projects:', err);
+                    return res.status(500).json({ error: 'Error fetching managed projects' });
                 }
 
-                db.query(projectsQuery, [userId], (err, projects) => {
-                    if (err) {
-                        console.error('Error fetching managed projects:', err);
-                        return res.status(500).json({ error: 'Error fetching managed projects' });
-                    }
-
-                    res.status(200).json({
-                        customers,
-                        projects
-                    });
+                res.status(200).json({
+                    customers,
+                    projects
                 });
             });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+}
 
 
 

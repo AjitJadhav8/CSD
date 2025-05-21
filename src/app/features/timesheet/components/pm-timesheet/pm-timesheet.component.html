@@ -26,10 +26,15 @@
         <form #timesheetForm="ngForm" (ngSubmit)="submitTimesheet(timesheetForm); $event.preventDefault()">
             <div class="grid grid-cols-3 gap-4 mb-4">
                 <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Date*</label>
-                    <input type="date" class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                           [(ngModel)]="selectedDate" name="selectedDate" required>
-                </div>
+    <label class="text-xs font-medium text-gray-600">Date*</label>
+    <input type="date" 
+           class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+           [(ngModel)]="selectedDate" 
+           (change)="onDateChange()" 
+           [max]="maxDate"
+           name="selectedDate" 
+           required>
+</div>
 
                 <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Customer*</label>
@@ -174,28 +179,30 @@
         </div>
 
         <!-- Customer -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Customer*</label>
-          <ng-select [(ngModel)]="editSelectedCustomer" name="editSelectedCustomer" required
-            class="text-xs custom-ng-select" [disabled]="true">
-            <ng-option [value]="null" disabled selected>Select Customer</ng-option>
-            <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
-              {{ customer.customer_name }}
-            </ng-option>
-          </ng-select>
-        </div>
+        <!-- Customer Dropdown in Edit Modal -->
+<div class="space-y-1">
+  <label class="text-xs font-medium text-gray-600">Customer*</label>
+  <ng-select [(ngModel)]="editSelectedCustomer" name="editSelectedCustomer" required
+    class="text-xs custom-ng-select" (change)="onEditCustomerChange()">
+    <ng-option [value]="null" disabled selected>Select Customer</ng-option>
+    <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+      {{ customer.customer_name }}
+    </ng-option>
+  </ng-select>
+</div>
 
         <!-- Project -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Project*</label>
-          <ng-select [(ngModel)]="editSelectedProject" name="editSelectedProject" required
-            class="text-xs custom-ng-select">
-            <ng-option [value]="null" disabled selected>Select Project</ng-option>
-            <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
-              {{ project.project_name }}
-            </ng-option>
-          </ng-select>
-        </div>
+        <!-- Project Dropdown in Edit Modal -->
+<div class="space-y-1">
+    <label class="text-xs font-medium text-gray-600">Project*</label>
+    <ng-select [(ngModel)]="editSelectedProject" name="editSelectedProject" required
+        class="text-xs custom-ng-select">
+        <ng-option [value]="null" disabled selected>Select Project</ng-option>
+        <ng-option *ngFor="let project of filterOptionProjects" [value]="project.project_id">
+            {{ project.project_name }}
+        </ng-option>
+    </ng-select>
+</div>
 
         <!-- Hours -->
         <div class="space-y-1">

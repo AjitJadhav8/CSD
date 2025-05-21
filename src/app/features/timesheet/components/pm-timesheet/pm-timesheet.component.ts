@@ -97,25 +97,42 @@ export class PmTimesheetComponent implements OnInit {
     return localDate.toISOString().split('T')[0];
   }
 
+  isLoadingProjects = false;
+
   // Add this method to open edit modal
   openEditModal(timesheet: any): void {
-    console.log('Editing Timesheet:', timesheet);
-    this.editTimesheetId = timesheet.pm_timesheet_id;
-    this.editSelectedDate = this.formatDate(timesheet.timesheet_date);
-    this.editSelectedCustomer = timesheet.customer_id;
-    this.editSelectedProject = timesheet.project_id;
-    this.editSelectedHours = timesheet.hours;
-    this.editSelectedMinutes = timesheet.minutes;
-    this.editDescription = timesheet.description;
+  console.log('Editing Timesheet:', timesheet);
+  this.editTimesheetId = timesheet.pm_timesheet_id;
+  this.editSelectedDate = this.formatDate(timesheet.timesheet_date);
+  this.editSelectedCustomer = timesheet.customer_id;
+  this.editSelectedProject = timesheet.project_id;
+  this.editSelectedHours = timesheet.hours;
+  this.editSelectedMinutes = timesheet.minutes;
+  this.editDescription = timesheet.description;
 
-    // Initialize filtered projects based on selected customer
-    if (this.editSelectedCustomer) {
-      this.filterOptionProjects = this.optionCustomers
-        .find(c => c.customer_id == this.editSelectedCustomer)?.projects || [];
+  // Load all managed customers and projects
+  this.timesheetService.getManagedProjects(this.userId!).subscribe({
+    next: (response) => {
+      this.optionCustomers = response.customers;
+      // Filter projects for the initially selected customer
+      this.filterOptionProjects = response.projects.filter(
+        (project: any) => project.customer_id == this.editSelectedCustomer
+      );
+      this.isEditModalOpen = true;
+    },
+    error: (error) => {
+      console.error('Error loading managed projects:', error);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Failed to load customer/project data',
+        showConfirmButton: false,
+        timer: 3000
+      });
     }
-
-    this.isEditModalOpen = true;
-  }
+  });
+}
 
   // Add this method to close edit modal
   closeEditModal(): void {
@@ -186,6 +203,35 @@ export class PmTimesheetComponent implements OnInit {
     });
   }
 
+  onEditCustomerChange(): void {
+  if (this.editSelectedCustomer) {
+    // Filter projects based on the newly selected customer
+    this.timesheetService.getManagedProjects(this.userId!).subscribe({
+      next: (response) => {
+        this.filterOptionProjects = response.projects.filter(
+          (project: any) => project.customer_id == this.editSelectedCustomer
+        );
+        // Reset the selected project when customer changes
+        this.editSelectedProject = null;
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to load projects',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    });
+  } else {
+    this.filterOptionProjects = [];
+    this.editSelectedProject = null;
+  }
+}
+
   constructor(
     private timesheetService: TimesheetService,
     private secureStorage: SecureStorageService
@@ -228,7 +274,11 @@ export class PmTimesheetComponent implements OnInit {
       }
     );
   }
-
+onDateChange(): void {
+    if (this.selectedDate) {
+        this.fetchTimesheets(this.selectedDate);
+    }
+}
   fetchTimesheets(date?: string): void {
     if (!this.userId) return;
     
@@ -275,8 +325,13 @@ export class PmTimesheetComponent implements OnInit {
           showConfirmButton: false,
           timer: 3000
         });
-        this.fetchTimesheets();
-        form.resetForm();
+            this.fetchTimesheets(this.selectedDate);
+             // Instead of form.resetForm(), manually reset the fields you want to clear
+        this.selectedCustomer = null;
+        this.selectedProject = null;
+        this.selectedHours = null;
+        this.selectedMinutes = 0;
+        this.description = '';
         this.selectedHours = null;
         this.selectedMinutes = 0;
       },

@@ -54,7 +54,7 @@ router.put('/backdate-requests/:requestId/process', protect, TimesheetController
 router.delete('/pm-timesheet/:id', protect, TimesheetController.deletePmTimesheet);
 router.post('/submit-pm', protect, TimesheetController.submitPmTimesheet);
 
-// router.put('/pm-timesheet/:id', protect, TimesheetController.updatePmTimesheet);
+router.put('/pm-timesheet/:id', protect, TimesheetController.updatePmTimesheet);
 
 router.get('/pm-timesheets', protect, TimesheetController.getPmTimesheets);
 router.get('/managed-projects/:userId', protect, TimesheetController.getManagedProjects);
