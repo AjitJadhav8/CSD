@@ -388,11 +388,28 @@ onDateChange(): void {
     });
   }
 
+  
+calculateTotalHours(): number {
+    const totalTime = this.calculateTotalTime();
+    return totalTime.hours + (totalTime.minutes / 60);
+}
+getHoursStatusText(): string {
+    const total = this.calculateTotalHours();
+    if (total < 6) {
+        return 'Below minimum (6h)';
+    } else if (total >= 6 && total <= 8) {
+        return 'Standard workday';
+    } else {
+        return 'Overtime';
+    }
+}
+
+
   calculateTotalTime(): { hours: number, minutes: number } {
     let totalMinutes = this.timesheetData.reduce((sum, entry) => sum + (entry.hours * 60) + entry.minutes, 0);
     return {
-      hours: Math.floor(totalMinutes / 60),
-      minutes: totalMinutes % 60
+        hours: Math.floor(totalMinutes / 60),
+        minutes: totalMinutes % 60
     };
-  }
+}
 }
