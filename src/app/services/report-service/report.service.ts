@@ -33,65 +33,65 @@ export class ReportService {
   }
 
 
-// Project team Report
+  // Project team Report
 
-// Add this method to your existing ReportService
-getAllProjectTeams(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/project-teams`, {
-    headers: this.getAuthHeaders()
-  });
+  // Add this method to your existing ReportService
+  getAllProjectTeams(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/project-teams`, {
+      headers: this.getAuthHeaders()
+    });
 
-}
+  }
 
-// Employee Report
-getAllEmployees(): Observable<any>{
-  return this.http.get(`${this.apiUrl}/api/reports/employees`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  // Employee Report
+  getAllEmployees(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/employees`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
-//customer Report
-// In report.service.ts
-getCustomerReport(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/customers`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  //customer Report
+  // In report.service.ts
+  getCustomerReport(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/customers`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
-// project repoert 
-// In report.service.ts
-getProjectReport(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/projects`, {
-    headers: this.getAuthHeaders()
-  });
-}
-
-
-//export pm timesheet
-getPmTimesheets(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/pm-timesheets`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  // project repoert 
+  // In report.service.ts
+  getProjectReport(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/projects`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
 
-getAllCustomers(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/all-customers`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  //export pm timesheet
+  getPmTimesheets(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/pm-timesheets`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
-getAllProjects(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/all-projects`, {
-    headers: this.getAuthHeaders()
-  });
-}
 
-getProjectManagers(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/api/reports/project-managers`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  getAllCustomers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/all-customers`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getAllProjects(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/all-projects`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getProjectManagers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/reports/project-managers`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
 
 

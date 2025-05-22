@@ -84,59 +84,59 @@ export class NavbarComponent {
   showManagersHubDropdown = false;
 
   // Add these properties to your component class
-showProjectReportsDropdown = false;
-showEmployeeReportsDropdown = false;
-showCustomerReportsDropdown = false;
+  showProjectReportsDropdown = false;
+  showEmployeeReportsDropdown = false;
+  showCustomerReportsDropdown = false;
 
-// Add these methods to your component class
-toggleProjectReportsDropdown() {
-  this.showProjectReportsDropdown = !this.showProjectReportsDropdown;
-  // Close other dropdowns
-  this.showEmployeeReportsDropdown = false;
-  this.showCustomerReportsDropdown = false;
-}
-
-isAnyProjectReportActive(): boolean {
-  return this.isReportSectionActive('project-team-report') || 
-         this.isReportSectionActive('team-timesheet-report') || 
-         this.isReportSectionActive('project-report') ||
-         this.isReportSectionActive('pm-timesheet-report'); // Add this line
-}
-
-toggleEmployeeReportsDropdown() {
-  this.showEmployeeReportsDropdown = !this.showEmployeeReportsDropdown;
-  // Close other dropdowns
-  this.showProjectReportsDropdown = false;
-  this.showCustomerReportsDropdown = false;
-}
-
-// Customer Reports
-toggleCustomerReportsDropdown() {
-  this.showCustomerReportsDropdown = !this.showCustomerReportsDropdown;
-  // Close other dropdowns
-  this.showProjectReportsDropdown = false;
-  this.showEmployeeReportsDropdown = false;
-}
-
-navigateToReportSection(section: string) {
-  this.secureStorage.setItem('selectedReportSection', section);
-  this.router.navigate(['/report-section', section]).then(() => {
-    window.dispatchEvent(new Event('storage'));
-    // Close all dropdowns after navigation
-    this.showProjectReportsDropdown = false;
+  // Add these methods to your component class
+  toggleProjectReportsDropdown() {
+    this.showProjectReportsDropdown = !this.showProjectReportsDropdown;
+    // Close other dropdowns
     this.showEmployeeReportsDropdown = false;
     this.showCustomerReportsDropdown = false;
-  });
-}
+  }
 
-isReportSectionActive(section: string): boolean {
-  const currentRoute = this.router.url;
-  const storedSection = this.secureStorage.getItem('selectedReportSection');
-  return storedSection === section && currentRoute.includes(`/report-section/${section}`);
-}
+  isAnyProjectReportActive(): boolean {
+    return this.isReportSectionActive('project-team-report') ||
+      this.isReportSectionActive('team-timesheet-report') ||
+      this.isReportSectionActive('project-report') ||
+      this.isReportSectionActive('pm-timesheet-report'); // Add this line
+  }
+
+  toggleEmployeeReportsDropdown() {
+    this.showEmployeeReportsDropdown = !this.showEmployeeReportsDropdown;
+    // Close other dropdowns
+    this.showProjectReportsDropdown = false;
+    this.showCustomerReportsDropdown = false;
+  }
+
+  // Customer Reports
+  toggleCustomerReportsDropdown() {
+    this.showCustomerReportsDropdown = !this.showCustomerReportsDropdown;
+    // Close other dropdowns
+    this.showProjectReportsDropdown = false;
+    this.showEmployeeReportsDropdown = false;
+  }
+
+  navigateToReportSection(section: string) {
+    this.secureStorage.setItem('selectedReportSection', section);
+    this.router.navigate(['/report-section', section]).then(() => {
+      window.dispatchEvent(new Event('storage'));
+      // Close all dropdowns after navigation
+      this.showProjectReportsDropdown = false;
+      this.showEmployeeReportsDropdown = false;
+      this.showCustomerReportsDropdown = false;
+    });
+  }
+
+  isReportSectionActive(section: string): boolean {
+    const currentRoute = this.router.url;
+    const storedSection = this.secureStorage.getItem('selectedReportSection');
+    return storedSection === section && currentRoute.includes(`/report-section/${section}`);
+  }
 
   isRM = false;
-  isPM = false; 
+  isPM = false;
 
   @ViewChild('customerDropdown') customerDropdown!: ElementRef;
   @ViewChild('projectDropdown') projectDropdown!: ElementRef;
@@ -145,9 +145,9 @@ isReportSectionActive(section: string): boolean {
   @ViewChild('userDropdown') userDropdown!: ElementRef;
 
   // Add these to your @ViewChild declarations
-@ViewChild('projectReportsDropdown') projectReportsDropdown!: ElementRef;
-@ViewChild('employeeReportsDropdown') employeeReportsDropdown!: ElementRef;
-@ViewChild('customerReportsDropdown') customerReportsDropdown!: ElementRef;
+  @ViewChild('projectReportsDropdown') projectReportsDropdown!: ElementRef;
+  @ViewChild('employeeReportsDropdown') employeeReportsDropdown!: ElementRef;
+  @ViewChild('customerReportsDropdown') customerReportsDropdown!: ElementRef;
 
 
   @HostListener('document:click', ['$event'])
@@ -172,18 +172,18 @@ isReportSectionActive(section: string): boolean {
       this.showManagersHubDropdown = false;
     }
 
-  // Close dropdowns if clicked outside
-  if (this.projectReportsDropdown && !this.projectReportsDropdown.nativeElement.contains(event.target)) {
-    this.showProjectReportsDropdown = false;
-  }
-  
-  if (this.employeeReportsDropdown && !this.employeeReportsDropdown.nativeElement.contains(event.target)) {
-    this.showEmployeeReportsDropdown = false;
-  }
-  
-  if (this.customerReportsDropdown && !this.customerReportsDropdown.nativeElement.contains(event.target)) {
-    this.showCustomerReportsDropdown = false;
-  }
+    // Close dropdowns if clicked outside
+    if (this.projectReportsDropdown && !this.projectReportsDropdown.nativeElement.contains(event.target)) {
+      this.showProjectReportsDropdown = false;
+    }
+
+    if (this.employeeReportsDropdown && !this.employeeReportsDropdown.nativeElement.contains(event.target)) {
+      this.showEmployeeReportsDropdown = false;
+    }
+
+    if (this.customerReportsDropdown && !this.customerReportsDropdown.nativeElement.contains(event.target)) {
+      this.showCustomerReportsDropdown = false;
+    }
 
 
 
@@ -225,14 +225,14 @@ isReportSectionActive(section: string): boolean {
     this.loggedInUserName = firstName && lastName ? `${firstName} ${lastName}` : 'User';
   }
 
-  constructor(private router: Router, private authService: AuthService, private secureStorage: SecureStorageService ) {
+  constructor(private router: Router, private authService: AuthService, private secureStorage: SecureStorageService) {
     this.setLoggedInUser();
-      // Check localStorage for RM/PM status when component initializes
-      if (typeof window !== 'undefined') {
-        this.isRM = this.secureStorage.getItem('is_RM') ;
-        this.isPM = this.secureStorage.getItem('is_PM') ;
-      }
-      console.log('Reporting ', this.isRM, 'Project ', this.isPM)
+    // Check localStorage for RM/PM status when component initializes
+    if (typeof window !== 'undefined') {
+      this.isRM = this.secureStorage.getItem('is_RM');
+      this.isPM = this.secureStorage.getItem('is_PM');
+    }
+    console.log('Reporting ', this.isRM, 'Project ', this.isPM)
   }
   get shouldShowManagersHub(): boolean {
     return this.isRM || this.isPM;

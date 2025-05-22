@@ -12,8 +12,8 @@ import { CustomerReportComponent } from './components/customer-report/customer-r
 import { PmTimesheetReportComponent } from './components/pm-timesheet-report/pm-timesheet-report.component';
 
 const routes: Routes = [
-  { 
-    path: '', component: ReportSectionDashboardComponent, 
+  {
+    path: '', component: ReportSectionDashboardComponent,
     children: [
       { path: '', redirectTo: 'project-team-report', pathMatch: 'full' },
       { path: 'project-team-report', component: ProjectTeamReportComponent }, // Add this line
@@ -21,9 +21,9 @@ const routes: Routes = [
       { path: 'pm-timesheet-report', component: PmTimesheetReportComponent },
 
       { path: 'team-timesheet-report', component: TeamTimesheetReportComponent },
-      {path: 'employee-report', component:EmployeeReportComponent},
-      {path: 'project-report', component : ProjectReportComponent},
-      {path: 'customer-report', component : CustomerReportComponent}
+      { path: 'employee-report', component: EmployeeReportComponent },
+      { path: 'project-report', component: ProjectReportComponent },
+      { path: 'customer-report', component: CustomerReportComponent }
 
     ]
   }
@@ -31,7 +31,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-   
+
   ],
   imports: [
 
@@ -40,8 +40,8 @@ const routes: Routes = [
     FormsModule,
     NgSelectModule,
     TeamTimesheetReportComponent,
-ReportSectionDashboardComponent,
-ProjectTeamReportComponent
-]
+    ReportSectionDashboardComponent,
+    ProjectTeamReportComponent
+  ]
 })
 export class ReportSectionModule { }

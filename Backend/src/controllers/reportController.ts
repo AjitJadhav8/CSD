@@ -63,7 +63,7 @@ class ReportController {
       };
 
       const results: any = {};
-      
+
       for (const [key, query] of Object.entries(queries)) {
         const data = await new Promise((resolve, reject) => {
           db.query(query, (error, result) => {
@@ -81,11 +81,11 @@ class ReportController {
     }
   }
 
-// project team report
+  // project team report
 
-async getAllProjectTeams(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getAllProjectTeams(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         pt.project_team_id,
         c.customer_id,
@@ -117,24 +117,24 @@ async getAllProjectTeams(req: Request, res: Response): Promise<void> {
       ORDER BY pt.project_team_id DESC
     `;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Database Error', details: error.message });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error fetching project teams:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error fetching project teams:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-//employee report
-async getAllEmployees(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  //employee report
+  async getAllEmployees(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         u.user_id,
         u.user_code,
@@ -160,25 +160,25 @@ async getAllEmployees(req: Request, res: Response): Promise<void> {
       ORDER BY u.user_id DESC
     `;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Database Error', details: error.message });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error fetching employees:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-//customer report
-// In reportController.ts
-async getCustomerReport(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  //customer report
+  // In reportController.ts
+  async getCustomerReport(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         c.customer_id, 
         c.customer_name, 
@@ -198,25 +198,25 @@ async getCustomerReport(req: Request, res: Response): Promise<void> {
       ORDER BY c.customer_id DESC
     `;
 
-    db.query(query, (err: any, results: any) => {
-      if (err) {
-        console.error('Error fetching customer report:', err);
-        res.status(500).json({ error: 'Error fetching customer report' });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (err: any, results: any) => {
+        if (err) {
+          console.error('Error fetching customer report:', err);
+          res.status(500).json({ error: 'Error fetching customer report' });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-// project repoert 
-// In reportController.ts
-async getProjectReport(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  // project repoert 
+  // In reportController.ts
+  async getProjectReport(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         p.project_id,
         p.project_name,
@@ -244,27 +244,27 @@ async getProjectReport(req: Request, res: Response): Promise<void> {
       ORDER BY p.project_id DESC
     `;
 
-    db.query(query, (err: any, results: any) => {
-      if (err) {
-        console.error('Error fetching project report:', err);
-        res.status(500).json({ error: 'Error fetching project report' });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (err: any, results: any) => {
+        if (err) {
+          console.error('Error fetching project report:', err);
+          res.status(500).json({ error: 'Error fetching project report' });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
 
-// export pm timesheet
-// Add these methods to your ReportController class
+  // export pm timesheet
+  // Add these methods to your ReportController class
 
-async getPmTimesheets(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getPmTimesheets(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         t.pm_timesheet_id,
         t.timesheet_date,
@@ -284,64 +284,64 @@ async getPmTimesheets(req: Request, res: Response): Promise<void> {
       WHERE t.is_deleted = 0
       ORDER BY t.timesheet_date DESC`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Error fetching PM timesheets:', error);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Error fetching PM timesheets:', error);
+          return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-async getAllCustomers(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getAllCustomers(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT customer_id, customer_name
       FROM master_customer
       WHERE is_deleted = 0
       ORDER BY customer_name`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Error fetching all customers:', error);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Error fetching all customers:', error);
+          return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-async getAllProjects(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getAllProjects(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT project_id, project_name
       FROM master_project
       WHERE is_deleted = 0
       ORDER BY project_name`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Error fetching all projects:', error);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Error fetching all projects:', error);
+          return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
-async getProjectManagers(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getProjectManagers(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT DISTINCT 
         u.user_id, 
         u.user_first_name, 
@@ -351,18 +351,18 @@ async getProjectManagers(req: Request, res: Response): Promise<void> {
       WHERE u.is_deleted = 0
       ORDER BY u.user_first_name, u.user_last_name`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Error fetching project managers:', error);
-        return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Error fetching project managers:', error);
+          return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
 
 }

@@ -43,7 +43,7 @@ export class PmTimesheetReportComponent {
   ngOnInit(): void {
     this.fetchPmTimesheets();
     this.fetchOptions();
-        this.fetchProjectManagers(); // Add this line
+    this.fetchProjectManagers(); // Add this line
 
   }
   fetchProjectManagers(): void {
@@ -57,46 +57,46 @@ export class PmTimesheetReportComponent {
     );
   }
   fetchPmTimesheets(): void {
-  this.reportService.getPmTimesheets().subscribe(
-    (response) => {
-      this.timesheets = response;
-      this.filteredTimesheets = [...this.timesheets];
-      this.updatePage();
-      this.calculateFilteredTotalTime();
-    },
-    (error) => {
-      console.error('Error fetching PM timesheets:', error);
-    }
-  );
-}
+    this.reportService.getPmTimesheets().subscribe(
+      (response) => {
+        this.timesheets = response;
+        this.filteredTimesheets = [...this.timesheets];
+        this.updatePage();
+        this.calculateFilteredTotalTime();
+      },
+      (error) => {
+        console.error('Error fetching PM timesheets:', error);
+      }
+    );
+  }
 
-fetchOptions(): void {
-  // For customers and projects, you might want to fetch all or keep as is
-  // depending on your requirements
-  
-  // Fetch all customers
-  this.reportService.getAllCustomers().subscribe(
-    (response) => {
-      this.optionCustomers = response;
-    },
-    (error) => {
-      console.error('Error fetching customers:', error);
-    }
-  );
+  fetchOptions(): void {
+    // For customers and projects, you might want to fetch all or keep as is
+    // depending on your requirements
 
-  // Fetch all projects
-  this.reportService.getAllProjects().subscribe(
-    (response) => {
-      this.optionProjects = response;
-    },
-    (error) => {
-      console.error('Error fetching projects:', error);
-    }
-  );
+    // Fetch all customers
+    this.reportService.getAllCustomers().subscribe(
+      (response) => {
+        this.optionCustomers = response;
+      },
+      (error) => {
+        console.error('Error fetching customers:', error);
+      }
+    );
 
-  // Fetch all project managers
-  this.fetchProjectManagers();
-}
+    // Fetch all projects
+    this.reportService.getAllProjects().subscribe(
+      (response) => {
+        this.optionProjects = response;
+      },
+      (error) => {
+        console.error('Error fetching projects:', error);
+      }
+    );
+
+    // Fetch all project managers
+    this.fetchProjectManagers();
+  }
 
   applyFilters(): void {
     this.filteredTimesheets = this.timesheets.filter((timesheet) => {
@@ -105,9 +105,9 @@ fetchOptions(): void {
       if (from) from.setHours(0, 0, 0, 0);
       const to = this.toDate ? new Date(this.toDate) : null;
       if (to) to.setHours(23, 59, 59, 999);
-      
+
       return (
-        (!from || itemDate >= from) && 
+        (!from || itemDate >= from) &&
         (!to || itemDate <= to) &&
         (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
         (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
@@ -208,10 +208,10 @@ fetchOptions(): void {
         'S.No.': index + 1,
         'Customer Name': item.customer_name,
         'Project Name': item.project_name,
-                'Project Manager': item.project_manager_name,
+        'Project Manager': item.project_manager_name,
 
-        'Timesheet Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { 
-          day: '2-digit', month: 'short', year: 'numeric' 
+        'Timesheet Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
         }),
         'Description': item.description,
         'Hours': item.hours,
@@ -239,7 +239,7 @@ fetchOptions(): void {
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    
+
     return { hours, minutes };
   }
 }
