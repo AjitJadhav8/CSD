@@ -60,4 +60,12 @@ router.get('/pm-timesheets', protect, TimesheetController.getPmTimesheets);
 router.get('/managed-projects/:userId', protect, TimesheetController.getManagedProjects);
 
 
+// ------------------------- Export --------------------------------
+
+// Add this route
+router.get('/pm/my-timesheets/:userId', protect, TimesheetController.getMyPmTimesheets);
+// Add these routes
+router.get('/pm-customers/:userId', protect, TimesheetController.getPmCustomers);
+router.get('/pm-projects/:userId', protect, TimesheetController.getPmProjects);
+
 export default router;

@@ -10,6 +10,7 @@ import { ViewTimesheetComponent } from './components/view-timesheet/view-timeshe
 import { ExportMyTimesheetComponent } from './components/export-my-timesheet/export-my-timesheet.component';
 import { ManagersHubComponent } from './components/managers-hub/managers-hub.component';
 import { PmTimesheetComponent } from './components/pm-timesheet/pm-timesheet.component';
+import { ExportPmTimesheetComponent } from './components/export-pm-timesheet/export-pm-timesheet.component';
 
 
 
@@ -17,19 +18,18 @@ import { PmTimesheetComponent } from './components/pm-timesheet/pm-timesheet.com
 
 const routes: Routes = [
   { 
-    path: '', component: TimesheetDashboardComponent, 
+    path: '', 
+    component: TimesheetDashboardComponent,  // This component will handle the redirection
     children: [
-      { path: '', redirectTo: 'fill-timesheet', pathMatch: 'full' }, // ✅ Default to Summary Report
       { path: 'summary-report', component: TimesheetSummaryReportComponent },
       { path: 'fill-backdated-timesheet', component: FillBackdatedTimesheetComponent },
       { path: 'view-my-projects', component: ViewMyProjectsComponent },
       { path: 'fill-timesheet', component: FillTimesheetComponent },
-            { path: 'pm-timesheet', component: PmTimesheetComponent }, // Add this route
-
+      { path: 'pm-timesheet', component: PmTimesheetComponent },
+      { path: 'export-pm-timesheet', component: ExportPmTimesheetComponent},
       { path: 'view-timesheet', component: ViewTimesheetComponent },
       { path: 'export-my-timesheet', component: ExportMyTimesheetComponent },
       { path: 'managers-hub', component: ManagersHubComponent },
-
     ]
   }
 ];

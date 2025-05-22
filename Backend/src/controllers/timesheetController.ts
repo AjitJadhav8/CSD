@@ -1267,7 +1267,98 @@ async updatePmTimesheet(req: Request, res: Response): Promise<void> {
     }
 }
 
+// -------------------------- Export PM ----------------------------
 
+// Add these to your DataController
+async getPmCustomers(req: Request, res: Response): Promise<void> {
+    try {
+        const pmUserId = parseInt(req.params.userId);
+
+        const query = `
+            SELECT DISTINCT c.customer_id, c.customer_name
+            FROM master_customer c
+            JOIN master_project p ON c.customer_id = p.customer_id
+            WHERE p.project_manager_id = ?
+            AND c.is_deleted = 0
+            ORDER BY c.customer_name`;
+
+        db.query(query, [pmUserId], (err, results) => {
+            if (err) {
+                console.error('Error fetching PM customers:', err);
+                return res.status(500).json({ error: 'Error fetching customers' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+async getPmProjects(req: Request, res: Response): Promise<void> {
+    try {
+        const pmUserId = parseInt(req.params.userId);
+
+        const query = `
+            SELECT DISTINCT p.project_id, p.project_name
+            FROM master_project p
+            WHERE p.project_manager_id = ?
+            AND p.is_deleted = 0
+            ORDER BY p.project_name`;
+
+        db.query(query, [pmUserId], (err, results) => {
+            if (err) {
+                console.error('Error fetching PM projects:', err);
+                return res.status(500).json({ error: 'Error fetching projects' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Add this to your TimesheetController
+async getMyPmTimesheets(req: Request, res: Response): Promise<void> {
+    try {
+        const pmUserId = parseInt(req.params.userId);
+        const requestingUserId = (req as any).user?.user_id;
+
+        if (pmUserId !== requestingUserId) {
+             res.status(403).json({ error: 'Unauthorized access' });
+        }
+
+        const query = `
+            SELECT 
+                t.pm_timesheet_id,
+                t.timesheet_date,
+                t.hours,
+                t.minutes,
+                t.description,
+                c.customer_id,
+                c.customer_name,
+                p.project_id,
+                p.project_name
+            FROM trans_pm_timesheet t
+            JOIN master_customer c ON t.customer_id = c.customer_id
+            JOIN master_project p ON t.project_id = p.project_id
+            WHERE t.is_deleted = 0
+            AND t.user_id = ?
+            ORDER BY t.timesheet_date DESC`;
+
+        db.query(query, [pmUserId], (err, results) => {
+            if (err) {
+                console.error('Error fetching PM timesheets:', err);
+                return res.status(500).json({ error: 'Error fetching timesheets' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 }
 

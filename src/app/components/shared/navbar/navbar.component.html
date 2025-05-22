@@ -152,7 +152,7 @@
 
   <!-- Navbar Center (Timesheet Links - Conditionally Shown) -->
   <div *ngIf="showTimesheetLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
-    <a [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
+    <a *ngIf="!isPM" [routerLink]="['/timesheet', 'fill-timesheet']" routerLinkActive="active-link"
       class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
@@ -161,6 +161,18 @@
       </svg>
       Fill Timesheet
     </a>
+
+    <a *ngIf="!isPM" [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
+      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Export My Timesheet
+    </a>
+
+
      <a *ngIf="isPM" [routerLink]="['/timesheet', 'pm-timesheet']" routerLinkActive="active-link"
     class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
@@ -170,15 +182,19 @@
     </svg>
     PM Timesheet
   </a>
-    <a [routerLink]="['/timesheet', 'export-my-timesheet']" routerLinkActive="active-link"
-      class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-      </svg>
-      Export My Timesheet
+
+  <a *ngIf="isPM" [routerLink]="['/timesheet', 'export-pm-timesheet']" routerLinkActive="active-link"
+    class="px-3 py-1 text-gray-700 hover:bg-blue-400 hover:text-white rounded transition flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-[#0071ac]" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+    Export PM Timesheet
     </a>
+
+
+
     <div *ngIf="shouldShowManagersHub" class="relative" #managersHubDropdown>
       <a (click)="toggleManagersHubDropdown()" [routerLink]="['/timesheet', 'managers-hub']"
         routerLinkActive="active-link"

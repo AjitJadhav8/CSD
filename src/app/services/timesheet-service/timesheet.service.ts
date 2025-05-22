@@ -159,6 +159,29 @@ updatePmTimesheet(id: number, data: any): Observable<any> {
   return this.http.put(`${this.apiUrl}/api/timesheet/pm-timesheet/${id}`, data, { headers });
 }
 
+// ------------------- Export Pm timesheet -------------------
+// Add this to your TimesheetService
+// Add this to your TimesheetService
+getMyPmTimesheets(userId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/pm/my-timesheets/${userId}`, { headers });
+}
 
+// Add this to get PM-specific options
+getPmOptions(pmUserId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/pm-options/${pmUserId}`, { headers });
+}
+
+// Add these to your DataService
+getPmCustomers(pmUserId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/pm-customers/${pmUserId}`, { headers });
+}
+
+getPmProjects(pmUserId: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/timesheet/pm-projects/${pmUserId}`, { headers });
+}
 
 }

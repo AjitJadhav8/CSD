@@ -21,7 +21,10 @@ export class AuthService {
   }
 
 
-
+// In auth.service.ts
+isPM(): boolean {
+  return this.secureStorage.getItem('is_PM');
+}
 
 
 
