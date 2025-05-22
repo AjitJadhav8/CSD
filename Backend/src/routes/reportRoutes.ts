@@ -21,5 +21,15 @@ router.get('/customers', protect, reportController.getCustomerReport);
 // In reportRoutes.ts
 router.get('/projects', protect, reportController.getProjectReport);
 
+//export pm timesheet
+// Add these routes to your reportRoutes file
+
+router.get('/pm-timesheets', protect, reportController.getPmTimesheets);
+
+router.get('/all-customers', protect, reportController.getAllCustomers);
+router.get('/all-projects', protect, reportController.getAllProjects);
+
+router.get('/project-managers', protect, reportController.getProjectManagers);
+
 
 export default router;

@@ -67,6 +67,33 @@ getProjectReport(): Observable<any> {
 }
 
 
+//export pm timesheet
+getPmTimesheets(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/pm-timesheets`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+
+getAllCustomers(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/all-customers`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+getAllProjects(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/all-projects`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+getProjectManagers(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/reports/project-managers`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+
 
 
 

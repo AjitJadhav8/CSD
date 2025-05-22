@@ -1,0 +1,178 @@
+<div class="p-4">
+  <!-- PM Timesheets Report -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
+    <div class="mb-4 pb-4 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
+              fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clip-rule="evenodd" />
+            </svg>
+            PM Timesheets Report
+          </h3>
+          <p class="text-xs text-gray-500">View all submitted PM timesheet entries</p>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <div class="text-center">
+            <div class="text-xs text-gray-500">Total Entries</div>
+            <div class="font-semibold">{{filteredTimesheets.length}}</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xs text-gray-500">Total Hours</div>
+            <div class="font-semibold text-blue-600">
+              {{calculateFilteredTotalTime().hours}}h {{calculateFilteredTotalTime().minutes}}m
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 mb-2">
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">From:</label>
+        <input type="date" [(ngModel)]="fromDate" (change)="applyDateFilter()"
+          class="text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <label class="text-sm font-medium text-gray-700">To:</label>
+        <input type="date" [(ngModel)]="toDate" (change)="applyDateFilter()"
+          class="text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+      </div>
+
+      <button (click)="exportToExcel()"
+        class="text-xs inline-flex items-center px-3 py-1 border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500">
+        Export to Excel
+      </button>
+
+      <button (click)="clearDateFilter()"
+        class="text-xs inline-flex items-center px-3 py-1 border border-transparent font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-500">
+        Clear Dates
+      </button>
+    </div>
+  </div>
+
+  <div class="rounded-lg w-full overflow-x-auto p-2 bg-white shadow-sm border border-gray-200">
+    <div class="min-w-full relative z-10">
+  <div class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full">
+    <!-- Customer Filter -->
+    <div class="relative w-64">
+      <label class="block text-xs font-medium mb-1">Customer</label>
+      <ng-select [(ngModel)]="customerFilter" (change)="applyFilters()"
+        class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+        <ng-option [value]="null">Select Customer</ng-option>
+        <ng-option *ngFor="let customer of optionCustomers" [value]="customer.customer_id">
+          {{ customer.customer_name }}
+        </ng-option>
+      </ng-select>
+    </div>
+
+    <!-- Project Filter -->
+    <div class="relative w-64">
+      <label class="block text-xs font-medium mb-1">Project</label>
+      <ng-select [(ngModel)]="projectFilter" (change)="applyFilters()"
+        class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+        <ng-option [value]="null">Select Project</ng-option>
+        <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
+          {{ project.project_name }}
+        </ng-option>
+      </ng-select>
+    </div>
+
+    <!-- Project Manager Filter -->
+    <div class="relative w-64">
+      <label class="block text-xs font-medium mb-1">Project Manager</label>
+      <ng-select [(ngModel)]="projectManagerFilter" (change)="applyFilters()"
+        class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+        <ng-option [value]="null">Select Project Manager</ng-option>
+        <ng-option *ngFor="let manager of optionProjectManagers" [value]="manager.user_id">
+          {{ manager.user_first_name }} {{ manager.user_last_name }}
+        </ng-option>
+      </ng-select>
+    </div>
+
+    <!-- Timesheet Date Filter -->
+    <div class="relative w-64">
+      <label class="block text-xs font-medium mb-1">Date</label>
+      <input type="date" [(ngModel)]="timesheetDateFilter" (change)="applyFilters()"
+        class="text-xs border border-gray-300 rounded px-2 py-1 w-full h-6" />
+      <button *ngIf="timesheetDateFilter" (click)="clearFilter('timesheetDateFilter')"
+        class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+        ×
+      </button>
+    </div>
+
+    <!-- Clear All Filters -->
+    <div class="relative flex items-end">
+      <button (click)="clearFilters()" title="Clear all filters"
+        class="text-xs text-red-500 hover:text-red-700 bg-white border border-gray-300 rounded px-2 py-1 h-6 flex items-center space-x-1 hover:bg-gray-50 transition-colors shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+            clip-rule="evenodd" />
+        </svg>
+        <span>Clear</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+    <div class="rounded-lg w-full inline-block whitespace-nowrap">
+     <table class="min-w-full text-xs border-collapse">
+  <thead>
+    <tr class="bg-gray-50">
+      <th class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-200 text-center bg-gray-50">#</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Customer Name</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Project Name</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Project Manager</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Timesheet Date</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Description</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Hours</th>
+      <th class="px-1 py-1 border border-gray-200 text-center">Minutes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let timesheet of paginatedTimesheets; let i = index" class="hover:bg-gray-50">
+      <td class="sticky left-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">{{ i + 1 }}</td>
+      <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name || '-' }}</td>
+      <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name || '-' }}</td>
+      <td class="px-1 py-1 border border-gray-300 text-center">
+        {{ timesheet.project_manager_name || '-' }}
+      </td>
+      <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.timesheet_date | date:'dd-MMM-yyyy' }}</td>
+      <td class="px-1 py-1 border border-gray-300 text-center">
+        <div class="group relative inline-block">
+          <span class="truncate max-w-[100px] inline-block">{{ timesheet.description || '-' }}</span>
+          <div *ngIf="timesheet.description"
+            class="absolute z-20 hidden group-hover:block w-64 px-2 py-1 mb-2 text-xs text-gray-700 bg-white rounded shadow-lg border border-gray-300 whitespace-pre-wrap break-words">
+            {{ timesheet.description }}
+          </div>
+        </div>
+      </td>
+      <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.hours || '0' }}</td>
+      <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.minutes || '0' }}</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex items-center justify-center mt-4 space-x-1">
+      <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="px-3 py-1 border rounded-md">
+        Previous
+      </button>
+      <button *ngFor="let page of getVisiblePageNumbers()" (click)="changePage(page)"
+        [class.bg-blue-500]="currentPage === page" class="px-3 py-1 border rounded-md">
+        {{ page }}
+      </button>
+      <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+        class="px-3 py-1 border rounded-md">
+        Next
+      </button>
+    </div>
+  </div>
+</div>

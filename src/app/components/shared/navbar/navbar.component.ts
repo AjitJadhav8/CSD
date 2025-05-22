@@ -99,7 +99,8 @@ toggleProjectReportsDropdown() {
 isAnyProjectReportActive(): boolean {
   return this.isReportSectionActive('project-team-report') || 
          this.isReportSectionActive('team-timesheet-report') || 
-         this.isReportSectionActive('project-report');
+         this.isReportSectionActive('project-report') ||
+         this.isReportSectionActive('pm-timesheet-report'); // Add this line
 }
 
 toggleEmployeeReportsDropdown() {

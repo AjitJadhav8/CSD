@@ -9,6 +9,7 @@ import { ProjectTeamReportComponent } from './components/project-team-report/pro
 import { EmployeeReportComponent } from './components/employee-report/employee-report.component';
 import { ProjectReportComponent } from './components/project-report/project-report.component';
 import { CustomerReportComponent } from './components/customer-report/customer-report.component';
+import { PmTimesheetReportComponent } from './components/pm-timesheet-report/pm-timesheet-report.component';
 
 const routes: Routes = [
   { 
@@ -16,6 +17,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'project-team-report', pathMatch: 'full' },
       { path: 'project-team-report', component: ProjectTeamReportComponent }, // Add this line
+
+      { path: 'pm-timesheet-report', component: PmTimesheetReportComponent },
 
       { path: 'team-timesheet-report', component: TeamTimesheetReportComponent },
       {path: 'employee-report', component:EmployeeReportComponent},

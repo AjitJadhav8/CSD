@@ -257,6 +257,114 @@ async getProjectReport(req: Request, res: Response): Promise<void> {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
+
+// export pm timesheet
+// Add these methods to your ReportController class
+
+async getPmTimesheets(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT 
+        t.pm_timesheet_id,
+        t.timesheet_date,
+        t.hours,
+        t.minutes,
+        t.description,
+        c.customer_id,
+        c.customer_name,
+        p.project_id,
+        p.project_name,
+        pm.user_id as project_manager_id,
+        CONCAT(pm.user_first_name, ' ', pm.user_last_name) as project_manager_name
+      FROM trans_pm_timesheet t
+      JOIN master_customer c ON t.customer_id = c.customer_id
+      JOIN master_project p ON t.project_id = p.project_id
+      JOIN master_user pm ON p.project_manager_id = pm.user_id
+      WHERE t.is_deleted = 0
+      ORDER BY t.timesheet_date DESC`;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Error fetching PM timesheets:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+async getAllCustomers(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT customer_id, customer_name
+      FROM master_customer
+      WHERE is_deleted = 0
+      ORDER BY customer_name`;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Error fetching all customers:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+async getAllProjects(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT project_id, project_name
+      FROM master_project
+      WHERE is_deleted = 0
+      ORDER BY project_name`;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Error fetching all projects:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+async getProjectManagers(req: Request, res: Response): Promise<void> {
+  try {
+    const query = `
+      SELECT DISTINCT 
+        u.user_id, 
+        u.user_first_name, 
+        u.user_last_name
+      FROM master_user u
+      JOIN master_project p ON u.user_id = p.project_manager_id
+      WHERE u.is_deleted = 0
+      ORDER BY u.user_first_name, u.user_last_name`;
+
+    db.query(query, (error, results) => {
+      if (error) {
+        console.error('Error fetching project managers:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
 }
 
 export default new ReportController();
