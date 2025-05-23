@@ -39,6 +39,11 @@ export class ExportPmTimesheetComponent {
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
 
+  // Add this to your component
+distinctProjectNames: {name: string, ids: number[]}[] = [];
+// Replace projectFilter with:
+projectNameFilter: string | null = null;
+
   constructor(
     private timesheetService: TimesheetService,
     private dataService: DataService,
@@ -74,59 +79,77 @@ export class ExportPmTimesheetComponent {
     );
   }
 
-  fetchOptions(): void {
-    if (!this.userId) return;
-    
-    // Get customers for projects managed by this PM
-    this.timesheetService.getPmCustomers(this.userId).subscribe(
-      (response) => {
-        this.optionCustomers = response;
-      },
-      (error) => {
-        console.error('Error fetching customers:', error);
-      }
-    );
+ fetchOptions(): void {
+  if (!this.userId) return;
+  
+  // Get customers for projects managed by this PM
+  this.timesheetService.getPmCustomers(this.userId).subscribe(
+    (response) => {
+      this.optionCustomers = response;
+    },
+    (error) => {
+      console.error('Error fetching customers:', error);
+    }
+  );
 
-    // Get projects managed by this PM
-    this.timesheetService.getPmProjects(this.userId).subscribe(
-      (response) => {
-        this.optionProjects = response;
-      },
-      (error) => {
-        console.error('Error fetching projects:', error);
-      }
-    );
-  }
+  // Get projects managed by this PM
+  this.timesheetService.getPmProjects(this.userId).subscribe(
+    (response) => {
+      this.optionProjects = response;
+      
+      // Create distinct project names list
+      const projectMap = new Map<string, number[]>();
+      response.forEach((project: { project_name: string; project_id: number; }) => {
+        if (projectMap.has(project.project_name)) {
+          projectMap.get(project.project_name)!.push(project.project_id);
+        } else {
+          projectMap.set(project.project_name, [project.project_id]);
+        }
+      });
+      
+      this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
+        name,
+        ids
+      }));
+    },
+    (error) => {
+      console.error('Error fetching projects:', error);
+    }
+  );
+}
 
   applyFilters(): void {
-    this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
-      // Date range filter
-      const itemDate = new Date(timesheet.timesheet_date);
-      const from = this.fromDate ? new Date(this.fromDate) : null;
-      if (from) from.setHours(0, 0, 0, 0);
-      const to = this.toDate ? new Date(this.toDate) : null;
-      if (to) to.setHours(23, 59, 59, 999);
-      
-      // Convert all filter values to strings for consistent comparison
-      const tsCustomerId = timesheet.customer_id?.toString();
-      const tsProjectId = timesheet.project_id?.toString();
-      const tsDate = this.formatDate(timesheet.timesheet_date);
-      
-      return (
-        // Date range conditions
-        (!from || itemDate >= from) && 
-        (!to || itemDate <= to) &&
-        
-        // Other filter conditions
-        (!this.customerFilter || tsCustomerId === this.customerFilter?.toString()) &&
-        (!this.projectFilter || tsProjectId === this.projectFilter?.toString()) &&
-        (!this.timesheetDateFilter || tsDate === this.formatDateForComparison(this.timesheetDateFilter))
-      );
-    });
+  this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
+    // Date range filter
+    const itemDate = new Date(timesheet.timesheet_date);
+    const from = this.fromDate ? new Date(this.fromDate) : null;
+    if (from) from.setHours(0, 0, 0, 0);
+    const to = this.toDate ? new Date(this.toDate) : null;
+    if (to) to.setHours(23, 59, 59, 999);
     
-    this.currentPage = 1;
-    this.updateDisplayedData();
-  }
+    // Convert all filter values to strings for consistent comparison
+    const tsCustomerId = timesheet.customer_id?.toString();
+    const tsDate = this.formatDate(timesheet.timesheet_date);
+    
+    // Project name filter logic
+    const projectNameMatch = !this.projectNameFilter || 
+      timesheet.project_name === this.projectNameFilter;
+    
+    return (
+      // Date range conditions
+      (!from || itemDate >= from) && 
+      (!to || itemDate <= to) &&
+      
+      // Other filter conditions
+      (!this.customerFilter || tsCustomerId === this.customerFilter?.toString()) &&
+      (!this.timesheetDateFilter || tsDate === this.formatDateForComparison(this.timesheetDateFilter)) &&
+      projectNameMatch
+    );
+  });
+  
+  this.currentPage = 1;
+  this.updateDisplayedData();
+}
 
   updateDisplayedData(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -195,13 +218,13 @@ export class ExportPmTimesheetComponent {
   }
 
   clearFilters(): void {
-    this.fromDate = '';
-    this.toDate = '';
-    this.customerFilter = null;
-    this.projectFilter = null;
-    this.timesheetDateFilter = '';
-    this.applyFilters();
-  }
+  this.fromDate = '';
+  this.toDate = '';
+  this.customerFilter = null;
+  this.timesheetDateFilter = '';
+  this.projectNameFilter = null;
+  this.applyFilters();
+}
 
   clearFilter(filterName: string): void {
     (this as any)[filterName] = '';

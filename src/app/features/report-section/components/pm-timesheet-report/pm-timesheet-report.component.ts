@@ -35,6 +35,9 @@ export class PmTimesheetReportComponent {
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
 
+   distinctProjectNames: {name: string, ids: number[]}[] = [];
+  projectNameFilter: string | null = null;
+
   constructor(
     private reportService: ReportService,
 
@@ -70,10 +73,7 @@ export class PmTimesheetReportComponent {
     );
   }
 
-  fetchOptions(): void {
-    // For customers and projects, you might want to fetch all or keep as is
-    // depending on your requirements
-
+fetchOptions(): void {
     // Fetch all customers
     this.reportService.getAllCustomers().subscribe(
       (response) => {
@@ -88,6 +88,21 @@ export class PmTimesheetReportComponent {
     this.reportService.getAllProjects().subscribe(
       (response) => {
         this.optionProjects = response;
+        
+        // Create distinct project names list
+        const projectMap = new Map<string, number[]>();
+        response.forEach((project: { project_name: string; project_id: number; }) => {
+          if (projectMap.has(project.project_name)) {
+            projectMap.get(project.project_name)!.push(project.project_id);
+          } else {
+            projectMap.set(project.project_name, [project.project_id]);
+          }
+        });
+        
+        this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
+          name,
+          ids
+        }));
       },
       (error) => {
         console.error('Error fetching projects:', error);
@@ -98,7 +113,8 @@ export class PmTimesheetReportComponent {
     this.fetchProjectManagers();
   }
 
-  applyFilters(): void {
+
+ applyFilters(): void {
     this.filteredTimesheets = this.timesheets.filter((timesheet) => {
       const itemDate = new Date(timesheet.timesheet_date);
       const from = this.fromDate ? new Date(this.fromDate) : null;
@@ -106,28 +122,33 @@ export class PmTimesheetReportComponent {
       const to = this.toDate ? new Date(this.toDate) : null;
       if (to) to.setHours(23, 59, 59, 999);
 
+      // Project name filter logic
+      const projectNameMatch = !this.projectNameFilter || 
+        timesheet.project_name === this.projectNameFilter;
+
       return (
         (!from || itemDate >= from) &&
         (!to || itemDate <= to) &&
         (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
-        (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
         (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter) &&
-        (!this.timesheetDateFilter || this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter)
+        (!this.timesheetDateFilter || this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
+        projectNameMatch
       );
     });
     this.currentPage = 1;
     this.updatePage();
   }
-  // Update clearFilters
+
   clearFilters(): void {
     this.fromDate = '';
     this.toDate = '';
     this.customerFilter = null;
-    this.projectFilter = null;
+    this.projectNameFilter = null;
     this.projectManagerFilter = null;
     this.timesheetDateFilter = '';
     this.applyFilters();
   }
+
 
 
   clearFilter(filterName: string): void {

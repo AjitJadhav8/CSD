@@ -72,16 +72,17 @@
                 </div>
 
                 <!-- Project Filter -->
-                <div class="relative w-full">
-                    <label class="block text-xs font-medium mb-1">Project</label>
-                    <ng-select [(ngModel)]="projectFilter" (change)="applyFilters()"
-                        class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
-                        <ng-option [value]="null">Select Project</ng-option>
-                        <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
-                            {{ project.project_name }}
-                        </ng-option>
-                    </ng-select>
-                </div>
+               <!-- Project Filter -->
+<div class="relative w-full">
+  <label class="block text-xs font-medium mb-1">Project</label>
+  <ng-select [(ngModel)]="projectNameFilter" (change)="applyFilters()"
+    class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+    <ng-option [value]="null">Select Project</ng-option>
+    <ng-option *ngFor="let project of distinctProjectNames" [value]="project.name">
+      {{ project.name }}
+    </ng-option>
+  </ng-select>
+</div>
 
                 <!-- Project Manager Filter -->
                 <div class="relative w-full">
