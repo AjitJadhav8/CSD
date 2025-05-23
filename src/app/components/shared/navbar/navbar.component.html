@@ -306,7 +306,7 @@
   </div>
   <!-- Add this to your navbar center section, similar to the Resource Management links -->
   <!-- Report Section Links -->
-  <div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow">
+  <div *ngIf="showReportSectionLinks" class="hidden sm:flex gap-2 p-1 rounded-md flex-grow z-10">
     <!-- Project Reports Dropdown -->
     <div class="relative" #projectReportsDropdown>
       <a (click)="toggleProjectReportsDropdown()" [routerLink]="['/report-section', 'project-team-report']"
