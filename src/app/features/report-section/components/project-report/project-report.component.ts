@@ -42,6 +42,9 @@ tentativeEndFilter: string = '';
   optionEngagementTypes: any[] = [];
   optionStatuses: any[] = [];
 
+    distinctProjectNames: {name: string, ids: number[]}[] = [];
+
+
   constructor(
     private dataService: DataService,
     private reportService: ReportService,
@@ -53,7 +56,7 @@ tentativeEndFilter: string = '';
     this.fetchProjects();
   }
 
-  fetchOptions(): void {
+ fetchOptions(): void {
     this.dataService.getOptions().subscribe(
       (response) => {
         this.optionProjects = response.projects;
@@ -62,6 +65,21 @@ tentativeEndFilter: string = '';
         this.optionProjectTypes = response.typeOfProject;
         this.optionEngagementTypes = response.typeOfEngagement;
         this.optionStatuses = response.projectStatus;
+
+        // Create distinct project names list
+        const projectMap = new Map<string, number[]>();
+        response.projects.forEach((project: { project_name: string; project_id: number; }) => {
+          if (projectMap.has(project.project_name)) {
+            projectMap.get(project.project_name)!.push(project.project_id);
+          } else {
+            projectMap.set(project.project_name, [project.project_id]);
+          }
+        });
+        
+        this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
+          name,
+          ids
+        }));
       },
       (error) => {
         console.error('Error fetching options', error);
@@ -81,7 +99,7 @@ tentativeEndFilter: string = '';
     });
   }
 
-  applyFilters(): void {
+ applyFilters(): void {
     this.filteredProjects = this.projects.filter((project) => {
       const plannedStartDate = this.plannedStartFilter 
         ? new Date(this.plannedStartFilter) 
@@ -93,10 +111,15 @@ tentativeEndFilter: string = '';
         ? new Date(this.tentativeEndFilter) 
         : null;
   
+      // Project name filter logic - matches any project with the selected name
+      const projectNameMatch = !this.projectNameFilter || 
+        this.distinctProjectNames.some(
+          p => p.name === this.projectNameFilter && 
+               p.ids.includes(project.project_id)
+        );
+
       return (
-        (this.projectNameFilter
-          ? project.project_id === +this.projectNameFilter
-          : true) &&
+        projectNameMatch &&
         (this.customerFilter
           ? project.customer_id === +this.customerFilter
           : true) &&

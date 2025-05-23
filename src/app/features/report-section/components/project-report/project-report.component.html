@@ -28,15 +28,17 @@
             <div
             class="flex flex-nowrap items-start gap-x-2 gap-y-2 mb-4 py-2 bg-gray-50 rounded shadow-sm w-full overflow-x-auto"
             style="overflow: visible;">            <!-- Project Name Filter -->
-            <div class="relative w-48">
-              <label class="block text-xs font-medium mb-1">Project</label>
-              <ng-select [(ngModel)]="projectNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
-                class="text-xs custom-ng-select-filter w-full">
-                <ng-option *ngFor="let project of optionProjects" [value]="project.project_id">
-                  {{ project.project_name }}
-                </ng-option>
-              </ng-select>
-            </div>
+            <!-- Project Name Filter -->
+<div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Project</label>
+  <ng-select [(ngModel)]="projectNameFilter" (change)="applyFilters()" [clearable]="true" [searchable]="true"
+    class="text-xs custom-ng-select-filter w-full">
+    <ng-option [value]="">Select Project</ng-option>
+    <ng-option *ngFor="let project of distinctProjectNames" [value]="project.name">
+      {{ project.name }}
+    </ng-option>
+  </ng-select>
+</div>
   
             <!-- Customer Name Filter -->
             <div class="relative w-48">

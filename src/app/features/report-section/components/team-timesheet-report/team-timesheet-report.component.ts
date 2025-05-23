@@ -44,6 +44,11 @@ export class TeamTimesheetReportComponent implements OnInit {
   optionProjectManagers: any[] = [];
   optionPhases: any[] = [];
 
+   distinctProjectNames: {name: string, ids: number[]}[] = [];
+  distinctTaskNames: {name: string, ids: number[]}[] = [];
+  projectNameFilter: string = '';
+  taskNameFilter: string = '';
+
   constructor(private reportService: ReportService) { }
 
   ngOnInit(): void {
@@ -65,6 +70,22 @@ export class TeamTimesheetReportComponent implements OnInit {
     );
   }
 
+  // fetchOptions(): void {
+  //   this.reportService.getReportOptions().subscribe(
+  //     (response) => {
+  //       this.optionUsers = response.users;
+  //       this.optionCustomers = response.customers;
+  //       this.optionProjects = response.projects;
+  //       this.optionProjectDeliverables = response.projectDeliverables;
+  //       this.optionProjectManagers = response.projectManagers;
+  //       this.optionPhases = response.phases;
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching options:', error);
+  //     }
+  //   );
+  // }
+
   fetchOptions(): void {
     this.reportService.getReportOptions().subscribe(
       (response) => {
@@ -74,6 +95,34 @@ export class TeamTimesheetReportComponent implements OnInit {
         this.optionProjectDeliverables = response.projectDeliverables;
         this.optionProjectManagers = response.projectManagers;
         this.optionPhases = response.phases;
+
+        // Create distinct project names list
+        const projectMap = new Map<string, number[]>();
+        response.projects.forEach((project: { project_name: string; project_id: number; }) => {
+          if (projectMap.has(project.project_name)) {
+            projectMap.get(project.project_name)!.push(project.project_id);
+          } else {
+            projectMap.set(project.project_name, [project.project_id]);
+          }
+        });
+        this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
+          name,
+          ids
+        }));
+
+        // Create distinct task names list (using phases)
+        const taskMap = new Map<string, number[]>();
+        response.phases.forEach((phase: { project_phase_name: string; phase_id: number; }) => {
+          if (taskMap.has(phase.project_phase_name)) {
+            taskMap.get(phase.project_phase_name)!.push(phase.phase_id);
+          } else {
+            taskMap.set(phase.project_phase_name, [phase.phase_id]);
+          }
+        });
+        this.distinctTaskNames = Array.from(taskMap.entries()).map(([name, ids]) => ({
+          name,
+          ids
+        }));
       },
       (error) => {
         console.error('Error fetching options:', error);
@@ -90,14 +139,22 @@ export class TeamTimesheetReportComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredTimesheets = this.timesheets.filter((timesheet) => {
+      // Project name filter logic
+      const projectNameMatch = !this.projectNameFilter || 
+        timesheet.project_name === this.projectNameFilter;
+      
+      // Task name filter logic
+      const taskNameMatch = !this.taskNameFilter || 
+        timesheet.project_phase_name === this.taskNameFilter;
+
       return (
         (!this.timesheetDateFilter || 
           this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
         (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
         (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
-        (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
+        projectNameMatch && // Using project name filter instead of project ID
         (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
-        (!this.phasesFilter || timesheet.phase_id == this.phasesFilter) &&
+        taskNameMatch && // Using task name filter instead of phase ID
         (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
         (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
       );
@@ -110,10 +167,11 @@ export class TeamTimesheetReportComponent implements OnInit {
     this.timesheetDateFilter = '';
     this.userNameFilter = '';
     this.customerFilter = '';
-    this.projectFilter = '';
+    this.projectNameFilter = ''; // Changed from projectFilter
     this.projectDeliverableFilter = '';
     this.taskStatusFilter = null;
-    this.phasesFilter = '';
+    this.taskNameFilter = ''; // Changed from phasesFilter
+    this.projectManagerFilter = '';
     this.applyFilters();
   }
 
