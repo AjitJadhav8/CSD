@@ -60,9 +60,11 @@ export class AssignProjectTeamComponent {
     );
   }
 
-  allocationPercentages = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    selectedAllocationPercentage: number = 0; // Default to 0%
+  allocationPercentages = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100];
+
   selectedBillingPercentage: number = 0;
-  percentageOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  percentageOptions = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100];
   selectedCustomerId: number | null = null;
 
 
@@ -111,7 +113,6 @@ export class AssignProjectTeamComponent {
   selectedEmployeeId: number | null = null;
   selectedProjectRoleId: number | null = null;
   selectedProjectManagerId: number | null = null;
-  selectedAllocationPercentage: number = 0; // Default to 0%
   startDate: string | null = null;
   tentativeEndDate: string | null = null;
 
