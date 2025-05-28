@@ -445,22 +445,6 @@ export class DataService {
   // ------------------ Project Deliverable ------------------------
 
 
-  // addProjectDeliverable(projectDeliverable: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
-  // }
-
-  // getAllProjectDeliverables(): Observable<any> {
-  //   return this.http.get(`${this.apiUrl}/api/project-deliverables`);
-  // }
-
-  // deleteProjectDeliverable(deliverableId: number): Observable<any> {
-  //   return this.http.delete(`${this.apiUrl}/api/project-deliverables/${deliverableId}`);
-  // }
-
-  // updateProjectDeliverable(deliverableId: number, payload: any): Observable<any> {
-  //   return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
-  // }
-
   addProjectDeliverable(projectDeliverable: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable, { 
       headers: this.getAuthHeaders() 
@@ -487,23 +471,25 @@ export class DataService {
 
 
 
+
+// ------------------ Manager Specific ------------------------
+
+  addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/manager/project-deliverable`, projectDeliverable, { 
+      headers: this.getAuthHeaders() 
+    });
+  }
+
+  updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/manager/project-deliverables/${deliverableId}`, payload, { 
+      headers: this.getAuthHeaders() 
+    });
+  }
+
+  
   // ------------------ Project Phases ------------------------
 
 
-  // addProjectPhase(projectPhase: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase);
-  // }
-
-  // getAllProjectPhases(): Observable<any> {
-  //   return this.http.get(`${this.apiUrl}/api/project-phases`);
-  // }
-
-  // deleteProjectPhase(phaseId: number): Observable<any> {
-  //   return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`);
-  // }
-  // updateProjectPhase(phaseId: number, payload: any): Observable<any> {
-  //   return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload);
-  // }
 
   addProjectPhase(projectPhase: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase, { 
@@ -530,20 +516,8 @@ export class DataService {
   }
 
 
+// ------------------ Manager Specific ------------------------
 
-  // getManagerProjectDeliverables(managerId: number): Observable<any> {
-  //   if (!managerId) {
-  //     throw new Error('Manager ID is required');
-  //   }
-  //   return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-deliverables`);
-  // }
-
-  // getManagerProjectPhases(managerId: number): Observable<any> {
-  //   if (!managerId) {
-  //     throw new Error('Manager ID is required');
-  //   }
-  //   return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`);
-  // }
 
   getManagerProjectDeliverables(managerId: number): Observable<any> {
     if (!managerId) {
@@ -564,35 +538,12 @@ export class DataService {
   }
 
 
-  // getManagerProjects(managerId: number): Observable<any> {
-  //   return this.http.get<any>(`${this.apiUrl}/api/manager-projects/${managerId}`);
-  // }
-
-  // addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable);
-  // }
-
-  // updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
-  //   return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload);
-  // }
-
   getManagerProjects(managerId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/api/manager-projects/${managerId}`, { 
       headers: this.getAuthHeaders() 
     });
   }
 
-  addProjectDeliverableManager(projectDeliverable: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/project-deliverable`, projectDeliverable, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
-
-  updateProjectDeliverableManager(deliverableId: number, payload: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/project-deliverables/${deliverableId}`, payload, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
 
 
   // ------------------------------------------------------------------------------------END OF ORGANISATIO MODULE------------------------------

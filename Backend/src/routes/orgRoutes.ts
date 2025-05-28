@@ -85,11 +85,17 @@ router.put('/project/:projectId', protect, orgController.updateProject);
 router.get('/projects/:projectId/manager-history', protect, orgController.getProjectManagerHistory);
 
 // ---- Project Deliverable --------
-
-router.post('/project-deliverable', protect, orgController.addProjectDeliverable);
 router.get('/project-deliverables', protect, orgController.getProjectDeliverables);
 router.delete('/project-deliverables/:deliverableId', protect, orgController.softDeleteProjectDeliverable);
+router.post('/project-deliverable', protect, orgController.addProjectDeliverable);
 router.put('/project-deliverables/:deliverableId', protect, orgController.updateProjectDeliverable);
+
+
+// Manager specific
+router.post('/manager/project-deliverable', protect, orgController.addProjectDeliverableManager);
+router.get('/manager/:managerId/project-deliverables', protect, orgController.getManagerProjectDeliverables);
+router.put('/manager/project-deliverables/:deliverableId', protect, orgController.updateProjectDeliverableManager);
+
 
 // ---- Project Phases --------
 router.post('/project-phase', protect, orgController.addProjectPhase);
@@ -97,11 +103,22 @@ router.get('/project-phases', protect, orgController.getProjectPhases);
 router.delete('/project-phases/:phaseId', protect, orgController.softDeleteProjectPhase);
 router.put('/project-phases/:phaseId', protect, orgController.updateProjectPhase);
 
-router.get('/manager/:managerId/project-deliverables', protect, orgController.getManagerProjectDeliverables);
+
+
 router.get('/manager/:managerId/project-phases', protect, orgController.getManagerProjectPhases);
-router.post('/project-deliverable', protect, orgController.addProjectDeliverableManager);
 router.get('/manager-projects/:managerId', protect, orgController.getManagerProjects);
-router.put('/project-deliverables/:deliverableId', protect, orgController.updateProjectDeliverableManager);
+
+
+
+
+
+// sort
+
+
+
+
+
+
 
 
 export default router;
