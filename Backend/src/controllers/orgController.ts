@@ -2696,125 +2696,9 @@ WHERE is_deleted = 0 AND is_RM = 1
 
 
 
-    async getManagerProjectDeliverables(req: Request, res: Response): Promise<void> {
-        try {
-            const managerId = req.params.managerId;
-
-            if (!managerId) {
-                res.status(400).json({ error: 'Manager ID is required' });
-                return;
-            }
-
-            const query = `
-                    SELECT 
-                        mpd.pd_id, 
-                        mpd.project_deliverable_name,
-                        mc.customer_name,
-                        mc.customer_id,
-                        mp.project_name,
-                        mp.project_id
-                    FROM master_project_deliverables mpd
-                    JOIN master_project mp ON mpd.project_id = mp.project_id
-                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
-                    WHERE mpd.is_deleted = 0
-                    AND mp.project_manager_id = ?
-                    ORDER BY mpd.pd_id DESC;
-                `;
-
-            db.query(query, [managerId], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching manager project deliverables:', err);
-                    res.status(500).json({ error: 'Error fetching project deliverables' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-
-    async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
-        try {
-            const managerId = req.params.managerId;
-
-            if (!managerId) {
-                res.status(400).json({ error: 'Manager ID is required' });
-                return;
-            }
-
-            const query = `
-                    SELECT 
-                        mpp.phase_id, 
-                        mpp.project_phase_name,
-                        mpd.pd_id,
-                        mpd.project_deliverable_name,
-                        mc.customer_name,
-                        mc.customer_id,
-                        mp.project_id,
-                        mp.project_name
-                    FROM master_project_phases mpp
-                    JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
-                    JOIN master_project mp ON mpd.project_id = mp.project_id
-                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
-                    WHERE mpp.is_deleted = 0
-                    AND mp.project_manager_id = ?
-                    ORDER BY mpp.phase_id DESC;
-                `;
-
-            db.query(query, [managerId], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching manager project phases:', err);
-                    res.status(500).json({ error: 'Error fetching project phases' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
 
 
-
-
-    async getManagerProjects(req: Request, res: Response): Promise<void> {
-        try {
-            const managerId = req.params.managerId;
-
-            if (!managerId) {
-                res.status(400).json({ error: 'Manager ID is required' });
-                return;
-            }
-
-            const query = `
-                    SELECT 
-                        p.project_id, 
-                        p.project_name,
-                        p.customer_id,
-                        c.customer_name
-                    FROM master_project p
-                    JOIN master_customer c ON p.customer_id = c.customer_id
-                    WHERE p.is_deleted = 0
-                    AND p.project_manager_id = ?
-                    ORDER BY p.project_name;
-                `;
-
-            db.query(query, [managerId], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching manager projects:', err);
-                    res.status(500).json({ error: 'Error fetching projects' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+   
 
     // Modify the addProjectDeliverable to ensure customer_id comes from the project
     async addProjectDeliverableManager(req: Request, res: Response): Promise<void> {
@@ -2862,6 +2746,44 @@ WHERE is_deleted = 0 AND is_RM = 1
                         deliverableId: result.insertId
                     });
                 });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+        async getManagerProjectDeliverables(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
+                    SELECT 
+                        mpd.pd_id, 
+                        mpd.project_deliverable_name,
+                        mc.customer_name,
+                        mc.customer_id,
+                        mp.project_name,
+                        mp.project_id
+                    FROM master_project_deliverables mpd
+                    JOIN master_project mp ON mpd.project_id = mp.project_id
+                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+                    WHERE mpd.is_deleted = 0
+                    AND mp.project_manager_id = ?
+                    ORDER BY mpd.pd_id DESC;
+                `;
+
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager project deliverables:', err);
+                    res.status(500).json({ error: 'Error fetching project deliverables' });
+                    return;
+                }
+                res.status(200).json(results);
             });
         } catch (error) {
             console.error('Error:', error);
@@ -2919,6 +2841,84 @@ WHERE is_deleted = 0 AND is_RM = 1
 
                     res.status(200).json({ message: 'Project deliverable updated successfully' });
                 });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+     async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
+                    SELECT 
+                        mpp.phase_id, 
+                        mpp.project_phase_name,
+                        mpd.pd_id,
+                        mpd.project_deliverable_name,
+                        mc.customer_name,
+                        mc.customer_id,
+                        mp.project_id,
+                        mp.project_name
+                    FROM master_project_phases mpp
+                    JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
+                    JOIN master_project mp ON mpd.project_id = mp.project_id
+                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+                    WHERE mpp.is_deleted = 0
+                    AND mp.project_manager_id = ?
+                    ORDER BY mpp.phase_id DESC;
+                `;
+
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager project phases:', err);
+                    res.status(500).json({ error: 'Error fetching project phases' });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getManagerProjects(req: Request, res: Response): Promise<void> {
+        try {
+            const managerId = req.params.managerId;
+
+            if (!managerId) {
+                res.status(400).json({ error: 'Manager ID is required' });
+                return;
+            }
+
+            const query = `
+                    SELECT 
+                        p.project_id, 
+                        p.project_name,
+                        p.customer_id,
+                        c.customer_name
+                    FROM master_project p
+                    JOIN master_customer c ON p.customer_id = c.customer_id
+                    WHERE p.is_deleted = 0
+                    AND p.project_manager_id = ?
+                    ORDER BY p.project_name;
+                `;
+
+            db.query(query, [managerId], (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching manager projects:', err);
+                    res.status(500).json({ error: 'Error fetching projects' });
+                    return;
+                }
+                res.status(200).json(results);
             });
         } catch (error) {
             console.error('Error:', error);
