@@ -34,6 +34,189 @@ export class PmTimesheetComponent implements OnInit {
 
 
 
+  constructor(
+    private timesheetService: TimesheetService,
+    private secureStorage: SecureStorageService
+  ) { }
+
+  ngOnInit(): void {
+    const storedUserId = this.secureStorage.getItem('user_id');
+    if (storedUserId) {
+      this.userId = Number(storedUserId);
+      this.fetchTimesheets();
+      this.loadManagedProjects();
+    }
+  }
+
+  loadManagedProjects(): void {
+    if (!this.userId) return;
+    
+    this.timesheetService.getManagedProjects(this.userId).subscribe(
+      (response) => {
+        this.optionCustomers = response.customers;
+      },
+      (error) => {
+        console.error('Error fetching managed projects:', error);
+      }
+    );
+  }
+
+  onCustomerChange(): void {
+    if (!this.userId || !this.selectedCustomer) return;
+    
+    this.timesheetService.getManagedProjects(this.userId).subscribe(
+      (response) => {
+        this.filterOptionProjects = response.projects.filter(
+          (p: any) => p.customer_id == this.selectedCustomer
+        );
+        this.selectedProject = null;
+      },
+      (error) => {
+        console.error('Error fetching projects:', error);
+      }
+    );
+  }
+onDateChange(): void {
+    if (this.selectedDate) {
+        this.fetchTimesheets(this.selectedDate);
+    }
+}
+  fetchTimesheets(date?: string): void {
+    if (!this.userId) return;
+    
+    this.timesheetService.getPmTimesheets(this.userId, date || this.selectedDate).subscribe(
+      (response) => {
+        this.timesheetData = response;
+      },
+      (error) => {
+        console.error('Error fetching PM timesheets:', error);
+      }
+    );
+  }
+
+  submitTimesheet(form: NgForm): void {
+    if (!form.valid || !this.userId || !this.selectedCustomer || !this.selectedProject) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all required fields!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return;
+    }
+
+    const data = {
+      timesheet_date: this.selectedDate,
+      user_id: this.userId,
+      customer_id: this.selectedCustomer,
+      project_id: this.selectedProject,
+      hours: this.selectedHours,
+      minutes: this.selectedMinutes,
+      description: this.description
+    };
+
+    this.timesheetService.submitPmTimesheet(data).subscribe({
+      next: () => {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Timesheet submitted successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+            this.fetchTimesheets(this.selectedDate);
+             // Instead of form.resetForm(), manually reset the fields you want to clear
+        this.selectedCustomer = null;
+        this.selectedProject = null;
+        this.selectedHours = null;
+        this.selectedMinutes = 0;
+        this.description = '';
+        this.selectedHours = null;
+        this.selectedMinutes = 0;
+      },
+      error: (error) => {
+        console.error('Error submitting timesheet:', error);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to submit timesheet!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+    });
+  }
+
+  deleteTimesheet(id: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This timesheet entry will be deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.timesheetService.deletePmTimesheet(id).subscribe({
+          next: () => {
+            this.fetchTimesheets();
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: 'Timesheet deleted successfully!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          },
+          error: (error) => {
+            console.error('Error deleting timesheet:', error);
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: 'Failed to delete timesheet!',
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+        });
+      }
+    });
+  }
+
+  
+calculateTotalHours(): number {
+    const totalTime = this.calculateTotalTime();
+    return totalTime.hours + (totalTime.minutes / 60);
+}
+getHoursStatusText(): string {
+    const total = this.calculateTotalHours();
+    if (total < 6) {
+        return 'Below minimum (6h)';
+    } else if (total >= 6 && total <= 8) {
+        return 'Standard workday';
+    } else {
+        return 'Overtime';
+    }
+}
+
+
+  calculateTotalTime(): { hours: number, minutes: number } {
+    let totalMinutes = this.timesheetData.reduce((sum, entry) => sum + (entry.hours * 60) + entry.minutes, 0);
+    return {
+        hours: Math.floor(totalMinutes / 60),
+        minutes: totalMinutes % 60
+    };
+}
+
+
+
     // Existing properties...
   isEditModalOpen = false;
   editTimesheetId: number | null = null;
@@ -232,184 +415,6 @@ export class PmTimesheetComponent implements OnInit {
   }
 }
 
-  constructor(
-    private timesheetService: TimesheetService,
-    private secureStorage: SecureStorageService
-  ) { }
-
-  ngOnInit(): void {
-    const storedUserId = this.secureStorage.getItem('user_id');
-    if (storedUserId) {
-      this.userId = Number(storedUserId);
-      this.fetchTimesheets();
-      this.loadManagedProjects();
-    }
-  }
-
-  loadManagedProjects(): void {
-    if (!this.userId) return;
-    
-    this.timesheetService.getManagedProjects(this.userId).subscribe(
-      (response) => {
-        this.optionCustomers = response.customers;
-      },
-      (error) => {
-        console.error('Error fetching managed projects:', error);
-      }
-    );
-  }
-
-  onCustomerChange(): void {
-    if (!this.userId || !this.selectedCustomer) return;
-    
-    this.timesheetService.getManagedProjects(this.userId).subscribe(
-      (response) => {
-        this.filterOptionProjects = response.projects.filter(
-          (p: any) => p.customer_id == this.selectedCustomer
-        );
-        this.selectedProject = null;
-      },
-      (error) => {
-        console.error('Error fetching projects:', error);
-      }
-    );
-  }
-onDateChange(): void {
-    if (this.selectedDate) {
-        this.fetchTimesheets(this.selectedDate);
-    }
-}
-  fetchTimesheets(date?: string): void {
-    if (!this.userId) return;
-    
-    this.timesheetService.getPmTimesheets(this.userId, date || this.selectedDate).subscribe(
-      (response) => {
-        this.timesheetData = response;
-      },
-      (error) => {
-        console.error('Error fetching PM timesheets:', error);
-      }
-    );
-  }
-
-  submitTimesheet(form: NgForm): void {
-    if (!form.valid || !this.userId || !this.selectedCustomer || !this.selectedProject) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'warning',
-        title: 'Please fill all required fields!',
-        showConfirmButton: false,
-        timer: 3000
-      });
-      return;
-    }
-
-    const data = {
-      timesheet_date: this.selectedDate,
-      user_id: this.userId,
-      customer_id: this.selectedCustomer,
-      project_id: this.selectedProject,
-      hours: this.selectedHours,
-      minutes: this.selectedMinutes,
-      description: this.description
-    };
-
-    this.timesheetService.submitPmTimesheet(data).subscribe({
-      next: () => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Timesheet submitted successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-            this.fetchTimesheets(this.selectedDate);
-             // Instead of form.resetForm(), manually reset the fields you want to clear
-        this.selectedCustomer = null;
-        this.selectedProject = null;
-        this.selectedHours = null;
-        this.selectedMinutes = 0;
-        this.description = '';
-        this.selectedHours = null;
-        this.selectedMinutes = 0;
-      },
-      error: (error) => {
-        console.error('Error submitting timesheet:', error);
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Failed to submit timesheet!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    });
-  }
-
-  deleteTimesheet(id: number): void {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This timesheet entry will be deleted!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.timesheetService.deletePmTimesheet(id).subscribe({
-          next: () => {
-            this.fetchTimesheets();
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'Timesheet deleted successfully!',
-              showConfirmButton: false,
-              timer: 3000
-            });
-          },
-          error: (error) => {
-            console.error('Error deleting timesheet:', error);
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'error',
-              title: 'Failed to delete timesheet!',
-              showConfirmButton: false,
-              timer: 3000
-            });
-          }
-        });
-      }
-    });
-  }
-
-  
-calculateTotalHours(): number {
-    const totalTime = this.calculateTotalTime();
-    return totalTime.hours + (totalTime.minutes / 60);
-}
-getHoursStatusText(): string {
-    const total = this.calculateTotalHours();
-    if (total < 6) {
-        return 'Below minimum (6h)';
-    } else if (total >= 6 && total <= 8) {
-        return 'Standard workday';
-    } else {
-        return 'Overtime';
-    }
-}
 
 
-  calculateTotalTime(): { hours: number, minutes: number } {
-    let totalMinutes = this.timesheetData.reduce((sum, entry) => sum + (entry.hours * 60) + entry.minutes, 0);
-    return {
-        hours: Math.floor(totalMinutes / 60),
-        minutes: totalMinutes % 60
-    };
-}
 }
