@@ -1015,223 +1015,233 @@ WHERE is_deleted = 0 AND is_RM = 1
     }
 
     async assignDetails(req: Request, res: Response): Promise<void> {
-        try {
-            const {
-                user_id,
-                user_emergency_contact,
-                is_passport,
-                passport_validity,
-                user_current_address,
-                user_DOB,
-                user_blood_group,
-                user_DOJ,
-                role_id,
-                department_id,
-                designation_id,
-                is_timesheet_required,
-                reporting_manager_id
-            } = req.body;
+    try {
+        const {
+            user_id,
+            user_emergency_contact,
+            is_passport,
+            passport_validity,
+            user_current_address,
+            user_DOB,
+            user_blood_group,
+            user_DOJ,
+            role_id,
+            department_id,
+            designation_id,
+            is_timesheet_required,
+            reporting_manager_id,
+            reporting_manager_first_name,
+            reporting_manager_last_name
+        } = req.body;
 
-            // Validate required fields
-            if (!user_id) {
-                res.status(400).json({ error: "User ID is required" });
+        // Validate required fields
+        if (!user_id) {
+            res.status(400).json({ error: "User ID is required" });
+            return;
+        }
+
+        // Update master_user table with personal details
+        const updateMasterUserQuery = `
+            UPDATE master_user
+            SET 
+                user_emergency_contact = ?,
+                is_passport = ?,
+                passport_validity = ?,
+                user_current_address = ?,
+                user_DOB = ?,
+                user_blood_group = ?,
+                user_DOJ = ?
+            WHERE user_id = ?
+        `;
+
+        const masterUserValues = [
+            user_emergency_contact,
+            is_passport,
+            passport_validity,
+            user_current_address,
+            user_DOB,
+            user_blood_group,
+            user_DOJ,
+            user_id
+        ];
+
+        // Execute the update query for master_user
+        db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
+            if (err) {
+                console.error("Error updating master_user:", err);
+                res.status(500).json({ error: "Error updating employee details" });
                 return;
             }
 
-            // Update master_user table with personal details
-            const updateMasterUserQuery = `
-                UPDATE master_user
-                SET 
-                    user_emergency_contact = ?,
-                    is_passport = ?,
-                    passport_validity = ?,
-                    user_current_address = ?,
-                    user_DOB = ?,
-                    user_blood_group = ?,
-                    user_DOJ = ?
-                WHERE user_id = ?
+            // Check if a record already exists in trans_user_details for the given user_id
+            const checkRecordQuery = `
+                SELECT * FROM trans_user_details WHERE user_id = ?
             `;
 
-            const masterUserValues = [
-                user_emergency_contact,
-                is_passport,
-                passport_validity,
-                user_current_address,
-                user_DOB,
-                user_blood_group,
-                user_DOJ,
-                user_id
-            ];
-
-            // Execute the update query for master_user
-            db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
+            db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
                 if (err) {
-                    console.error("Error updating master_user:", err);
-                    res.status(500).json({ error: "Error updating employee details" });
+                    console.error("Error checking trans_user_details:", err);
+                    res.status(500).json({ error: "Error checking trans_user_details" });
                     return;
                 }
 
-                // Check if a record already exists in trans_user_details for the given user_id
-                const checkRecordQuery = `
-                    SELECT * FROM trans_user_details WHERE user_id = ?
-                `;
+                let previousReportingManagerId: number | null = null;
 
-                db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
-                    if (err) {
-                        console.error("Error checking trans_user_details:", err);
-                        res.status(500).json({ error: "Error checking trans_user_details" });
-                        return;
-                    }
+                if (result.length > 0) {
+                    // Record exists, store the previous reporting manager ID
+                    previousReportingManagerId = result[0].reporting_manager_id;
 
-                    let previousReportingManagerId: number | null = null;
+                    // Perform UPDATE
+                    const updateTransUserDetailsQuery = `
+                        UPDATE trans_user_details
+                        SET 
+                            role_id = ?,
+                            department_id = ?,
+                            designation_id = ?,
+                            is_timesheet_required = ?,
+                            reporting_manager_id = ?,
+                            reporting_manager_first_name = ?,
+                            reporting_manager_last_name = ?
+                        WHERE user_id = ?
+                    `;
 
-                    if (result.length > 0) {
-                        // Record exists, store the previous reporting manager ID
-                        previousReportingManagerId = result[0].reporting_manager_id;
+                    const updateValues = [
+                        role_id,
+                        department_id,
+                        designation_id,
+                        is_timesheet_required,
+                        reporting_manager_id,
+                        reporting_manager_first_name,
+                        reporting_manager_last_name,
+                        user_id
+                    ];
 
-                        // Perform UPDATE
-                        const updateTransUserDetailsQuery = `
-                            UPDATE trans_user_details
-                            SET 
-                                role_id = ?,
-                                department_id = ?,
-                                designation_id = ?,
-                                is_timesheet_required = ?,
-                                reporting_manager_id = ?
-                            WHERE user_id = ?
-                        `;
+                    db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
+                        if (err) {
+                            console.error("Error updating trans_user_details:", err);
+                            res.status(500).json({ error: "Error updating trans_user_details" });
+                            return;
+                        }
 
-                        const updateValues = [
-                            role_id,
-                            department_id,
-                            designation_id,
-                            is_timesheet_required,
-                            reporting_manager_id,
-                            user_id
-                        ];
+                        // Update the is_RM flag for the new reporting manager
+                        if (reporting_manager_id) {
+                            const updateIsRmQuery = `
+                                UPDATE master_user
+                                SET is_RM = 1
+                                WHERE user_id = ?
+                            `;
 
-                        db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
-                            if (err) {
-                                console.error("Error updating trans_user_details:", err);
-                                res.status(500).json({ error: "Error updating trans_user_details" });
-                                return;
-                            }
+                            db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+                                if (updateIsRmErr) {
+                                    console.error("Error updating is_RM flag:", updateIsRmErr);
+                                    res.status(500).json({ error: "Error updating is_RM flag" });
+                                    return;
+                                }
 
-                            // Update the is_RM flag for the new reporting manager
-                            if (reporting_manager_id) {
-                                const updateIsRmQuery = `
-                                    UPDATE master_user
-                                    SET is_RM = 1
-                                    WHERE user_id = ?
-                                `;
+                                // Check if the previous reporting manager is still assigned to any user
+                                if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
+                                    const checkPreviousRmQuery = `
+                                        SELECT COUNT(*) AS user_count
+                                        FROM trans_user_details
+                                        WHERE reporting_manager_id = ? AND is_deleted = 0
+                                    `;
 
-                                db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
-                                    if (updateIsRmErr) {
-                                        console.error("Error updating is_RM flag:", updateIsRmErr);
-                                        res.status(500).json({ error: "Error updating is_RM flag" });
-                                        return;
-                                    }
+                                    db.query(checkPreviousRmQuery, [previousReportingManagerId], (checkErr: any, checkResult: any) => {
+                                        if (checkErr) {
+                                            console.error("Error checking previous reporting manager assignments:", checkErr);
+                                            res.status(500).json({ error: "Error checking previous reporting manager assignments" });
+                                            return;
+                                        }
 
-                                    // Check if the previous reporting manager is still assigned to any user
-                                    if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
-                                        const checkPreviousRmQuery = `
-                                            SELECT COUNT(*) AS user_count
-                                            FROM trans_user_details
-                                            WHERE reporting_manager_id = ? AND is_deleted = 0
-                                        `;
+                                        const userCount = checkResult[0].user_count;
 
-                                        db.query(checkPreviousRmQuery, [previousReportingManagerId], (checkErr: any, checkResult: any) => {
-                                            if (checkErr) {
-                                                console.error("Error checking previous reporting manager assignments:", checkErr);
-                                                res.status(500).json({ error: "Error checking previous reporting manager assignments" });
-                                                return;
-                                            }
+                                        // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
+                                        if (userCount === 0) {
+                                            const updatePreviousRmQuery = `
+                                                UPDATE master_user
+                                                SET is_RM = 0
+                                                WHERE user_id = ?
+                                            `;
 
-                                            const userCount = checkResult[0].user_count;
+                                            db.query(updatePreviousRmQuery, [previousReportingManagerId], (updatePreviousRmErr: any, updatePreviousRmResult: any) => {
+                                                if (updatePreviousRmErr) {
+                                                    console.error("Error updating previous is_RM flag:", updatePreviousRmErr);
+                                                    res.status(500).json({ error: "Error updating previous is_RM flag" });
+                                                    return;
+                                                }
 
-                                            // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
-                                            if (userCount === 0) {
-                                                const updatePreviousRmQuery = `
-                                                    UPDATE master_user
-                                                    SET is_RM = 0
-                                                    WHERE user_id = ?
-                                                `;
-
-                                                db.query(updatePreviousRmQuery, [previousReportingManagerId], (updatePreviousRmErr: any, updatePreviousRmResult: any) => {
-                                                    if (updatePreviousRmErr) {
-                                                        console.error("Error updating previous is_RM flag:", updatePreviousRmErr);
-                                                        res.status(500).json({ error: "Error updating previous is_RM flag" });
-                                                        return;
-                                                    }
-
-                                                    res.status(200).json({ message: "Details updated successfully" });
-                                                });
-                                            } else {
                                                 res.status(200).json({ message: "Details updated successfully" });
-                                            }
-                                        });
-                                    } else {
-                                        res.status(200).json({ message: "Details updated successfully" });
-                                    }
-                                });
-                            } else {
-                                res.status(200).json({ message: "Details updated successfully" });
-                            }
-                        });
-                    } else {
-                        // Record does not exist, perform INSERT
-                        const insertTransUserDetailsQuery = `
-                            INSERT INTO trans_user_details (
-                                user_id, role_id, department_id, designation_id, is_timesheet_required, reporting_manager_id
-                            )
-                            VALUES (?, ?, ?, ?, ?, ?)
-                        `;
+                                            });
+                                        } else {
+                                            res.status(200).json({ message: "Details updated successfully" });
+                                        }
+                                    });
+                                } else {
+                                    res.status(200).json({ message: "Details updated successfully" });
+                                }
+                            });
+                        } else {
+                            res.status(200).json({ message: "Details updated successfully" });
+                        }
+                    });
+                } else {
+                    // Record does not exist, perform INSERT
+                    const insertTransUserDetailsQuery = `
+                        INSERT INTO trans_user_details (
+                            user_id, role_id, department_id, designation_id, 
+                            is_timesheet_required, reporting_manager_id,
+                            reporting_manager_first_name, reporting_manager_last_name
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    `;
 
-                        const insertValues = [
-                            user_id,
-                            role_id,
-                            department_id,
-                            designation_id,
-                            is_timesheet_required,
-                            reporting_manager_id
-                        ];
+                    const insertValues = [
+                        user_id,
+                        role_id,
+                        department_id,
+                        designation_id,
+                        is_timesheet_required,
+                        reporting_manager_id,
+                        reporting_manager_first_name,
+                        reporting_manager_last_name
+                    ];
 
-                        db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
-                            if (err) {
-                                console.error("Error inserting trans_user_details:", err);
-                                res.status(500).json({ error: "Error inserting trans_user_details" });
-                                return;
-                            }
+                    db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
+                        if (err) {
+                            console.error("Error inserting trans_user_details:", err);
+                            res.status(500).json({ error: "Error inserting trans_user_details" });
+                            return;
+                        }
 
-                            // Update the is_RM flag for the new reporting manager
-                            if (reporting_manager_id) {
-                                const updateIsRmQuery = `
-                                    UPDATE master_user
-                                    SET is_RM = 1
-                                    WHERE user_id = ?
-                                `;
+                        // Update the is_RM flag for the new reporting manager
+                        if (reporting_manager_id) {
+                            const updateIsRmQuery = `
+                                UPDATE master_user
+                                SET is_RM = 1
+                                WHERE user_id = ?
+                            `;
 
-                                db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
-                                    if (updateIsRmErr) {
-                                        console.error("Error updating is_RM flag:", updateIsRmErr);
-                                        res.status(500).json({ error: "Error updating is_RM flag" });
-                                        return;
-                                    }
+                            db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+                                if (updateIsRmErr) {
+                                    console.error("Error updating is_RM flag:", updateIsRmErr);
+                                    res.status(500).json({ error: "Error updating is_RM flag" });
+                                    return;
+                                }
 
-                                    res.status(200).json({ message: "Details assigned successfully" });
-                                });
-                            } else {
                                 res.status(200).json({ message: "Details assigned successfully" });
-                            }
-                        });
-                    }
-                });
+                            });
+                        } else {
+                            res.status(200).json({ message: "Details assigned successfully" });
+                        }
+                    });
+                }
             });
-        } catch (error) {
-            console.error("Error:", error);
-            res.status(500).json({ error: "Internal Server Error" });
-        }
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
+}
     async softDeleteEmployee(req: Request, res: Response): Promise<void> {
         try {
             const { employeeId } = req.params;

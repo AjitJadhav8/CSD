@@ -691,6 +691,9 @@ export class EmployeeComponent {
     user_blood_group: '',
     user_DOJ: null as string | null,  // Update type
     reporting_manager_id: null,
+    
+  reporting_manager_first_name: '', // Add this
+  reporting_manager_last_name: '',  // Add this
     designation_id: null,
     is_timesheet_required: null,
     department_id: null,
@@ -772,88 +775,111 @@ export class EmployeeComponent {
     return `${year}-${month}-${day}`;
   }
 
-  assignDetails(employee: any): void {
-    // Fetch employee details from the backend
-    this.dataService.getEmployeeDetails(employee.user_id).subscribe(
-      (data) => {
+ assignDetails(employee: any): void {
+  // Fetch employee details from the backend
+  this.dataService.getEmployeeDetails(employee.user_id).subscribe(
+    (data) => {
+      const formattedDOB = this.formatDate(data.user_DOB);
+      const formattedDOJ = this.formatDate(data.user_DOJ);
 
-        const formattedDOB = this.formatDate(data.user_DOB);
-        const formattedDOJ = this.formatDate(data.user_DOJ);
-
-        // Populate assignDetailsData with the fetched data
-        this.assignDetailsData = {
-          user_id: data.user_id,
-          user_first_name: data.user_first_name,
-          user_last_name: data.user_last_name,
-          user_emergency_contact: data.user_emergency_contact || '',
-          is_passport: data.is_passport || null,
-          passport_validity: data.passport_validity || null,
-          user_current_address: data.user_current_address || '',
-          user_DOB: formattedDOB, // Use formatted date
-          user_blood_group: data.user_blood_group || '',
-          user_DOJ: formattedDOJ, // Use formatted date
-          reporting_manager_id: data.reporting_manager_id || null,
-          designation_id: data.designation_id || null,
-          is_timesheet_required: data.is_timesheet_required || null,
-          department_id: data.department_id || null,
-          role_id: data.role_id || null
-        };
-        console.log('assssign', this.assignDetailsData);
-
-        // Show the modal
-        this.showAssignDetailsModal = true;
-      },
-      (error) => {
-        console.error('Error fetching employee details:', error);
+      // Find the selected reporting manager from the optionUsers list
+      let reportingManagerFirstName = '';
+      let reportingManagerLastName = '';
+      
+      if (data.reporting_manager_id) {
+        const rm = this.optionUsers.find(u => u.user_id === data.reporting_manager_id);
+        if (rm) {
+          reportingManagerFirstName = rm.user_first_name;
+          reportingManagerLastName = rm.user_last_name;
+        }
       }
-    );
-  }
+
+      // Populate assignDetailsData with the fetched data
+      this.assignDetailsData = {
+        user_id: data.user_id,
+        user_first_name: data.user_first_name,
+        user_last_name: data.user_last_name,
+        user_emergency_contact: data.user_emergency_contact || '',
+        is_passport: data.is_passport || null,
+        passport_validity: data.passport_validity || null,
+        user_current_address: data.user_current_address || '',
+        user_DOB: formattedDOB,
+        user_blood_group: data.user_blood_group || '',
+        user_DOJ: formattedDOJ,
+        reporting_manager_id: data.reporting_manager_id || null,
+        reporting_manager_first_name: reportingManagerFirstName,
+        reporting_manager_last_name: reportingManagerLastName,
+        designation_id: data.designation_id || null,
+        is_timesheet_required: data.is_timesheet_required || null,
+        department_id: data.department_id || null,
+        role_id: data.role_id || null
+      };
+
+      this.showAssignDetailsModal = true;
+    },
+    (error) => {
+      console.error('Error fetching employee details:', error);
+    }
+  );
+}
 
 
   submitAssignDetails(assignDetailsForm: NgForm): void {
-    if (assignDetailsForm.invalid) {
+  if (assignDetailsForm.invalid) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Please fill all required fields correctly!',
+      toast: true,
+      position: 'top-end',
+      timer: 3000,
+      showConfirmButton: false
+    });
+    return;
+  }
+
+  // Update the reporting manager names based on the selected ID
+  if (this.assignDetailsData.reporting_manager_id) {
+    const rm = this.optionUsers.find(u => u.user_id === this.assignDetailsData.reporting_manager_id);
+    if (rm) {
+      this.assignDetailsData.reporting_manager_first_name = rm.user_first_name;
+      this.assignDetailsData.reporting_manager_last_name = rm.user_last_name;
+    }
+  } else {
+    this.assignDetailsData.reporting_manager_first_name = '';
+    this.assignDetailsData.reporting_manager_last_name = '';
+  }
+
+  this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
+    (response) => {
+      console.log('Details assigned successfully!', response);
+      this.fetchEmployees();
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Details assigned successfully!',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      this.showAssignDetailsModal = false;
+      assignDetailsForm.resetForm();
+      this.fetchOptions();
+    },
+    (error) => {
+      console.error('Error assigning details:', error);
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill all required fields correctly!',
+        title: 'Error',
+        text: 'Failed to assign details. Please try again.',
         toast: true,
         position: 'top-end',
         timer: 3000,
         showConfirmButton: false
       });
-      return;
     }
-
-    this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
-      (response) => {
-        console.log('Details assigned successfully!', response);
-        this.fetchEmployees();
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: 'Details assigned successfully!',
-          showConfirmButton: false,
-          timer: 3000
-        });
-        this.showAssignDetailsModal = false;
-        assignDetailsForm.resetForm();
-        this.fetchOptions();
-      },
-      (error) => {
-        console.error('Error assigning details:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to assign details. Please try again.',
-          toast: true,
-          position: 'top-end',
-          timer: 3000,
-          showConfirmButton: false
-        });
-      }
-    );
-  }
+  );
+}
 
   fetchEmployees(): void {
     this.dataService.getAllEmployees().subscribe(
