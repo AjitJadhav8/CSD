@@ -57,12 +57,6 @@ class OrgController {
     WHERE is_deleted = 0
         `;
 
-            const taskCategoryQuery = `
-        SELECT 
-            task_cat_id, task_category_name 
-        FROM master_task_category WHERE is_deleted = 0
-        `;
-
             const projectRoleQuery = `
         SELECT 
             project_role_id, project_role_name, is_deleted, created_at, updated_at
@@ -105,7 +99,7 @@ WHERE is_deleted = 0 AND is_RM = 1
 
 
             // Fetch roles, departments, and users in parallel
-            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, taskCategories, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers] = await Promise.all([
+            const [roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers] = await Promise.all([
                 new Promise((resolve, reject) => {
                     db.query(rolesQuery, (err: any, results: any) => {
                         if (err) reject(err);
@@ -161,12 +155,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                     });
                 }),
                 new Promise((resolve, reject) => {
-                    db.query(taskCategoryQuery, (err: any, results: any) => {
-                        if (err) reject(err);
-                        resolve(results);
-                    });
-                }),
-                new Promise((resolve, reject) => {
                     db.query(projectRoleQuery, (err: any, results: any) => {
                         if (err) reject(err);
                         resolve(results);
@@ -209,8 +197,7 @@ WHERE is_deleted = 0 AND is_RM = 1
 
             // Return roles, departments, and user info in the response
             res.status(200).json({
-                roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables,
-                taskCategories, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers
+                roles, departments, users, customers, typeOfEngagement, typeOfProject, projectStatus, projects, projectDeliverables, projectRole, designation, masterCategory, phases, projectManagers, reportingManagers
             });
         } catch (error) {
             console.error('Error:', error);

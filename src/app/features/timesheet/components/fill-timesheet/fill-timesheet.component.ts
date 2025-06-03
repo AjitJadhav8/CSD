@@ -363,6 +363,8 @@ export class FillTimesheetComponent {
       user_id: this.userId,
       pd_id: this.selectedDeliverable,
       phase_id: this.selectedPhase,
+        customer_id: this.selectedCustomer,  // Add this
+    project_id: this.selectedProject,    // Add this
       hours: this.selectedHours,
       minutes: this.selectedMinutes,
       task_status: this.selectedTaskStatus,
@@ -595,6 +597,8 @@ export class FillTimesheetComponent {
       user_id: this.userId,
       pd_id: this.editSelectedDeliverable,
       phase_id: this.editSelectedPhase,
+        customer_id: this.editSelectedCustomer,  // Add this
+        project_id: this.editSelectedProject,    // Add this
       hours: this.editSelectedHours,
       minutes: this.editSelectedMinutes,
       task_status: this.editSelectedTaskStatus,

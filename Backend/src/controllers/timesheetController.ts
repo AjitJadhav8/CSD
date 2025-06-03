@@ -276,30 +276,61 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+    // ------------------------------------------ Timesheet -----------------------------------
 
-    async submitTimesheet(req: Request, res: Response): Promise<void> {
-        try {
-            const { timesheet_date, phase_id, pd_id, task_description, hours, minutes, task_status } = req.body;
-            const user_id = (req as any).user?.user_id;
 
-            // Validate required fields
-            if (!timesheet_date || !user_id || !phase_id || !pd_id || hours === undefined || minutes === undefined || task_status === undefined) {
-                res.status(400).json({ error: 'Missing required fields' });
-                return;
-            }
+   async submitTimesheet(req: Request, res: Response): Promise<void> {
+  try {
+    const { 
+      timesheet_date, 
+      user_id, 
+      phase_id, 
+      pd_id, 
+      customer_id, 
+      project_id,
+      task_description, 
+      hours, 
+      minutes, 
+      task_status 
+    } = req.body;
 
-            const query = `
-            INSERT INTO trans_timesheet (timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status, is_deleted, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
-
-            db.query(query, [timesheet_date, user_id, phase_id, pd_id, task_description, hours, minutes, task_status]);
-
-            res.status(201).json({ message: 'Timesheet entry submitted successfully' });
-        } catch (error) {
-            console.error('Error submitting timesheet:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+    // Validate required fields (add customer_id and project_id)
+    if (!timesheet_date || !user_id || !pd_id || !customer_id || !project_id ||
+        hours === undefined || minutes === undefined || task_status === undefined) {
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
     }
+
+    const query = `
+      INSERT INTO trans_timesheet 
+        (timesheet_date, user_id, phase_id, pd_id, customer_id, project_id, 
+         task_description, hours, minutes, task_status, is_deleted, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW(), NOW())`;
+
+    db.query(query, [
+      timesheet_date,
+      user_id,
+      phase_id,
+      pd_id,
+      customer_id,
+      project_id,
+      task_description,
+      hours,
+      minutes,
+      task_status
+    ], (error) => {
+      if (error) {
+        console.error('Error submitting timesheet:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      res.status(201).json({ message: 'Timesheet entry submitted successfully' });
+    });
+  } catch (error) {
+    console.error('Error submitting timesheet:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 
     async getUserTimesheets(req: Request, res: Response): Promise<void> {
         try {
