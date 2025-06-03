@@ -360,7 +360,8 @@ async getAssignedCustomersAndProjects(req: Request, res: Response): Promise<void
                 t.hours, 
                 t.minutes, 
                 t.task_status, 
-                t.timesheet_date
+                t.timesheet_date,
+                t.created_at
             FROM trans_timesheet t
             LEFT JOIN master_project_deliverables pd ON t.pd_id = pd.pd_id
             LEFT JOIN master_project p ON pd.project_id = p.project_id

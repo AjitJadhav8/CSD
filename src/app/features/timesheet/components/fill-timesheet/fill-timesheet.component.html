@@ -303,17 +303,17 @@
                             </button>
 
                             <button (click)="openEditModal(timesheet)"
-                                class="text-green-600 hover:text-green-800 p-1 mr-1"
-                                [disabled]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [class.opacity-50]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [class.cursor-not-allowed]="!isTimesheetEditable(timesheet.timesheet_date)"
-                                [title]="!isTimesheetEditable(timesheet.timesheet_date) ? 'Editing is only allowed within 24 hours of creation' : ''">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                            </button>
+    class="text-green-600 hover:text-green-800 p-1 mr-1"
+    [disabled]="!isTimesheetEditable(timesheet.created_at)"
+    [class.opacity-50]="!isTimesheetEditable(timesheet.created_at)"
+    [class.cursor-not-allowed]="!isTimesheetEditable(timesheet.created_at)"
+    [title]="!isTimesheetEditable(timesheet.created_at) ? 'Editing is only allowed within 24 hours of creation' : ''">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+</button>
 
                             <button (click)="deleteTimesheet(timesheet.timesheet_id)"
                                 class="text-red-600 hover:text-red-800 p-1">

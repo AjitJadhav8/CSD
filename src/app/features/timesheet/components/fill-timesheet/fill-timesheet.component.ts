@@ -653,19 +653,19 @@ export class FillTimesheetComponent {
   onEditTaskStatusChange(status: number): void {
     this.editSelectedTaskStatus = status ? 1 : 0;
   }
-  isTimesheetEditable(timesheetDate: string): boolean {
-    if (!timesheetDate) return false;
+  isTimesheetEditable(createdAt: string): boolean {
+    if (!createdAt) return false;
 
-    // Parse the timesheet date
-    const timesheetDateTime = new Date(timesheetDate).getTime();
+    // Parse the creation date
+    const createdDate = new Date(createdAt).getTime();
     const now = new Date().getTime();
 
     // Calculate the difference in hours
-    const hoursDifference = (now - timesheetDateTime) / (1000 * 60 * 60);
+    const hoursDifference = (now - createdDate) / (1000 * 60 * 60);
 
     // Allow editing if within 24 hours
     return hoursDifference <= 24;
-  }
+}
 
   formatDate(dateString: string): string {
     if (!dateString) return '';
