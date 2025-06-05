@@ -52,7 +52,9 @@ export class FillTimesheetComponent {
       (response) => {
         console.log('Fetched Data:', response);
         this.optionProjectDeliverables = response.projectDeliverables;
-        this.optionPhases = response.phases
+        // this.optionPhases = response.phases
+              this.standardTasks = response.standardTasks; // Add this
+
       },
       (error) => {
         console.error('Error fetching roles and departments', error);
@@ -362,7 +364,8 @@ export class FillTimesheetComponent {
       timesheet_date: this.selectedDate,
       user_id: this.userId,
       pd_id: this.selectedDeliverable,
-      phase_id: this.selectedPhase,
+      // phase_id: this.selectedPhase,
+          standard_task_id: this.selectedStandardTask, // Changed from phase_id
         customer_id: this.selectedCustomer,  // Add this
     project_id: this.selectedProject,    // Add this
       hours: this.selectedHours,
@@ -428,7 +431,9 @@ export class FillTimesheetComponent {
         this.onDeliverableChange();
 
         setTimeout(() => {
-          this.selectedPhase = timesheet.phase_id;
+          // this.selectedPhase = timesheet.phase_id;
+            this.selectedStandardTask = timesheet.standard_task_id;
+
           this.selectedHours = timesheet.hours;
           this.selectedMinutes = timesheet.minutes;
           this.selectedTaskStatus = timesheet.task_status;
@@ -459,7 +464,7 @@ export class FillTimesheetComponent {
   editSelectedDate: string = '';
   editSelectedCustomer: number | string = '';
   editSelectedProject: number | null = null;
-  editSelectedPhase: number | null = null;
+  editSelectedStandardTask : number | null = null;
   editSelectedDeliverable: number | null = null;
   editSelectedHours: number | null = null;
   editSelectedMinutes: number = 0;
@@ -475,7 +480,7 @@ export class FillTimesheetComponent {
     this.editSelectedCustomer = timesheet.customer_id;
     this.editSelectedProject = timesheet.project_id;
     this.editSelectedDeliverable = timesheet.pd_id;
-    this.editSelectedPhase = timesheet.phase_id;
+    this.editSelectedStandardTask  = timesheet.standard_task_id;
     this.editSelectedHours = timesheet.hours;
     this.editSelectedMinutes = timesheet.minutes;
     this.editSelectedTaskStatus = timesheet.task_status;
@@ -511,7 +516,7 @@ export class FillTimesheetComponent {
     this.editSelectedDate = '';
     this.editSelectedCustomer = '';
     this.editSelectedProject = null;
-    this.editSelectedPhase = null;
+    this.editSelectedStandardTask = null;
     this.editSelectedDeliverable = null;
     this.editSelectedHours = null;
     this.editSelectedMinutes = 0;
@@ -526,17 +531,17 @@ export class FillTimesheetComponent {
         (phase: any) => phase.pd_id == this.editSelectedDeliverable
       );
       // Try to maintain current phase selection if valid
-      if (this.editSelectedPhase) {
+      if (this.editSelectedStandardTask ) {
         const phaseStillValid = this.filterOptionPhases.some(
-          (p: any) => p.phase_id == this.editSelectedPhase
+          (p: any) => p.standard_task_id == this.editSelectedStandardTask
         );
         if (!phaseStillValid) {
-          this.editSelectedPhase = null;
+          this.editSelectedStandardTask = null;
         }
       }
     } else {
       this.filterOptionPhases = [];
-      this.editSelectedPhase = null;
+      this.editSelectedStandardTask = null;
     }
   }
 
@@ -548,14 +553,14 @@ export class FillTimesheetComponent {
       // Reset dependent fields
       this.editSelectedProject = null;
       this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
+      this.editSelectedStandardTask  = null;
       this.filterOptionProjectDeliverables = [];
       this.filterOptionPhases = [];
     } else {
       this.filterOptionProjects = [];
       this.editSelectedProject = null;
       this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
+      this.editSelectedStandardTask  = null;
     }
   }
 
@@ -596,7 +601,7 @@ export class FillTimesheetComponent {
       timesheet_date: this.editSelectedDate,
       user_id: this.userId,
       pd_id: this.editSelectedDeliverable,
-      phase_id: this.editSelectedPhase,
+      standard_task_id: this.editSelectedStandardTask ,
         customer_id: this.editSelectedCustomer,  // Add this
         project_id: this.editSelectedProject,    // Add this
       hours: this.editSelectedHours,
@@ -641,12 +646,12 @@ export class FillTimesheetComponent {
       );
       // Reset dependent fields
       this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
+      this.editSelectedStandardTask = null;
       this.filterOptionPhases = [];
     } else {
       this.filterOptionProjectDeliverables = [];
       this.editSelectedDeliverable = null;
-      this.editSelectedPhase = null;
+      this.editSelectedStandardTask = null;
     }
   }
 
@@ -688,6 +693,10 @@ export class FillTimesheetComponent {
   selectedTaskCategory: any;
   taskDescription: string = '';
   timesheetData: any;
+
+  
+standardTasks: any[] = [];
+selectedStandardTask: number | null = null;
 
   onDateChange(): void {
     if (this.selectedDate) {
@@ -810,7 +819,9 @@ export class FillTimesheetComponent {
     // Reset other variables if they are not bound to the form
     this.selectedCustomer = '';
     this.selectedProject = null;
-    this.selectedPhase = null;
+    // this.selectedPhase = null;
+      this.selectedStandardTask = null;
+
     this.selectedDeliverable = null;
     this.selectedHours = null;
     this.selectedMinutes = 0;

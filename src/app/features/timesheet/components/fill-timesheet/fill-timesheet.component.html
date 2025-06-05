@@ -132,7 +132,7 @@
                     </span>
                 </div>
 
-                <div class="space-y-1">
+                <!-- <div class="space-y-1">
                     <label class="text-xs font-medium text-gray-600">Task*</label>
                     <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedPhase" name="selectedPhase"
                         #selectedPhaseInput="ngModel" [disabled]="!selectedDeliverable" required
@@ -146,7 +146,26 @@
                         *ngIf="(selectedPhaseInput.invalid && selectedPhaseInput.touched) || (timesheetForm.submitted && selectedPhaseInput.invalid)">
                         Required
                     </span>
-                </div>
+                </div> -->
+
+
+                <!-- Replace this section -->
+<div class="space-y-1">
+  <label class="text-xs font-medium text-gray-600">Task*</label>
+  <ng-select class="text-xs custom-ng-select" [(ngModel)]="selectedStandardTask" name="selectedTask"
+    #selectedTaskInput="ngModel" required
+    [ngClass]="{'border-red-500': (selectedTaskInput.invalid && selectedTaskInput.touched) || (timesheetForm.submitted && selectedTaskInput.invalid)}">
+    <ng-option [value]="" disabled selected>Select Task</ng-option>
+    <ng-option *ngFor="let task of standardTasks" [value]="task.task_id">
+      {{task.task_name}}
+    </ng-option>
+  </ng-select>
+  <span class="text-xs text-red-500"
+    *ngIf="(selectedTaskInput.invalid && selectedTaskInput.touched) || (timesheetForm.submitted && selectedTaskInput.invalid)">
+    Required
+  </span>
+</div>
+
             </div>
 
             <div class="grid grid-cols-5 gap-4 mb-4">
@@ -267,7 +286,7 @@
                         </td>
                         <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name
                             || '-' }}</td>
-                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name || '-'
+                        <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_name || '-'
                             }}</td>
                         <td class="px-1 py-1 border border-gray-300 text-center">
                             <div class="group relative inline-block">
@@ -407,7 +426,7 @@
                     </div>
 
                     <!-- Phase -->
-                    <div class="space-y-1">
+                    <!-- <div class="space-y-1">
                         <label class="text-xs font-medium text-gray-600">Task*</label>
                         <ng-select [(ngModel)]="editSelectedPhase" name="editSelectedPhase"
                             #editSelectedPhaseInput="ngModel" [disabled]="!editSelectedDeliverable" required
@@ -422,7 +441,26 @@
                             *ngIf="(editSelectedPhaseInput.invalid && editSelectedPhaseInput.touched) || (editTimesheetForm.submitted && editSelectedPhaseInput.invalid)">
                             Required
                         </span>
-                    </div>
+                    </div> -->
+
+
+                     <div class="space-y-1">
+                    <label class="text-xs font-medium text-gray-600">Standard Task*</label>
+                    <ng-select [(ngModel)]="editSelectedStandardTask" name="editSelectedStandardTask"
+                               #editSelectedStandardTaskInput="ngModel" required
+                               [ngClass]="{'border-red-500': (editSelectedStandardTaskInput.invalid && editSelectedStandardTaskInput.touched) || (editTimesheetForm.submitted && editSelectedStandardTaskInput.invalid)}"
+                               class="text-xs custom-ng-select">
+                        <ng-option [value]="" disabled selected>Select Task</ng-option>
+                        <ng-option *ngFor="let task of standardTasks" [value]="task.task_id">
+                            {{ task.task_name }}
+                        </ng-option>
+                    </ng-select>
+                    <span class="text-xs text-red-500"
+                          *ngIf="(editSelectedStandardTaskInput.invalid && editSelectedStandardTaskInput.touched) || (editTimesheetForm.submitted && editSelectedStandardTaskInput.invalid)">
+                        Required
+                    </span>
+                </div>
+
 
                     <!-- Hours -->
                     <div class="space-y-1">

@@ -86,7 +86,7 @@
             </ng-option>
           </ng-select>
         </div>
-        <div class="relative w-48">
+        <!-- <div class="relative w-48">
           <label class="block text-xs font-medium mb-1">Task</label>
           <ng-select [(ngModel)]="phasesFilter" (change)="applyFilters()" class="text-xs custom-ng-select-filter w-full"
             [clearable]="true" [searchable]="true">
@@ -95,7 +95,18 @@
               {{ phases.project_phase_name }}
             </ng-option>
           </ng-select>
-        </div>
+        </div> -->
+
+        <div class="relative w-48">
+  <label class="block text-xs font-medium mb-1">Task</label>
+  <ng-select [(ngModel)]="standardTaskFilter" (change)="applyFilters()" 
+    class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+    <ng-option [value]="null">Select Task</ng-option>
+    <ng-option *ngFor="let task of standardTasks" [value]="task.task_id">
+      {{ task.task_name }}
+    </ng-option>
+  </ng-select>
+</div>
 
         <!-- project manager -->
         <div class="relative w-48">
@@ -172,7 +183,7 @@
             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.customer_name }}</td>
             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}</td>
             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_deliverable_name }}</td>
-            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name }}</td>
+            <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_name }}</td>
             <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_manager_name }}</td>
             <td class="px-1 py-1 border border-gray-300 text-center">
               <div class="group relative inline-block">

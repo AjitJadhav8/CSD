@@ -53,13 +53,16 @@ export class ExportMyTimesheetComponent {
   projectDeliverableFilter: number | null = null;
   taskStatusFilter: number | null = null;
   projectManagerFilter: number | null = null;
-  phasesFilter: number | null = null;
+  // phasesFilter: number | null = null;
 
   optionCustomers: any[] = [];
   optionProjects: any[] = [];
   optionProjectDeliverables: any[] = [];
   optionProjectManagers: any[] = [];
-  optionPhases: any[] = [];
+  // optionPhases: any[] = [];
+
+    standardTasks: any[] = [];
+  standardTaskFilter: number | null = null;
 
   fetchOptions(): void {
     this.dataService.getOptions().subscribe(
@@ -68,7 +71,9 @@ export class ExportMyTimesheetComponent {
         this.optionProjects = response.projects;
         this.optionProjectDeliverables = response.projectDeliverables;
         this.optionProjectManagers = response.projectManagers;
-        this.optionPhases = response.phases;
+        // this.optionPhases = response.phases;
+                this.standardTasks = response.standardTasks; // Changed from optionPhases
+
       },
       (error) => {
         console.error('Error fetching options:', error);
@@ -109,7 +114,38 @@ export class ExportMyTimesheetComponent {
   }
 
 
-  exportToExcel(): void {
+  // before phase to standard task
+  // exportToExcel(): void {
+  //   if (this.filteredTimesheetData.length === 0) {
+  //     alert('No data available for the selected date range.');
+  //     return;
+  //   }
+
+  //   const worksheet = XLSX.utils.json_to_sheet(
+  //     this.filteredTimesheetData.map((item, index) => ({
+  //       'S.No.': index + 1,
+  //       'Project Deliverable': item.project_deliverable_name,
+  //       'Project Name': item.project_name,
+  //       'Customer Name': item.customer_name,
+  //       'Phase': item.project_phase_name,
+  //       'Task Description': item.task_description,
+  //       'Hours': item.hours,
+  //       'Minutes': item.minutes,
+  //       'Task Status': item.task_status === 0 ? 'In Progress' : 'Completed',
+  //       'Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+  //     }))
+  //   );
+
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet Data');
+
+  //   const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  //   const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+  //   saveAs(data, 'TimesheetData.xlsx');
+  // }
+
+   exportToExcel(): void {
     if (this.filteredTimesheetData.length === 0) {
       alert('No data available for the selected date range.');
       return;
@@ -121,12 +157,14 @@ export class ExportMyTimesheetComponent {
         'Project Deliverable': item.project_deliverable_name,
         'Project Name': item.project_name,
         'Customer Name': item.customer_name,
-        'Phase': item.project_phase_name,
+        'Standard Task': item.task_name, // Changed from project_phase_name
         'Task Description': item.task_description,
         'Hours': item.hours,
         'Minutes': item.minutes,
         'Task Status': item.task_status === 0 ? 'In Progress' : 'Completed',
-        'Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        'Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { 
+          day: '2-digit', month: 'short', year: 'numeric' 
+        }),
       }))
     );
 
@@ -140,7 +178,8 @@ export class ExportMyTimesheetComponent {
   }
 
 
-
+  // client type of excel
+  // 
   // exportToExcel(): void {
   //   if (this.filteredTimesheetData.length === 0) {
   //     alert('No data available for the selected date range.');
@@ -227,42 +266,42 @@ export class ExportMyTimesheetComponent {
   //   saveAs(data, 'Timesheet_Report.xlsx');
   // }
 
-  fetchFullTimesheets(): void {
-    if (!this.userId) {
-      console.error('User ID not available');
-      return;
-    }
-
-    this.timesheetService.getUserFullTimesheet(this.userId).subscribe(
-      (response) => {
-        // Map the response to include the expected properties
-        this.fullTimesheetData = response.map((item: any) => ({
-          ...item,
-          // Map whatever properties you have to the expected ones
-          customer_id: item.customer_id || item.customer?.customer_id,
-          customer_name: item.customer_name || item.customer?.customer_name,
-          project_id: item.project_id || item.project?.project_id,
-          project_name: item.project_name || item.project?.project_name,
-          project_manager_id: item.project_manager_id || item.project_manager?.user_id,
-          project_manager_name: item.project_manager_name ||
-            (item.project_manager ? `${item.project_manager.user_first_name} ${item.project_manager.user_last_name}` : ''),
-          phase_id: item.phase_id || item.project_phase?.phase_id,
-          project_phase_name: item.project_phase_name || item.project_phase?.project_phase_name,
-          pd_id: item.pd_id || item.project_deliverable?.pd_id,
-          project_deliverable_name: item.project_deliverable_name || item.project_deliverable?.project_deliverable_name,
-        }));
-
-        console.log('Mapped timesheet data:', this.fullTimesheetData);
-
-        this.filteredTimesheetData = [...this.fullTimesheetData];
-        this.updateDisplayedData();
-        this.applyFilters();
-      },
-      (error) => {
-        console.error('Error fetching full timesheets:', error);
+    fetchFullTimesheets(): void {
+      if (!this.userId) {
+        console.error('User ID not available');
+        return;
       }
-    );
-  }
+
+      this.timesheetService.getUserFullTimesheet(this.userId).subscribe(
+        (response) => {
+          // Map the response to include the expected properties
+          this.fullTimesheetData = response.map((item: any) => ({
+            ...item,
+            // Map whatever properties you have to the expected ones
+            customer_id: item.customer_id || item.customer?.customer_id,
+            customer_name: item.customer_name || item.customer?.customer_name,
+            project_id: item.project_id || item.project?.project_id,
+            project_name: item.project_name || item.project?.project_name,
+            project_manager_id: item.project_manager_id || item.project_manager?.user_id,
+            project_manager_name: item.project_manager_name ||
+              (item.project_manager ? `${item.project_manager.user_first_name} ${item.project_manager.user_last_name}` : ''),
+            phase_id: item.phase_id || item.project_phase?.phase_id,
+            project_phase_name: item.project_phase_name || item.project_phase?.project_phase_name,
+            pd_id: item.pd_id || item.project_deliverable?.pd_id,
+            project_deliverable_name: item.project_deliverable_name || item.project_deliverable?.project_deliverable_name,
+          }));
+
+          console.log('Mapped timesheet data:', this.fullTimesheetData);
+
+          this.filteredTimesheetData = [...this.fullTimesheetData];
+          this.updateDisplayedData();
+          this.applyFilters();
+        },
+        (error) => {
+          console.error('Error fetching full timesheets:', error);
+        }
+      );
+    }
 
   // Date formatting function
   formatDateForComparison(dateString: string): string {
@@ -288,8 +327,16 @@ export class ExportMyTimesheetComponent {
   }
 
 
+
   // applyFilters(): void {
   //   this.filteredTimesheetData = this.fullTimesheetData.filter((timesheet) => {
+  //     // Date range filter
+  //     const itemDate = new Date(timesheet.timesheet_date);
+  //     const from = this.fromDate ? new Date(this.fromDate) : null;
+  //     if (from) from.setHours(0, 0, 0, 0);
+  //     const to = this.toDate ? new Date(this.toDate) : null;
+  //     if (to) to.setHours(23, 59, 59, 999);
+      
   //     // Convert all filter values to strings for consistent comparison
   //     const tsCustomerId = timesheet.customer_id?.toString();
   //     const tsProjectId = timesheet.project_id?.toString();
@@ -298,6 +345,11 @@ export class ExportMyTimesheetComponent {
   //     const tsManagerId = timesheet.project_manager_id?.toString();
       
   //     return (
+  //       // Date range conditions
+  //       (!from || itemDate >= from) && 
+  //       (!to || itemDate <= to) &&
+        
+  //       // Other filter conditions
   //       (!this.timesheetDateFilter ||
   //         this.formatDate(timesheet.timesheet_date) === this.formatDateForComparison(this.timesheetDateFilter)) &&
   //       (!this.customerFilter || tsCustomerId === this.customerFilter?.toString()) &&
@@ -326,7 +378,7 @@ export class ExportMyTimesheetComponent {
       const tsCustomerId = timesheet.customer_id?.toString();
       const tsProjectId = timesheet.project_id?.toString();
       const tsPdId = timesheet.pd_id?.toString();
-      const tsPhaseId = timesheet.phase_id?.toString();
+      const tsStandardTaskId = timesheet.standard_task_id?.toString();
       const tsManagerId = timesheet.project_manager_id?.toString();
       
       return (
@@ -340,7 +392,7 @@ export class ExportMyTimesheetComponent {
         (!this.customerFilter || tsCustomerId === this.customerFilter?.toString()) &&
         (!this.projectFilter || tsProjectId === this.projectFilter?.toString()) &&
         (!this.projectDeliverableFilter || tsPdId === this.projectDeliverableFilter?.toString()) &&
-        (!this.phasesFilter || tsPhaseId === this.phasesFilter?.toString()) &&
+        (!this.standardTaskFilter || tsStandardTaskId === this.standardTaskFilter?.toString()) &&
         (this.taskStatusFilter === null || this.taskStatusFilter === undefined || 
          timesheet.task_status === Number(this.taskStatusFilter)) &&
         (!this.projectManagerFilter || tsManagerId === this.projectManagerFilter?.toString())
@@ -350,7 +402,6 @@ export class ExportMyTimesheetComponent {
     this.currentPage = 1;
     this.updateDisplayedData();
   }
-  
 
   applyDateFilter(): void {
     this.filteredTimesheetData = this.fullTimesheetData.filter(item => {
@@ -382,7 +433,7 @@ export class ExportMyTimesheetComponent {
     this.customerFilter = null;
     this.projectFilter = null;
     this.projectDeliverableFilter = null;
-    this.phasesFilter = null;
+    this.standardTaskFilter = null; // Changed from phasesFilter
     this.projectManagerFilter = null;
     this.timesheetDateFilter = '';
     this.taskStatusFilter = null;
@@ -393,6 +444,7 @@ export class ExportMyTimesheetComponent {
     this.currentPage = 1;
     this.updateDisplayedData();
   }
+
   clearFilter(filterName: string): void {
     (this as any)[filterName] = '';
     this.applyFilters();
