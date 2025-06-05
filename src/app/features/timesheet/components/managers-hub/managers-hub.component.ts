@@ -235,7 +235,8 @@ export class ManagersHubComponent {
     );
   }
 
-
+standardTasks: any[] = [];
+ 
 
   fetchOptions() {
     this.dataService.getOptions().subscribe(
@@ -247,7 +248,9 @@ export class ManagersHubComponent {
         this.optionTypeOfProject = response.typeOfProject;
         this.optionProjectStatus = response.projectStatus;
         this.optionProject = response.projects;
-        this.optionPhases = response.phases;
+          this.standardTasks = response.standardTasks;
+        // this.optionPhases = response.phases;
+
         this.optionProjectManagers = response.projectManagers;
         this.optionReportingManagers = response.reportingManagers;
         this.optionProjectRole = response.projectRole;
@@ -1203,7 +1206,11 @@ export class ManagersHubComponent {
 
 
 
-  // For View My Project Teams Timesheet
+  //-------- For View My Project Teams Timesheet
+
+  timesheetTaskFilter: string = ''; // Changed from timesheetPhaseFilter
+optionStandardTasksForTimesheet: any[] = []; // Changed from optionPhasesForTimesheet
+
 
   timesheetData: any[] = [];
   filteredTimesheetData: any[] = [];
@@ -1215,7 +1222,7 @@ export class ManagersHubComponent {
   // Filters
   timesheetEmployeeFilter: string = '';
   timesheetProjectFilter: string = '';
-  timesheetPhaseFilter: string = '';
+  // timesheetPhaseFilter: string = '';
   timesheetDateFilter: string = '';
   timesheetStatusFilter: number | null = null;
   timesheetDeliverableFilter: string = '';
@@ -1223,7 +1230,7 @@ export class ManagersHubComponent {
   // Options
   optionTeamMembers: any[] = [];
   optionProjectsForTimesheet: any[] = [];
-  optionPhasesForTimesheet: any[] = [];
+  // optionPhasesForTimesheet: any[] = [];
   optionDeliverablesForTimesheet: any[] = []; // Populate this with your deliverables data
 
 
@@ -1287,11 +1294,18 @@ export class ManagersHubComponent {
     );
 
     // Process phases
-    this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
-      this.timesheetDetailedData,
-      'project_phase_name',
-      'phase_id'
+    // this.optionPhasesForTimesheet = this.getUniqueSimpleItems(
+    //   this.timesheetDetailedData,
+    //   'project_phase_name',
+    //   'phase_id'
+    // );
+
+      this.optionStandardTasksForTimesheet = this.getUniqueSimpleItems(
+        this.timesheetDetailedData,
+        'task_name', // Changed from project_phase_name
+        'standard_task_id' // Changed from phase_id
     );
+
 
     // Process deliverables
     this.optionDeliverablesForTimesheet = this.getUniqueSimpleItems(
@@ -1304,7 +1318,8 @@ export class ManagersHubComponent {
     console.log('Processed filter options:', {
       teamMembers: this.optionTeamMembers,
       projects: this.optionProjectsForTimesheet,
-      phases: this.optionPhasesForTimesheet,
+      // phases: this.optionPhasesForTimesheet,
+      standardTasks: this.optionStandardTasksForTimesheet, 
       deliverables: this.optionDeliverablesForTimesheet
     });
   }
@@ -1388,13 +1403,13 @@ export class ManagersHubComponent {
     this.filteredTimesheetDetailedData = this.timesheetDetailedData.filter(detail => {
       const matchesEmployee = !this.timesheetEmployeeFilter || detail.user_id == this.timesheetEmployeeFilter;
       const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
-      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+         const matchesTask = !this.timesheetTaskFilter || detail.standard_task_id == this.timesheetTaskFilter;
       const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
       const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
       const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
       const matchesDate = !this.timesheetDateFilter || this.formatDate(detail.timesheet_date) === this.formatDate(this.timesheetDateFilter);
 
-      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
+      return matchesEmployee && matchesProject && matchesTask  && matchesDeliverable &&
         matchesStatus && matchesAssignmentStatus && matchesDate;
     });
 
@@ -1453,7 +1468,8 @@ export class ManagersHubComponent {
   clearTimesheetFilters(): void {
     this.timesheetEmployeeFilter = '';
     this.timesheetProjectFilter = '';
-    this.timesheetPhaseFilter = '';
+    // this.timesheetPhaseFilter = '';
+     this.timesheetTaskFilter = ''; 
     this.timesheetDeliverableFilter = '';
     this.timesheetDateFilter = '';
     this.timesheetStatusFilter = null;
@@ -1511,23 +1527,20 @@ export class ManagersHubComponent {
   }
 
   // Add this method to get detailed entries for a row
-  getDetailedEntries(userId: string, date: string): any[] {
-    // Start with all detailed data for this user/date
+ getDetailedEntries(userId: string, date: string): any[] {
     let entries = this.timesheetDetailedData.filter(detail =>
       detail.user_id.toString() === userId.toString() &&
       this.formatDate(detail.timesheet_date) === this.formatDate(date)
     );
 
-
-    // Apply other filters (except employee and date which we've already handled)
     return entries.filter(detail => {
       const matchesProject = !this.timesheetProjectFilter || detail.project_id == this.timesheetProjectFilter;
-      const matchesPhase = !this.timesheetPhaseFilter || detail.phase_id == this.timesheetPhaseFilter;
+      const matchesTask = !this.timesheetTaskFilter || detail.standard_task_id == this.timesheetTaskFilter;
       const matchesDeliverable = !this.timesheetDeliverableFilter || detail.pd_id == this.timesheetDeliverableFilter;
       const matchesStatus = this.timesheetStatusFilter === null || detail.task_status === this.timesheetStatusFilter;
       const matchesAssignmentStatus = this.timesheetAssignmentStatusFilter === null || detail.is_active_assignment == this.timesheetAssignmentStatusFilter;
 
-      return matchesProject && matchesPhase && matchesDeliverable &&
+      return matchesProject && matchesTask && matchesDeliverable &&
         matchesStatus && matchesAssignmentStatus;
     });
   }
@@ -1898,7 +1911,10 @@ export class ManagersHubComponent {
   }
 
 
-  //Rm team 
+  // ----------Rm team 
+
+  reportingTimesheetTaskFilter: string = ''; // Changed from reportingTimesheetPhaseFilter
+optionReportingTasks: any[] = []; 
 
   // Add these properties to your component class
   reportingTimesheetData: any[] = [];
@@ -1908,7 +1924,7 @@ export class ManagersHubComponent {
   // Filters
   reportingTimesheetEmployeeFilter: string = '';
   reportingTimesheetProjectFilter: string = '';
-  reportingTimesheetPhaseFilter: string = '';
+  // reportingTimesheetPhaseFilter: string = '';
   reportingTimesheetDeliverableFilter: string = '';
   reportingTimesheetDateFrom: string = '';
   reportingTimesheetDateTo: string = '';
@@ -1924,29 +1940,29 @@ export class ManagersHubComponent {
   // Dropdown options
   optionReportingTeamMembers: any[] = [];
   optionReportingProjects: any[] = [];
-  optionReportingPhases: any[] = [];
+  // optionReportingPhases: any[] = [];
   optionReportingDeliverables: any[] = [];
 
   // Fetch reporting team timesheets
   fetchReportingTeamsTimesheet(): void {
     const reportingManagerId = Number(this.secureStorage.getItem('user_id'));
     if (!reportingManagerId) {
-      console.error('User ID not found in local storage.');
-      return;
+        console.error('User ID not found in local storage.');
+        return;
     }
 
     this.timesheetService.getReportingTeamsTimesheet(reportingManagerId).subscribe(
-      (response) => {
-        this.reportingTimesheetData = response;
-        this.filteredReportingTimesheetData = [...this.reportingTimesheetData];
-        this.updateReportingTimesheetPage();
-        this.extractDropdownOptions();
-      },
-      (error) => {
-        console.error('Error fetching reporting team timesheets:', error);
-      }
+        (response) => {
+            this.reportingTimesheetData = response;
+            this.filteredReportingTimesheetData = [...this.reportingTimesheetData];
+            this.updateReportingTimesheetPage();
+            this.extractDropdownOptions();
+        },
+        (error) => {
+            console.error('Error fetching reporting team timesheets:', error);
+        }
     );
-  }
+}
 
 
   // Extract dropdown options from data
@@ -1970,13 +1986,21 @@ export class ManagersHubComponent {
       .filter((item: { id: number, name: string }) => item.id && item.name);
 
     // Phases
-    this.optionReportingPhases = Array.from(
-      new Set(this.reportingTimesheetData.map(t => JSON.stringify({
-        id: t.phase_id,
-        name: t.project_phase_name
-      })))
+    // this.optionReportingPhases = Array.from(
+    //   new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+    //     id: t.phase_id,
+    //     name: t.project_phase_name
+    //   })))
+    // ).map(item => JSON.parse(item))
+    //   .filter((item: { id: number, name: string }) => item.id && item.name);
+
+      this.optionReportingTasks = Array.from(
+        new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+            id: t.standard_task_id,
+            name: t.task_name
+        })))
     ).map(item => JSON.parse(item))
-      .filter((item: { id: number, name: string }) => item.id && item.name);
+        .filter((item: { id: number, name: string }) => item.id && item.name);
 
     // Deliverables
     this.optionReportingDeliverables = Array.from(
@@ -1991,50 +2015,80 @@ export class ManagersHubComponent {
 
 
   // Filter methods
+  // applyReportingTimesheetFilters(): void {
+  //   console.log('Current Filters:', {
+  //     employee: this.reportingTimesheetEmployeeFilter,
+  //     project: this.reportingTimesheetProjectFilter,
+  //     phase: this.reportingTimesheetPhaseFilter,
+  //     status: this.reportingTimesheetStatusFilter,
+  //     deliverable: this.reportingTimesheetDeliverableFilter,
+  //     date: this.reportingTimesheetDateFilter
+  //   });
+  //   this.filteredReportingTimesheetData = this.reportingTimesheetData.filter(timesheet => {
+  //     const matchesEmployee = !this.reportingTimesheetEmployeeFilter ||
+  //       timesheet.user_id === this.reportingTimesheetEmployeeFilter;
+
+  //     const matchesProject = !this.reportingTimesheetProjectFilter ||
+  //       timesheet.project_id === this.reportingTimesheetProjectFilter;
+
+  //     const matchesPhase = !this.reportingTimesheetPhaseFilter ||
+  //       timesheet.phase_id === this.reportingTimesheetPhaseFilter;
+
+
+  //     const matchesStatus = this.reportingTimesheetStatusFilter === null ||
+  //       timesheet.task_status === this.reportingTimesheetStatusFilter;
+
+
+  //     const matchesDeliverable = !this.reportingTimesheetDeliverableFilter ||
+  //       timesheet.pd_id == this.reportingTimesheetDeliverableFilter;
+
+  //     // Date filtering
+  //     const matchesDate = !this.reportingTimesheetDateFilter ||
+  //       this.formatDate(timesheet.timesheet_date) ===
+  //       this.formatDate(this.reportingTimesheetDateFilter);
+
+  //     return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
+  //       matchesStatus && matchesDate;
+  //   });
+
+  //   this.reportingTimesheetCurrentPage = 1;
+  //   this.updateReportingTimesheetPage();
+  // }
   applyReportingTimesheetFilters(): void {
-    console.log('Current Filters:', {
-      employee: this.reportingTimesheetEmployeeFilter,
-      project: this.reportingTimesheetProjectFilter,
-      phase: this.reportingTimesheetPhaseFilter,
-      status: this.reportingTimesheetStatusFilter,
-      deliverable: this.reportingTimesheetDeliverableFilter,
-      date: this.reportingTimesheetDateFilter
-    });
     this.filteredReportingTimesheetData = this.reportingTimesheetData.filter(timesheet => {
-      const matchesEmployee = !this.reportingTimesheetEmployeeFilter ||
-        timesheet.user_id === this.reportingTimesheetEmployeeFilter;
+        const matchesEmployee = !this.reportingTimesheetEmployeeFilter ||
+            timesheet.user_id === this.reportingTimesheetEmployeeFilter;
 
-      const matchesProject = !this.reportingTimesheetProjectFilter ||
-        timesheet.project_id === this.reportingTimesheetProjectFilter;
+        const matchesProject = !this.reportingTimesheetProjectFilter ||
+            timesheet.project_id === this.reportingTimesheetProjectFilter;
 
-      const matchesPhase = !this.reportingTimesheetPhaseFilter ||
-        timesheet.phase_id === this.reportingTimesheetPhaseFilter;
+        const matchesTask = !this.reportingTimesheetTaskFilter || // Changed from matchesPhase
+            timesheet.standard_task_id === this.reportingTimesheetTaskFilter; // Changed from phase_id
 
+        const matchesStatus = this.reportingTimesheetStatusFilter === null ||
+            timesheet.task_status === this.reportingTimesheetStatusFilter;
 
-      const matchesStatus = this.reportingTimesheetStatusFilter === null ||
-        timesheet.task_status === this.reportingTimesheetStatusFilter;
+        const matchesDeliverable = !this.reportingTimesheetDeliverableFilter ||
+            timesheet.pd_id == this.reportingTimesheetDeliverableFilter;
 
+        const matchesDate = !this.reportingTimesheetDateFilter ||
+            this.formatDate(timesheet.timesheet_date) ===
+            this.formatDate(this.reportingTimesheetDateFilter);
 
-      const matchesDeliverable = !this.reportingTimesheetDeliverableFilter ||
-        timesheet.pd_id == this.reportingTimesheetDeliverableFilter;
-
-      // Date filtering
-      const matchesDate = !this.reportingTimesheetDateFilter ||
-        this.formatDate(timesheet.timesheet_date) ===
-        this.formatDate(this.reportingTimesheetDateFilter);
-
-      return matchesEmployee && matchesProject && matchesPhase && matchesDeliverable &&
-        matchesStatus && matchesDate;
+        return matchesEmployee && matchesProject && matchesTask && matchesDeliverable &&
+            matchesStatus && matchesDate;
     });
 
     this.reportingTimesheetCurrentPage = 1;
     this.updateReportingTimesheetPage();
-  }
+}
 
   clearReportingTimesheetFilters(): void {
     this.reportingTimesheetEmployeeFilter = '';
     this.reportingTimesheetProjectFilter = '';
-    this.reportingTimesheetPhaseFilter = '';
+    // this.reportingTimesheetPhaseFilter = '';
+        this.reportingTimesheetTaskFilter = ''; // Changed from reportingTimesheetPhaseFilter
+
     this.reportingTimesheetDateFrom = '';
     this.reportingTimesheetDateTo = '';
     this.reportingTimesheetDateFilter = '';

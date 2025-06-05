@@ -1306,7 +1306,7 @@
                             </ng-option>
                         </ng-select>
                     </div>
-                    <div class="relative w-full">
+                    <!-- <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Task</label>
                         <ng-select [(ngModel)]="timesheetPhaseFilter" (change)="applyTimesheetFilters()"
                             class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
@@ -1314,7 +1314,17 @@
                                 {{ phase.name }}
                             </ng-option>
                         </ng-select>
-                    </div>
+                    </div> -->
+
+                    <div class="relative w-full">
+    <label class="block text-xs font-medium mb-1">Standard Task</label> <!-- Changed from "Task" -->
+    <ng-select [(ngModel)]="timesheetTaskFilter" (change)="applyTimesheetFilters()"
+        class="text-xs custom-ng-select-filter w-full" [clearable]="true" [searchable]="true">
+        <ng-option *ngFor="let task of optionStandardTasksForTimesheet" [value]="task.id"> <!-- Changed from optionPhasesForTimesheet -->
+            {{ task.name }}
+        </ng-option>
+    </ng-select>
+</div>
 
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Deliverable</label>
@@ -1450,7 +1460,7 @@
                                                 <td class="px-1 py-1 border border-gray-200 text-center">{{
                                                     detail.project_name }}</td>
                                                 <td class="px-1 py-1 border border-gray-200 text-center">{{
-                                                    detail.project_phase_name }}</td>
+                                                    detail.task_name  }}</td>
                                                 <td class="px-1 py-1 border border-gray-200 text-center">{{
                                                     detail.project_deliverable_name }}</td>
                                                 <td class="px-1 py-1 border border-gray-200 text-center">
@@ -1784,7 +1794,7 @@
                             </ng-option>
                         </ng-select>
                     </div>
-                    <div class="relative w-full">
+                    <!-- <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Phase</label>
                         <ng-select [(ngModel)]="reportingTimesheetPhaseFilter"
                             (change)="applyReportingTimesheetFilters()" class="text-xs custom-ng-select-filter w-full"
@@ -1794,7 +1804,19 @@
                                 {{ phase.name }}
                             </ng-option>
                         </ng-select>
-                    </div>
+                    </div> -->
+                    <div class="relative w-full">
+    <label class="block text-xs font-medium mb-1">Task</label>
+    <ng-select [(ngModel)]="reportingTimesheetTaskFilter" 
+               (change)="applyReportingTimesheetFilters()" 
+               class="text-xs custom-ng-select-filter w-full" 
+               [clearable]="true" [searchable]="true">
+        <ng-option [value]="">All Tasks</ng-option>
+        <ng-option *ngFor="let task of optionReportingTasks" [value]="task.id">
+            {{ task.name }}
+        </ng-option>
+    </ng-select>
+</div>
 
                     <div class="relative w-full">
                         <label class="block text-xs font-medium mb-1">Deliverable</label>
@@ -1880,7 +1902,7 @@
                                 </td>
                                 <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_name }}
                                 </td>
-                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.project_phase_name
+                                <td class="px-1 py-1 border border-gray-300 text-center">{{ timesheet.task_name 
                                     }}</td>
                                 <td class="px-1 py-1 border border-gray-300 text-center">{{
                                     timesheet.project_deliverable_name }}</td>
