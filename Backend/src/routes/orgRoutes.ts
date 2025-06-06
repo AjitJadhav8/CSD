@@ -104,6 +104,13 @@ router.delete('/project-phases/:phaseId', protect, orgController.softDeleteProje
 router.put('/project-phases/:phaseId', protect, orgController.updateProjectPhase);
 
 
+// --- New Task ----
+router.post('/standard-tasks', protect, orgController.addStandardTask);
+router.get('/standard-tasks', protect, orgController.getAllStandardTasks);
+router.delete('/standard-tasks/:taskId', protect, orgController.softDeleteTask);
+router.put('/standard-tasks/:taskId', protect, orgController.updateStandardTask);
+
+
 
 router.get('/manager/:managerId/project-phases', protect, orgController.getManagerProjectPhases);
 router.get('/manager-projects/:managerId', protect, orgController.getManagerProjects);

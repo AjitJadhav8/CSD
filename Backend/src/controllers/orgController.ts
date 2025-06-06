@@ -2711,6 +2711,165 @@ WHERE is_deleted = 0 AND is_RM = 1
 
 
 
+    // --- New Task ----
+
+    async addStandardTask(req: Request, res: Response): Promise<void> {
+        try {
+            const { task_name } = req.body;
+
+            if (!task_name) {
+                res.status(400).json({ error: 'Task name is required' });
+                return;
+            }
+
+            // Check if task already exists
+            const checkQuery = `SELECT task_id FROM master_standard_tasks WHERE task_name = ? LIMIT 1`;
+            db.query(checkQuery, [task_name], (checkErr: any, checkResults: any) => {
+                if (checkErr) {
+                    console.error('Error checking existing task:', checkErr);
+                    res.status(500).json({ error: 'Database error while checking task' });
+                    return;
+                }
+
+                if (checkResults.length > 0) {
+                    res.status(400).json({ error: 'Task already exists' });
+                    return;
+                }
+
+                // Insert new task
+                const insertQuery = `
+                    INSERT INTO master_standard_tasks 
+                    (task_name, is_deleted) 
+                    VALUES (?, 0)
+                `;
+
+                db.query(insertQuery, [task_name], (insertErr: any, result: any) => {
+                    if (insertErr) {
+                        console.error('Error adding task:', insertErr);
+                        res.status(500).json({ error: 'Error adding task' });
+                        return;
+                    }
+                    res.status(201).json({
+                        message: 'Task added successfully',
+                        taskId: result.insertId
+                    });
+                });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getAllStandardTasks(req: Request, res: Response): Promise<void> {
+        try {
+            const query = `
+                SELECT 
+                    task_id,
+                    task_name,
+                    is_deleted,
+                    created_at,
+                    updated_at
+                FROM master_standard_tasks
+                ORDER BY task_name ASC
+            `;
+
+            db.query(query, (err: any, results: any) => {
+                if (err) {
+                    console.error('Error fetching tasks:', err);
+                    res.status(500).json({ error: 'Error fetching tasks' });
+                    return;
+                }
+                res.status(200).json(results);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+   async softDeleteTask(req: Request, res: Response): Promise<void> {
+    try {
+        const { taskId } = req.params;
+
+        const updateQuery = `UPDATE master_standard_tasks SET is_deleted = 1 WHERE task_id = ?`;
+
+        db.query(updateQuery, [taskId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error deleting task:', err);
+                return res.status(500).json({ error: 'Error deleting task' });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            res.status(200).json({ message: 'Task soft deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+    async updateStandardTask(req: Request, res: Response): Promise<void> {
+        try {
+            const { taskId } = req.params;
+            const { task_name } = req.body;
+
+            if (!task_name) {
+                res.status(400).json({ error: 'Task name is required' });
+                return;
+            }
+
+            // Check if task already exists (excluding current one)
+            const checkQuery = `
+                SELECT task_id FROM master_standard_tasks 
+                WHERE task_name = ? AND task_id != ?
+                LIMIT 1
+            `;
+
+            db.query(checkQuery, [task_name, taskId], (checkErr: any, checkResults: any) => {
+                if (checkErr) {
+                    console.error('Error checking existing task:', checkErr);
+                    res.status(500).json({ error: 'Database error while checking task' });
+                    return;
+                }
+
+                if (checkResults.length > 0) {
+                    res.status(400).json({ error: 'Task already exists' });
+                    return;
+                }
+
+                // Update the task
+                const updateQuery = `
+                    UPDATE master_standard_tasks 
+                    SET task_name = ?, updated_at = NOW()
+                    WHERE task_id = ?
+                `;
+
+                db.query(updateQuery, [task_name, taskId], (updateErr: any, result: any) => {
+                    if (updateErr) {
+                        console.error('Error updating task:', updateErr);
+                        res.status(500).json({ error: 'Error updating task' });
+                        return;
+                    }
+
+                    if (result.affectedRows === 0) {
+                        return res.status(404).json({ error: 'Task not found' });
+                    }
+
+                    res.status(200).json({ message: 'Task updated successfully' });
+                });
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+
+
+
 
 
 

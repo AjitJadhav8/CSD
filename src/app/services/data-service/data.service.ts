@@ -388,22 +388,7 @@ export class DataService {
 
   // ------------------ Project ------------------------
 
-  // addProject(project: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/api/project`, project);
-  // }
-
-  // getAllProjects(): Observable<any> {
-  //   return this.http.get(`${this.apiUrl}/api/projects`);
-  // }
-
-  // deleteProject(projectId: number): Observable<any> {
-  //   return this.http.delete(`${this.apiUrl}/api/project/${projectId}`);
-  // }
-
-  // updateProject(projectId: number, projectData: any): Observable<any> {
-  //   return this.http.put(`${this.apiUrl}/api/project/${projectId}`, projectData);
-  // }
-
+ 
 
   addProject(project: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/project`, project, { 
@@ -514,6 +499,37 @@ export class DataService {
       headers: this.getAuthHeaders() 
     });
   }
+
+
+
+
+
+
+
+  // --- New Task ----
+  addStandardTask(task: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/standard-tasks`, task, { 
+    headers: this.getAuthHeaders() 
+  });
+}
+
+getAllStandardTasks(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/standard-tasks`, { 
+    headers: this.getAuthHeaders() 
+  });
+}
+
+deleteStandardTask(taskId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/api/standard-tasks/${taskId}`, { 
+        headers: this.getAuthHeaders() 
+    });
+}
+
+updateStandardTask(taskId: number, payload: any): Observable<any> {
+  return this.http.put(`${this.apiUrl}/api/standard-tasks/${taskId}`, payload, { 
+    headers: this.getAuthHeaders() 
+  });
+}
 
 
 // ------------------ Manager Specific ------------------------
