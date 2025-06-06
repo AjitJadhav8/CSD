@@ -182,7 +182,7 @@ export class ManagersHubComponent {
   }
 
   updateSectionFromStorage() {
-    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectPhases';
+    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectDeliverable';
   }
 
   changeSection(section: string) {
@@ -193,7 +193,7 @@ export class ManagersHubComponent {
 
 
 
-  selectedSection: string = 'projectPhases';
+  selectedSection: string = 'projectDeliverable';
   // currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
   currentManagerId: number = 0;
 
@@ -201,7 +201,7 @@ export class ManagersHubComponent {
     this.currentManagerId = Number(this.secureStorage.getItem('user_id')) || 0;
     console.log('Current Manager ID:', this.currentManagerId);
 
-    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectPhases';
+    this.selectedSection = this.secureStorage.getItem('selectedManagersHubSection') || 'projectDeliverable';
     this.secureStorage.setItem('selectedManagersHubSection', this.selectedSection);
 
     this.fetchManagerProjects(); // Add this line
@@ -1940,35 +1940,27 @@ optionReportingTasks: any[] = [];
 
 
   // Extract dropdown options from data
-  extractDropdownOptions(): void {
+extractDropdownOptions(): void {
     // Employees
     this.optionReportingTeamMembers = Array.from(
-      new Set(this.reportingTimesheetData.map(t => JSON.stringify({
-        id: t.user_id,
-        fullName: t.employee_name
-      })))
+        new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+            id: t.user_id,
+            fullName: t.employee_name
+        })))
     ).map(item => JSON.parse(item))
-      .filter((item: { id: number, fullName: string }) => item.id && item.fullName);
+        .filter((item: { id: number, fullName: string }) => item.id && item.fullName);
 
     // Projects
     this.optionReportingProjects = Array.from(
-      new Set(this.reportingTimesheetData.map(t => JSON.stringify({
-        id: t.project_id,
-        name: t.project_name
-      })))
+        new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+            id: t.project_id,
+            name: t.project_name
+        })))
     ).map(item => JSON.parse(item))
-      .filter((item: { id: number, name: string }) => item.id && item.name);
+        .filter((item: { id: number, name: string }) => item.id && item.name);
 
-    // Phases
-    // this.optionReportingPhases = Array.from(
-    //   new Set(this.reportingTimesheetData.map(t => JSON.stringify({
-    //     id: t.phase_id,
-    //     name: t.project_phase_name
-    //   })))
-    // ).map(item => JSON.parse(item))
-    //   .filter((item: { id: number, name: string }) => item.id && item.name);
-
-      this.optionReportingTasks = Array.from(
+    // Tasks
+    this.optionReportingTasks = Array.from(
         new Set(this.reportingTimesheetData.map(t => JSON.stringify({
             id: t.standard_task_id,
             name: t.task_name
@@ -1978,13 +1970,13 @@ optionReportingTasks: any[] = [];
 
     // Deliverables
     this.optionReportingDeliverables = Array.from(
-      new Set(this.reportingTimesheetData.map(t => JSON.stringify({
-        id: t.pd_id,
-        name: t.project_deliverable_name
-      })))
+        new Set(this.reportingTimesheetData.map(t => JSON.stringify({
+            id: t.pd_id,
+            name: t.project_deliverable_name
+        })))
     ).map(item => JSON.parse(item))
-      .filter((item: { id: number, name: string }) => item.id && item.name);
-  }
+        .filter((item: { id: number, name: string }) => item.id && item.name);
+}
 
 
 

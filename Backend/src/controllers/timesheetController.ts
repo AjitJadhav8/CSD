@@ -1221,62 +1221,72 @@ async getUserFullTimesheet(req: Request, res: Response): Promise<void> {
 
 
 async getReportingTeamsTimesheet(req: Request, res: Response): Promise<void> {
-        try {
-            const reportingManagerId = parseInt(req.params.reportingManagerId);
+    try {
+        const reportingManagerId = parseInt(req.params.reportingManagerId);
 
-            if (!reportingManagerId) {
-                res.status(400).json({ error: 'Reporting Manager ID is required' });
-                return;
-            }
-
-            const query = `
-            SELECT 
-                t.timesheet_id,
-                t.timesheet_date,
-                CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
-                p.project_name,
-                st.task_name,
-                pd.project_deliverable_name,
-                pd.pd_id,
-                t.task_description,
-                t.hours,
-                t.minutes,
-                t.task_status,
-                t.user_id,
-                p.project_id,
-                st.task_id as standard_task_id
-            FROM 
-                trans_timesheet t
-            JOIN 
-                master_user u ON t.user_id = u.user_id
-            JOIN 
-                master_project_deliverables pd ON t.pd_id = pd.pd_id
-            LEFT JOIN 
-                master_standard_tasks st ON t.standard_task_id = st.task_id
-            JOIN 
-                master_project p ON pd.project_id = p.project_id
-            JOIN 
-                trans_user_details ud ON u.user_id = ud.user_id
-            WHERE 
-                t.is_deleted = 0
-                AND ud.reporting_manager_id = ?
-                AND ud.is_deleted = 0
-            ORDER BY 
-                t.timesheet_date DESC, u.user_first_name
-            `;
-
-            db.query(query, [reportingManagerId], (err, results) => {
-                if (err) {
-                    console.error('Error fetching reporting team timesheets:', err);
-                    return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+        if (!reportingManagerId) {
+            res.status(400).json({ error: 'Reporting Manager ID is required' });
+            return;
         }
+
+        const query = `
+        SELECT 
+            t.timesheet_id,
+            t.timesheet_date,
+            CONCAT(u.user_first_name, ' ', u.user_last_name) AS employee_name,
+            p.project_name,
+            st.task_name,
+            pd.project_deliverable_name,
+            pd.pd_id,
+            t.task_description,
+            t.hours,
+            t.minutes,
+            t.task_status,
+            t.user_id,
+            p.project_id,
+            st.task_id as standard_task_id,
+            CASE 
+                WHEN EXISTS (
+                    SELECT 1 FROM trans_project_team pt 
+                    WHERE pt.employee_id = t.user_id 
+                    AND pt.project_id = p.project_id 
+                    AND pt.is_deleted = 0 
+                    AND pt.is_released = 0
+                ) THEN 1
+                ELSE 0
+            END as is_active_assignment
+        FROM 
+            trans_timesheet t
+        JOIN 
+            master_user u ON t.user_id = u.user_id
+        JOIN 
+            master_project_deliverables pd ON t.pd_id = pd.pd_id
+        LEFT JOIN 
+            master_standard_tasks st ON t.standard_task_id = st.task_id
+        JOIN 
+            master_project p ON pd.project_id = p.project_id
+        JOIN 
+            trans_user_details ud ON u.user_id = ud.user_id
+        WHERE 
+            t.is_deleted = 0
+            AND ud.reporting_manager_id = ?
+            AND ud.is_deleted = 0
+        ORDER BY 
+            t.timesheet_date DESC, u.user_first_name
+        `;
+
+        db.query(query, [reportingManagerId], (err, results) => {
+            if (err) {
+                console.error('Error fetching reporting team timesheets:', err);
+                return res.status(500).json({ error: 'Error fetching reporting team timesheets' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+}
 
 
 
