@@ -98,10 +98,10 @@ router.put('/manager/project-deliverables/:deliverableId', protect, orgControlle
 
 
 // ---- Project Phases --------
-router.post('/project-phase', protect, orgController.addProjectPhase);
-router.get('/project-phases', protect, orgController.getProjectPhases);
-router.delete('/project-phases/:phaseId', protect, orgController.softDeleteProjectPhase);
-router.put('/project-phases/:phaseId', protect, orgController.updateProjectPhase);
+// router.post('/project-phase', protect, orgController.addProjectPhase);
+// router.get('/project-phases', protect, orgController.getProjectPhases);
+// router.delete('/project-phases/:phaseId', protect, orgController.softDeleteProjectPhase);
+// router.put('/project-phases/:phaseId', protect, orgController.updateProjectPhase);
 
 
 // --- New Task ----
@@ -112,7 +112,7 @@ router.put('/standard-tasks/:taskId', protect, orgController.updateStandardTask)
 
 
 
-router.get('/manager/:managerId/project-phases', protect, orgController.getManagerProjectPhases);
+// router.get('/manager/:managerId/project-phases', protect, orgController.getManagerProjectPhases);
 router.get('/manager-projects/:managerId', protect, orgController.getManagerProjects);
 
 

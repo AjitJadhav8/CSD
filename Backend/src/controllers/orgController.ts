@@ -2556,155 +2556,155 @@ WHERE is_deleted = 0 AND is_RM = 1
 
 
 
-    async addProjectPhase(req: Request, res: Response): Promise<void> {
-        try {
-            const { pd_id, project_phase_name } = req.body;
+    // async addProjectPhase(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const { pd_id, project_phase_name } = req.body;
 
-            if (!pd_id || !project_phase_name) {
-                res.status(400).json({ error: 'All fields are required' });
-                return;
-            }
+    //         if (!pd_id || !project_phase_name) {
+    //             res.status(400).json({ error: 'All fields are required' });
+    //             return;
+    //         }
 
-            const query = `
-            INSERT INTO master_project_phases 
-            (pd_id, project_phase_name, is_deleted) 
-            VALUES (?, ?, 0)
-        `;
+    //         const query = `
+    //         INSERT INTO master_project_phases 
+    //         (pd_id, project_phase_name, is_deleted) 
+    //         VALUES (?, ?, 0)
+    //     `;
 
-            const values = [pd_id, project_phase_name];
+    //         const values = [pd_id, project_phase_name];
 
-            db.query(query, values, (err: any, result: any) => {
-                if (err) {
-                    console.error('Error adding project phase:', err);
-                    res.status(500).json({ error: 'Error adding project phase' });
-                    return;
-                }
-                res.status(201).json({
-                    message: 'Project phase added successfully',
-                    phaseId: result.insertId
-                });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //         db.query(query, values, (err: any, result: any) => {
+    //             if (err) {
+    //                 console.error('Error adding project phase:', err);
+    //                 res.status(500).json({ error: 'Error adding project phase' });
+    //                 return;
+    //             }
+    //             res.status(201).json({
+    //                 message: 'Project phase added successfully',
+    //                 phaseId: result.insertId
+    //             });
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
 
-    async getProjectPhases(req: Request, res: Response): Promise<void> {
-        try {
-            const query = `
-                    SELECT 
-                        mpp.phase_id, 
-                        mpp.project_phase_name,
-                        mpd.pd_id,
-                        mpd.project_deliverable_name,
-                        mc.customer_name,
-                        mc.customer_id,
-                        mp.project_id,
-                        mp.project_name
-                    FROM master_project_phases mpp
-                    JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
-                    JOIN master_project mp ON mpd.project_id = mp.project_id
-                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
-                    WHERE mpp.is_deleted = 0
-                    ORDER BY mpp.phase_id DESC;
-                `;
+    // async getProjectPhases(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const query = `
+    //                 SELECT 
+    //                     mpp.phase_id, 
+    //                     mpp.project_phase_name,
+    //                     mpd.pd_id,
+    //                     mpd.project_deliverable_name,
+    //                     mc.customer_name,
+    //                     mc.customer_id,
+    //                     mp.project_id,
+    //                     mp.project_name
+    //                 FROM master_project_phases mpp
+    //                 JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
+    //                 JOIN master_project mp ON mpd.project_id = mp.project_id
+    //                 JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+    //                 WHERE mpp.is_deleted = 0
+    //                 ORDER BY mpp.phase_id DESC;
+    //             `;
 
-            db.query(query, (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching project phases:', err);
-                    res.status(500).json({ error: 'Error fetching project phases' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //         db.query(query, (err: any, results: any) => {
+    //             if (err) {
+    //                 console.error('Error fetching project phases:', err);
+    //                 res.status(500).json({ error: 'Error fetching project phases' });
+    //                 return;
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
-    async softDeleteProjectPhase(req: Request, res: Response): Promise<void> {
-        try {
-            const { phaseId } = req.params;
+    // async softDeleteProjectPhase(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const { phaseId } = req.params;
 
-            const updateQuery = `UPDATE master_project_phases SET is_deleted = 1 WHERE phase_id = ?`;
+    //         const updateQuery = `UPDATE master_project_phases SET is_deleted = 1 WHERE phase_id = ?`;
 
-            db.query(updateQuery, [phaseId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error deleting project phase:', err);
-                    return res.status(500).json({ error: 'Error deleting project phase' });
-                }
+    //         db.query(updateQuery, [phaseId], (err: any, result: any) => {
+    //             if (err) {
+    //                 console.error('Error deleting project phase:', err);
+    //                 return res.status(500).json({ error: 'Error deleting project phase' });
+    //             }
 
-                if (result.affectedRows === 0) {
-                    return res.status(404).json({ error: 'Project phase not found' });
-                }
+    //             if (result.affectedRows === 0) {
+    //                 return res.status(404).json({ error: 'Project phase not found' });
+    //             }
 
-                res.status(200).json({ message: 'Project phase soft deleted successfully' });
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-    async updateProjectPhase(req: Request, res: Response): Promise<void> {
-        try {
-            const { phaseId } = req.params;
-            const { pd_id, project_phase_name } = req.body;
+    //             res.status(200).json({ message: 'Project phase soft deleted successfully' });
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
+    // async updateProjectPhase(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const { phaseId } = req.params;
+    //         const { pd_id, project_phase_name } = req.body;
 
-            if (!pd_id || !project_phase_name) {
-                res.status(400).json({ error: 'All fields are required' });
-                return;
-            }
+    //         if (!pd_id || !project_phase_name) {
+    //             res.status(400).json({ error: 'All fields are required' });
+    //             return;
+    //         }
 
-            // Check if the phase already exists (excluding current one)
-            const checkQuery = `
-                    SELECT phase_id FROM master_project_phases 
-                    WHERE pd_id = ? AND project_phase_name = ?
-                    AND phase_id != ?
-                    LIMIT 1
-                `;
+    //         // Check if the phase already exists (excluding current one)
+    //         const checkQuery = `
+    //                 SELECT phase_id FROM master_project_phases 
+    //                 WHERE pd_id = ? AND project_phase_name = ?
+    //                 AND phase_id != ?
+    //                 LIMIT 1
+    //             `;
 
-            db.query(checkQuery, [pd_id, project_phase_name, phaseId], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error checking existing phase:', err);
-                    res.status(500).json({ error: 'Database error while checking phase' });
-                    return;
-                }
+    //         db.query(checkQuery, [pd_id, project_phase_name, phaseId], (err: any, results: any) => {
+    //             if (err) {
+    //                 console.error('Error checking existing phase:', err);
+    //                 res.status(500).json({ error: 'Database error while checking phase' });
+    //                 return;
+    //             }
 
-                if (results.length > 0) {
-                    res.status(400).json({ error: 'Project phase already exists' });
-                    return;
-                }
+    //             if (results.length > 0) {
+    //                 res.status(400).json({ error: 'Project phase already exists' });
+    //                 return;
+    //             }
 
-                // Update the phase
-                const updateQuery = `
-                        UPDATE master_project_phases 
-                        SET pd_id = ?, project_phase_name = ?, updated_at = NOW()
-                        WHERE phase_id = ?
-                    `;
+    //             // Update the phase
+    //             const updateQuery = `
+    //                     UPDATE master_project_phases 
+    //                     SET pd_id = ?, project_phase_name = ?, updated_at = NOW()
+    //                     WHERE phase_id = ?
+    //                 `;
 
-                db.query(updateQuery, [pd_id, project_phase_name, phaseId], (updateErr: any, result: any) => {
-                    if (updateErr) {
-                        console.error('Database error:', updateErr);
-                        res.status(500).json({ error: 'Error updating project phase' });
-                        return;
-                    }
+    //             db.query(updateQuery, [pd_id, project_phase_name, phaseId], (updateErr: any, result: any) => {
+    //                 if (updateErr) {
+    //                     console.error('Database error:', updateErr);
+    //                     res.status(500).json({ error: 'Error updating project phase' });
+    //                     return;
+    //                 }
 
-                    if (result.affectedRows === 0) {
-                        return res.status(404).json({ error: 'Project phase not found' });
-                    }
+    //                 if (result.affectedRows === 0) {
+    //                     return res.status(404).json({ error: 'Project phase not found' });
+    //                 }
 
-                    res.status(200).json({ message: 'Project phase updated successfully' });
-                });
-            });
+    //                 res.status(200).json({ message: 'Project phase updated successfully' });
+    //             });
+    //         });
 
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
 
 
@@ -3023,47 +3023,47 @@ WHERE is_deleted = 0 AND is_RM = 1
         }
     }
 
-     async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
-        try {
-            const managerId = req.params.managerId;
+    //  async getManagerProjectPhases(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const managerId = req.params.managerId;
 
-            if (!managerId) {
-                res.status(400).json({ error: 'Manager ID is required' });
-                return;
-            }
+    //         if (!managerId) {
+    //             res.status(400).json({ error: 'Manager ID is required' });
+    //             return;
+    //         }
 
-            const query = `
-                    SELECT 
-                        mpp.phase_id, 
-                        mpp.project_phase_name,
-                        mpd.pd_id,
-                        mpd.project_deliverable_name,
-                        mc.customer_name,
-                        mc.customer_id,
-                        mp.project_id,
-                        mp.project_name
-                    FROM master_project_phases mpp
-                    JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
-                    JOIN master_project mp ON mpd.project_id = mp.project_id
-                    JOIN master_customer mc ON mpd.customer_id = mc.customer_id
-                    WHERE mpp.is_deleted = 0
-                    AND mp.project_manager_id = ?
-                    ORDER BY mpp.phase_id DESC;
-                `;
+    //         const query = `
+    //                 SELECT 
+    //                     mpp.phase_id, 
+    //                     mpp.project_phase_name,
+    //                     mpd.pd_id,
+    //                     mpd.project_deliverable_name,
+    //                     mc.customer_name,
+    //                     mc.customer_id,
+    //                     mp.project_id,
+    //                     mp.project_name
+    //                 FROM master_project_phases mpp
+    //                 JOIN master_project_deliverables mpd ON mpp.pd_id = mpd.pd_id
+    //                 JOIN master_project mp ON mpd.project_id = mp.project_id
+    //                 JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+    //                 WHERE mpp.is_deleted = 0
+    //                 AND mp.project_manager_id = ?
+    //                 ORDER BY mpp.phase_id DESC;
+    //             `;
 
-            db.query(query, [managerId], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error fetching manager project phases:', err);
-                    res.status(500).json({ error: 'Error fetching project phases' });
-                    return;
-                }
-                res.status(200).json(results);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    //         db.query(query, [managerId], (err: any, results: any) => {
+    //             if (err) {
+    //                 console.error('Error fetching manager project phases:', err);
+    //                 res.status(500).json({ error: 'Error fetching project phases' });
+    //                 return;
+    //             }
+    //             res.status(200).json(results);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
 
     async getManagerProjects(req: Request, res: Response): Promise<void> {
         try {

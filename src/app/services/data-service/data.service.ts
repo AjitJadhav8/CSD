@@ -476,29 +476,29 @@ export class DataService {
 
 
 
-  addProjectPhase(projectPhase: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
+  // addProjectPhase(projectPhase: any): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/api/project-phase`, projectPhase, { 
+  //     headers: this.getAuthHeaders() 
+  //   });
+  // }
 
-  getAllProjectPhases(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/api/project-phases`, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
+  // getAllProjectPhases(): Observable<any> {
+  //   return this.http.get(`${this.apiUrl}/api/project-phases`, { 
+  //     headers: this.getAuthHeaders() 
+  //   });
+  // }
 
-  deleteProjectPhase(phaseId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
+  // deleteProjectPhase(phaseId: number): Observable<any> {
+  //   return this.http.delete(`${this.apiUrl}/api/project-phases/${phaseId}`, { 
+  //     headers: this.getAuthHeaders() 
+  //   });
+  // }
 
-  updateProjectPhase(phaseId: number, payload: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
+  // updateProjectPhase(phaseId: number, payload: any): Observable<any> {
+  //   return this.http.put(`${this.apiUrl}/api/project-phases/${phaseId}`, payload, { 
+  //     headers: this.getAuthHeaders() 
+  //   });
+  // }
 
 
 
@@ -544,14 +544,14 @@ updateStandardTask(taskId: number, payload: any): Observable<any> {
     });
   }
 
-  getManagerProjectPhases(managerId: number): Observable<any> {
-    if (!managerId) {
-      throw new Error('Manager ID is required');
-    }
-    return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`, { 
-      headers: this.getAuthHeaders() 
-    });
-  }
+  // getManagerProjectPhases(managerId: number): Observable<any> {
+  //   if (!managerId) {
+  //     throw new Error('Manager ID is required');
+  //   }
+  //   return this.http.get(`${this.apiUrl}/api/manager/${managerId}/project-phases`, { 
+  //     headers: this.getAuthHeaders() 
+  //   });
+  // }
 
 
   getManagerProjects(managerId: number): Observable<any> {
