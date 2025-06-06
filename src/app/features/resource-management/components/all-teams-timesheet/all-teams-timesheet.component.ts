@@ -16,7 +16,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './all-teams-timesheet.component.css'
 })
 export class AllTeamsTimesheetComponent {
-
+taskFilter: string = ''; // Changed from phasesFilter
+standardTasks: any[] = []; // Changed from optionPhases
   constructor(private dataService: DataService, private rmgService: RmgService) { }
 
   ngOnInit(): void {
@@ -69,6 +70,7 @@ export class AllTeamsTimesheetComponent {
       }
     );
   }
+  
 
   fetchOptions(): void {
     this.dataService.getOptions().subscribe(
@@ -78,7 +80,8 @@ export class AllTeamsTimesheetComponent {
         this.optionProjects = response.projects;
         this.optionProjectDeliverables = response.projectDeliverables;
         this.optionProjectManagers = response.projectManagers; // Add this line
-        this.optionPhases = response.phases; // Add this line
+        // this.optionPhases = response.phases; // Add this line
+         this.standardTasks = response.standardTasks; 
 
         
       },
@@ -100,47 +103,37 @@ export class AllTeamsTimesheetComponent {
   
 
     // Apply Filters
-    applyFilters(): void {
-      this.filteredTimesheets = this.timesheets.filter((timesheet) => {
+ applyFilters(): void {
+    this.filteredTimesheets = this.timesheets.filter((timesheet) => {
         return (
-          // (!this.timesheetDateFilter || timesheet.timesheet_date === this.timesheetDateFilter) &&
-          // (!this.userNameFilter || timesheet.user_id?.toString() === this.userNameFilter.toString()) &&
-          // (!this.customerFilter || timesheet.customer_id?.toString() === this.customerFilter.toString()) &&
-          // (!this.projectFilter || timesheet.project_id?.toString() === this.projectFilter.toString()) &&
-          // (!this.projectDeliverableFilter || timesheet.pd_id?.toString() === this.projectDeliverableFilter.toString()) &&
-          // (!this.phasesFilter || timesheet.phase_id?.toString() === this.phasesFilter.toString()) &&
-
-          // (!this.taskStatusFilter || timesheet.task_status?.toString() === this.taskStatusFilter.toString())&&
-          // (!this.projectManagerFilter || timesheet.project_manager_id?.toString() === this.projectManagerFilter.toString())
-          (!this.timesheetDateFilter || 
-            this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
-          (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
-          (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
-          (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
-          (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
-          (!this.phasesFilter || timesheet.phase_id == this.phasesFilter) &&
-          (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
-          (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
+            (!this.timesheetDateFilter || 
+                this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
+            (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
+            (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
+            (!this.projectFilter || timesheet.project_id == this.projectFilter) &&
+            (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
+            (!this.taskFilter || timesheet.standard_task_id == this.taskFilter) && // Changed from phasesFilter
+            (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
+            (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
         );
-      });
-      this.currentPage = 1;
-      this.updatePage();
-    }
-  
+    });
+    this.currentPage = 1;
+    this.updatePage();
+}
 
   
   // Clear Filters
     // Clear Filters
-    clearFilters(): void {
-      this.timesheetDateFilter = '';
-      this.userNameFilter = '';
-      this.customerFilter = '';
-      this.projectFilter = '';
-      this.projectDeliverableFilter = '';
-      this.taskStatusFilter = null;
-      this.phasesFilter ='';
-      this.applyFilters();
-    }
+   clearFilters(): void {
+    this.timesheetDateFilter = '';
+    this.userNameFilter = '';
+    this.customerFilter = '';
+    this.projectFilter = '';
+    this.projectDeliverableFilter = '';
+    this.taskStatusFilter = null;
+    this.taskFilter = ''; // Changed from phasesFilter
+    this.applyFilters();
+}
 
     clearFilter(filterName: string): void {
       (this as any)[filterName] = '';
@@ -212,37 +205,37 @@ export class AllTeamsTimesheetComponent {
   }
   
     // Export to Excel
-    exportToExcel(): void {
-      if (this.filteredTimesheets.length === 0) {
+  exportToExcel(): void {
+    if (this.filteredTimesheets.length === 0) {
         alert('No data available for the selected date range.');
         return;
-      }
-  
-      const worksheet = XLSX.utils.json_to_sheet(
-        this.filteredTimesheets.map((item, index) => ({
-          'S.No.': index + 1,
-          'Customer Name': item.customer_name,
-          'Project Name': item.project_name,
-          'Employee Name': item.user_name,
-          'Project Manager': item.project_manager_name,
-          'Project Phase': item.project_phase_name,
-          'Project Deliverable': item.project_deliverable_name,
-          'Timesheet Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-          'Task Description': item.task_description,
-          'Hours': item.hours,
-          'Minutes': item.minutes,
-          'Task Status': item.task_status ? 'Completed' : 'Pending',
-        }))
-      );
-  
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet Data');
-  
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  
-      saveAs(data, 'AllTeamsTimesheetData.xlsx');
     }
+
+    const worksheet = XLSX.utils.json_to_sheet(
+        this.filteredTimesheets.map((item, index) => ({
+            'S.No.': index + 1,
+            'Customer Name': item.customer_name,
+            'Project Name': item.project_name,
+            'Employee Name': item.user_name,
+            'Project Manager': item.project_manager_name,
+            'Standard Task': item.task_name, // Changed from Project Phase
+            'Project Deliverable': item.project_deliverable_name,
+            'Timesheet Date': new Date(item.timesheet_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+            'Task Description': item.task_description,
+            'Hours': item.hours,
+            'Minutes': item.minutes,
+            'Task Status': item.task_status ? 'Completed' : 'Pending',
+        }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Timesheet Data');
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+    saveAs(data, 'AllTeamsTimesheetData.xlsx');
+}
 
 
     // Add these methods to your component class
