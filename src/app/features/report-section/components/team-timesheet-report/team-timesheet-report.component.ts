@@ -49,86 +49,99 @@ export class TeamTimesheetReportComponent implements OnInit {
   projectNameFilter: string = '';
   taskNameFilter: string = '';
 
+  optionStandardTasks: any[] = []; // Changed from optionPhases
+
+
   constructor(private reportService: ReportService) { }
 
   ngOnInit(): void {
     this.fetchTimesheets();
     this.fetchOptions();
   }
-
   fetchTimesheets(): void {
-    this.reportService.getAllTeamTimesheets().subscribe(
-      (response) => {
-        this.timesheets = response;
-        this.filteredTimesheets = [...this.timesheets];
-        this.updatePage();
-        this.calculateFilteredTotalTime();
+    this.reportService.getAllTeamTimesheets().subscribe({
+      next: (response: any) => {
+        if (response && Array.isArray(response)) {
+          this.timesheets = response;
+          this.filteredTimesheets = [...this.timesheets];
+          this.updatePage();
+        } else {
+          console.error('Unexpected response format:', response);
+          this.timesheets = [];
+          this.filteredTimesheets = [];
+        }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching timesheets:', error);
+        this.timesheets = [];
+        this.filteredTimesheets = [];
       }
-    );
+    });
   }
 
-  // fetchOptions(): void {
-  //   this.reportService.getReportOptions().subscribe(
-  //     (response) => {
-  //       this.optionUsers = response.users;
-  //       this.optionCustomers = response.customers;
-  //       this.optionProjects = response.projects;
-  //       this.optionProjectDeliverables = response.projectDeliverables;
-  //       this.optionProjectManagers = response.projectManagers;
-  //       this.optionPhases = response.phases;
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching options:', error);
-  //     }
-  //   );
-  // }
+
+  
 
   fetchOptions(): void {
-    this.reportService.getReportOptions().subscribe(
-      (response) => {
-        this.optionUsers = response.users;
-        this.optionCustomers = response.customers;
-        this.optionProjects = response.projects;
-        this.optionProjectDeliverables = response.projectDeliverables;
-        this.optionProjectManagers = response.projectManagers;
-        this.optionPhases = response.phases;
+    this.reportService.getReportOptions().subscribe({
+      next: (response: any) => {
+        if (response) {
+          // Basic null checks
+          this.optionUsers = response.users || [];
+          this.optionCustomers = response.customers || [];
+          this.optionProjects = response.projects || [];
+          this.optionProjectDeliverables = response.projectDeliverables || [];
+          this.optionProjectManagers = response.projectManagers || [];
+          this.optionStandardTasks = response.standardTasks || [];
 
-        // Create distinct project names list
-        const projectMap = new Map<string, number[]>();
-        response.projects.forEach((project: { project_name: string; project_id: number; }) => {
-          if (projectMap.has(project.project_name)) {
-            projectMap.get(project.project_name)!.push(project.project_id);
-          } else {
-            projectMap.set(project.project_name, [project.project_id]);
-          }
-        });
-        this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
-          name,
-          ids
-        }));
+          // Create distinct project names list with null check
+          const projectMap = new Map<string, number[]>();
+          (response.projects || []).forEach((project: any) => {
+            if (project?.project_name && project?.project_id) {
+              if (projectMap.has(project.project_name)) {
+                projectMap.get(project.project_name)!.push(project.project_id);
+              } else {
+                projectMap.set(project.project_name, [project.project_id]);
+              }
+            }
+          });
+          this.distinctProjectNames = Array.from(projectMap.entries()).map(([name, ids]) => ({
+            name,
+            ids
+          }));
 
-        // Create distinct task names list (using phases)
-        const taskMap = new Map<string, number[]>();
-        response.phases.forEach((phase: { project_phase_name: string; phase_id: number; }) => {
-          if (taskMap.has(phase.project_phase_name)) {
-            taskMap.get(phase.project_phase_name)!.push(phase.phase_id);
-          } else {
-            taskMap.set(phase.project_phase_name, [phase.phase_id]);
-          }
-        });
-        this.distinctTaskNames = Array.from(taskMap.entries()).map(([name, ids]) => ({
-          name,
-          ids
-        }));
+          // Create distinct task names list with null check
+          const taskMap = new Map<string, number[]>();
+          (response.standardTasks || []).forEach((task: any) => {
+            if (task?.task_name && task?.task_id) {
+              if (taskMap.has(task.task_name)) {
+                taskMap.get(task.task_name)!.push(task.task_id);
+              } else {
+                taskMap.set(task.task_name, [task.task_id]);
+              }
+            }
+          });
+          this.distinctTaskNames = Array.from(taskMap.entries()).map(([name, ids]) => ({
+            name,
+            ids
+          }));
+        }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching options:', error);
+        // Initialize empty arrays to prevent errors
+        this.optionUsers = [];
+        this.optionCustomers = [];
+        this.optionProjects = [];
+        this.optionProjectDeliverables = [];
+        this.optionProjectManagers = [];
+        this.optionStandardTasks = [];
+        this.distinctProjectNames = [];
+        this.distinctTaskNames = [];
       }
-    );
+    });
   }
+
 
   formatDate(dateString: string): string {
     if (!dateString) return '';
@@ -137,44 +150,36 @@ export class TeamTimesheetReportComponent implements OnInit {
     return localDate.toISOString().split('T')[0];
   }
 
-  applyFilters(): void {
-    this.filteredTimesheets = this.timesheets.filter((timesheet) => {
-      // Project name filter logic
-      const projectNameMatch = !this.projectNameFilter || 
-        timesheet.project_name === this.projectNameFilter;
-      
-      // Task name filter logic
-      const taskNameMatch = !this.taskNameFilter || 
-        timesheet.project_phase_name === this.taskNameFilter;
+applyFilters(): void {
+  this.filteredTimesheets = this.timesheets.filter((timesheet) => {
+    return (
+      (!this.timesheetDateFilter || 
+        this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
+      (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
+      (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
+      (!this.projectNameFilter || timesheet.project_name === this.projectNameFilter) &&
+      (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
+      (!this.taskNameFilter || timesheet.standard_task_id == this.taskNameFilter) && // Changed from phase_id
+      (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
+      (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
+    );
+  });
+  this.currentPage = 1;
+  this.updatePage();
+}
 
-      return (
-        (!this.timesheetDateFilter || 
-          this.formatDate(timesheet.timesheet_date) === this.timesheetDateFilter) &&
-        (!this.userNameFilter || timesheet.user_id == this.userNameFilter) &&
-        (!this.customerFilter || timesheet.customer_id == this.customerFilter) &&
-        projectNameMatch && // Using project name filter instead of project ID
-        (!this.projectDeliverableFilter || timesheet.pd_id == this.projectDeliverableFilter) &&
-        taskNameMatch && // Using task name filter instead of phase ID
-        (this.taskStatusFilter !== null ? timesheet.task_status === this.taskStatusFilter : true) &&
-        (!this.projectManagerFilter || timesheet.project_manager_id == this.projectManagerFilter)
-      );
-    });
-    this.currentPage = 1;
-    this.updatePage();
-  }
-
-  clearFilters(): void {
-    this.timesheetDateFilter = '';
-    this.userNameFilter = '';
-    this.customerFilter = '';
-    this.projectNameFilter = ''; // Changed from projectFilter
-    this.projectDeliverableFilter = '';
-    this.taskStatusFilter = null;
-    this.taskNameFilter = ''; // Changed from phasesFilter
-    this.projectManagerFilter = '';
-    this.applyFilters();
-  }
-
+// Update clearFilters()
+clearFilters(): void {
+  this.timesheetDateFilter = '';
+  this.userNameFilter = '';
+  this.customerFilter = '';
+  this.projectNameFilter = '';
+  this.projectDeliverableFilter = '';
+  this.taskStatusFilter = null;
+  this.taskNameFilter = ''; // Changed from phasesFilter
+  this.projectManagerFilter = '';
+  this.applyFilters();
+}
   clearFilter(filterName: string): void {
     (this as any)[filterName] = '';
     this.applyFilters();
