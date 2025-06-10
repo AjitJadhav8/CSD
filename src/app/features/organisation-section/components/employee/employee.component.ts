@@ -16,7 +16,7 @@ import { SecureStorageService } from '../../../../services/secureStorage-service
   styleUrl: './employee.component.css'
 })
 export class EmployeeComponent {
-  constructor(private dataService: DataService, private http: HttpClient , private secureStorage: SecureStorageService) { }
+  constructor(private dataService: DataService, private http: HttpClient, private secureStorage: SecureStorageService) { }
 
   ngOnInit(): void {
     this.selectedSection = 'employee';
@@ -691,7 +691,7 @@ export class EmployeeComponent {
   //   user_blood_group: '',
   //   user_DOJ: null as string | null,  // Update type
   //   reporting_manager_id: null,
-    
+
   // reporting_manager_first_name: '', // Add this
   // reporting_manager_last_name: '',  // Add this
   //   designation_id: null,
@@ -707,7 +707,7 @@ export class EmployeeComponent {
     user_last_name: '',
     user_emergency_contact: '',
     is_passport: 0 as number | null,
-    passport_validity:  null as string | null,
+    passport_validity: null as string | null,
     user_current_address: '',
     user_DOB: null as string | null,
     user_blood_group: '',
@@ -721,12 +721,12 @@ export class EmployeeComponent {
     role_id: null,
     is_active: 0, // Default to active (0)
     deactivation_date: null as string | null
-};
+  };
 
 
   employees: any[] = [];
   // activeTab: 'personal' | 'organizational' | 'application' = 'personal';
-    activeTab: 'personal' | 'organizational' | 'application' | 'status' = 'personal';
+  activeTab: 'personal' | 'organizational' | 'application' | 'status' = 'personal';
 
 
   submitEmployee(employeeForm: NgForm): void {
@@ -802,269 +802,264 @@ export class EmployeeComponent {
     return `${year}-${month}-${day}`;
   }
 
-//  assignDetails(employee: any): void {
-//   // Fetch employee details from the backend
-//   this.dataService.getEmployeeDetails(employee.user_id).subscribe(
-//     (data) => {
-//       const formattedDOB = this.formatDate(data.user_DOB);
-//       const formattedDOJ = this.formatDate(data.user_DOJ);
+  //  assignDetails(employee: any): void {
+  //   // Fetch employee details from the backend
+  //   this.dataService.getEmployeeDetails(employee.user_id).subscribe(
+  //     (data) => {
+  //       const formattedDOB = this.formatDate(data.user_DOB);
+  //       const formattedDOJ = this.formatDate(data.user_DOJ);
 
-//       // Find the selected reporting manager from the optionUsers list
-//       let reportingManagerFirstName = '';
-//       let reportingManagerLastName = '';
-      
-//       if (data.reporting_manager_id) {
-//         const rm = this.optionUsers.find(u => u.user_id === data.reporting_manager_id);
-//         if (rm) {
-//           reportingManagerFirstName = rm.user_first_name;
-//           reportingManagerLastName = rm.user_last_name;
-//         }
-//       }
+  //       // Find the selected reporting manager from the optionUsers list
+  //       let reportingManagerFirstName = '';
+  //       let reportingManagerLastName = '';
 
-//       // Populate assignDetailsData with the fetched data
-//       this.assignDetailsData = {
-//         user_id: data.user_id,
-//         user_first_name: data.user_first_name,
-//         user_last_name: data.user_last_name,
-//         user_emergency_contact: data.user_emergency_contact || '',
-//         is_passport: data.is_passport || null,
-//         passport_validity: data.passport_validity || null,
-//         user_current_address: data.user_current_address || '',
-//         user_DOB: formattedDOB,
-//         user_blood_group: data.user_blood_group || '',
-//         user_DOJ: formattedDOJ,
-//         reporting_manager_id: data.reporting_manager_id || null,
-//         reporting_manager_first_name: reportingManagerFirstName,
-//         reporting_manager_last_name: reportingManagerLastName,
-//         designation_id: data.designation_id || null,
-//         is_timesheet_required: data.is_timesheet_required || null,
-//         department_id: data.department_id || null,
-//         role_id: data.role_id || null
-//       };
+  //       if (data.reporting_manager_id) {
+  //         const rm = this.optionUsers.find(u => u.user_id === data.reporting_manager_id);
+  //         if (rm) {
+  //           reportingManagerFirstName = rm.user_first_name;
+  //           reportingManagerLastName = rm.user_last_name;
+  //         }
+  //       }
 
-//       this.showAssignDetailsModal = true;
-//     },
-//     (error) => {
-//       console.error('Error fetching employee details:', error);
-//     }
-//   );
-// }
+  //       // Populate assignDetailsData with the fetched data
+  //       this.assignDetailsData = {
+  //         user_id: data.user_id,
+  //         user_first_name: data.user_first_name,
+  //         user_last_name: data.user_last_name,
+  //         user_emergency_contact: data.user_emergency_contact || '',
+  //         is_passport: data.is_passport || null,
+  //         passport_validity: data.passport_validity || null,
+  //         user_current_address: data.user_current_address || '',
+  //         user_DOB: formattedDOB,
+  //         user_blood_group: data.user_blood_group || '',
+  //         user_DOJ: formattedDOJ,
+  //         reporting_manager_id: data.reporting_manager_id || null,
+  //         reporting_manager_first_name: reportingManagerFirstName,
+  //         reporting_manager_last_name: reportingManagerLastName,
+  //         designation_id: data.designation_id || null,
+  //         is_timesheet_required: data.is_timesheet_required || null,
+  //         department_id: data.department_id || null,
+  //         role_id: data.role_id || null
+  //       };
 
-assignDetails(employee: any): void {
+  //       this.showAssignDetailsModal = true;
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching employee details:', error);
+  //     }
+  //   );
+  // }
+
+  assignDetails(employee: any): void {
     this.dataService.getEmployeeDetails(employee.user_id).subscribe(
-        (data: any) => {
-            console.log('Full employee data from API:', data); // Debug log
+      (data: any) => {
+        console.log('Full employee data from API:', data);
 
-            // Format dates
-            const formattedDOB = data.user_DOB ? this.formatDate(data.user_DOB) : null;
-            const formattedDOJ = data.user_DOJ ? this.formatDate(data.user_DOJ) : null;
-            const formattedDeactivationDate = data.deactivation_date ? this.formatDate(data.deactivation_date) : null;
-            const formattedPassportValidity = data.passport_validity ? this.formatDate(data.passport_validity) : null;
+        // Format dates
+        const formattedDOB = data.user_DOB ? this.formatDate(data.user_DOB) : null;
+        const formattedDOJ = data.user_DOJ ? this.formatDate(data.user_DOJ) : null;
+        const formattedDeactivationDate = data.deactivation_date ? this.formatDate(data.deactivation_date) : null;
+        const formattedPassportValidity = data.passport_validity ? this.formatDate(data.passport_validity) : null;
 
-            // Get reporting manager details if exists
-            let reportingManagerFirstName = '';
-            let reportingManagerLastName = '';
-            
-            if (data.reporting_manager_id) {
-                const rm = this.optionUsers.find(u => u.user_id === data.reporting_manager_id);
-                if (rm) {
-                    reportingManagerFirstName = rm.user_first_name;
-                    reportingManagerLastName = rm.user_last_name;
-                }
-            }
+        // Get reporting manager details
+        let reportingManagerFirstName = '';
+        let reportingManagerLastName = '';
 
-            // Convert is_passport to number if it comes as boolean
-            const isPassport = data.is_passport !== null && data.is_passport !== undefined 
-                ? Number(data.is_passport) 
-                : 0;
-
-            // Set all employee data
-            this.assignDetailsData = {
-                user_id: data.user_id,
-                user_first_name: data.user_first_name || '',
-                user_last_name: data.user_last_name || '',
-                user_emergency_contact: data.user_emergency_contact || '',
-                is_passport: isPassport, // Use the converted value
-                passport_validity: formattedPassportValidity,
-                user_current_address: data.user_current_address || '',
-                user_DOB: formattedDOB,
-                user_blood_group: data.user_blood_group || '',
-                user_DOJ: formattedDOJ,
-                reporting_manager_id: data.reporting_manager_id || null,
-                reporting_manager_first_name: reportingManagerFirstName,
-                reporting_manager_last_name: reportingManagerLastName,
-                designation_id: data.designation_id || null,
-                is_timesheet_required: data.is_timesheet_required || null,
-                department_id: data.department_id || null,
-                role_id: data.role_id || null,
-                is_active: data.is_active !== undefined ? data.is_active : 0,
-                deactivation_date: formattedDeactivationDate
-            };
-
-            // Update passport UI state
-            this.hasPassport = this.assignDetailsData.is_passport === 1;
-            console.log('Passport status:', {
-                rawValue: data.is_passport,
-                convertedValue: this.assignDetailsData.is_passport,
-                hasPassport: this.hasPassport
-            });
-
-            this.showAssignDetailsModal = true;
-            this.activeTab = 'personal'; // Default to personal tab
-        },
-        (error) => {
-            console.error('Error fetching employee details:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to load employee details',
-                toast: true,
-                position: 'top-end',
-                timer: 3000,
-                showConfirmButton: false
-            });
+        if (data.reporting_manager_id) {
+          const rm = this.optionUsers.find(u => u.user_id === data.reporting_manager_id);
+          if (rm) {
+            reportingManagerFirstName = rm.user_first_name;
+            reportingManagerLastName = rm.user_last_name;
+          }
         }
-    );
-}
 
+        // Set all employee data with proper null handling
+        this.assignDetailsData = {
+          user_id: data.user_id,
+          user_first_name: data.user_first_name || '',
+          user_last_name: data.user_last_name || '',
+          user_emergency_contact: data.user_emergency_contact || '',
+          is_passport: data.is_passport !== undefined ? data.is_passport : null, // Preserve null
+          passport_validity: formattedPassportValidity,
+          user_current_address: data.user_current_address || '',
+          user_DOB: formattedDOB,
+          user_blood_group: data.user_blood_group || '',
+          user_DOJ: formattedDOJ,
+          reporting_manager_id: data.reporting_manager_id || null,
+          reporting_manager_first_name: reportingManagerFirstName,
+          reporting_manager_last_name: reportingManagerLastName,
+          designation_id: data.designation_id || null,
+          is_timesheet_required: data.is_timesheet_required || null,
+          department_id: data.department_id || null,
+          role_id: data.role_id || null,
+          is_active: data.is_active !== undefined ? data.is_active : 0,
+          deactivation_date: formattedDeactivationDate
+        };
 
+        // Update passport UI state (only true when explicitly 1)
+        this.hasPassport = this.assignDetailsData.is_passport === 1;
 
-onStatusChange(isActive: boolean): void {
-    if (isActive) {
-        // If changing to inactive, set current date as default
-        const today = new Date();
-        this.assignDetailsData.deactivation_date = today.toISOString().split('T')[0];
-    } else {
-        // If changing back to active, clear the deactivation date
-        this.assignDetailsData.deactivation_date = null;
-    }
-}
-
-//   submitAssignDetails(assignDetailsForm: NgForm): void {
-//   if (assignDetailsForm.invalid) {
-//     Swal.fire({
-//       icon: 'error',
-//       title: 'Oops...',
-//       text: 'Please fill all required fields correctly!',
-//       toast: true,
-//       position: 'top-end',
-//       timer: 3000,
-//       showConfirmButton: false
-//     });
-//     return;
-//   }
-
-//   // Update the reporting manager names based on the selected ID
-//   if (this.assignDetailsData.reporting_manager_id) {
-//     const rm = this.optionUsers.find(u => u.user_id === this.assignDetailsData.reporting_manager_id);
-//     if (rm) {
-//       this.assignDetailsData.reporting_manager_first_name = rm.user_first_name;
-//       this.assignDetailsData.reporting_manager_last_name = rm.user_last_name;
-//     }
-//   } else {
-//     this.assignDetailsData.reporting_manager_first_name = '';
-//     this.assignDetailsData.reporting_manager_last_name = '';
-//   }
-
-//   this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
-//     (response) => {
-//       console.log('Details assigned successfully!', response);
-//       this.fetchEmployees();
-//       Swal.fire({
-//         toast: true,
-//         position: 'top-end',
-//         icon: 'success',
-//         title: 'Details assigned successfully!',
-//         showConfirmButton: false,
-//         timer: 3000
-//       });
-//       this.showAssignDetailsModal = false;
-//       assignDetailsForm.resetForm();
-//       this.fetchOptions();
-//     },
-//     (error) => {
-//       console.error('Error assigning details:', error);
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Error',
-//         text: 'Failed to assign details. Please try again.',
-//         toast: true,
-//         position: 'top-end',
-//         timer: 3000,
-//         showConfirmButton: false
-//       });
-//     }
-//   );
-// }
-
-submitAssignDetails(assignDetailsForm: NgForm): void {
-    if (this.assignDetailsData.is_active === 1 && !this.assignDetailsData.deactivation_date) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Deactivation date is required for inactive employees!',
-            toast: true,
-            position: 'top-end',
-            timer: 3000,
-            showConfirmButton: false
+        console.log('Processed data:', {
+          originalPassport: data.is_passport,
+          processedPassport: this.assignDetailsData.is_passport,
+          type: typeof this.assignDetailsData.is_passport
         });
-        return;
+
+        this.showAssignDetailsModal = true;
+        this.activeTab = 'personal';
+      },
+      (error) => {
+        console.error('Error fetching employee details:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to load employee details',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
+    );
+  }
+
+
+  onStatusChange(isActive: boolean): void {
+    if (isActive) {
+      // If changing to inactive, set current date as default
+      const today = new Date();
+      this.assignDetailsData.deactivation_date = today.toISOString().split('T')[0];
+    } else {
+      // If changing back to active, clear the deactivation date
+      this.assignDetailsData.deactivation_date = null;
+    }
+  }
+
+  //   submitAssignDetails(assignDetailsForm: NgForm): void {
+  //   if (assignDetailsForm.invalid) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Oops...',
+  //       text: 'Please fill all required fields correctly!',
+  //       toast: true,
+  //       position: 'top-end',
+  //       timer: 3000,
+  //       showConfirmButton: false
+  //     });
+  //     return;
+  //   }
+
+  //   // Update the reporting manager names based on the selected ID
+  //   if (this.assignDetailsData.reporting_manager_id) {
+  //     const rm = this.optionUsers.find(u => u.user_id === this.assignDetailsData.reporting_manager_id);
+  //     if (rm) {
+  //       this.assignDetailsData.reporting_manager_first_name = rm.user_first_name;
+  //       this.assignDetailsData.reporting_manager_last_name = rm.user_last_name;
+  //     }
+  //   } else {
+  //     this.assignDetailsData.reporting_manager_first_name = '';
+  //     this.assignDetailsData.reporting_manager_last_name = '';
+  //   }
+
+  //   this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
+  //     (response) => {
+  //       console.log('Details assigned successfully!', response);
+  //       this.fetchEmployees();
+  //       Swal.fire({
+  //         toast: true,
+  //         position: 'top-end',
+  //         icon: 'success',
+  //         title: 'Details assigned successfully!',
+  //         showConfirmButton: false,
+  //         timer: 3000
+  //       });
+  //       this.showAssignDetailsModal = false;
+  //       assignDetailsForm.resetForm();
+  //       this.fetchOptions();
+  //     },
+  //     (error) => {
+  //       console.error('Error assigning details:', error);
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Error',
+  //         text: 'Failed to assign details. Please try again.',
+  //         toast: true,
+  //         position: 'top-end',
+  //         timer: 3000,
+  //         showConfirmButton: false
+  //       });
+  //     }
+  //   );
+  // }
+
+  submitAssignDetails(assignDetailsForm: NgForm): void {
+    if (this.assignDetailsData.is_active === 1 && !this.assignDetailsData.deactivation_date) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Deactivation date is required for inactive employees!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
     }
 
     if (assignDetailsForm.invalid) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please fill all required fields correctly!',
-            toast: true,
-            position: 'top-end',
-            timer: 3000,
-            showConfirmButton: false
-        });
-        return;
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill all required fields correctly!',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
     }
 
     if (this.assignDetailsData.reporting_manager_id) {
-        const rm = this.optionUsers.find(u => u.user_id === this.assignDetailsData.reporting_manager_id);
-        if (rm) {
-            this.assignDetailsData.reporting_manager_first_name = rm.user_first_name;
-            this.assignDetailsData.reporting_manager_last_name = rm.user_last_name;
-        }
+      const rm = this.optionUsers.find(u => u.user_id === this.assignDetailsData.reporting_manager_id);
+      if (rm) {
+        this.assignDetailsData.reporting_manager_first_name = rm.user_first_name;
+        this.assignDetailsData.reporting_manager_last_name = rm.user_last_name;
+      }
     } else {
-        this.assignDetailsData.reporting_manager_first_name = '';
-        this.assignDetailsData.reporting_manager_last_name = '';
+      this.assignDetailsData.reporting_manager_first_name = '';
+      this.assignDetailsData.reporting_manager_last_name = '';
     }
 
     this.dataService.addAssignDetails(this.assignDetailsData).subscribe(
-        (response) => {
-            console.log('Details assigned successfully!', response);
-            this.fetchEmployees();
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Details assigned successfully!',
-                showConfirmButton: false,
-                timer: 3000
-            });
-            this.showAssignDetailsModal = false;
-            assignDetailsForm.resetForm();
-            this.fetchOptions();
-        },
-        (error) => {
-            console.error('Error assigning details:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to assign details. Please try again.',
-                toast: true,
-                position: 'top-end',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        }
+      (response) => {
+        console.log('Details assigned successfully!', response);
+        this.fetchEmployees();
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Details assigned successfully!',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        this.showAssignDetailsModal = false;
+        assignDetailsForm.resetForm();
+        this.fetchOptions();
+      },
+      (error) => {
+        console.error('Error assigning details:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to assign details. Please try again.',
+          toast: true,
+          position: 'top-end',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }
     );
-}
+  }
 
   fetchEmployees(): void {
     this.dataService.getAllEmployees().subscribe(
@@ -1464,9 +1459,9 @@ submitAssignDetails(assignDetailsForm: NgForm): void {
   onPassportChange(event: any): void {
     this.hasPassport = event.target.value === '1';
     if (!this.hasPassport) {
-        this.assignDetailsData.passport_validity = null;
+      this.assignDetailsData.passport_validity = null;
     }
-}
+  }
 
 
   selectedEmployee: any;

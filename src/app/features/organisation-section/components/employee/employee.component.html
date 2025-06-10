@@ -482,22 +482,32 @@
                 </div>
 
                 <div class="space-y-1">
-  <label class="text-xs font-medium text-gray-600 block">Passport Available?</label>
-  <div class="flex space-x-4 mt-1">
-    <label class="flex items-center text-xs">
-      <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" 
-             [value]="1" (change)="onPassportChange($event)" class="mr-1"
-             [checked]="assignDetailsData.is_passport === 1" />
-      Yes
-    </label>
-    <label class="flex items-center text-xs">
-      <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" 
-             [value]="0" (change)="onPassportChange($event)" class="mr-1"
-             [checked]="assignDetailsData.is_passport === 0" />
-      No
-    </label>
-  </div>
-</div>
+                  <label class="text-xs font-medium text-gray-600 block">Passport Available?</label>
+                  <div class="flex items-center space-x-4">
+                    <label class="flex items-center text-xs">
+                      <input type="radio" name="passport" [checked]="assignDetailsData.is_passport === 1"
+                        (click)="assignDetailsData.is_passport = 1; hasPassport = true" class="mr-1">
+                      Yes
+                    </label>
+
+                    <label class="flex items-center text-xs">
+                      <input type="radio" name="passport" [checked]="assignDetailsData.is_passport === 0"
+                        (click)="assignDetailsData.is_passport = 0; hasPassport = false; assignDetailsData.passport_validity = null"
+                        class="mr-1">
+                      No
+                    </label>
+
+                    <span *ngIf="assignDetailsData.is_passport === null" class="text-xs text-gray-500">
+                      Not specified
+                    </span>
+                  </div>
+                </div>
+
+                <div *ngIf="assignDetailsData.is_passport === 1" class="mt-2">
+                  <label class="text-xs font-medium text-gray-600">Passport Validity*</label>
+                  <input type="date" [(ngModel)]="assignDetailsData.passport_validity" name="passport_validity"
+                    [required]="assignDetailsData.is_passport === 1" class="text-xs w-full px-2 py-1 border rounded">
+                </div>
 
                 <div class="space-y-1" *ngIf="hasPassport">
                   <label class="text-xs font-medium text-gray-600">Validity of Passport*</label>
@@ -621,28 +631,28 @@
             </div>
 
             <div *ngIf="activeTab === 'status'" class="p-4">
-  <div class="mb-4">
-    <label class="block text-gray-700 text-sm font-bold mb-2">Employment Status</label>
-    <div class="flex items-center mb-4">
-      <input type="radio" id="active" name="status" [(ngModel)]="assignDetailsData.is_active" 
-             [value]="0" (change)="onStatusChange(false)" class="mr-2">
-      <label for="active" class="mr-4">Active</label>
-      
-      <input type="radio" id="inactive" name="status" [(ngModel)]="assignDetailsData.is_active" 
-             [value]="1" (change)="onStatusChange(true)" class="mr-2">
-      <label for="inactive">Inactive</label>
-    </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Employment Status</label>
+                <div class="flex items-center mb-4">
+                  <input type="radio" id="active" name="status" [(ngModel)]="assignDetailsData.is_active" [value]="0"
+                    (change)="onStatusChange(false)" class="mr-2">
+                  <label for="active" class="mr-4">Active</label>
 
-    <div *ngIf="assignDetailsData.is_active === 1" class="mt-2">
-      <label class="block text-gray-700 text-sm font-bold mb-2">Deactivation Date</label>
-      <input type="date" [(ngModel)]="assignDetailsData.deactivation_date" name="deactivation_date" 
-             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-             required>
-      <small *ngIf="assignDetailsData.is_active === 1 && !assignDetailsData.deactivation_date" 
-             class="text-red-500">Deactivation date is required for inactive status</small>
-    </div>
-  </div>
-</div>
+                  <input type="radio" id="inactive" name="status" [(ngModel)]="assignDetailsData.is_active" [value]="1"
+                    (change)="onStatusChange(true)" class="mr-2">
+                  <label for="inactive">Inactive</label>
+                </div>
+
+                <div *ngIf="assignDetailsData.is_active === 1" class="mt-2">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Deactivation Date</label>
+                  <input type="date" [(ngModel)]="assignDetailsData.deactivation_date" name="deactivation_date"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required>
+                  <small *ngIf="assignDetailsData.is_active === 1 && !assignDetailsData.deactivation_date"
+                    class="text-red-500">Deactivation date is required for inactive status</small>
+                </div>
+              </div>
+            </div>
 
 
             <div class="mt-6 flex justify-center">
