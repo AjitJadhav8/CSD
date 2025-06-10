@@ -1,7 +1,7 @@
 <div class="p-4">
   <!-- Employee Section -->
   <div *ngIf="selectedSection === 'employee'">
-   
+
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 m-4">
       <!-- Enhanced Title Section -->
       <div class="mb-6 pb-4 border-b border-gray-200">
@@ -225,6 +225,8 @@
               <th class="px-1 py-1 border border-gray-200 text-center">Designation</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Manager</th>
               <th class="px-1 py-1 border border-gray-200 text-center">Join Date</th>
+              <th class="px-1 py-1 border border-gray-200 text-center">Status</th>
+
               <th class="sticky right-0 px-1 py-1 border border-gray-200 text-center bg-gray-50">Actions</th>
             </tr>
           </thead>
@@ -250,9 +252,27 @@
               <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.designation_name || '-' }}</td>
               <td class="px-1 py-1 border border-gray-300 text-center">{{ employee.reporting_manager_first_name || '' }}
                 {{ employee.reporting_manager_last_name || '-' }}</td>
+
+
+
+
               <td class="px-1 py-1 border border-gray-300 text-center"> {{ employee.user_DOJ ? (employee.user_DOJ |
                 date:'dd-MMM-yyyy') : '-' }}
               </td>
+
+              <td class="px-1 py-1 border border-gray-300 text-center">
+                <span [ngClass]="{
+        'bg-green-100 text-green-800': employee.is_active == 0,
+        'bg-red-100 text-red-800': employee.is_active == 1
+    }" class="px-2 py-1 rounded-full text-xs">
+                  {{ employee.is_active == 0 ? 'Active' : 'Inactive' }}
+                </span>
+                <div *ngIf="employee.is_active == 1" class="text-xs text-gray-500">
+                  {{ employee.deactivation_date | date:'dd-MMM-yyyy' }}
+                </div>
+              </td>
+
+
               <td class="sticky right-0 px-1 py-1 border border-gray-300 border-b-gray-300 text-center bg-gray-50">
                 <button (click)="assignDetails(employee)" class="text-blue-600 hover:text-blue-800 p-1" title="Assign">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -300,308 +320,346 @@
     </div>
 
     <div *ngIf="isEmployeeEditModalOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
-    (click)="closeEmployeeEditModal()">
-    <div class="bg-white p-6 rounded-lg w-1/2 max-w-3xl" (click)="$event.stopPropagation()">
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]"
+      (click)="closeEmployeeEditModal()">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-3xl" (click)="$event.stopPropagation()">
         <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Employee</h3>
         <form #editEmployeeForm="ngForm" (ngSubmit)="updateEmployee(editEmployeeForm); $event.preventDefault()">
-            <div class="grid grid-cols-3 gap-4">
-                <!-- Employee Code -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Employee Code*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel"
-                        name="editUserCode" required
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
-                    <span class="text-xs text-red-500"
-                        *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
-                        Required
-                    </span>
-                </div>
-
-                <!-- First Name -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">First Name*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
-                        name="editUserFirstName" required
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
-                    <span class="text-xs text-red-500"
-                        *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
-                        Required
-                    </span>
-                </div>
-
-                <!-- Middle Name -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Middle Name</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <!-- Last Name -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Last Name*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
-                        name="editUserLastName" required
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
-                    <span class="text-xs text-red-500"
-                        *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
-                        Required
-                    </span>
-                </div>
-
-                <!-- Email ID -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Email ID*</label>
-                    <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel"
-                        name="editUserEmail" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
-                    <span class="text-xs text-red-500"
-                        *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
-                        Valid email
-                    </span>
-                </div>
-
-                <!-- Contact Number -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Contact Number*</label>
-                    <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel"
-                        name="editUserContact" required pattern="^[0-9]{10}$"
-                        class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
-                    <span class="text-xs text-red-500"
-                        *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
-                        10 digits
-                    </span>
-                </div>
+          <div class="grid grid-cols-3 gap-4">
+            <!-- Employee Code -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Employee Code*</label>
+              <input type="text" [(ngModel)]="editEmployee.user_code" #editUserCode="ngModel" name="editUserCode"
+                required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editUserCode.invalid && editUserCode.touched) || (editEmployeeForm.submitted && editUserCode.invalid)">
+                Required
+              </span>
             </div>
 
-            <!-- Buttons -->
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" 
-                    class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-                    (click)="closeEmployeeEditModal()">
-                    Cancel
-                </button>
-                <button type="submit"
-                    class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    Update Employee
-                </button>
+            <!-- First Name -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">First Name*</label>
+              <input type="text" [(ngModel)]="editEmployee.user_first_name" #editUserFirstName="ngModel"
+                name="editUserFirstName" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editUserFirstName.invalid && editUserFirstName.touched) || (editEmployeeForm.submitted && editUserFirstName.invalid)">
+                Required
+              </span>
             </div>
+
+            <!-- Middle Name -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Middle Name</label>
+              <input type="text" [(ngModel)]="editEmployee.user_middle_name" name="editUserMiddleName"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Last Name -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Last Name*</label>
+              <input type="text" [(ngModel)]="editEmployee.user_last_name" #editUserLastName="ngModel"
+                name="editUserLastName" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editUserLastName.invalid && editUserLastName.touched) || (editEmployeeForm.submitted && editUserLastName.invalid)">
+                Required
+              </span>
+            </div>
+
+            <!-- Email ID -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Email ID*</label>
+              <input type="email" [(ngModel)]="editEmployee.user_email" #editUserEmail="ngModel" name="editUserEmail"
+                required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editUserEmail.invalid && editUserEmail.touched) || (editEmployeeForm.submitted && editUserEmail.invalid)">
+                Valid email
+              </span>
+            </div>
+
+            <!-- Contact Number -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Contact Number*</label>
+              <input type="text" [(ngModel)]="editEmployee.user_contact" #editUserContact="ngModel"
+                name="editUserContact" required pattern="^[0-9]{10}$"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editUserContact.invalid && editUserContact.touched) || (editEmployeeForm.submitted && editUserContact.invalid)">
+                10 digits
+              </span>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeEmployeeEditModal()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Employee
+            </button>
+          </div>
         </form>
+      </div>
     </div>
-</div>
 
-   
+
     <div *ngIf="showAssignDetailsModal" (click)="toggleAssignDetailsModal()"
-    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
-    <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto"
+      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[1000]">
+      <div class="bg-white rounded-lg shadow-lg w-2/3 max-w-3xl relative p-6 h-[450px] overflow-y-auto"
         (click)="$event.stopPropagation()">
         <div class="flex justify-between items-center border-b pb-2">
-            <h3 class="text-lg font-semibold text-gray-800">
-                Assign Details for -
-                <span class="border p-1 rounded-md bg-gray-100 text-sm">
-                    {{ assignDetailsData.user_first_name }} {{ assignDetailsData.user_last_name }}
-                </span>
-            </h3>
-            <button class="text-gray-500 hover:text-gray-700 text-2xl"
-                (click)="toggleAssignDetailsModal()">&times;</button>
+          <h3 class="text-lg font-semibold text-gray-800">
+            Assign Details for -
+            <span class="border p-1 rounded-md bg-gray-100 text-sm">
+              {{ assignDetailsData.user_first_name }} {{ assignDetailsData.user_last_name }}
+            </span>
+          </h3>
+          <button class="text-gray-500 hover:text-gray-700 text-2xl"
+            (click)="toggleAssignDetailsModal()">&times;</button>
         </div>
 
         <div class="mt-4">
-            <form #assignDetailsForm="ngForm" (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()">
-                <div class="flex space-x-4 border-b">
-                    <button type="button" (click)="activeTab = 'personal'" 
-                        [class]="activeTab === 'personal' ? 
+          <form #assignDetailsForm="ngForm"
+            (ngSubmit)="submitAssignDetails(assignDetailsForm); $event.preventDefault()">
+            <div class="flex space-x-4 border-b">
+              <button type="button" (click)="activeTab = 'personal'" [class]="activeTab === 'personal' ? 
                         'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
                         'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
-                        Personal Details
-                    </button>
-                    <button type="button" (click)="activeTab = 'organizational'" 
-                        [class]="activeTab === 'organizational' ? 
+                Personal Details
+              </button>
+              <button type="button" (click)="activeTab = 'organizational'" [class]="activeTab === 'organizational' ? 
                         'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
                         'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
-                        Organizational Details
-                    </button>
-                    <button type="button" (click)="activeTab = 'application'" 
-                        [class]="activeTab === 'application' ? 
+                Organizational Details
+              </button>
+              <button type="button" (click)="activeTab = 'application'" [class]="activeTab === 'application' ? 
                         'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
                         'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
-                        Application Related Data
-                    </button>
+                Application Related Data
+              </button>
+
+              <!-- Add this with the other tab buttons -->
+              <button type="button" (click)="activeTab = 'status'" [class]="activeTab === 'status' ? 
+    'border-b-2 border-blue-500 text-blue-500 font-medium text-xs py-2 px-4' : 
+    'text-gray-500 hover:text-gray-700 text-xs py-2 px-4'">
+                Employment Status
+              </button>
+
+
+
+
+            </div>
+
+            <!-- Add this inside your modal form where you have the status tab -->
+
+
+            <!-- Personal Details Tab -->
+            <div *ngIf="activeTab === 'personal'" class="mt-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Emergency Contact</label>
+                  <input type="text" [(ngModel)]="assignDetailsData.user_emergency_contact"
+                    name="user_emergency_contact"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
-                <!-- Personal Details Tab -->
-                <div *ngIf="activeTab === 'personal'" class="mt-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Emergency Contact</label>
-                            <input type="text" [(ngModel)]="assignDetailsData.user_emergency_contact" 
-                                name="user_emergency_contact"
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600 block">Passport Available?</label>
-                            <div class="flex space-x-4 mt-1">
-                                <label class="flex items-center text-xs">
-                                    <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" value="1"
-                                        (change)="onPassportChange($event)" class="mr-1" />
-                                    Yes
-                                </label>
-                                <label class="flex items-center text-xs">
-                                    <input type="radio" [(ngModel)]="assignDetailsData.is_passport" name="passport" value="0"
-                                        (change)="onPassportChange($event)" class="mr-1" />
-                                    No
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="space-y-1" *ngIf="hasPassport">
-                            <label class="text-xs font-medium text-gray-600">Validity of Passport*</label>
-                            <input type="date" [(ngModel)]="assignDetailsData.passport_validity" #passportValidity="ngModel"
-                                name="passport_validity" required
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                [ngClass]="{'border-red-500': passportValidity.invalid && passportValidity.touched}">
-                            <span class="text-xs text-red-500" *ngIf="passportValidity.invalid && passportValidity.touched">
-                                Required
-                            </span>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Current Address</label>
-                            <input type="text" [(ngModel)]="assignDetailsData.user_current_address" 
-                                name="user_current_address"
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Date of Birth</label>
-                            <input type="date" [(ngModel)]="assignDetailsData.user_DOB" name="user_DOB"
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Blood Group</label>
-                            <input type="text" [(ngModel)]="assignDetailsData.user_blood_group" name="user_blood_group"
-                                list="bloodGroupList" pattern="A\+|A-|B\+|B-|AB\+|AB-|O\+|O-|RH\+|RH-"
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <datalist id="bloodGroupList">
-                                <option value="A+"></option>
-                                <option value="A-"></option>
-                                <option value="B+"></option>
-                                <option value="B-"></option>
-                                <option value="AB+"></option>
-                                <option value="AB-"></option>
-                                <option value="O+"></option>
-                                <option value="O-"></option>
-                                <option value="RH+"></option>
-                                <option value="RH-"></option>
-                            </datalist>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Date of Joining*</label>
-                            <input type="date" [(ngModel)]="assignDetailsData.user_DOJ" #userDOJ="ngModel" name="user_DOJ"
-                                required
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                [ngClass]="{'border-red-500': userDOJ.invalid && userDOJ.touched}">
-                            <span class="text-xs text-red-500" *ngIf="userDOJ.invalid && userDOJ.touched">
-                                Required
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Organizational Details Tab -->
-                <div *ngIf="activeTab === 'organizational'" class="mt-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Reporting Manager</label>
-                            <ng-select [(ngModel)]="assignDetailsData.reporting_manager_id" name="reporting_manager_id" 
-                                [searchable]="true" [clearable]="true"
-                                class="text-xs custom-ng-select">
-                                <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
-                                <ng-option *ngFor="let manager of optionUsers" [value]="manager.user_id">
-                                    {{ manager.user_first_name }} {{ manager.user_last_name }}
-                                </ng-option>
-                            </ng-select>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Designation</label>
-                            <ng-select [(ngModel)]="assignDetailsData.designation_id" name="designation_id"
-                                [searchable]="true" [clearable]="true"
-                                class="text-xs custom-ng-select">
-                                <ng-option [value]="" disabled selected>Select Designation</ng-option>
-                                <ng-option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
-                                    {{ designation.designation_name }}
-                                </ng-option>
-                            </ng-select>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Timesheet Filling Required?</label>
-                            <ng-select [(ngModel)]="assignDetailsData.is_timesheet_required" name="is_timesheet_required"
-                                [searchable]="false" [clearable]="true"
-                                class="text-xs custom-ng-select">
-                                <ng-option [value]="" disabled selected>Select Option</ng-option>
-                                <ng-option [value]="1">Yes</ng-option>
-                                <ng-option [value]="0">No</ng-option>
-                            </ng-select>
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Department</label>
-                            <ng-select [(ngModel)]="assignDetailsData.department_id" name="department_id"
-                                [searchable]="true" [clearable]="true"
-                                class="text-xs custom-ng-select">
-                                <ng-option [value]="" disabled selected>Select Department</ng-option>
-                                <ng-option *ngFor="let department of optionDepartments" [value]="department.department_id">
-                                    {{ department.department_name }}
-                                </ng-option>
-                            </ng-select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Application Related Data Tab -->
-                <div *ngIf="activeTab === 'application'" class="mt-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-medium text-gray-600">Role*</label>
-                            <select [(ngModel)]="assignDetailsData.role_id" #role="ngModel" name="role_id" required
-                                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                [ngClass]="{'border-red-500': role.invalid && role.touched}">
-                                <option value="" disabled selected>Select Role</option>
-                                <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}</option>
-                            </select>
-                            <span class="text-xs text-red-500" *ngIf="role.invalid && role.touched">
-                                Required
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex justify-center">
-                    <button type="submit"
-                        class="flex items-center text-xs bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-2 rounded-md hover:from-green-700 hover:to-green-800 transition-all shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                        Assign Details
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                <div class="space-y-1">
+  <label class="text-xs font-medium text-gray-600 block">Passport Available?</label>
+  <div class="flex space-x-4 mt-1">
+    <label class="flex items-center text-xs">
+      <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" 
+             [value]="1" (change)="onPassportChange($event)" class="mr-1"
+             [checked]="assignDetailsData.is_passport === 1" />
+      Yes
+    </label>
+    <label class="flex items-center text-xs">
+      <input type="radio" name="passport" [(ngModel)]="assignDetailsData.is_passport" 
+             [value]="0" (change)="onPassportChange($event)" class="mr-1"
+             [checked]="assignDetailsData.is_passport === 0" />
+      No
+    </label>
+  </div>
 </div>
+
+                <div class="space-y-1" *ngIf="hasPassport">
+                  <label class="text-xs font-medium text-gray-600">Validity of Passport*</label>
+                  <input type="date" [(ngModel)]="assignDetailsData.passport_validity" #passportValidity="ngModel"
+                    name="passport_validity" required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': passportValidity.invalid && passportValidity.touched}">
+                  <span class="text-xs text-red-500" *ngIf="passportValidity.invalid && passportValidity.touched">
+                    Required
+                  </span>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Current Address</label>
+                  <input type="text" [(ngModel)]="assignDetailsData.user_current_address" name="user_current_address"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Date of Birth</label>
+                  <input type="date" [(ngModel)]="assignDetailsData.user_DOB" name="user_DOB"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Blood Group</label>
+                  <input type="text" [(ngModel)]="assignDetailsData.user_blood_group" name="user_blood_group"
+                    list="bloodGroupList" pattern="A\+|A-|B\+|B-|AB\+|AB-|O\+|O-|RH\+|RH-"
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                  <datalist id="bloodGroupList">
+                    <option value="A+"></option>
+                    <option value="A-"></option>
+                    <option value="B+"></option>
+                    <option value="B-"></option>
+                    <option value="AB+"></option>
+                    <option value="AB-"></option>
+                    <option value="O+"></option>
+                    <option value="O-"></option>
+                    <option value="RH+"></option>
+                    <option value="RH-"></option>
+                  </datalist>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Date of Joining*</label>
+                  <input type="date" [(ngModel)]="assignDetailsData.user_DOJ" #userDOJ="ngModel" name="user_DOJ"
+                    required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': userDOJ.invalid && userDOJ.touched}">
+                  <span class="text-xs text-red-500" *ngIf="userDOJ.invalid && userDOJ.touched">
+                    Required
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Organizational Details Tab -->
+            <div *ngIf="activeTab === 'organizational'" class="mt-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Reporting Manager</label>
+                  <ng-select [(ngModel)]="assignDetailsData.reporting_manager_id" name="reporting_manager_id"
+                    [searchable]="true" [clearable]="true" class="text-xs custom-ng-select">
+                    <ng-option [value]="" disabled selected>Select Reporting Manager</ng-option>
+                    <ng-option *ngFor="let manager of optionUsers" [value]="manager.user_id">
+                      {{ manager.user_first_name }} {{ manager.user_last_name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Designation</label>
+                  <ng-select [(ngModel)]="assignDetailsData.designation_id" name="designation_id" [searchable]="true"
+                    [clearable]="true" class="text-xs custom-ng-select">
+                    <ng-option [value]="" disabled selected>Select Designation</ng-option>
+                    <ng-option *ngFor="let designation of optionDesignation" [value]="designation.designation_id">
+                      {{ designation.designation_name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Timesheet Filling Required?</label>
+                  <ng-select [(ngModel)]="assignDetailsData.is_timesheet_required" name="is_timesheet_required"
+                    [searchable]="false" [clearable]="true" class="text-xs custom-ng-select">
+                    <ng-option [value]="" disabled selected>Select Option</ng-option>
+                    <ng-option [value]="1">Yes</ng-option>
+                    <ng-option [value]="0">No</ng-option>
+                  </ng-select>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Department</label>
+                  <ng-select [(ngModel)]="assignDetailsData.department_id" name="department_id" [searchable]="true"
+                    [clearable]="true" class="text-xs custom-ng-select">
+                    <ng-option [value]="" disabled selected>Select Department</ng-option>
+                    <ng-option *ngFor="let department of optionDepartments" [value]="department.department_id">
+                      {{ department.department_name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Application Related Data Tab -->
+            <div *ngIf="activeTab === 'application'" class="mt-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-gray-600">Role*</label>
+                  <select [(ngModel)]="assignDetailsData.role_id" #role="ngModel" name="role_id" required
+                    class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    [ngClass]="{'border-red-500': role.invalid && role.touched}">
+                    <option value="" disabled selected>Select Role</option>
+                    <option *ngFor="let role of optioRoles" [value]="role.role_id">{{ role.role_name }}</option>
+                  </select>
+                  <span class="text-xs text-red-500" *ngIf="role.invalid && role.touched">
+                    Required
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="activeTab === 'status'" class="p-4">
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Employment Status</label>
+    <div class="flex items-center mb-4">
+      <input type="radio" id="active" name="status" [(ngModel)]="assignDetailsData.is_active" 
+             [value]="0" (change)="onStatusChange(false)" class="mr-2">
+      <label for="active" class="mr-4">Active</label>
+      
+      <input type="radio" id="inactive" name="status" [(ngModel)]="assignDetailsData.is_active" 
+             [value]="1" (change)="onStatusChange(true)" class="mr-2">
+      <label for="inactive">Inactive</label>
+    </div>
+
+    <div *ngIf="assignDetailsData.is_active === 1" class="mt-2">
+      <label class="block text-gray-700 text-sm font-bold mb-2">Deactivation Date</label>
+      <input type="date" [(ngModel)]="assignDetailsData.deactivation_date" name="deactivation_date" 
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+             required>
+      <small *ngIf="assignDetailsData.is_active === 1 && !assignDetailsData.deactivation_date" 
+             class="text-red-500">Deactivation date is required for inactive status</small>
+    </div>
+  </div>
+</div>
+
+
+            <div class="mt-6 flex justify-center">
+              <button type="submit"
+                class="flex items-center text-xs bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-2 rounded-md hover:from-green-700 hover:to-green-800 transition-all shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                </svg>
+                Assign Details
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
   </div>
 
@@ -695,7 +753,8 @@
     </div>
     <!-- Add this modal for editing department -->
 
-    <div *ngIf="isEditDepartmentModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+    <div *ngIf="isEditDepartmentModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
       <div class="bg-white p-6 rounded-lg w-1/2 max-w-md">
         <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Department</h3>
         <form #editDepartmentForm="ngForm" (submit)="updateDepartment(editDepartmentForm); $event.preventDefault()">
@@ -711,7 +770,7 @@
             </span>
           </div>
           <div class="mt-6 flex justify-end space-x-3">
-            <button type="button" 
+            <button type="button"
               class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
               (click)="closeDepartmentEditModal()">
               Cancel
@@ -719,7 +778,9 @@
             <button type="submit"
               class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
               </svg>
               Update Department
             </button>
@@ -727,7 +788,7 @@
         </form>
       </div>
     </div>
-    
+
   </div>
 
   <!-- Project Role Section -->
@@ -819,38 +880,41 @@
     <!-- Edit Modal -->
 
     <!-- Project Role Edit Modal -->
-<div *ngIf="isProjectRoleEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-  <div class="bg-white p-6 rounded-lg w-1/2 max-w-md">
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Project Role</h3>
-    <form #editProjectRoleForm="ngForm" (submit)="updateProjectRole(editProjectRoleForm); $event.preventDefault()">
-      <div class="space-y-1">
-        <label class="text-xs font-medium text-gray-600">Project Role Name*</label>
-        <input type="text" [(ngModel)]="editProjectRoleName" #editProjectRoleNameField="ngModel"
-          name="editProjectRoleName" required
-          class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          [ngClass]="{'border-red-500': (editProjectRoleNameField.invalid && editProjectRoleNameField.touched) || (editProjectRoleForm.submitted && editProjectRoleNameField.invalid)}">
-        <span class="text-xs text-red-500"
-          *ngIf="(editProjectRoleNameField.invalid && editProjectRoleNameField.touched) || (editProjectRoleForm.submitted && editProjectRoleNameField.invalid)">
-          Required
-        </span>
+    <div *ngIf="isProjectRoleEditModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-md">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Project Role</h3>
+        <form #editProjectRoleForm="ngForm" (submit)="updateProjectRole(editProjectRoleForm); $event.preventDefault()">
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Project Role Name*</label>
+            <input type="text" [(ngModel)]="editProjectRoleName" #editProjectRoleNameField="ngModel"
+              name="editProjectRoleName" required
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (editProjectRoleNameField.invalid && editProjectRoleNameField.touched) || (editProjectRoleForm.submitted && editProjectRoleNameField.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(editProjectRoleNameField.invalid && editProjectRoleNameField.touched) || (editProjectRoleForm.submitted && editProjectRoleNameField.invalid)">
+              Required
+            </span>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeProjectRoleEditModal()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Project Role
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mt-6 flex justify-end space-x-3">
-        <button type="button" 
-          class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-          (click)="closeProjectRoleEditModal()">
-          Cancel
-        </button>
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          Update Project Role
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
 
 
   </div>
@@ -877,7 +941,7 @@
         <p class="text-xs text-gray-500 mt-1">Fill all required fields (*) to create new designation</p>
       </div>
 
-    
+
       <form #designationForm="ngForm" (submit)="submitDesignation(designationForm); $event.preventDefault()">
         <div class="grid grid-cols-6 gap-4">
           <div class="space-y-1">
@@ -973,40 +1037,43 @@
         </form>
       </div>
     </div> -->
-    
+
     <!-- Designation Edit Modal -->
-<div *ngIf="isDesignationModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-  <div class="bg-white p-6 rounded-lg w-1/2 max-w-md">
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Designation</h3>
-    <form #editDesignationForm="ngForm" (submit)="updateDesignation(editDesignationForm); $event.preventDefault()">
-      <div class="space-y-1">
-        <label class="text-xs font-medium text-gray-600">Designation Name*</label>
-        <input type="text" [(ngModel)]="editDesignationName" #editDesignationNameField="ngModel"
-          name="editDesignationName" required
-          class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          [ngClass]="{'border-red-500': (editDesignationNameField.invalid && editDesignationNameField.touched) || (editDesignationForm.submitted && editDesignationNameField.invalid)}">
-        <span class="text-xs text-red-500"
-          *ngIf="(editDesignationNameField.invalid && editDesignationNameField.touched) || (editDesignationForm.submitted && editDesignationNameField.invalid)">
-          Required
-        </span>
+    <div *ngIf="isDesignationModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-md">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Designation</h3>
+        <form #editDesignationForm="ngForm" (submit)="updateDesignation(editDesignationForm); $event.preventDefault()">
+          <div class="space-y-1">
+            <label class="text-xs font-medium text-gray-600">Designation Name*</label>
+            <input type="text" [(ngModel)]="editDesignationName" #editDesignationNameField="ngModel"
+              name="editDesignationName" required
+              class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              [ngClass]="{'border-red-500': (editDesignationNameField.invalid && editDesignationNameField.touched) || (editDesignationForm.submitted && editDesignationNameField.invalid)}">
+            <span class="text-xs text-red-500"
+              *ngIf="(editDesignationNameField.invalid && editDesignationNameField.touched) || (editDesignationForm.submitted && editDesignationNameField.invalid)">
+              Required
+            </span>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeDesignationModule()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Designation
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mt-6 flex justify-end space-x-3">
-        <button type="button" 
-          class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-          (click)="closeDesignationModule()">
-          Cancel
-        </button>
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          Update Designation
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
   </div>
 
 
@@ -1231,66 +1298,70 @@
     </div> -->
 
     <!-- Skill Edit Modal -->
-<div *ngIf="isSkillModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-  <div class="bg-white p-6 rounded-lg w-1/2 max-w-2xl">
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Skill</h3>
-    <form #editSkillForm="ngForm" (submit)="updateSkill(editSkillForm); $event.preventDefault()">
-      <div class="grid grid-cols-3 gap-4">
-        <!-- Skill Name -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Skill Name*</label>
-          <input type="text" [(ngModel)]="editSkillName" #editSkillNameField="ngModel" name="editSkillName" required
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editSkillNameField.invalid && editSkillNameField.touched) || (editSkillForm.submitted && editSkillNameField.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(editSkillNameField.invalid && editSkillNameField.touched) || (editSkillForm.submitted && editSkillNameField.invalid)">
-            Required
-          </span>
-        </div>
+    <div *ngIf="isSkillModalOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-2xl">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Skill</h3>
+        <form #editSkillForm="ngForm" (submit)="updateSkill(editSkillForm); $event.preventDefault()">
+          <div class="grid grid-cols-3 gap-4">
+            <!-- Skill Name -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Skill Name*</label>
+              <input type="text" [(ngModel)]="editSkillName" #editSkillNameField="ngModel" name="editSkillName" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editSkillNameField.invalid && editSkillNameField.touched) || (editSkillForm.submitted && editSkillNameField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editSkillNameField.invalid && editSkillNameField.touched) || (editSkillForm.submitted && editSkillNameField.invalid)">
+                Required
+              </span>
+            </div>
 
-        <!-- Skill Category -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Skill Category*</label>
-          <select [(ngModel)]="editSkillCategory" #editSkillCategoryField="ngModel" name="editSkillCategory"
-            required class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editSkillCategoryField.invalid && editSkillCategoryField.touched) || (editSkillForm.submitted && editSkillCategoryField.invalid)}">
-            <option value="" disabled selected>Select Category</option>
-            <option value="technical">Technical</option>
-            <option value="soft-skill">Soft Skill</option>
-            <option value="management">Management</option>
-            <option value="other">Other</option>
-          </select>
-          <span class="text-xs text-red-500"
-            *ngIf="(editSkillCategoryField.invalid && editSkillCategoryField.touched) || (editSkillForm.submitted && editSkillCategoryField.invalid)">
-            Required
-          </span>
-        </div>
+            <!-- Skill Category -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Skill Category*</label>
+              <select [(ngModel)]="editSkillCategory" #editSkillCategoryField="ngModel" name="editSkillCategory"
+                required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editSkillCategoryField.invalid && editSkillCategoryField.touched) || (editSkillForm.submitted && editSkillCategoryField.invalid)}">
+                <option value="" disabled selected>Select Category</option>
+                <option value="technical">Technical</option>
+                <option value="soft-skill">Soft Skill</option>
+                <option value="management">Management</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editSkillCategoryField.invalid && editSkillCategoryField.touched) || (editSkillForm.submitted && editSkillCategoryField.invalid)">
+                Required
+              </span>
+            </div>
 
-        <!-- Skill Description -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Skill Description</label>
-          <textarea [(ngModel)]="editSkillDescription" name="editSkillDescription"
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
-            rows="1" placeholder="Enter skill details..."></textarea>
-        </div>
+            <!-- Skill Description -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Skill Description</label>
+              <textarea [(ngModel)]="editSkillDescription" name="editSkillDescription"
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                rows="1" placeholder="Enter skill details..."></textarea>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeSkillModal()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update Skill
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mt-6 flex justify-end space-x-3">
-        <button type="button" 
-          class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-          (click)="closeSkillModal()">
-          Cancel
-        </button>
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          Update Skill
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
   </div>
 
 
@@ -1576,85 +1647,89 @@
     </div> -->
 
     <!-- Reporting Manager History Edit Modal -->
-<div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-  <div class="bg-white p-6 rounded-lg w-1/2 max-w-3xl">
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Reporting Manager History</h3>
-    <form #editReportingManagerForm="ngForm" (ngSubmit)="updateReportingManager(editReportingManagerForm); $event.preventDefault()">
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Employee Name Dropdown -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Employee Name*</label>
-          <select [(ngModel)]="editEmployeeId" #editEmployeeField="ngModel" name="editEmployee" required
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editEmployeeField.invalid && editEmployeeField.touched) || (editReportingManagerForm.submitted && editEmployeeField.invalid)}">
-            <option value="" disabled selected>Select Employee</option>
-            <option *ngFor="let user of optionUsers" [value]="user.user_id">
-              {{ user.user_first_name }} {{ user.user_last_name }}
-            </option>
-          </select>
-          <span class="text-xs text-red-500"
-            *ngIf="(editEmployeeField.invalid && editEmployeeField.touched) || (editReportingManagerForm.submitted && editEmployeeField.invalid)">
-            Required
-          </span>
-        </div>
+    <div *ngIf="isEditModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+      <div class="bg-white p-6 rounded-lg w-1/2 max-w-3xl">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Edit Reporting Manager History</h3>
+        <form #editReportingManagerForm="ngForm"
+          (ngSubmit)="updateReportingManager(editReportingManagerForm); $event.preventDefault()">
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Employee Name Dropdown -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Employee Name*</label>
+              <select [(ngModel)]="editEmployeeId" #editEmployeeField="ngModel" name="editEmployee" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editEmployeeField.invalid && editEmployeeField.touched) || (editReportingManagerForm.submitted && editEmployeeField.invalid)}">
+                <option value="" disabled selected>Select Employee</option>
+                <option *ngFor="let user of optionUsers" [value]="user.user_id">
+                  {{ user.user_first_name }} {{ user.user_last_name }}
+                </option>
+              </select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editEmployeeField.invalid && editEmployeeField.touched) || (editReportingManagerForm.submitted && editEmployeeField.invalid)">
+                Required
+              </span>
+            </div>
 
-        <!-- Reporting Manager Dropdown -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Reporting Manager*</label>
-          <select [(ngModel)]="editReportingManagerId" #editManagerField="ngModel" name="editReportingManager"
-            required class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editManagerField.invalid && editManagerField.touched) || (editReportingManagerForm.submitted && editManagerField.invalid)}">
-            <option value="" disabled selected>Select Reporting Manager</option>
-            <option *ngFor="let user of optionUsers" [value]="user.user_id">
-              {{ user.user_first_name }} {{ user.user_last_name }}
-            </option>
-          </select>
-          <span class="text-xs text-red-500"
-            *ngIf="(editManagerField.invalid && editManagerField.touched) || (editReportingManagerForm.submitted && editManagerField.invalid)">
-            Required
-          </span>
-        </div>
+            <!-- Reporting Manager Dropdown -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Reporting Manager*</label>
+              <select [(ngModel)]="editReportingManagerId" #editManagerField="ngModel" name="editReportingManager"
+                required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editManagerField.invalid && editManagerField.touched) || (editReportingManagerForm.submitted && editManagerField.invalid)}">
+                <option value="" disabled selected>Select Reporting Manager</option>
+                <option *ngFor="let user of optionUsers" [value]="user.user_id">
+                  {{ user.user_first_name }} {{ user.user_last_name }}
+                </option>
+              </select>
+              <span class="text-xs text-red-500"
+                *ngIf="(editManagerField.invalid && editManagerField.touched) || (editReportingManagerForm.submitted && editManagerField.invalid)">
+                Required
+              </span>
+            </div>
 
-        <!-- From Date -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">From Date*</label>
-          <input type="date" [(ngModel)]="editFromDate" #editFromDateField="ngModel" name="editFromDate" required
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editFromDateField.invalid && editFromDateField.touched) || (editReportingManagerForm.submitted && editFromDateField.invalid)}">
-          <span class="text-xs text-red-500"
-            *ngIf="(editFromDateField.invalid && editFromDateField.touched) || (editReportingManagerForm.submitted && editFromDateField.invalid)">
-            Required
-          </span>
-        </div>
+            <!-- From Date -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">From Date*</label>
+              <input type="date" [(ngModel)]="editFromDate" #editFromDateField="ngModel" name="editFromDate" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editFromDateField.invalid && editFromDateField.touched) || (editReportingManagerForm.submitted && editFromDateField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="(editFromDateField.invalid && editFromDateField.touched) || (editReportingManagerForm.submitted && editFromDateField.invalid)">
+                Required
+              </span>
+            </div>
 
-        <!-- Till Date -->
-        <div class="space-y-1">
-          <label class="text-xs font-medium text-gray-600">Till Date*</label>
-          <input type="date" [(ngModel)]="editTillDate" #editTillDateField="ngModel" name="editTillDate" required
-            class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            [ngClass]="{'border-red-500': (editTillDateField.invalid && editTillDateField.touched) || (editReportingManagerForm.submitted && editTillDateField.invalid)}">
-          <span class="text-xs text-red-500"
-          *ngIf="editTillDateField.invalid && (editTillDateField.touched || editReportingManagerForm.submitted)">
-          Required
-          </span>
-        </div>
+            <!-- Till Date -->
+            <div class="space-y-1">
+              <label class="text-xs font-medium text-gray-600">Till Date*</label>
+              <input type="date" [(ngModel)]="editTillDate" #editTillDateField="ngModel" name="editTillDate" required
+                class="text-xs w-full px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                [ngClass]="{'border-red-500': (editTillDateField.invalid && editTillDateField.touched) || (editReportingManagerForm.submitted && editTillDateField.invalid)}">
+              <span class="text-xs text-red-500"
+                *ngIf="editTillDateField.invalid && (editTillDateField.touched || editReportingManagerForm.submitted)">
+                Required
+              </span>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button"
+              class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
+              (click)="closeEditModal()">
+              Cancel
+            </button>
+            <button type="submit"
+              class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+              Update
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mt-6 flex justify-end space-x-3">
-        <button type="button" 
-          class="text-xs bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition-all shadow-sm"
-          (click)="closeEditModal()">
-          Cancel
-        </button>
-        <button type="submit"
-          class="flex items-center text-xs bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          Update
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
   </div>
 </div>

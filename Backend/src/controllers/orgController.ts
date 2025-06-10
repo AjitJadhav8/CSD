@@ -923,117 +923,449 @@ WHERE is_deleted = 0 AND is_RM = 1
 
     // ---- Employee --------
 
-    async addEmployee(req: Request, res: Response): Promise<void> {
-        try {
-            const {
+    // async addEmployee(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const {
+    //             user_code, user_first_name, user_middle_name, user_last_name,
+    //             user_email, user_contact
+    //         } = req.body;
+
+    //         // Generate password: user_first_name@123
+    //         const tempPassword = `${user_first_name.toLowerCase()}@123`;
+    //         const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+
+
+    //         // Check for duplicate user_code and user_email separately
+    //         const checkQuery = `SELECT user_code, user_email 
+    //         FROM master_user 
+    //         WHERE (user_code = ? OR user_email = ?) 
+    //         AND is_deleted = 0`;
+    //         db.query(checkQuery, [user_code, user_email], (err: any, results: any) => {
+    //             if (err) {
+    //                 console.error('Error checking for duplicate:', err);
+    //                 return res.status(500).json({ error: 'Internal Server Error' });
+    //             }
+
+    //             // Identify which field is duplicated
+    //             const duplicateFields: string[] = [];
+    //             results.forEach((user: any) => {
+    //                 if (user.user_code === user_code) duplicateFields.push('Employee Code');
+    //                 if (user.user_email === user_email) duplicateFields.push('Email');
+    //             });
+
+    //             // If any duplicates exist, return an appropriate error message
+    //             if (duplicateFields.length > 0) {
+    //                 return res.status(400).json({ error: `${duplicateFields.join(' and ')} already exist` });
+    //             }
+
+    //             // SQL query to insert the new employee into the database
+    //             const insertQuery = `
+    //                 INSERT INTO master_user (
+    //                 user_code, user_first_name, user_middle_name, user_last_name, 
+    //                 user_email, user_contact, user_password, is_deleted
+    //             ) 
+    //             VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+    //             `;
+
+    //             const values = [
+    //                 user_code, user_first_name, user_middle_name, user_last_name,
+    //                 user_email, user_contact, hashedPassword
+    //             ];
+
+    //             // Insert the data into the database
+    //             db.query(insertQuery, values, (insertErr: any, result: any) => {
+    //                 if (insertErr) {
+    //                     console.error('Error saving employee:', insertErr);
+    //                     return res.status(500).json({ error: 'Error saving employee' });
+    //                 }
+
+    //                 const userId = result.insertId;
+
+    //                 // Now insert default role (4) into trans_user_details
+    //                 const insertRoleQuery = `
+    //                     INSERT INTO trans_user_details (
+    //                         user_id, role_id, is_deleted
+    //                     ) VALUES (?, 4, 0)
+    //                 `;
+
+    //                 db.query(insertRoleQuery, [userId], (roleErr: any, roleResult: any) => {
+    //                     if (roleErr) {
+    //                         console.error('Error assigning default role:', roleErr);
+    //                         return res.status(500).json({
+    //                             message: 'Employee created but failed to assign default role',
+    //                             employeeId: userId,
+    //                             // temporaryPassword: tempPassword 
+    //                         });
+    //                     }
+
+    //                     const assignInternalProjectQuery = `
+    //                     INSERT INTO trans_project_team (
+    //                         customer_id, project_id, employee_id, project_role_id, 
+    //                         project_manager_id, start_date, allocation_status, 
+    //                         allocation_percentage, billed_status, billing_percentage, 
+    //                         is_deleted
+    //                     ) VALUES (
+    //                         29, 22, ?, 27, 42, CURDATE(), 0, 0, 0, 0, 0
+    //                     )`;
+
+    //                     db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
+    //                         if (projectErr) {
+    //                             console.error('Error assigning to internal project:', projectErr);
+    //                             return res.status(500).json({
+    //                                 message: 'Employee created but failed to assign to internal project',
+    //                                 employeeId: userId,
+    //                                 // temporaryPassword: tempPassword 
+    //                             });
+    //                         }
+
+    //                         res.status(201).json({
+    //                             message: 'Employee saved successfully with default role and internal project assignment',
+    //                             employeeId: userId,
+    //                             // temporaryPassword: tempPassword 
+    //                         });
+    //                     });
+    //                 });
+    //             });
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
+
+  async addEmployee(req: Request, res: Response): Promise<void> {
+    try {
+        const {
+            user_code, user_first_name, user_middle_name, user_last_name,
+            user_email, user_contact
+        } = req.body;
+
+        const tempPassword = `${user_first_name.toLowerCase()}@123`;
+        const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+
+        const checkQuery = `SELECT user_code, user_email 
+        FROM master_user 
+        WHERE (user_code = ? OR user_email = ?) 
+        AND is_deleted = 0`;
+        db.query(checkQuery, [user_code, user_email], (err: any, results: any) => {
+            if (err) {
+                console.error('Error checking for duplicate:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            const duplicateFields: string[] = [];
+            results.forEach((user: any) => {
+                if (user.user_code === user_code) duplicateFields.push('Employee Code');
+                if (user.user_email === user_email) duplicateFields.push('Email');
+            });
+
+            if (duplicateFields.length > 0) {
+                return res.status(400).json({ error: `${duplicateFields.join(' and ')} already exist` });
+            }
+
+            const insertQuery = `
+                INSERT INTO master_user (
+                user_code, user_first_name, user_middle_name, user_last_name, 
+                user_email, user_contact, user_password, is_active, is_deleted
+            ) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)
+            `;
+
+            const values = [
                 user_code, user_first_name, user_middle_name, user_last_name,
-                user_email, user_contact
-            } = req.body;
+                user_email, user_contact, hashedPassword
+            ];
 
-            // Generate password: user_first_name@123
-            const tempPassword = `${user_first_name.toLowerCase()}@123`;
-            const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
-
-
-            // Check for duplicate user_code and user_email separately
-            const checkQuery = `SELECT user_code, user_email 
-            FROM master_user 
-            WHERE (user_code = ? OR user_email = ?) 
-            AND is_deleted = 0`;
-            db.query(checkQuery, [user_code, user_email], (err: any, results: any) => {
-                if (err) {
-                    console.error('Error checking for duplicate:', err);
-                    return res.status(500).json({ error: 'Internal Server Error' });
+            db.query(insertQuery, values, (insertErr: any, result: any) => {
+                if (insertErr) {
+                    console.error('Error saving employee:', insertErr);
+                    return res.status(500).json({ error: 'Error saving employee' });
                 }
 
-                // Identify which field is duplicated
-                const duplicateFields: string[] = [];
-                results.forEach((user: any) => {
-                    if (user.user_code === user_code) duplicateFields.push('Employee Code');
-                    if (user.user_email === user_email) duplicateFields.push('Email');
-                });
+                const userId = result.insertId;
 
-                // If any duplicates exist, return an appropriate error message
-                if (duplicateFields.length > 0) {
-                    return res.status(400).json({ error: `${duplicateFields.join(' and ')} already exist` });
-                }
-
-                // SQL query to insert the new employee into the database
-                const insertQuery = `
-                    INSERT INTO master_user (
-                    user_code, user_first_name, user_middle_name, user_last_name, 
-                    user_email, user_contact, user_password, is_deleted
-                ) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+                const insertRoleQuery = `
+                    INSERT INTO trans_user_details (
+                        user_id, role_id, is_deleted
+                    ) VALUES (?, 4, 0)
                 `;
 
-                const values = [
-                    user_code, user_first_name, user_middle_name, user_last_name,
-                    user_email, user_contact, hashedPassword
-                ];
-
-                // Insert the data into the database
-                db.query(insertQuery, values, (insertErr: any, result: any) => {
-                    if (insertErr) {
-                        console.error('Error saving employee:', insertErr);
-                        return res.status(500).json({ error: 'Error saving employee' });
+                db.query(insertRoleQuery, [userId], (roleErr: any, roleResult: any) => {
+                    if (roleErr) {
+                        console.error('Error assigning default role:', roleErr);
+                        return res.status(500).json({
+                            message: 'Employee created but failed to assign default role',
+                            employeeId: userId,
+                        });
                     }
 
-                    const userId = result.insertId;
+                    const assignInternalProjectQuery = `
+                    INSERT INTO trans_project_team (
+                        customer_id, project_id, employee_id, project_role_id, 
+                        project_manager_id, start_date, allocation_status, 
+                        allocation_percentage, billed_status, billing_percentage, 
+                        is_deleted
+                    ) VALUES (
+                        29, 22, ?, 27, 42, CURDATE(), 0, 0, 0, 0, 0
+                    )`;
 
-                    // Now insert default role (4) into trans_user_details
-                    const insertRoleQuery = `
-                        INSERT INTO trans_user_details (
-                            user_id, role_id, is_deleted
-                        ) VALUES (?, 4, 0)
-                    `;
-
-                    db.query(insertRoleQuery, [userId], (roleErr: any, roleResult: any) => {
-                        if (roleErr) {
-                            console.error('Error assigning default role:', roleErr);
+                    db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
+                        if (projectErr) {
+                            console.error('Error assigning to internal project:', projectErr);
                             return res.status(500).json({
-                                message: 'Employee created but failed to assign default role',
+                                message: 'Employee created but failed to assign to internal project',
                                 employeeId: userId,
-                                // temporaryPassword: tempPassword 
                             });
                         }
 
-                        const assignInternalProjectQuery = `
-                        INSERT INTO trans_project_team (
-                            customer_id, project_id, employee_id, project_role_id, 
-                            project_manager_id, start_date, allocation_status, 
-                            allocation_percentage, billed_status, billing_percentage, 
-                            is_deleted
-                        ) VALUES (
-                            29, 22, ?, 27, 42, CURDATE(), 0, 0, 0, 0, 0
-                        )`;
-
-                        db.query(assignInternalProjectQuery, [userId], (projectErr: any, projectResult: any) => {
-                            if (projectErr) {
-                                console.error('Error assigning to internal project:', projectErr);
-                                return res.status(500).json({
-                                    message: 'Employee created but failed to assign to internal project',
-                                    employeeId: userId,
-                                    // temporaryPassword: tempPassword 
-                                });
-                            }
-
-                            res.status(201).json({
-                                message: 'Employee saved successfully with default role and internal project assignment',
-                                employeeId: userId,
-                                // temporaryPassword: tempPassword 
-                            });
+                        res.status(201).json({
+                            message: 'Employee saved successfully with default role and internal project assignment',
+                            employeeId: userId,
                         });
                     });
                 });
             });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+}
 
-    async assignDetails(req: Request, res: Response): Promise<void> {
+
+
+
+//     async assignDetails(req: Request, res: Response): Promise<void> {
+//     try {
+//         const {
+//             user_id,
+//             user_emergency_contact,
+//             is_passport,
+//             passport_validity,
+//             user_current_address,
+//             user_DOB,
+//             user_blood_group,
+//             user_DOJ,
+//             role_id,
+//             department_id,
+//             designation_id,
+//             is_timesheet_required,
+//             reporting_manager_id,
+//             reporting_manager_first_name,
+//             reporting_manager_last_name
+//         } = req.body;
+
+//         // Validate required fields
+//         if (!user_id) {
+//             res.status(400).json({ error: "User ID is required" });
+//             return;
+//         }
+
+//         // Update master_user table with personal details
+//         const updateMasterUserQuery = `
+//             UPDATE master_user
+//             SET 
+//                 user_emergency_contact = ?,
+//                 is_passport = ?,
+//                 passport_validity = ?,
+//                 user_current_address = ?,
+//                 user_DOB = ?,
+//                 user_blood_group = ?,
+//                 user_DOJ = ?
+//             WHERE user_id = ?
+//         `;
+
+//         const masterUserValues = [
+//             user_emergency_contact,
+//             is_passport,
+//             passport_validity,
+//             user_current_address,
+//             user_DOB,
+//             user_blood_group,
+//             user_DOJ,
+//             user_id
+//         ];
+
+//         // Execute the update query for master_user
+//         db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
+//             if (err) {
+//                 console.error("Error updating master_user:", err);
+//                 res.status(500).json({ error: "Error updating employee details" });
+//                 return;
+//             }
+
+//             // Check if a record already exists in trans_user_details for the given user_id
+//             const checkRecordQuery = `
+//                 SELECT * FROM trans_user_details WHERE user_id = ?
+//             `;
+
+//             db.query(checkRecordQuery, [user_id], (err: any, result: any) => {
+//                 if (err) {
+//                     console.error("Error checking trans_user_details:", err);
+//                     res.status(500).json({ error: "Error checking trans_user_details" });
+//                     return;
+//                 }
+
+//                 let previousReportingManagerId: number | null = null;
+
+//                 if (result.length > 0) {
+//                     // Record exists, store the previous reporting manager ID
+//                     previousReportingManagerId = result[0].reporting_manager_id;
+
+//                     // Perform UPDATE
+//                     const updateTransUserDetailsQuery = `
+//                         UPDATE trans_user_details
+//                         SET 
+//                             role_id = ?,
+//                             department_id = ?,
+//                             designation_id = ?,
+//                             is_timesheet_required = ?,
+//                             reporting_manager_id = ?,
+//                             reporting_manager_first_name = ?,
+//                             reporting_manager_last_name = ?
+//                         WHERE user_id = ?
+//                     `;
+
+//                     const updateValues = [
+//                         role_id,
+//                         department_id,
+//                         designation_id,
+//                         is_timesheet_required,
+//                         reporting_manager_id,
+//                         reporting_manager_first_name,
+//                         reporting_manager_last_name,
+//                         user_id
+//                     ];
+
+//                     db.query(updateTransUserDetailsQuery, updateValues, (err: any, result: any) => {
+//                         if (err) {
+//                             console.error("Error updating trans_user_details:", err);
+//                             res.status(500).json({ error: "Error updating trans_user_details" });
+//                             return;
+//                         }
+
+//                         // Update the is_RM flag for the new reporting manager
+//                         if (reporting_manager_id) {
+//                             const updateIsRmQuery = `
+//                                 UPDATE master_user
+//                                 SET is_RM = 1
+//                                 WHERE user_id = ?
+//                             `;
+
+//                             db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+//                                 if (updateIsRmErr) {
+//                                     console.error("Error updating is_RM flag:", updateIsRmErr);
+//                                     res.status(500).json({ error: "Error updating is_RM flag" });
+//                                     return;
+//                                 }
+
+//                                 // Check if the previous reporting manager is still assigned to any user
+//                                 if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
+//                                     const checkPreviousRmQuery = `
+//                                         SELECT COUNT(*) AS user_count
+//                                         FROM trans_user_details
+//                                         WHERE reporting_manager_id = ? AND is_deleted = 0
+//                                     `;
+
+//                                     db.query(checkPreviousRmQuery, [previousReportingManagerId], (checkErr: any, checkResult: any) => {
+//                                         if (checkErr) {
+//                                             console.error("Error checking previous reporting manager assignments:", checkErr);
+//                                             res.status(500).json({ error: "Error checking previous reporting manager assignments" });
+//                                             return;
+//                                         }
+
+//                                         const userCount = checkResult[0].user_count;
+
+//                                         // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
+//                                         if (userCount === 0) {
+//                                             const updatePreviousRmQuery = `
+//                                                 UPDATE master_user
+//                                                 SET is_RM = 0
+//                                                 WHERE user_id = ?
+//                                             `;
+
+//                                             db.query(updatePreviousRmQuery, [previousReportingManagerId], (updatePreviousRmErr: any, updatePreviousRmResult: any) => {
+//                                                 if (updatePreviousRmErr) {
+//                                                     console.error("Error updating previous is_RM flag:", updatePreviousRmErr);
+//                                                     res.status(500).json({ error: "Error updating previous is_RM flag" });
+//                                                     return;
+//                                                 }
+
+//                                                 res.status(200).json({ message: "Details updated successfully" });
+//                                             });
+//                                         } else {
+//                                             res.status(200).json({ message: "Details updated successfully" });
+//                                         }
+//                                     });
+//                                 } else {
+//                                     res.status(200).json({ message: "Details updated successfully" });
+//                                 }
+//                             });
+//                         } else {
+//                             res.status(200).json({ message: "Details updated successfully" });
+//                         }
+//                     });
+//                 } else {
+//                     // Record does not exist, perform INSERT
+//                     const insertTransUserDetailsQuery = `
+//                         INSERT INTO trans_user_details (
+//                             user_id, role_id, department_id, designation_id, 
+//                             is_timesheet_required, reporting_manager_id,
+//                             reporting_manager_first_name, reporting_manager_last_name
+//                         )
+//                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+//                     `;
+
+//                     const insertValues = [
+//                         user_id,
+//                         role_id,
+//                         department_id,
+//                         designation_id,
+//                         is_timesheet_required,
+//                         reporting_manager_id,
+//                         reporting_manager_first_name,
+//                         reporting_manager_last_name
+//                     ];
+
+//                     db.query(insertTransUserDetailsQuery, insertValues, (err: any, result: any) => {
+//                         if (err) {
+//                             console.error("Error inserting trans_user_details:", err);
+//                             res.status(500).json({ error: "Error inserting trans_user_details" });
+//                             return;
+//                         }
+
+//                         // Update the is_RM flag for the new reporting manager
+//                         if (reporting_manager_id) {
+//                             const updateIsRmQuery = `
+//                                 UPDATE master_user
+//                                 SET is_RM = 1
+//                                 WHERE user_id = ?
+//                             `;
+
+//                             db.query(updateIsRmQuery, [reporting_manager_id], (updateIsRmErr: any, updateIsRmResult: any) => {
+//                                 if (updateIsRmErr) {
+//                                     console.error("Error updating is_RM flag:", updateIsRmErr);
+//                                     res.status(500).json({ error: "Error updating is_RM flag" });
+//                                     return;
+//                                 }
+
+//                                 res.status(200).json({ message: "Details assigned successfully" });
+//                             });
+//                         } else {
+//                             res.status(200).json({ message: "Details assigned successfully" });
+//                         }
+//                     });
+//                 }
+//             });
+//         });
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+// }
+
+
+async assignDetails(req: Request, res: Response): Promise<void> {
     try {
         const {
             user_id,
@@ -1050,16 +1382,16 @@ WHERE is_deleted = 0 AND is_RM = 1
             is_timesheet_required,
             reporting_manager_id,
             reporting_manager_first_name,
-            reporting_manager_last_name
+            reporting_manager_last_name,
+            is_active,
+            deactivation_date
         } = req.body;
 
-        // Validate required fields
         if (!user_id) {
             res.status(400).json({ error: "User ID is required" });
             return;
         }
 
-        // Update master_user table with personal details
         const updateMasterUserQuery = `
             UPDATE master_user
             SET 
@@ -1069,7 +1401,9 @@ WHERE is_deleted = 0 AND is_RM = 1
                 user_current_address = ?,
                 user_DOB = ?,
                 user_blood_group = ?,
-                user_DOJ = ?
+                user_DOJ = ?,
+                is_active = ?,
+                deactivation_date = ?
             WHERE user_id = ?
         `;
 
@@ -1081,10 +1415,11 @@ WHERE is_deleted = 0 AND is_RM = 1
             user_DOB,
             user_blood_group,
             user_DOJ,
+            is_active,
+            deactivation_date,
             user_id
         ];
 
-        // Execute the update query for master_user
         db.query(updateMasterUserQuery, masterUserValues, (err: any, result: any) => {
             if (err) {
                 console.error("Error updating master_user:", err);
@@ -1092,7 +1427,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                 return;
             }
 
-            // Check if a record already exists in trans_user_details for the given user_id
             const checkRecordQuery = `
                 SELECT * FROM trans_user_details WHERE user_id = ?
             `;
@@ -1107,10 +1441,8 @@ WHERE is_deleted = 0 AND is_RM = 1
                 let previousReportingManagerId: number | null = null;
 
                 if (result.length > 0) {
-                    // Record exists, store the previous reporting manager ID
                     previousReportingManagerId = result[0].reporting_manager_id;
 
-                    // Perform UPDATE
                     const updateTransUserDetailsQuery = `
                         UPDATE trans_user_details
                         SET 
@@ -1142,7 +1474,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                             return;
                         }
 
-                        // Update the is_RM flag for the new reporting manager
                         if (reporting_manager_id) {
                             const updateIsRmQuery = `
                                 UPDATE master_user
@@ -1157,7 +1488,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                                     return;
                                 }
 
-                                // Check if the previous reporting manager is still assigned to any user
                                 if (previousReportingManagerId && previousReportingManagerId !== reporting_manager_id) {
                                     const checkPreviousRmQuery = `
                                         SELECT COUNT(*) AS user_count
@@ -1174,7 +1504,6 @@ WHERE is_deleted = 0 AND is_RM = 1
 
                                         const userCount = checkResult[0].user_count;
 
-                                        // If the previous reporting manager is no longer assigned to any user, set is_RM to 0
                                         if (userCount === 0) {
                                             const updatePreviousRmQuery = `
                                                 UPDATE master_user
@@ -1204,7 +1533,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                         }
                     });
                 } else {
-                    // Record does not exist, perform INSERT
                     const insertTransUserDetailsQuery = `
                         INSERT INTO trans_user_details (
                             user_id, role_id, department_id, designation_id, 
@@ -1232,7 +1560,6 @@ WHERE is_deleted = 0 AND is_RM = 1
                             return;
                         }
 
-                        // Update the is_RM flag for the new reporting manager
                         if (reporting_manager_id) {
                             const updateIsRmQuery = `
                                 UPDATE master_user
@@ -1261,6 +1588,9 @@ WHERE is_deleted = 0 AND is_RM = 1
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
+
+
     async softDeleteEmployee(req: Request, res: Response): Promise<void> {
         try {
             const { employeeId } = req.params;
@@ -1380,89 +1710,142 @@ WHERE is_deleted = 0 AND is_RM = 1
         }
     }
 
+    // async getAllEmployees(req: Request, res: Response): Promise<void> {
+    //     try {
+    //         const query = `
+    //       SELECT 
+    //             u.user_id,
+    //             u.user_code,
+    //             u.user_first_name,
+    //             u.user_middle_name,
+    //             u.user_last_name, 
+    //             u.user_email, 
+    //             u.user_contact, 
+    //             u.user_emergency_contact, 
+    //             r.role_name, 
+    //             d.department_name,
+    //             d.department_id,
+    //             des.designation_name,
+    //             des.designation_id,
+    //                     tud.reporting_manager_id,  
+    //             rm.user_first_name AS reporting_manager_first_name,
+    //             rm.user_last_name AS reporting_manager_last_name,
+    //             u.is_passport, 
+    //             u.passport_validity, 
+    //             u.user_current_address, 
+    //             u.user_DOB, 
+    //             u.user_blood_group, 
+    //             u.user_DOJ 
+    //         FROM master_user u
+    //         LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
+    //         LEFT JOIN master_role r ON tud.role_id = r.role_id
+    //         LEFT JOIN master_department d ON tud.department_id = d.department_id
+    //         LEFT JOIN master_designation des ON tud.designation_id = des.designation_id
+    //         LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
+    //         WHERE u.is_deleted = 0
+    //         ORDER BY u.user_id DESC 
+    // `;
+
+    //         db.query(query, (err, results) => {
+    //             if (err) {
+    //                 console.error('Error fetching employees:', err);
+    //                 return res.status(500).json({ error: 'Error fetching employees' });
+    //             }
+    //             res.status(200).json(results);  // Return the result as JSON
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // }
+
     async getAllEmployees(req: Request, res: Response): Promise<void> {
-        try {
-            const query = `
-          SELECT 
-                u.user_id,
-                u.user_code,
-                u.user_first_name,
-                u.user_middle_name,
-                u.user_last_name, 
-                u.user_email, 
-                u.user_contact, 
-                u.user_emergency_contact, 
-                r.role_name, 
-                d.department_name,
-                d.department_id,
-                des.designation_name,
-                des.designation_id,
-                        tud.reporting_manager_id,  
-                rm.user_first_name AS reporting_manager_first_name,
-                rm.user_last_name AS reporting_manager_last_name,
-                u.is_passport, 
-                u.passport_validity, 
-                u.user_current_address, 
-                u.user_DOB, 
-                u.user_blood_group, 
-                u.user_DOJ 
-            FROM master_user u
-            LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
-            LEFT JOIN master_role r ON tud.role_id = r.role_id
-            LEFT JOIN master_department d ON tud.department_id = d.department_id
-            LEFT JOIN master_designation des ON tud.designation_id = des.designation_id
-            LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
-            WHERE u.is_deleted = 0
-            ORDER BY u.user_id DESC 
-    `;
+    try {
+        const query = `
+      SELECT 
+            u.user_id,
+            u.user_code,
+            u.user_first_name,
+            u.user_middle_name,
+            u.user_last_name, 
+            u.user_email, 
+            u.user_contact, 
+            u.user_emergency_contact, 
+            r.role_name, 
+            d.department_name,
+            d.department_id,
+            des.designation_name,
+            des.designation_id,
+            tud.reporting_manager_id,  
+            rm.user_first_name AS reporting_manager_first_name,
+            rm.user_last_name AS reporting_manager_last_name,
+            u.is_passport, 
+            u.passport_validity, 
+            u.user_current_address, 
+            u.user_DOB, 
+            u.user_blood_group, 
+            u.user_DOJ,
+            u.is_active,
+            u.deactivation_date
+        FROM master_user u
+        LEFT JOIN trans_user_details tud ON u.user_id = tud.user_id
+        LEFT JOIN master_role r ON tud.role_id = r.role_id
+        LEFT JOIN master_department d ON tud.department_id = d.department_id
+        LEFT JOIN master_designation des ON tud.designation_id = des.designation_id
+        LEFT JOIN master_user rm ON tud.reporting_manager_id = rm.user_id
+        WHERE u.is_deleted = 0
+        ORDER BY u.user_id DESC 
+        `;
 
-            db.query(query, (err, results) => {
-                if (err) {
-                    console.error('Error fetching employees:', err);
-                    return res.status(500).json({ error: 'Error fetching employees' });
-                }
-                res.status(200).json(results);  // Return the result as JSON
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching employees:', err);
+                return res.status(500).json({ error: 'Error fetching employees' });
+            }
+            res.status(200).json(results);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-    async getEmployeeDetails(req: Request, res: Response): Promise<void> {
-        try {
-            const { userId } = req.params;
+}
 
-            // Query to fetch employee details from master_user and trans_user_details
-            const query = `
-                SELECT 
-                    mu.user_id, mu.user_first_name, mu.user_last_name, 
-                    mu.user_emergency_contact, mu.is_passport, mu.passport_validity, 
-                    mu.user_current_address, mu.user_DOB, mu.user_blood_group, mu.user_DOJ,
-                    tud.role_id, tud.department_id, tud.designation_id, tud.is_timesheet_required, tud.reporting_manager_id
-                FROM master_user mu
-                LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
-                WHERE mu.user_id = ?
-            `;
 
-            // Execute the query
-            db.query(query, [userId], (err: any, result: any) => {
-                if (err) {
-                    console.error('Error fetching employee details:', err);
-                    return res.status(500).json({ error: 'Error fetching employee details' });
-                }
 
-                if (result.length === 0) {
-                    return res.status(404).json({ error: 'Employee not found' });
-                }
+   async getEmployeeDetails(req: Request, res: Response): Promise<void> {
+    try {
+        const { userId } = req.params;
 
-                // Return the employee details
-                res.status(200).json(result[0]);
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
+        const query = `
+            SELECT 
+                mu.user_id, mu.user_first_name, mu.user_last_name, 
+                mu.user_emergency_contact, mu.is_passport, mu.passport_validity, 
+                mu.user_current_address, mu.user_DOB, mu.user_blood_group, mu.user_DOJ,
+                mu.is_active, mu.deactivation_date,  
+                tud.role_id, tud.department_id, tud.designation_id, 
+                tud.is_timesheet_required, tud.reporting_manager_id
+            FROM master_user mu
+            LEFT JOIN trans_user_details tud ON mu.user_id = tud.user_id
+            WHERE mu.user_id = ?
+        `;
+
+        db.query(query, [userId], (err: any, result: any) => {
+            if (err) {
+                console.error('Error fetching employee details:', err);
+                return res.status(500).json({ error: 'Error fetching employee details' });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({ error: 'Employee not found' });
+            }
+
+            res.status(200).json(result[0]);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+}
 
 
 
