@@ -88,6 +88,15 @@ export class NavbarComponent {
   showEmployeeReportsDropdown = false;
   showCustomerReportsDropdown = false;
 
+showPmTimesheetDropdown = false;
+@ViewChild('pmTimesheetDropdown') pmTimesheetDropdown!: ElementRef;
+togglePmTimesheetDropdown() {
+  this.showPmTimesheetDropdown = !this.showPmTimesheetDropdown;
+  this.showManagersHubDropdown = false;
+  this.showCustomerDropdown = false;
+  this.showProjectDropdown = false;
+  this.showEmployeeDropdown = false;
+}
   // Add these methods to your component class
   toggleProjectReportsDropdown() {
     this.showProjectReportsDropdown = !this.showProjectReportsDropdown;
@@ -156,6 +165,10 @@ export class NavbarComponent {
     if (this.customerDropdown && !this.customerDropdown.nativeElement.contains(event.target)) {
       this.showCustomerDropdown = false;
     }
+
+      if (this.pmTimesheetDropdown && !this.pmTimesheetDropdown.nativeElement.contains(event.target)) {
+    this.showPmTimesheetDropdown = false;
+  }
 
     // Close Project Dropdown if clicked outside
     if (this.projectDropdown && !this.projectDropdown.nativeElement.contains(event.target)) {
