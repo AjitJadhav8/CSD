@@ -257,16 +257,16 @@ class RmgController {
     }
   }
   // Release employee from project
-async releaseEmployeeFromProject(req: Request, res: Response): Promise<void> {
-  try {
-    const { projectTeamId } = req.params;
+  async releaseEmployeeFromProject(req: Request, res: Response): Promise<void> {
+    try {
+      const { projectTeamId } = req.params;
 
-    if (!projectTeamId) {
-      res.status(400).json({ error: 'Missing projectTeamId parameter' });
-      return;
-    }
+      if (!projectTeamId) {
+        res.status(400).json({ error: 'Missing projectTeamId parameter' });
+        return;
+      }
 
-    const updateQuery = `
+      const updateQuery = `
       UPDATE trans_project_team
       SET 
         is_released = 1,
@@ -274,30 +274,30 @@ async releaseEmployeeFromProject(req: Request, res: Response): Promise<void> {
         updated_at = NOW()
       WHERE project_team_id = ? AND is_released = 0`;
 
-    db.query<ResultSetHeader>(updateQuery, [projectTeamId], (error, result) => {
-      if (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Database Error', details: error.message });
-        return;
-      }
+      db.query<ResultSetHeader>(updateQuery, [projectTeamId], (error, result) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
 
-      if (result.affectedRows === 0) {
-        res.status(404).json({ error: 'Project assignment not found or already released' });
-        return;
-      }
+        if (result.affectedRows === 0) {
+          res.status(404).json({ error: 'Project assignment not found or already released' });
+          return;
+        }
 
-      res.status(200).json({ message: 'Employee successfully released from project' });
-    });
-  } catch (error) {
-    console.error('Error releasing employee:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+        res.status(200).json({ message: 'Employee successfully released from project' });
+      });
+    } catch (error) {
+      console.error('Error releasing employee:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
 
-async getAllProjectTeams(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `
+  async getAllProjectTeams(req: Request, res: Response): Promise<void> {
+    try {
+      const query = `
       SELECT 
         tpt.project_team_id,
         mc.customer_id, 
@@ -331,42 +331,42 @@ async getAllProjectTeams(req: Request, res: Response): Promise<void> {
       WHERE tpt.is_deleted = 0
       ORDER BY tpt.project_team_id DESC`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Database Error', details: error.message });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error fetching project teams:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error fetching project teams:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
-async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
-  return new Promise((resolve, reject) => {
-    let query = `
+  async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      let query = `
       SELECT COALESCE(SUM(allocation_percentage), 0) AS total_allocation
       FROM trans_project_team
       WHERE employee_id = ? AND is_deleted = 0 AND is_released = 0`;
 
-    const params: any[] = [employeeId];
+      const params: any[] = [employeeId];
 
-    if (excludeProjectTeamId) {
-      query += ` AND project_team_id != ?`;
-      params.push(excludeProjectTeamId);
-    }
-
-    db.query(query, params, (error, results: any) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(Number(results[0]?.total_allocation) || 0);
+      if (excludeProjectTeamId) {
+        query += ` AND project_team_id != ?`;
+        params.push(excludeProjectTeamId);
       }
+
+      db.query(query, params, (error, results: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(Number(results[0]?.total_allocation) || 0);
+        }
+      });
     });
-  });
-}
+  }
 
   async updateAssignTeam(req: Request, res: Response): Promise<void> {
     try {
@@ -403,7 +403,7 @@ async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): 
       //       FROM trans_project_team
       //       WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0`;
 
-            const checkAssignmentQuery = `
+      const checkAssignmentQuery = `
   SELECT COUNT(*) AS assignment_count
   FROM trans_project_team
   WHERE employee_id = ? AND project_id = ? AND project_team_id != ? AND is_deleted = 0 AND is_released = 0`;
@@ -470,55 +470,55 @@ async getEmployeeAllocation(employeeId: number, excludeProjectTeamId?: number): 
 
 
   // Fetch all timesheet entries
-//   async getAllTimesheets(req: Request, res: Response): Promise<void> {
-//     try {
-//       const query = `SELECT 
-//     tt.timesheet_id,
-//     tt.timesheet_date,
-//     mu.user_id, 
-//     CONCAT(mu.user_first_name, ' ', mu.user_last_name) AS user_name,
-//     mpd.pd_id, 
-//     mpd.project_deliverable_name,
-//     tt.task_description,
-//     tt.hours,
-//     tt.minutes,
-//     tt.task_status,
-//     mpp.phase_id, 
-//     mpp.project_phase_name,
-//     mp.project_id,
-//     mp.project_name,
-//     mc.customer_id,
-//     mc.customer_name,
-//     pm.user_id AS project_manager_id,
-//     CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS project_manager_name
-// FROM trans_timesheet tt
-// LEFT JOIN master_user mu ON tt.user_id = mu.user_id
-// LEFT JOIN master_project_deliverables mpd ON tt.pd_id = mpd.pd_id
-// LEFT JOIN master_project_phases mpp ON tt.phase_id = mpp.phase_id  -- ✅ FIXED
-// LEFT JOIN master_project mp ON mpd.project_id = mp.project_id
-// LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id
-// LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id
-// WHERE tt.is_deleted = 0
-// ORDER BY tt.timesheet_id DESC`;
+  //   async getAllTimesheets(req: Request, res: Response): Promise<void> {
+  //     try {
+  //       const query = `SELECT 
+  //     tt.timesheet_id,
+  //     tt.timesheet_date,
+  //     mu.user_id, 
+  //     CONCAT(mu.user_first_name, ' ', mu.user_last_name) AS user_name,
+  //     mpd.pd_id, 
+  //     mpd.project_deliverable_name,
+  //     tt.task_description,
+  //     tt.hours,
+  //     tt.minutes,
+  //     tt.task_status,
+  //     mpp.phase_id, 
+  //     mpp.project_phase_name,
+  //     mp.project_id,
+  //     mp.project_name,
+  //     mc.customer_id,
+  //     mc.customer_name,
+  //     pm.user_id AS project_manager_id,
+  //     CONCAT(pm.user_first_name, ' ', pm.user_last_name) AS project_manager_name
+  // FROM trans_timesheet tt
+  // LEFT JOIN master_user mu ON tt.user_id = mu.user_id
+  // LEFT JOIN master_project_deliverables mpd ON tt.pd_id = mpd.pd_id
+  // LEFT JOIN master_project_phases mpp ON tt.phase_id = mpp.phase_id  -- ✅ FIXED
+  // LEFT JOIN master_project mp ON mpd.project_id = mp.project_id
+  // LEFT JOIN master_customer mc ON mpd.customer_id = mc.customer_id
+  // LEFT JOIN master_user pm ON mp.project_manager_id = pm.user_id
+  // WHERE tt.is_deleted = 0
+  // ORDER BY tt.timesheet_id DESC`;
 
-//       db.query(query, (error, results) => {
-//         if (error) {
-//           console.error('Database Error:', error);
-//           res.status(500).json({ error: 'Database Error', details: error.message });
-//           return;
-//         }
-//         res.status(200).json(results);
-//       });
+  //       db.query(query, (error, results) => {
+  //         if (error) {
+  //           console.error('Database Error:', error);
+  //           res.status(500).json({ error: 'Database Error', details: error.message });
+  //           return;
+  //         }
+  //         res.status(200).json(results);
+  //       });
 
-//     } catch (error) {
-//       console.error('Error fetching timesheets:', error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   }
+  //     } catch (error) {
+  //       console.error('Error fetching timesheets:', error);
+  //       res.status(500).json({ error: 'Internal Server Error' });
+  //     }
+  //   }
 
-async getAllTimesheets(req: Request, res: Response): Promise<void> {
+  async getAllTimesheets(req: Request, res: Response): Promise<void> {
     try {
-        const query = `SELECT 
+      const query = `SELECT 
             tt.timesheet_id,
             tt.timesheet_date,
             mu.user_id, 
@@ -547,20 +547,20 @@ async getAllTimesheets(req: Request, res: Response): Promise<void> {
         WHERE tt.is_deleted = 0
         ORDER BY tt.timesheet_id DESC`;
 
-        db.query(query, (error, results) => {
-            if (error) {
-                console.error('Database Error:', error);
-                res.status(500).json({ error: 'Database Error', details: error.message });
-                return;
-            }
-            res.status(200).json(results);
-        });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
+        res.status(200).json(results);
+      });
 
     } catch (error) {
-        console.error('Error fetching timesheets:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error fetching timesheets:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+  }
 
 }
 

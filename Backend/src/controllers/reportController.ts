@@ -48,8 +48,8 @@ class ReportController {
   //   }
   // }
   async getAllTeamTimesheets(req: Request, res: Response): Promise<void> {
-  try {
-    const query = `SELECT 
+    try {
+      const query = `SELECT 
       tt.timesheet_id,
       tt.timesheet_date,
       mu.user_id, 
@@ -78,19 +78,19 @@ class ReportController {
     WHERE tt.is_deleted = 0
     ORDER BY tt.timesheet_id DESC`;
 
-    db.query(query, (error, results) => {
-      if (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Database Error', details: error.message });
-        return;
-      }
-      res.status(200).json(results);
-    });
-  } catch (error) {
-    console.error('Error fetching timesheets:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      db.query(query, (error, results) => {
+        if (error) {
+          console.error('Database Error:', error);
+          res.status(500).json({ error: 'Database Error', details: error.message });
+          return;
+        }
+        res.status(200).json(results);
+      });
+    } catch (error) {
+      console.error('Error fetching timesheets:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
   // async getReportOptions(req: Request, res: Response): Promise<void> {
   //   try {
@@ -128,37 +128,37 @@ class ReportController {
   // project team report
 
   async getReportOptions(req: Request, res: Response): Promise<void> {
-  try {
-    const queries = {
-      users: 'SELECT user_id, user_first_name, user_last_name FROM master_user WHERE is_deleted = 0',
-      customers: 'SELECT customer_id, customer_name FROM master_customer WHERE is_deleted = 0',
-      projects: 'SELECT project_id, project_name FROM master_project WHERE is_deleted = 0',
-      projectDeliverables: 'SELECT pd_id, project_deliverable_name FROM master_project_deliverables WHERE is_deleted = 0',
-      projectManagers: `SELECT u.user_id, u.user_first_name, u.user_last_name 
+    try {
+      const queries = {
+        users: 'SELECT user_id, user_first_name, user_last_name FROM master_user WHERE is_deleted = 0',
+        customers: 'SELECT customer_id, customer_name FROM master_customer WHERE is_deleted = 0',
+        projects: 'SELECT project_id, project_name FROM master_project WHERE is_deleted = 0',
+        projectDeliverables: 'SELECT pd_id, project_deliverable_name FROM master_project_deliverables WHERE is_deleted = 0',
+        projectManagers: `SELECT u.user_id, u.user_first_name, u.user_last_name 
                        FROM master_user u 
                        JOIN master_project p ON u.user_id = p.project_manager_id 
                        WHERE u.is_deleted = 0 GROUP BY u.user_id`,
-      standardTasks: 'SELECT task_id, task_name FROM master_standard_tasks WHERE is_deleted = 0' // Changed from phases
-    };
+        standardTasks: 'SELECT task_id, task_name FROM master_standard_tasks WHERE is_deleted = 0' // Changed from phases
+      };
 
-    const results: any = {};
+      const results: any = {};
 
-    for (const [key, query] of Object.entries(queries)) {
-      const data = await new Promise((resolve, reject) => {
-        db.query(query, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+      for (const [key, query] of Object.entries(queries)) {
+        const data = await new Promise((resolve, reject) => {
+          db.query(query, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          });
         });
-      });
-      results[key] = data;
-    }
+        results[key] = data;
+      }
 
-    res.status(200).json(results);
-  } catch (error) {
-    console.error('Error fetching report options:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      res.status(200).json(results);
+    } catch (error) {
+      console.error('Error fetching report options:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
-}
 
 
 

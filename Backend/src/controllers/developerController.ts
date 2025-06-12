@@ -15,14 +15,14 @@ class DeveloperController {
                 FROM master_user
                 WHERE is_deleted = 0
                 ORDER BY user_id`;
-    
+
             db.query(query, async (error, results: any[]) => {
                 if (error) {
                     console.error('Database Error:', error);
                     res.status(500).json({ error: 'Database Error', details: error.message });
                     return;
                 }
-    
+
                 // Add decrypted password to each user (for development only)
                 const usersWithDecryptedPasswords = await Promise.all(
                     results.map(async (user) => {
@@ -32,11 +32,11 @@ class DeveloperController {
                         return {
                             ...user,
                             // This is just showing the hash, not actually decrypting
-                            decrypted_password: `[HASHED: ${user.user_password}]` 
+                            decrypted_password: `[HASHED: ${user.user_password}]`
                         };
                     })
                 );
-    
+
                 res.status(200).json(usersWithDecryptedPasswords);
             });
         } catch (error) {
